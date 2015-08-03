@@ -5,6 +5,7 @@ module.exports = function (grunt) {
 		'stylus:dev',
 		'copy:dev',
 		'coffee:dev',
+		'jade:dev',
 		'browserify'
 	]);
 };
