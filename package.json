@@ -6,7 +6,8 @@
   "keywords": [],
   "dependencies": {
     "ejs": "~0.8.4",
-    "grunt": "0.4.2",
+    "grunt": "0.4.5",
+    "grunt-browserify": "^4.0.0",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-coffee": "~0.10.1",
     "grunt-contrib-concat": "~0.3.0",
@@ -34,5 +35,8 @@
     "url": "git://github.com/bogdan/accounting.git"
   },
   "author": "bogdan",
-  "license": ""
+  "license": "",
+  "devDependencies": {
+    "lodash": "^3.10.0"
+  }
 }

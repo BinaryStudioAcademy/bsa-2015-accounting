@@ -3,6 +3,7 @@ module.exports = function (grunt) {
 		'jst:dev',
 		'sylus:dev',
 		'sync:dev',
-		'coffee:dev'
+		'coffee:dev',
+		'browserify'
 	]);
 };
