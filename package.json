@@ -33,5 +33,8 @@
     "url": "git://github.com/bogdan/accounting.git"
   },
   "author": "bogdan",
-  "license": ""
+  "license": "",
+  "devDependencies": {
+    "angular": "^1.4.3"
+  }
 }
