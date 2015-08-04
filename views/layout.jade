@@ -1,5 +1,5 @@
 doctype html
-html
+html(ng-app='myApp')
   head
     title= title
 
@@ -14,7 +14,7 @@ html
     // The linker searches for this tag and adds js.  If there's no linker, we point to sails.io.js
     // SCRIPTS
     script(src="/js/dependencies/sails.io.js")
+    script(src="/js/app-libs.js")
     script(src="/js/app.js")
-    script(src="/js/vendor.js")
     // SCRIPTS END
 

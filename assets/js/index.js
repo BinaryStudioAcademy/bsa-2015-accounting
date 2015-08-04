@@ -1,3 +1,6 @@
-var _ = require('lodash');
+var angular = require('angular');
+var myApp = angular.module('myApp',[]);
 
-console.log('works');
+myApp.controller('GreetingController', ['$scope', function($scope) {
+  $scope.greeting = 'Angular works!!';
+}]);
