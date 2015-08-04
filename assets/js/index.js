@@ -1,6 +1,8 @@
 var angular = require('angular');
-var myApp = angular.module('myApp',[]);
 
-myApp.controller('GreetingController', ['$scope', function($scope) {
-  $scope.greeting = 'Angular works!!';
-}]);
+var app = angular.module('accounting', []);
+
+require('./categories/index.js')(app);
+require('./expenses/index.js')(app);
+require('./users/index.js')(app);
+require('./currency/index.js')(app);
