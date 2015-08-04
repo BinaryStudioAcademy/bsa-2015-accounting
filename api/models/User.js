@@ -8,20 +8,15 @@
 module.exports = {
   connection: 'mongo',
   attributes: {
-    _id: {
+    login: {
       type: 'string',
-      primaryKey: true,
-      required: true
+      unique: true
     },
     name: {
       type: 'string'
     },
     role: {
       type: 'string'
-    },
-    login: {
-      type: 'string',
-      unique: true
     },
     password: {
       type: 'string'

@@ -8,11 +8,6 @@
 module.exports = {
   connection: 'mongo',
   attributes: {
-    _id: {
-      type: 'string',
-      primaryKey: true,
-      required: true
-    },
     creatorId: {
       type: 'string'
     },
