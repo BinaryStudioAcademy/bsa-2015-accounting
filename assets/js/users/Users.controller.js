@@ -1,7 +1,9 @@
 module.exports = function(app) {
   app.controller('UsersController', UsersController);
 
-  function UsersController() {
+  UsersController.$inject = ['UsersService'];
+
+  function UsersController(UsersService) {
 
   }
 };

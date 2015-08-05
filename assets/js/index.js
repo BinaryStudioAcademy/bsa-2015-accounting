@@ -1,6 +1,6 @@
 var angular = require('angular');
 
-var app = angular.module('accounting', []);
+var app = angular.module('accounting', [require('angular-resource')]);
 
 require('./categories/index.js')(app);
 require('./expenses/index.js')(app);
