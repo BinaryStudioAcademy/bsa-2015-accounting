@@ -11,7 +11,7 @@ module.exports = function(app) {
       }).
       when('/planning', {
         templateUrl: '/templates/Budgets.html',
-        controller: 'CategoriesController'
+        controller: 'BudgetsController'
       }).
       when('/charts', {
         templateUrl: '/templates/Charts.html',

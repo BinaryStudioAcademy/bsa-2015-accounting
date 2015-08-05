@@ -1,4 +1,4 @@
 module.exports = function(app) {
-  require('./Categories.controller.js')(app);
-  require('./Categories.service.js')(app);
+  require('./Charts.controller.js')(app);
+  require('./Charts.service.js')(app);
 };
