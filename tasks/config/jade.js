@@ -4,9 +4,10 @@ module.exports = function(grunt) {
 		dev: {
 			files: [{
 				expand: true,
+        flatten: true,
 				cwd: 'assets/js/',
 				src: ['**/*.jade'],
-				dest: 'assets/js/',
+				dest: '.tmp/public/templates',
 				ext: '.html'
 			}]
 		}

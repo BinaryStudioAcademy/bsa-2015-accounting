@@ -6,12 +6,16 @@ module.exports = function(app) {
   function RouteConfig($routeProvider) {
     $routeProvider.
       when('/expenses', {
-        templateUrl: 'assets/js/expenses/Expenses.html',
+        templateUrl: '/templates/Expenses.html',
         controller: 'ExpensesController'
       }).
       when('/planning', {
-        templateUrl: 'assets/js/categories/Budgets.html',
+        templateUrl: '/templates/Budgets.html',
         controller: 'CategoriesController'
+      }).
+      when('/charts', {
+        templateUrl: '/templates/Charts.html',
+        controller: 'ChartsController'
       }).
       otherwise({
         redirectTo: '/expenses'

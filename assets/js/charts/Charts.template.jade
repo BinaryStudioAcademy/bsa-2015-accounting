@@ -1,0 +1,173 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css')
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js')
+    script(src='//code.jquery.com/ui/1.11.4/jquery-ui.js')
+    script(type='text/javascript', src='//cdn.jsdelivr.net/momentjs/latest/moment.min.js')
+    link(rel='stylesheet', type='text/css', href='//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.3/css/bootstrap-select.min.css')
+    link(rel='stylesheet', type='text/css', href='//cdn.jsdelivr.net/bootstrap/latest/css/bootstrap.css')
+    // Include Date Range Picker
+    script(type='text/javascript', src='//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js')
+    title Charts
+        link(rel='stylesheet', type='text/css', href='styles/view3.stylus')
+  body
+    .wrapper
+      #charts.main
+        .tab-content
+          #expenses
+            expenses
+          #planning
+            planning
+          #charts
+            charts
+              .createChart
+                .form
+                  label Year
+                  select
+                    option(selected='selected') Year
+                    optgroup(label='Year')
+                      option 2007
+                      option 2008
+                      option 2009
+                      option 2010
+                      option 2011
+                      option 2012
+                      option 2013
+                      option 2014
+                      option 2015
+                  label Period
+                  select
+                    option(selected='selected') Period
+                    optgroup(label='Month')
+                      option January
+                      option February
+                      option March
+                      option April
+                      option May
+                      option June
+                      option July
+                      option August
+                      option September
+                      option Oktober
+                      option November
+                      option Desember
+                    optgroup(label='Quarter')
+                      option 1 quarter(january-march)
+                      option 2 quarter(april-june)
+                      option 3 quarter(july-september)
+                      option 4 quarter(october-december)
+                  label Or range of dates
+                  input(name='daterange')
+                  label Categories
+                  select#category
+                    option(selected='selected') Category
+                    optgroup(label='HR')
+                      option Office
+                      option Parties
+                      option Salary
+                      option Course
+                    optgroup(label='Marketing')
+                      option subcategory
+                      option subcategory
+                      option subcategory
+                      option subcategory
+                    optgroup(label='Accounting')
+                      option Tax
+                      option sallary
+                      option subcategory
+                      option subcategory
+                .amountMobile
+                  select
+                    option(selected='selected') Amount data by categories
+                    optgroup(label='HR')
+                      option(value='1') Office
+                      option(value='2') Parties
+                      option(value='3') Salary
+                      option(value='4') Course
+                    optgroup(label='Marketing')
+                      option(value='5') subcategory
+                      option(value='6') subcategory
+                      option(value='7') subcategory
+                      option(value='8') subcategory
+                    optgroup(label='Accounting')
+                      option(value='9') Tax
+                      option(value='10') sallary
+                      option(value='11') subcategory
+                      option(value='12') subcategory
+                  select
+                    option(selected='selected') Selected filter categories
+                  br
+                  br
+                  button Sum
+                  .dispRad
+                    p Display by:
+                    label Month
+                    input(type='radio')
+                    label Quarter
+                    input(type='radio')
+                    label Year
+                    input(type='radio')
+                .amount
+                  h4 Amount data by categories 
+                  select#my-select(multiple='multiple', name='my-select1[]')
+                    optgroup(label='HR')
+                      option(value='1') Office
+                      option(value='2') Parties
+                      option(value='3') Salary
+                      option(value='4') Course
+                    optgroup(label='Marketing')
+                      option(value='5') subcategory
+                      option(value='6') subcategory
+                      option(value='7') subcategory
+                      option(value='8') subcategory
+                    optgroup(label='Accounting')
+                      option(value='9') Tax
+                      option(value='10') sallary
+                      option(value='11') subcategory
+                      option(value='12') subcategory
+                  button Sum
+                  .dispRad
+                    p Display by:
+                    label Month
+                    input(type='radio')
+                    label Quarter
+                    input(type='radio')
+                    label Year
+                    input(type='radio')
+              h2 Annual expenses by categories 2014 
+              h4.amountMobile Annual expenses by categories 2014 
+              img.budget(src='http://storage4.static.itmages.ru/i/15/0801/h_1438447608_6381566_5f32bcd337.jpg')
+              .compare
+                label Compare with: 
+                br
+                select
+                  option(selected='selected') Year
+                  option 2007
+                  option 2008
+                  option 2009
+                  option 2010
+                  option 2011
+                  option 2012
+                  option 2013
+                  option 2014
+                  option 2015
+              .check
+                input#first(type='radio')
+                label(for='first') Table
+                br
+                input#second(type='radio')
+                label(for='second') Chart
+                br
+                input#third(type='radio', checked='')
+                label(for='third') Sector
+              .mob
+                input#first(type='radio')
+                label(for='first') Table
+                input#second(type='radio')
+                label(for='second') Chart
+                input#third(type='radio', checked='')
+                label(for='third') Sector
+              img#imgTable(src='http://storage4.static.itmages.ru/i/15/0801/h_1438430327_3882250_19da1fcfdc.png')

@@ -2,7 +2,6 @@ extends ./layout
 
 
 block body
-  div(ng-view)
   header
     i#menu-btn.fa.fa-bars
     #page-name Accounting
@@ -20,8 +19,8 @@ block body
   main
     .tab-content
       #expenses.tab-pane.active
-        expenses
+        div(ng-view)
       #planning.tab-pane
-        planning
+        div(ng-view)
       #charts.tab-pane
-        charts
+        div(ng-view)
