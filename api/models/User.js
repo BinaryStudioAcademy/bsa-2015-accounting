@@ -6,21 +6,24 @@
 */
 
 module.exports = {
-  connection: 'mongo',
-  attributes: {
-    login: {
-      type: 'string',
-      unique: true
-    },
-    name: {
-      type: 'string'
-    },
-    role: {
-      type: 'string'
-    },
-    password: {
-      type: 'string'
-    }
-  }
+	attributes: {
+		login: {
+			type: 'string',
+			required: true,
+			unique: true
+		},
+		name: {
+			type: 'string',
+			required: true
+		},
+		role: {
+			type: 'string',
+			required: true
+		},
+		password: {
+			type: 'string',
+			required: true
+		}
+	}
 };
 

@@ -6,17 +6,19 @@
 */
 
 module.exports = {
-  connection: 'mongo',
-  attributes: {
-    name: {
-      type: 'string'
-    },
-    subcategories: {
-      type: 'array'
-    },
-    rights: {
-      type: 'array'
-    }
-  }
+	attributes: {
+		name: {
+			type: 'string',
+			required: true
+		},
+		subcategories: {
+			type: 'array',
+			required: true
+		},
+		rights: {
+			type: 'array',
+			required: true
+		}
+	}
 };
 

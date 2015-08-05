@@ -6,23 +6,27 @@
 */
 
 module.exports = {
-  connection: 'mongo',
-  attributes: {
-    creatorId: {
-      type: 'string'
-    },
-    year: {
-      type: 'integer'
-    },
-    categoryId: {
-      type: 'string'
-    },
-    budget: {
-      type: 'float'
-    },
-    subcategories: {
-      type: 'array'
-    }
-  }
+	attributes: {
+		creatorId: {
+			type: 'string',
+			required: true
+		},
+		year: {
+			type: 'integer',
+			required: true
+		},
+		categoryId: {
+			type: 'string',
+			required: true
+		},
+		budget: {
+			type: 'float',
+			required: true
+		},
+		subcategories: {
+			type: 'array',
+			required: true
+		}
+	}
 };
 

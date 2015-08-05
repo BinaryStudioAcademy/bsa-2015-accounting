@@ -6,32 +6,39 @@
 */
 
 module.exports = {
-  connection: 'mongo',
-  attributes: {
-    categoryId: {
-      type: 'string'
-    },
-    date: {
-      type: 'date'
-    },
-    creatorId: {
-      type: 'string'
-    },
-    price: {
-      type: 'float'
-    },
-    currency: {
-      type: 'string'
-    },
-    name: {
-      type: 'string'
-    },
-    description: {
-      type: 'string'
-    },
-    subcategoryId: {
-      type: 'string'
-    }
-  }
+	attributes: {
+		categoryId: {
+			type: 'string',
+			required: true
+		},
+		date: {
+			type: 'date',
+			required: true
+		},
+		creatorId: {
+			type: 'string',
+			required: true
+		},
+		price: {
+			type: 'float',
+			required: true
+		},
+		currency: {
+			type: 'string',
+			required: true
+		},
+		name: {
+			type: 'string',
+			required: true
+		},
+		description: {
+			type: 'string',
+			required: false
+		},
+		subcategoryId: {
+			type: 'string',
+			required: true
+		}
+	}
 };
 

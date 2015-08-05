@@ -6,14 +6,15 @@
 */
 
 module.exports = {
-  connection: 'mongo',
-  attributes: {
-    date: {
-      type: 'date'
-    },
-    rate: {
-      type: 'float'
-    }
-  }
+	attributes: {
+		date: {
+			type: 'date',
+			required: true
+		},
+		rate: {
+			type: 'float',
+			required: true
+		}
+	}
 };
 
