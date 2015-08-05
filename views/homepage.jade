@@ -2,25 +2,59 @@ extends ./layout
 
 
 block body
-  header
-    i#menu-btn.fa.fa-bars
-    #page-name Accounting
-    #user-info
-      img#user-logo(src='http://lorempixel.com/40/40/cats/4/', alt='user logo')
-      span#user-name John Doe
-  nav
-    ul.nav.nav-tabs.tabs-left
-      li.active
-        a(href='#/expenses', data-toggle='tab') Expenses
-      li
-        a(href='#/planning', data-toggle='tab') Planning
-      li
-        a(href='#/charts', data-toggle='tab') Charts
-  main
-    .tab-content
-      #expenses.tab-pane.active
-        div(ng-view)
-      #planning.tab-pane
-        div(ng-view)
-      #charts.tab-pane
-        div(ng-view)
+	header
+		i#menu-btn.fa.fa-bars
+		#page-name Accounting
+		#user-info
+			img#user-logo(src='http://lorempixel.com/40/40/cats/4/', alt='user logo')
+			span#user-name John Doe
+	nav
+		ul.nav.nav-tabs.tabs-left
+			li.active
+				a(href='#/expenses', data-toggle='tab') Expenses
+			li
+				a(href='#/planning', data-toggle='tab') Planning
+			li
+				a(href='#/charts', data-toggle='tab') Charts
+	#user-administration
+		i.fa.fa-search.icon
+		input(type='text', placeholder='search user', value='john')
+		ul#users
+			li
+				b John Connor
+				|  (admin)
+			li.active
+				b John Doe
+				|  (manager)
+			.wrapper
+				.item
+					.subitem.name.hidee
+						b Categories
+					.subitem.m
+						b M
+					.subitem.a
+						b A
+				.item
+					.subitem.name HR
+					.subitem
+						input.man(type='checkbox', name='', id='')
+						input.adm(type='checkbox', name='', id='')
+				.item
+					.subitem.name Marketing
+					.subitem
+						input.man(type='checkbox', checked='', name='', id='')
+						input.adm(type='checkbox', name='', id='')
+			li
+				b John Oliver
+				|  (owner)
+			li
+				b John Wayne
+				|  (manager)
+	main
+		.tab-content
+			#expenses.tab-pane.active
+				div(ng-view)
+			#planning.tab-pane
+				div(ng-view)
+			#charts.tab-pane
+				div(ng-view)
