@@ -1,0 +1,161 @@
+#controls
+	| Controls 
+	i.fa.fa-caret-down
+#form
+	button.danger discard changes
+	button.safe save changes
+#main
+	table#planning-table
+		tbody
+			tr
+				th(colspan='2')
+					| Category 
+					i.fa.fa-caret-down
+				th
+					| Budget 
+					i.fa.fa-caret-down
+				th
+					| Used 
+					i.fa.fa-caret-down
+			tr
+				td(colspan='2')
+					select.year(name='', id='')
+						option(value='') 2015
+						option(value='') 2014
+						option(value='') 2013
+				td
+					| $55,000 
+					span.mobile-hide
+						| (
+						span.status-good $8,000
+						|  undistributed)
+				td
+					| $48,600 
+					span.mobile-hide
+						| (
+						span.status-good $6,400
+						|  left)
+			tr
+				th.expand-btn-hr(width='40px')
+					i.fa.fa-caret-down
+				th.left(width='250px')
+					a
+						| HR 
+						i.fa.fa-pencil
+					i.fa.fa-times.del-cat-btn
+				th
+					a
+						| $15,000 
+						i.fa.fa-pencil
+					span.mobile-hide
+						| (
+						span.status-good $8,000
+						|  undistributed)
+				th
+					| $3,700 
+					span.mobile-hide
+						| (
+						span.status-good $11,300
+						|  left)
+			tr.hr
+				td ...
+				td.left
+					a
+						| HR-sub-category-1 
+						i.fa.fa-pencil
+					i.fa.fa-times.del-cat-btn
+				td
+					a
+						| $4,000 
+						i.fa.fa-pencil
+				td
+					| $2,500 
+					span.mobile-hide
+						| (
+						span.status-good $1,500
+						|  left)
+			tr.hr
+				td ...
+				td.left
+					a
+						| HR-sub-category-2 
+						i.fa.fa-pencil
+					i.fa.fa-times.del-cat-btn
+				td
+					a
+						| $3,000 
+						i.fa.fa-pencil
+				td
+					| $1,200 
+					span.mobile-hide
+						| (
+						span.status-good $1,800
+						|  left)
+			tr.new-cat
+				td ...
+				td(colspan='3')
+					a
+						i.fa.fa-plus
+						|  new sub category in HR
+			tr
+				th.expand-btn-marketing
+					i.fa.fa-caret-down
+				th.left
+					a
+						| Marketing 
+						i.fa.fa-pencil
+					i.fa.fa-times.del-cat-btn
+				th
+					a
+						| $40,000 
+						i.fa.fa-pencil
+					span.mobile-hide
+						| (
+						span.status-neutral $0
+						|  undistributed)
+				th
+					| $44,900 
+					span.mobile-hide
+						| (
+						span.status-bad -$4,900
+						|  left)
+			tr.marketing
+				td ...
+				td.left
+					a
+						| Marketing-sub-category-1 
+						i.fa.fa-pencil
+					i.fa.fa-times.del-cat-btn
+				td
+					a
+						| $25,000 
+						i.fa.fa-pencil
+				td
+					| $25,000 
+					span.mobile-hide
+						| (
+						span.status-neutral $0
+						|  left)
+			tr.marketing
+				td ...
+				td.left
+					a
+						| Marketing-sub-category-2 
+						i.fa.fa-pencil
+					i.fa.fa-times.del-cat-btn
+				td
+					a
+						| $15,000 
+						i.fa.fa-pencil
+				td
+					| $19,900 
+					span.mobile-hide
+						| (
+						span.status-bad -$4,900
+						|  left)
+			tr.new-cat
+				td ...
+				td(colspan='3')
+					a
+						i.fa.fa-plus
+						|  new category in year 2015

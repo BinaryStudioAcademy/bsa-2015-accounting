@@ -2,5 +2,26 @@ extends ./layout
 
 
 block body
-  div(ng-controller="GreetingController")
-    {{ greeting }}
+  div(ng-view)
+  header
+    i#menu-btn.fa.fa-bars
+    #page-name Accounting
+    #user-info
+      img#user-logo(src='http://lorempixel.com/40/40/cats/4/', alt='user logo')
+      span#user-name John Doe
+  nav
+    ul.nav.nav-tabs.tabs-left
+      li.active
+        a(href='#/expenses', data-toggle='tab') Expenses
+      li
+        a(href='#/planning', data-toggle='tab') Planning
+      li
+        a(href='#/charts', data-toggle='tab') Charts
+  main
+    .tab-content
+      #expenses.tab-pane.active
+        expenses
+      #planning.tab-pane
+        planning
+      #charts.tab-pane
+        charts
