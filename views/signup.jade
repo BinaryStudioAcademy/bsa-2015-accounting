@@ -1,0 +1,11 @@
+extends ./layout
+
+
+block body
+	h1
+		Signup
+
+	form(method="POST" action="/user")
+		input(type="email" name="login")
+		input(type="password" name="password")
+		input(type="submit" value="submit")
