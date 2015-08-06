@@ -1,7 +1,6 @@
 /**
  * Module dependencies
  */
-
 var actionUtil = require('sails/lib/hooks/blueprints/actionUtil');
 var util = require('util');
 var _ = require('lodash');
@@ -28,7 +27,7 @@ module.exports = function updateOneRecord (req, res) {
 	// Create `values` object (monolithic combination of all parameters)
 	// But omit the blacklisted params (like JSONP callback param, etc.)
 	var values = {
-		deletedBy: "unknown user id",
+		deletedBy: req.session.passport.user,
 		id: actionUtil.parseValues(req).id
 	};
 

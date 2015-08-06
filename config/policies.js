@@ -28,6 +28,8 @@ module.exports.policies = {
 
   '*': true,
 
+  /*'*': 'isAuthenticated',*/
+
   'CurrencyController': {
     '*': 'isAuthenticated'
   },
