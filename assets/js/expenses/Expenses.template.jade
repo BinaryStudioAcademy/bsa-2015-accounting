@@ -1,0 +1,169 @@
+aside
+  .exchange
+    b Today currency exchange rate
+    br
+    |      22.22 UAH for 1 USD
+  .form-preview
+    | Add expense
+    i.fa.fa-caret-down
+  form.expense-form
+    input(type='text', name='Name', placeholder='Expense')
+    select(name='Category')
+      option Category
+    select(name='Subcategory', placeholder='Subcategory')
+      option Subcategory
+    input(type='text', name='Time', placeholder='Time')
+    input(type='text', name='Date', placeholder='Date')
+    input(type='number', name='Cost', placeholder='Cost')
+    select(name='Currency')
+      option $
+    textarea(placeholder='Description')
+    .money-left
+      b Marketing budget:
+      span.green $10000
+      |  left
+      br
+      b Parties budget:
+      span.green $3000
+      |  left
+    button Add expense
+.filters
+  .form-preview
+    | Filters
+    i.fa.fa-caret-down
+  form
+    button Filter
+    select(name='Cost-range')
+      option Cost range
+    select(name='Category')
+      option Category
+    select(name='Subcategory', placeholder='Subcategory')
+      option Subcategory
+    select(name='Added', placeholder='Added by')
+      option Added by
+#main
+  table
+    colgroup
+      col.table-description
+      col.table-expense
+      col.table-cost
+      col.table-category
+      col.table-sub
+      col.table-added
+    thead
+      tr
+        th
+        th
+          | Expense
+          i.fa.fa-caret-down
+        th
+          | Cost
+          i.fa.fa-caret-down
+        th
+          | Category
+          i.fa.fa-caret-down
+        th
+          | Subcategory
+          i.fa.fa-caret-down
+        th
+          | Added by
+          i.fa.fa-caret-down
+    tbody
+      tr
+        td.date-row(colspan='6') TODAY
+      tr
+        td
+          i.fa.fa-caret-down
+        td Kyiv Marketing
+        td $500
+        td Marketing
+        td Events
+        td Alexandr Vorobyov
+      tr#mobile
+        td(colspan='3')
+          table.shortTable
+            tr
+              td Expense
+              td Kyiv Marketing
+            tr
+              td Category
+              td Events
+            tr
+              td Added by
+              td Alexandr Vorobyov
+            tr
+              td Description
+              td
+                | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum repellat eveniet culpa enim corporis adipisci excepturi nihil, dolorem voluptas. Veritatis doloremque iure nisi sed blanditiis accusamus culpa nobis similique sit aliquam consequuntur voluptatum maiores, labore ullam modi corrupti. Necessitatibus eveniet minima hic explicabo in cum repellat quaerat incidunt blanditiis autem!
+      tr
+      tr#toggle
+        td(colspan='6')
+          span
+            | Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum repellat eveniet culpa enim corporis adipisci excepturi nihil, dolorem voluptas. Veritatis doloremque iure nisi sed blanditiis accusamus culpa nobis similique sit aliquam consequuntur voluptatum maiores, labore ullam modi corrupti. Necessitatibus eveniet minima hic explicabo in cum repellat quaerat incidunt blanditiis autem!
+      tr
+        td
+          i.fa.fa-caret-right
+        td Advertisment
+        td $15 000
+        td HR
+        td Courses
+        td Alexey Potopakhin
+      tr
+        td
+          i.fa.fa-caret-right
+        td Some expense
+        td $5 000
+        td Financial
+        td Parties
+        td Anatolii Sieryi
+      tr
+        td
+          i.fa.fa-caret-right
+        td Lviv Marketing
+        td $1 000
+        td Marketing
+        td Events
+        td A. Anonymous
+      tr
+        td
+          i.fa.fa-caret-right
+        td Another expense
+        td $12 000
+        td Financial
+        td Travel
+        td A. Anonymous
+      tr
+        td
+          i.fa.fa-caret-right
+        td Another expense
+        td $12 000
+        td Financial
+        td Travel
+        td A. Anonymous
+      tr
+        td.date-row(colspan='6') YESTERDAY
+      tr
+        td
+          i.fa.fa-caret-right
+        td Another expense
+        td $12 000
+        td Financial
+        td Travel
+        td A. Anonymous
+      tr
+        td
+          i.fa.fa-caret-right
+        td Another expense
+        td $12 000
+        td Financial
+        td Travel
+        td A. Anonymous
+      tr
+        td
+          i.fa.fa-caret-right
+        td Another expense
+        td $12 000
+        td Financial
+        td Travel
+        td A. Anonymous
+  span.load-more Load more
