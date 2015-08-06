@@ -15,7 +15,7 @@ module.exports = {
 			type: 'array',
 			required: true
 		},
-		rights: {
+		managers: {
 			type: 'array',
 			required: true
 		}

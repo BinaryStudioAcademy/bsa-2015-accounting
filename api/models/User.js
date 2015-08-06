@@ -17,8 +17,8 @@ module.exports = {
 			default: 'anonymous'
 		},
 		role: {
-		type: 'string',
-		default: 'manager'
+			type: 'string',
+			default: 'manager'
 		},
 		toJSON: function() {
 			var obj = this.toObject();

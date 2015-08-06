@@ -11,8 +11,8 @@ module.exports = {
 			type: 'string',
 			required: true
 		},
-		date: {
-			type: 'date',
+		time: {
+			type: 'integer',
 			required: true
 		},
 		creatorId: {
