@@ -7,23 +7,18 @@
 
 #main, .filters
   margin-top 10px
-  width: 73%
+  margin-right 320px
 
 table
   width 96%
   margin 0 2%
   border-collapse collapse
-  tr
-    td
-      &:nth-child(n
-        & + 4)
-          display none
 
 tr, th, td
   border solid 1px #ddd
 
 td, th
-  text-align center
+  text-align center !important
   padding 10px 0
 
 tbody
@@ -33,11 +28,9 @@ tbody
 
 .table-expense
   width 22%
-  width 60%
 
 .table-cost
   width 10%
-  width 30%
 
 .table-category
   width 11%
@@ -51,7 +44,6 @@ tbody
 .table-description
   width 4%
   border solid 1px #ddd
-  width 10%
 
 .description
   color #1e88e5
@@ -69,17 +61,11 @@ aside
   position absolute
   right 10px
   width 320px
-  top: 110px
 
 .exchange
   text-align center
-  color #A9A9A9
-  height 60px
-  text-align center
   color #222222
   padding 12px 10px
-  width 100%
-  border none
 
 .exchange, .expense-form
   width 100%
@@ -153,7 +139,6 @@ aside
   text-align center
   border solid 1px #ddd
   border-radius 3px
-  display block
 
 .filters
   form
@@ -162,8 +147,6 @@ aside
     border solid 1px #ddd
     padding 10px
     height 60px
-    select[name="Cost-range"]
-      margin-left 3px
   button
     padding 9px 30px
     background-color rgb(0, 150, 136)
@@ -187,7 +170,6 @@ aside
 
 #mobile
   display none
-  display table-row
   td
     border none
     text-align left
@@ -196,7 +178,6 @@ aside
 
 #toggle
   background-color white
-  display none
   span
     border-right solid 1px #ddd
     border-left solid 1px #ddd
@@ -214,37 +195,54 @@ aside
   background-color #e2e2e2
   font-weight 600
 
-/*@media
-  (max-width
-    &:
-      1024px)
-        aside, .filters {
-		width 100%
-        position static
+@media (max-width: 1024px)
+  aside, .filters
+    width 100%
+    position static
 
-.expense-form, .filters form
-  display none
+  .expense-form, .filters form
+    display none
 
-#main
-  margin 0
+  #main
+    margin 0
 
-}
-  @media
-    (max-width
-      &:
-        480px)
-          table tr th nth-child(n+4) {
- display: none
+  .exchange
+    width 100%
+    border none
 
-#shortTable
-  width 97%
+  .form-preview
+    display block
 
-.shortTable
-  tr
-    td
-      padding 5px
-      border 1px solid #999
+@media (max-width: 480px)
+  table tr th nth-child(n+4)
+    display none
+
+  table tr td nth-child(n+4)
+    display none
+
+  #mobile
+    display table-row
+
+  #toggle
+    display none
+
+  .table-description
+    width 10%
+
+  .table-expense
+    width 60%
+
+  .table-cost
+    width 30%
+
+  #shortTable
+    width 97%
+
+  .shortTable
+    tr
+      td
+        padding 5px
+        border 1px solid #999
       &:first-child
         background #ccc
 
-*/

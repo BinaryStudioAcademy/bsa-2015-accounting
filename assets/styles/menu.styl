@@ -1,76 +1,4 @@
 body
-  padding: 0
-  margin: 0
-
-.tabs-left,.tabs-right
-  border-bottom none
-  padding-top 2px
-
-.tabs-left
-  border-right 1px solid #ddd
-  & > li
-    margin-right -1px
-    & > a
-      border-radius 4px 0 0 4px
-      margin-right 0
-      display block
-
-.tabs-right
-  border-left 1px solid #ddd
-  & > li
-    margin-left -1px
-    & > a
-      border-radius 0 4px 4px 0
-      margin-right 0
-
-.tabs-left>li,.tabs-right>li
-  float none
-  margin-bottom 2px
-
-.tabs-left>li.active>a,.tabs-left>li.active>a:focus,.tabs-left>li.active>a:hover
-  border-bottom-color #ddd
-  border-right-color transparent
-
-.tabs-right>li.active>a,.tabs-right>li.active>a:focus,.tabs-right>li.active>a:hover
-  border-bottom 1px solid #ddd
-  border-left-color transparent
-
-.sideways
-  margin-top 50px
-  border none
-  position relative
-  & > li
-    height 20px
-    width 120px
-    margin-bottom 100px
-    & > a
-      border-bottom 1px solid #ddd
-      border-right-color transparent
-      text-align center
-      border-radius 4px 4px 0 0
-  &.tabs-left
-    left -50px
-    & > li
-      -webkit-transform rotate(-90deg)
-      -moz-transform rotate(-90deg)
-      -ms-transform rotate(-90deg)
-      -o-transform rotate(-90deg)
-      transform rotate(-90deg)
-  &.tabs-right
-    right -50px
-    & > li
-      -webkit-transform rotate(90deg)
-      -moz-transform rotate(90deg)
-      -ms-transform rotate(90deg)
-      -o-transform rotate(90deg)
-      transform rotate(90deg)
-
-.sideways>li.active>a,.sideways>li.active>a:focus,.sideways>li.active>a:hover
-  border-bottom-color transparent
-  border-right-color #ddd
-  border-left-color #ddd
-
-body
   min-width 320px
   max-width 1920px
 
@@ -86,34 +14,18 @@ nav
   //height 100%
   top 0
   bottom 0
-  width 100%
-  display none
-  margin-top 0
-  float none
-  top 0
-  border-bottom 1px solid #ddd
-  position relative
   ul
     height 100%
 
 main
   max-width 1920px
   margin-left 200px
-  margin-top -285px
-  margin-right 90px
   //margin-top 50px
   //float left
   padding 5px
   //position absolute
   //top 0
   //right 0
-  &::after
-    content "owner desktop view"
-    font-size 3em
-    color green
-    content "owner tablet view"
-    font-size 3em
-    color green
 
 #page-name
   text-align center
@@ -143,11 +55,35 @@ main
   left 0
   cursor pointer
   display none
-  display block
 
+@media screen and (max-width: 1023px)
+  main
+    margin-left 0
 
-.no-mobile-view
-  display none
+  nav
+    width 100%
+    display none
+    margin-top 0
+    float none
+    top 0
+    border-bottom 1px solid #ddd
+    position relative
+
+  #menu-btn
+    display block
+
+  .no-tablet-view
+    display none
+
+@media screen and (max-width: 480px)
+  .no-mobile-view
+    display none
+
+#user-administration
+  position absolute
+  width 200px
+  top 180px
+  padding 12px
 
 #user-administration
   input
@@ -158,7 +94,6 @@ main
   list-style none
   padding 0
   margin 0 -10px
-  width: 197px
   li
     width 204px
     border-bottom 1px solid #ddd
@@ -221,4 +156,3 @@ input[type="checkbox"]
 
 .hidee
   visibility hidden
-

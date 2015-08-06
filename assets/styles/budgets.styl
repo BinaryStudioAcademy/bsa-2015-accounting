@@ -1,4 +1,4 @@
-body
+#container
   padding 10px
 
 #planning-table td, #planning-table th
@@ -19,8 +19,6 @@ body
       & > th
         &:nth-of-type(2)
           width 100px
-  td
-    //background #eee
 
 #planning-table tr:nth-of-type(4) td:nth-of-type(1),
 #planning-table tr:nth-of-type(5) td:nth-of-type(1),
@@ -44,20 +42,6 @@ body
 
 .hr, .marketing
   background white !important
-
-#main
-  //margin-right 320px
-  //padding-right 10px
-  margin 0
-  padding 0
-
-aside
-  width 320px
-  position absolute
-  top 10px
-  right 10px
-  padding 10px 10px 0
-  border solid 1px #ddd
 
 #second
   top 380px
@@ -101,8 +85,6 @@ button
     background #c9302c
     float right
 
-#form
-
 .margin-fix
   margin-left 10px
 
@@ -114,7 +96,6 @@ button
   text-align center
   border solid 1px #ddd
   border-radius 3px
-  display block
 
 .left
   text-align left !important
@@ -131,30 +112,27 @@ button
   cursor pointer
   display none
 
-/*@media
-  screen
-    and
-      (max-width
-        &:
-          1023px)
-            aside {
+@media screen and (max-width: 1023px)
+  aside
 		display none
 
-}
-  @media
-    screen
-      and
-        (max-width
-          &:
-            479px)
-              .mobile-hide {
-		display none
-            419px)
-              #planning-table tr > td nth-of-type(4),
- #planning-table tr > th:nth-of-type(4),
-	#planning-table tr:nth-of-type(1) > th:nth-of-type(3),
-	#planning-table tr:nth-of-type(8) > th:nth-of-type(3)
-	{
-		display: none
+  #content
+    margin 0
+    padding 0
 
-*/
+  #controls
+    display block
+
+@media screen and (max-width: 479px)
+  .mobile-hide
+    display none
+
+@media screen and (max-width: 419px)
+  #planning-table tr > td:nth-of-type(4),
+  #planning-table tr > th:nth-of-type(4),
+  #planning-table tr:nth-of-type(1) > th:nth-of-type(3),
+  #planning-table tr:nth-of-type(8) > th:nth-of-type(3)
+    display none
+
+  #planning-table tr:nth-of-type(1) > th:nth-of-type(2)
+    width 100px
