@@ -18,10 +18,10 @@ module.exports = function(grunt) {
 	grunt.config.set('copy', {
 		dev: {
 			files: [{
-				expand: true,
-				cwd: './assets',
-				src: ['**/*.!(coffee|less|styl|js)'],
-				dest: '.tmp/public'
+				//expand: true,
+				//cwd: './assets',
+				//src: ['**/*.!(coffee|less|styl|js)'],
+				//dest: '.tmp/public'
 			}]
 		},
 		build: {

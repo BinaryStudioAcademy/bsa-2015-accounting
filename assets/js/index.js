@@ -1,6 +1,14 @@
 var angular = require('angular');
-var myApp = angular.module('myApp',[]);
 
-myApp.controller('GreetingController', ['$scope', function($scope) {
-  $scope.greeting = 'Angular works!!';
-}]);
+var app = angular.module('accounting', [
+  require('angular-resource'),
+  require('angular-route')
+]);
+
+require('./budgets/index.js')(app);
+require('./categories/index.js')(app);
+require('./expenses/index.js')(app);
+require('./users/index.js')(app);
+require('./currency/index.js')(app);
+require('./charts/index.js')(app);
+require('./route.js')(app);
