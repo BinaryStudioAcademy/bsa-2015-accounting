@@ -50,6 +50,8 @@
   "devDependencies": {
     "angular": "^1.4.3",
     "angular-resource": "~1.4.2",
-    "angular-route": "~1.4.3"
+    "angular-route": "~1.4.3",
+    "angular-ui-bootstrap": "~0.13.0",
+    "angular-xeditable": "0.0.1"
   }
 }

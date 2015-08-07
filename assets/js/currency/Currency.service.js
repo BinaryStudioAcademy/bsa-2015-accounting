@@ -10,8 +10,17 @@ module.exports = function(app) {
     };
 
     function getExchangeRateCash() {
-      var Rate = $resource("http://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5");
-      return Rate.get({ ccy: "USD" });
+      var Rate = $resource("/currency");
+
+      var date = new Date();
+
+      var yyyy = date.getFullYear().toString();
+      var mm = (date.getMonth()+1).toString();
+      var dd  = date.getDate().toString();
+
+      var fullDate = dd + ":" + mm + ":" + yyyy;
+
+      Rate.get({time: fullDate});
     }
 
     function getExchangeRateCashless() {

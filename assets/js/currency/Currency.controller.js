@@ -4,6 +4,7 @@ module.exports = function(app) {
   CurrencyController.$inject = ['CurrencyService'];
 
   function CurrencyController(CurrencyService) {
-
+    var vm = this;
+    vm.exchangeRate = CurrencyService.getExchangeRateCash();
   }
 };

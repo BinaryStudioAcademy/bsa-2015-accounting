@@ -4,6 +4,7 @@ module.exports = function(app) {
   UsersController.$inject = ['UsersService'];
 
   function UsersController(UsersService) {
-
+    var vm = this;
+    vm.currentUser = UsersService.getCurrentUser();
   }
 };

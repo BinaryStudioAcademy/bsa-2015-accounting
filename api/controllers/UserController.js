@@ -6,5 +6,10 @@
  */
 
 module.exports = {
-
+  getCurrentUser: getCurrentUser
 };
+
+function getCurrentUser(req, res) {
+  if(!req.isAuthenticated()) return res.forbidden();
+  return res.json(req.user);
+}

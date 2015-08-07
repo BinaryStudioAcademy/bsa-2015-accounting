@@ -6,9 +6,10 @@ module.exports = function(app) {
   function ExpensesService($resource) {
     return {
       getExpenses: getExpenses,
-      createExpenses: createExpense,
-      editExpenses: editExpense,
-      deleteExpenses: deleteExpense
+      getExpensesByFilter: getExpensesByFilter,
+      createExpense: createExpense,
+      editExpense: editExpense,
+      deleteExpense: deleteExpense
     };
 
     function getRequest() {
@@ -19,8 +20,20 @@ module.exports = function(app) {
      * Gets expenses array
      * @returns expenses array
      */
-    function getExpenses(setIndex, setCount) {
-      return $resource("/expense/:id", { id: "@id", skip: setIndex, limit: setCount }).query();
+    function getExpenses(setLimit) {
+      return $resource("/expense/:id", { id: "@id", limit: setLimit }).query();
+    }
+
+    function getExpensesByFilter(filters) {
+      var filter = {};
+
+      for(var field in filters) {
+        if(filters.hasOwnProperty(field)) {
+          filter[field] = { "contains": filters[field] };
+        }
+      }
+
+      return $resource("/expense/:id", { id: "@id", where: filter }).query();
     }
 
     /**

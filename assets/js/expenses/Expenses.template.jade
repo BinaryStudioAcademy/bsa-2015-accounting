@@ -1,169 +1,141 @@
-aside
-  .exchange
-    b Today currency exchange rate
-    br
-    |      22.22 UAH for 1 USD
-  .form-preview
-    | Add expense
-    i.fa.fa-caret-down
-  form.expense-form
-    input(type='text', name='Name', placeholder='Expense')
-    select(name='Category')
-      option Category
-    select(name='Subcategory', placeholder='Subcategory')
-      option Subcategory
-    input(type='text', name='Time', placeholder='Time')
-    input(type='text', name='Date', placeholder='Date')
-    input(type='number', name='Cost', placeholder='Cost')
-    select(name='Currency')
-      option $
-    textarea(placeholder='Description')
-    .money-left
-      b Marketing budget:
-      span.green $10000
-      |  left
+div(ng-controller='ExpensesController as expCtr')
+  aside
+    .exchange(ng-controller="CurrencyController as currencyCtrl")
+      b Today currency exchange rate
       br
-      b Parties budget:
-      span.green $3000
-      |  left
-    button Add expense
-.filters
-  .form-preview
-    | Filters
-    i.fa.fa-caret-down
-  form
-    button Filter
-    select(name='Cost-range')
-      option Cost range
-    select(name='Category')
-      option Category
-    select(name='Subcategory', placeholder='Subcategory')
-      option Subcategory
-    select(name='Added', placeholder='Added by')
-      option Added by
-#main
-  table
-    colgroup
-      col.table-description
-      col.table-expense
-      col.table-cost
-      col.table-category
-      col.table-sub
-      col.table-added
-    thead
-      tr
-        th
-        th
-          | Expense
-          i.fa.fa-caret-down
-        th
-          | Cost
-          i.fa.fa-caret-down
-        th
-          | Category
-          i.fa.fa-caret-down
-        th
-          | Subcategory
-          i.fa.fa-caret-down
-        th
-          | Added by
-          i.fa.fa-caret-down
-    tbody
-      tr
-        td.date-row(colspan='6') TODAY
-      tr
-        td
-          i.fa.fa-caret-down
-        td Kyiv Marketing
-        td $500
-        td Marketing
-        td Events
-        td Alexandr Vorobyov
-      tr#mobile
-        td(colspan='3')
-          table.shortTable
+      |      {{currencyCtrl.exchangeRate}} UAH for 1 USD
+    .form-preview
+      | Add expense
+      i.fa.fa-caret-down
+    form.expense-form(name="expenseForm", ng-controller="ExpenseFormController as formCtrl",
+      ng-submit="expenseForm.$valid && formCtrl.createExpense()", novalidate)
+      input(type='text', name='Name', placeholder='Expense', ng-model="formCtrl.expense.name", required)
+      select(name='Category', required)
+        option Category
+      select(name='Subcategory', placeholder='Subcategory', required)
+        option Subcategory
+      input(type='text', name='Date', placeholder='Date', ng-model="formCtrl.expense.date", required)
+      input(type='number', name='Cost', placeholder='Cost', ng-model="formCtrl.expense.cost", required)
+      select(name='Currency', ng-model="formCtrl.expense.currency", required)
+        option USD
+        option UAH
+      textarea(placeholder='Description', ng-model="formCtrl.expense.description", required)
+      .money-left
+        b Marketing budget:
+        span.green $10000
+        |  left
+        br
+        b Parties budget:
+        span.green $3000
+        |  left
+      button(type="submit") Add expense
+  .filters
+    .form-preview
+      | Filters
+      i.fa.fa-caret-down
+    form
+      input(type='text', name='cost-range', placeholder='Expense', ng-model="expCtr.filters.name", ng-change="expCtr.filterExpenses()")
+      input(type='text', name='category', placeholder='Category', ng-model="expCtr.filters.category", ng-change="expCtr.filterExpenses()")
+      input(type='text', name='subcategory', placeholder='Subcategory', ng-model="expCtr.filters.subcategory", ng-change="expCtr.filterExpenses()")
+      input(type='text', name='author', placeholder='Author', ng-model="expCtr.filters.creator", ng-change="expCtr.filterExpenses()")
+  #main
+    accordion(close-others='oneAtATime')
+      accordion-group(heading='{{date.time | date:"dd.MM.yyyy"}}', is-open="true", ng-repeat='date in expCtr.expenses')
+        table.table.table-bordered.table-hover.table-condensed
+          colgroup
+            col.table-description
+            col.table-expense
+            col.table-cost
+            col.table-category
+            col.table-sub
+            col.table-added
+          thead
             tr
-              td Expense
-              td Kyiv Marketing
-            tr
-              td Category
-              td Events
-            tr
-              td Added by
-              td Alexandr Vorobyov
-            tr
-              td Description
+              th
+              th
+                | Expense
+                i.fa.fa-caret-down
+              th
+                | Cost
+                i.fa.fa-caret-down
+              th
+                | Category
+                i.fa.fa-caret-down
+              th
+                | Subcategory
+                i.fa.fa-caret-down
+              th
+                | Added by
+                i.fa.fa-caret-down
+              th
+                | Edit
+          tbody
+            tr(ng-repeat="expense in expCtr.expenses | orderBy:expCtr.predicate:expCtr.reverse | filter: date.time")
               td
-                | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum repellat eveniet culpa enim corporis adipisci excepturi nihil, dolorem voluptas. Veritatis doloremque iure nisi sed blanditiis accusamus culpa nobis similique sit aliquam consequuntur voluptatum maiores, labore ullam modi corrupti. Necessitatibus eveniet minima hic explicabo in cum repellat quaerat incidunt blanditiis autem!
-      tr
-      tr#toggle
-        td(colspan='6')
-          span
-            | Description: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cum repellat eveniet culpa enim corporis adipisci excepturi nihil, dolorem voluptas. Veritatis doloremque iure nisi sed blanditiis accusamus culpa nobis similique sit aliquam consequuntur voluptatum maiores, labore ullam modi corrupti. Necessitatibus eveniet minima hic explicabo in cum repellat quaerat incidunt blanditiis autem!
-      tr
-        td
-          i.fa.fa-caret-right
-        td Advertisment
-        td $15 000
-        td HR
-        td Courses
-        td Alexey Potopakhin
-      tr
-        td
-          i.fa.fa-caret-right
-        td Some expense
-        td $5 000
-        td Financial
-        td Parties
-        td Anatolii Sieryi
-      tr
-        td
-          i.fa.fa-caret-right
-        td Lviv Marketing
-        td $1 000
-        td Marketing
-        td Events
-        td A. Anonymous
-      tr
-        td
-          i.fa.fa-caret-right
-        td Another expense
-        td $12 000
-        td Financial
-        td Travel
-        td A. Anonymous
-      tr
-        td
-          i.fa.fa-caret-right
-        td Another expense
-        td $12 000
-        td Financial
-        td Travel
-        td A. Anonymous
-      tr
-        td.date-row(colspan='6') YESTERDAY
-      tr
-        td
-          i.fa.fa-caret-right
-        td Another expense
-        td $12 000
-        td Financial
-        td Travel
-        td A. Anonymous
-      tr
-        td
-          i.fa.fa-caret-right
-        td Another expense
-        td $12 000
-        td Financial
-        td Travel
-        td A. Anonymous
-      tr
-        td
-          i.fa.fa-caret-right
-        td Another expense
-        td $12 000
-        td Financial
-        td Travel
-        td A. Anonymous
-  span.load-more Load more
+                .btn-group(dropdown='')
+                  button.btn(type='button', dropdown-toggle='')
+                    i.fa.fa-info
+                  span.dropdown-menu(role='menu', aria-labelledby='split-button')
+                    | {{ expense.description }}
+              td
+                // editable username (text with validation)
+                span(editable-text='expense.name', e-name='name', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
+                  | {{ expense.name  || 'empty' }}
+              td
+                // editable username (text with validation)
+                span(editable-text='expense.price', e-name='price', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
+                  | {{ expense.price  || 'empty' }} {{ expense.currency }}
+              td
+                // editable username (text with validation)
+                span(editable-text='expense.categoryId', e-name='categoryId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
+                  | {{ expense.categoryId || 'empty' }}
+              td
+                // editable username (text with validation)
+                span(editable-text='expense.subcategoryId', e-name='subcategoryId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
+                  | {{ expense.subcategoryId || 'empty' }}
+              td
+                // editable username (text with validation)
+                span(editable-text='expense.subcategoryId', e-name='subcategoryId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
+                  | {{ expense.creatorId || 'empty' }}
+              td(style='white-space: nowrap')
+                // form
+                form.form-buttons.form-inline(editable-form='', name='rowform', onbeforesave='saveUser($data, user.id)', ng-show='rowform.$visible', shown='inserted == user')
+                  button.btn.btn-primary(type='submit', ng-disabled='rowform.$waiting')
+                    | save
+                  button.btn.btn-default(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
+                    | cancel
+                .buttons(ng-show='!rowform.$visible')
+                  button.btn.btn-primary(ng-click='rowform.$show()') edit
+                  button.btn.btn-danger(ng-click="expCtr.deleteExpense(expense.id)") delete
+
+            tr#mobile
+              td(colspan='3')
+                table.shortTable
+                  tr
+                    td Expense
+                    td {{ expense.expenseTable }}
+                  tr
+                    td Category
+                    td {{ expense.category}}
+                  tr
+                    td Added by
+                    td {{ expense.addBy }}
+                  tr
+                    td Description
+                    td {{ expense.description }}
+            //tr
+            //tr#toggle
+            //  td(colspan='6')
+            //    span {{ expense.description }}
+            //tr
+            //  td.date-row(colspan='6') {{ expCtr.expens.date}}
+            //tr
+            //  td
+            //    i.fa.fa-caret-right
+            //  td {{ expense.expenseTable }}
+            //  td {{ expense.costs }}
+            //  td {{ expense.category}}
+            //  td {{ expense.subcategory }}
+            //  td {{ expense.addBy }}
+
+    button.load-more(ng-click="expCtr.loadMoreExpenses()") Load more
