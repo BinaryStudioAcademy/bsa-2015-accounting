@@ -8,16 +8,14 @@
 module.exports = {
 	attributes: {
 		categoryId: {
-			type: 'string',
-			required: true
+			model: 'category'
 		},
-		date: {
-			type: 'date',
+		time: {
+			type: 'datetime',
 			required: true
 		},
 		creatorId: {
-			type: 'string',
-			required: true
+			model: 'user'
 		},
 		price: {
 			type: 'float',
@@ -41,4 +39,43 @@ module.exports = {
 		}
 	}
 };
+
+
+//module.exports = {
+//	attributes: {
+//		categoryId: {
+//			type: 'string',
+//			required: true
+//		},
+//		time: {
+//			type: 'datetime',
+//			required: true
+//		},
+//		creatorId: {
+//			type: 'string',
+//			required: true
+//		},
+//		price: {
+//			type: 'float',
+//			required: true
+//		},
+//		currency: {
+//			type: 'string',
+//			required: true
+//		},
+//		name: {
+//			type: 'string',
+//			required: true
+//		},
+//		description: {
+//			type: 'string',
+//			required: false
+//		},
+//		subcategoryId: {
+//			type: 'string',
+//			required: true
+//		}
+//	}
+//};
+
 

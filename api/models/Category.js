@@ -6,15 +6,25 @@
 */
 
 module.exports = {
+	
+	identity: 'category',
+
 	attributes: {
 		name: {
 			type: 'string',
 			required: true
 		},
-		subcategories: {
-			type: 'array',
-			required: true
-		},
+		subcategories: [{
+			id: {
+				type: 'string',
+				required: true,
+				unique: true
+			},
+			name: {
+				type: 'string',
+				required: true
+			}
+		}],
 		rights: {
 			type: 'array',
 			required: true

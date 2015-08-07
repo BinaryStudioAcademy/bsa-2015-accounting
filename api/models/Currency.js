@@ -7,8 +7,8 @@
 
 module.exports = {
 	attributes: {
-		date: {
-			type: 'date',
+		time: {
+			type: 'datetime',
 			required: true
 		},
 		rate: {

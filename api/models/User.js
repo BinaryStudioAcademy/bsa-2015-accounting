@@ -1,6 +1,9 @@
 var bcrypt = require('bcryptjs');
 
 module.exports = {
+
+	identity: 'user',
+
 	attributes: {
 		login: {
 			type: 'email',
@@ -14,11 +17,11 @@ module.exports = {
 		},
 		name: {
 			type: 'string',
-			default: 'anonymous'
+			defaultsTo: 'anonymous'
 		},
 		role: {
-		type: 'string',
-		default: 'manager'
+			type: 'string',
+			defaultsTo: 'manager'
 		},
 		toJSON: function() {
 			var obj = this.toObject();
