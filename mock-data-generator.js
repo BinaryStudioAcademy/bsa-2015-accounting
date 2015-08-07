@@ -50,7 +50,7 @@ Factory.define('Currency')
 	.attr('updatedAt', function() {return new Date().toISOString();});
 
 Factory.define('User')
-	.sequence('_id', function() {return String(casual.integer(0, 10000000));})
+	.sequence('_id', function() {return String(casual.integer(0, 100000));})
 	.sequence('login', function() {return casual.email})
 	.attr('name', function() {return casual.name})
 	.attr('role', function() {return casual.random_element(['manager', 'admin']);})
@@ -84,9 +84,9 @@ _.times(5, function() {
 
 	_.times(10, function() {
 		var sub_with_money = subs.map(function(sub) {
-			return {_id: sub._id, budget: casual.integer(100, 5000)};
+			return {id: sub.id, budget: casual.integer(100, 5000)};
 		});
-		var budget = Factory.build('Budget', {categoryId: category._id, subcategories: sub_with_money, creatorId: _.sample(managers, 1)});
+		var budget = Factory.build('Budget', {categoryId: category._id, subcategories: sub_with_money, creatorId: _.sample(managers, 1)[0]});
 		db.budget.push(budget);
 	});
 });
@@ -94,7 +94,7 @@ _.times(5, function() {
 _.times(1000, function() {
 	var category = _.sample(db.category, 1)[0];
 	var subcategory = _.sample(category.subcategories, 1)[0];
-	var expense = Factory.build('Expense', {creatorId: casual.integer(1, 50), categoryId: category._id, subcategoryId: subcategory._id});
+	var expense = Factory.build('Expense', {creatorId: String(_.sample(db.user, 1)[0]._id), categoryId: category._id, subcategoryId: subcategory.id});
 	db.expense.push(expense);
 });
 
