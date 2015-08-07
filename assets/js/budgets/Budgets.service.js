@@ -20,7 +20,7 @@ module.exports = function(app) {
      * @returns budgets array
      */
     function getBudgets() {
-      return getRequest().query();
+      return getRequest().query().$promise;
     }
 
     /**
