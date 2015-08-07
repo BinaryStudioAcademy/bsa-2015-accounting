@@ -13,18 +13,30 @@ module.exports = function(app) {
 
     var expensesLimit = 10;
     vm.expenses = [];
-    vm.expenses = ExpensesService.getExpenses(expensesLimit);
+
+    loadExpenses();
+
+    function loadExpenses() {
+      ExpensesService.getExpenses(expensesLimit).then(function(data) {
+        vm.expenses = data;
+      });
+    }
 
     function loadMoreExpenses() {
       expensesLimit += 10;
-      ExpensesService.getExpenses(expensesLimit).$promise.then(function(data) {
+      ExpensesService.getExpenses(expensesLimit).then(function(data) {
         vm.expenses = data;
       });
     }
 
     function deleteExpense(id) {
-      ExpensesService.deleteExpense(id).$promise.then(function() {
-        vm.expenses = ExpensesService.getExpenses(expensesLimit);
+      ExpensesService.deleteExpense(id).then(function() {
+        for(var i = 0; i < vm.expenses.length; i++) {
+          if(vm.expenses[i].id === id) {
+            vm.expenses.splice(i, 1);
+            break;
+          }
+        }
       });
     }
 
@@ -39,7 +51,7 @@ module.exports = function(app) {
     vm.filters = {};
 
     function filterExpenses() {
-      ExpensesService.getExpensesByFilter(vm.filters).$promise.then(function(data) {
+      ExpensesService.getExpensesByFilter(vm.filters).then(function(data) {
         vm.expenses = data;
       });
     }
