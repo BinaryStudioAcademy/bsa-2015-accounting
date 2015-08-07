@@ -17,25 +17,25 @@ db.user = [];
 db.currency = [];
 
 Factory.define('Subcategory')
-	.sequence('_id')
+	.sequence('id', function() {return String(casual.integer(0, 10000000));})
 	.sequence('name', function() {return casual.title;});
 
 Factory.define('Category')
-	.sequence('_id')
+	.sequence('_id', function() {return String(casual.integer(0, 10000000));})
 	.sequence('name', function() {return casual.random_element(['HR', 'Marketing', 'Finance', 'Technical', 'Accounting']);})
 	.attr('createdAt', function() {return new Date().toISOString();})
 	.attr('updatedAt', function() {return new Date().toISOString();});
 
 
 Factory.define('Budget')
-	.sequence('_id')
+	.sequence('_id', function() {return String(casual.integer(0, 10000000));})
 	.attr('year', function() {return casual.year;})
 	.attr('budget', function() {return casual.integer(10000, 1000000);})
 	.attr('createdAt', function() {return new Date().toISOString();})
 	.attr('updatedAt', function() {return new Date().toISOString();});
 
 Factory.define('Expense')
-	.sequence('_id')
+	.sequence('_id', function() {return String(casual.integer(0, 10000000));})
 	.attr('time', function() {return casual.unix_time;})
 	.attr('price', function() {return casual.integer(100, 5000);})
 	.attr('currency', function() {return casual.random_element(['USD', 'UAH']);})
@@ -43,14 +43,14 @@ Factory.define('Expense')
 	.attr('name', function() {return casual.title;});
 
 Factory.define('Currency')
-	.sequence('_id')
+	.sequence('_id', function() {return String(casual.integer(0, 10000000));})
 	.sequence('time', function() {return casual.unix_time })
-	.attr('rate', function() {return 22.5})
+	.attr('rate', function() {return Number((Math.random() * (25 - 16) + 16).toFixed(2))})
 	.attr('createdAt', function() {return new Date().toISOString();})
 	.attr('updatedAt', function() {return new Date().toISOString();});
 
 Factory.define('User')
-	.sequence('_id')
+	.sequence('_id', function() {return String(casual.integer(0, 10000000));})
 	.sequence('login', function() {return casual.email})
 	.attr('name', function() {return casual.name})
 	.attr('role', function() {return casual.random_element(['manager', 'admin']);})
@@ -104,7 +104,8 @@ _.forEach(db, function(obj, name) {
 	MongoClient.connect(url, function(err, database) {
 		if (err) throw err;
 
-		database.collection(name).insert(obj)
+		database.collection(name).remove({});
+		database.collection(name).insert(obj);
 		database.close();
 	});
 });
