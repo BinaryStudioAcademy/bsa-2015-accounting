@@ -11,7 +11,7 @@ module.exports = {
 			model: 'category'
 		},
 		time: {
-			type: 'datetime',
+			type: 'integer',
 			required: true
 		},
 		creatorId: {
