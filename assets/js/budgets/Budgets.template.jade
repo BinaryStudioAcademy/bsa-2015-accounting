@@ -26,9 +26,9 @@
 					i.fa.fa-caret-right(ng-show="!budCtrl.hiddenList[$index]")
 					i.fa.fa-caret-down(ng-hide="!budCtrl.hiddenList[$index]")
 				th
-					a(editable-text='category.name' name='name') {{ category.name || 'empty' }}
+					span(editable-text='category.name' name='name') {{ category.name || 'empty' }}
 				th 
-					a(editable-text='category.budget' name='budget') {{category.budget || 'empty' | currency}} 
+					span(editable-text='category.budget' name='budget') {{category.budget || 'empty' | currency}} 
 					| (
 					span(ng-class="{'status-good': (category.undistributed > 0), 'status-bad': (category.undistributed < 0)}") {{category.undistributed | currency}} 
 					| undistributed)
@@ -60,9 +60,11 @@
 						button.btn.btn-xs.btn-primary(ng-click='rowform.$show()') edit
 						button.btn.btn-xs.btn-danger(ng-click='removeUser($index)') del
 				td
-					a(editable-text='subcategory.name', name='subcategory.name') {{subcategory.name || 'empty' }}
+					span(editable-text='subcategory.name', e-name='subcategory.name', e-form='rowform', e-required='')
+						|{{subcategory.name || 'empty' }}
 				td
-					a(editable-text='subcategory.budget', name='subcategory.udget') {{ subcategory.budget || 'empty' | currency }}
+					span(editable-text='subcategory.budget', e-name='subcategory.udget', e-form='rowform')
+						| {{ subcategory.budget || 'empty' | currency }}
 				td {{subcategory.used | currency}} (
 					span(ng-class="{'status-good': (subcategory.budget - subcategory.used > 0), 'status-bad': (subcategory.budget - subcategory.used < 0)}") {{subcategory.budget - subcategory.used | currency}} 
 					| left)
