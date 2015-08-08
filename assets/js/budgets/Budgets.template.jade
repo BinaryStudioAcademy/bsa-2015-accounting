@@ -20,21 +20,21 @@
 						i.fa.fa-caret-down
 			tr
 				td(colspan='2')
-					select
-						option(ng-repeat='year in budCtrl.years', value='volvo') Volvo
-				td {Budget}
+					select#years(ng-model='budCtrl.year', ng-change="budCtrl.updateYear()")
+						option(ng-repeat='year in budCtrl.years', value='{{year}}') {{year}}
+				td {{budCtrl.budgetSum | currency}}
 				td {Used}
 		tbody(ng-repeat='category in budCtrl.categories')
 			tr
 				th.toggle-subcategory-btn
 					i.fa.fa-caret-down
 				th {{category.name}}
-				th {{category.budget}}
+				th {{category.budget | currency}}
 				th {{category.used}}
 			tr(ng-repeat='subcategory in category.subcategories')
 				td hide me
 				td {{subcategory.name}}
-				td {{subcategory.budget}}
+				td {{subcategory.budget | currency}}
 				td {{subcategory.used}}
 			tr
 				td.hide-me hide me
@@ -42,4 +42,3 @@
 		tbody
 			tr
 				th(colspan='4') add new cat
-

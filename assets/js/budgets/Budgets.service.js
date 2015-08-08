@@ -12,7 +12,7 @@ module.exports = function(app) {
     };
 
     function getRequest() {
-      return $resource("/budget/:id", { id: "@id" });
+      return $resource("/budget/:id?sort=year%20DESC", { id: "@id" });
     }
 
     /**
