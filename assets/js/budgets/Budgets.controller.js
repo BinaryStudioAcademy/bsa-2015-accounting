@@ -3,6 +3,10 @@ var _ = require('lodash');
 module.exports = function(app) {
 	app.controller('BudgetsController', BudgetsController);
 
+	app.run(function(editableOptions) {
+		editableOptions.theme = 'bs3';
+	});
+
 	BudgetsController.$inject = ['BudgetsService', 'ExpensesService', 'CategoriesService'];
 
 	function BudgetsController(BudgetsService, ExpensesService, CategoriesService) {

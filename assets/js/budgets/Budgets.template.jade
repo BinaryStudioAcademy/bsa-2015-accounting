@@ -1,4 +1,4 @@
-#budgets-view(ng-controller='BudgetsController as budCtrl')
+#budgets-view
 	form
 		input.btn.btn-primary(type='submit', value='save changes')
 		input.btn.btn-danger(type='button', value='discard changes')
@@ -28,7 +28,7 @@
 			tr
 				th.toggle-subcategory-btn
 					i.fa.fa-caret-down
-				th {{category.name}}
+				th(editable-text="category.name") {{category.name}}
 				th {{category.budget | currency}}
 				th {{category.used}}
 			tr(ng-repeat='subcategory in category.subcategories')
