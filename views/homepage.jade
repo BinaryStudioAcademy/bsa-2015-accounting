@@ -9,8 +9,8 @@ block body
 			img#user-logo(src='http://lorempixel.com/40/40/cats/4/', alt='user logo')
 			span#user-name John Doe
 	nav
-		ul.nav.nav-tabs.tabs-left
-			li.active
+		ul
+			li
 				a(href='#/expenses', data-toggle='tab') Expenses
 			li
 				a(href='#/planning', data-toggle='tab') Planning
@@ -54,7 +54,7 @@ block body
 		.tab-content
 			#expenses.tab-pane.active
 				div(ng-view)
-			#planning.tab-pane
-				div(ng-view)
-			#charts.tab-pane
-				div(ng-view)
+			//- #planning.tab-pane
+			//- 	div(ng-view)
+			//- #charts.tab-pane
+			//- 	div(ng-view)

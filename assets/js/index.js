@@ -1,8 +1,10 @@
 var angular = require('angular');
+require('angular-xeditable');
 
 var app = angular.module('accounting', [
   require('angular-resource'),
-  require('angular-route')
+  require('angular-route'),
+  'xeditable'
 ]);
 
 require('./budgets/index.js')(app);
