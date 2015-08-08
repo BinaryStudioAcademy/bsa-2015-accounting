@@ -6,5 +6,11 @@
  */
 
 module.exports = {
-
+	//find: getBudgets
 };
+
+function getBudgets(req, res) {
+	Budget.find({deletedBy: {$exists: false}}).populateAll().exec(function(err, budgets) {
+		return res.send(budgets);
+	});
+}
