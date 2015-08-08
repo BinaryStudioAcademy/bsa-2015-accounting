@@ -11,10 +11,10 @@ module.exports = function(app) {
 	function BudgetsController(BudgetsService, ExpensesService, CategoriesService) {
 		var vm = this;
 //togle list
-    vm.hiddenList=[];
-    vm.toggleCustom = function (index) {
-        vm.hiddenList[index] = !vm.hiddenList[index];
-    };
+		vm.hiddenList=[];
+		vm.toggleCustom = function (index) {
+				vm.hiddenList[index] = !vm.hiddenList[index];
+		};
 
 		vm.rawBudgets = [];
 		vm.rawExpenses = [];
@@ -93,6 +93,14 @@ module.exports = function(app) {
 			});
 		};
 
-	
+		vm.addCatagory = function() {
+		var category = {
+			year: vm.year,
+			budget: '0',
+			subcategories: []
+		};
+		vm.categories.push(category);
+	};
+
 	}
 };
