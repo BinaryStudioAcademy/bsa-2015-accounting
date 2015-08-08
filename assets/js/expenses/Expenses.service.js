@@ -6,6 +6,7 @@ module.exports = function(app) {
   function ExpensesService($resource) {
     return {
       getExpenses: getExpenses,
+      getAllExpenses: getAllExpenses,
       getExpensesByFilter: getExpensesByFilter,
       createExpense: createExpense,
       editExpense: editExpense,
@@ -13,7 +14,7 @@ module.exports = function(app) {
     };
 
     function getRequest() {
-      return $resource("/expense/:id", { id: "@id" });
+      return $resource("/expense/:id?sort=time%20DESC", { id: "@id" });
     }
 
     /**
@@ -22,6 +23,10 @@ module.exports = function(app) {
      */
     function getExpenses(setLimit) {
       return $resource("/expense/:id", { id: "@id", limit: setLimit }).query().$promise;
+    }
+
+    function getAllExpenses() {
+      return $resource("/expense").query().$promise;
     }
 
     function getExpensesByFilter(filters) {
