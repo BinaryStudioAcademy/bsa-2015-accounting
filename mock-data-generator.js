@@ -96,12 +96,21 @@ _.times(5, function(n) {
 	});
 });
 
-_.times(1000, function() {
-	var category = _.sample(db.category, 1)[0];
-	var subcategory = _.sample(category.subcategories, 1)[0];
-	var expense = Factory.build('Expense', {creatorId: String(_.sample(db.user, 1)[0]._id), categoryId: category._id, subcategoryId: subcategory.id});
-	db.expense.push(expense);
+_.times(20, function() {
+	db.category.forEach(function(category) {
+		category.subcategories.forEach(function(sub) {
+			var expense = Factory.build('Expense', {creatorId: String(_.sample(db.user, 1)[0]._id), categoryId: category._id, subcategoryId: sub.id});
+			db.expense.push(expense);
+		});
+	});
 });
+
+// _.times(1000, function() {
+// 	var category = _.sample(db.category, 1)[0];
+// 	var subcategory = _.sample(category.subcategories, 1)[0];
+// 	var expense = Factory.build('Expense', {creatorId: String(_.sample(db.user, 1)[0]._id), categoryId: category._id, subcategoryId: subcategory.id});
+// 	db.expense.push(expense);
+// });
 
 var url = 'mongodb://localhost:27017/portal-accounting';
 
