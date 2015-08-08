@@ -34,7 +34,7 @@ Factory.define('Budget')
 
 Factory.define('Expense')
 	.sequence('_id', function() {return String(casual.integer(0, 10000000));})
-	.attr('time', function() {return casual.unix_time;})
+	.attr('time', function() {return casual.integer(946677600000, 1167602399000);})
 	.attr('price', function() {return casual.integer(100, 5000);})
 	.attr('currency', function() {return casual.random_element(['USD', 'UAH']);})
 	.attr('description', function() {return casual.description;})
