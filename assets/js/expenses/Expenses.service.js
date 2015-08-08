@@ -6,9 +6,10 @@ module.exports = function(app) {
   function ExpensesService($resource) {
     return {
       getExpenses: getExpenses,
-      createExpenses: createExpense,
-      editExpenses: editExpense,
-      deleteExpenses: deleteExpense
+      getExpensesByFilter: getExpensesByFilter,
+      createExpense: createExpense,
+      editExpense: editExpense,
+      deleteExpense: deleteExpense
     };
 
     function getRequest() {
@@ -17,26 +18,38 @@ module.exports = function(app) {
 
     /**
      * Gets expenses array
-     * @returns expenses array
+     * @returns promise object
      */
-    function getExpenses(setIndex, setCount) {
-      return $resource("/expense/:id", { id: "@id", skip: setIndex, limit: setCount }).query();
+    function getExpenses(setLimit) {
+      return $resource("/expense/:id", { id: "@id", limit: setLimit }).query().$promise;
+    }
+
+    function getExpensesByFilter(filters) {
+      var filter = {};
+
+      for(var field in filters) {
+        if(filters.hasOwnProperty(field)) {
+          filter[field] = { "contains": filters[field] };
+        }
+      }
+
+      return $resource("/expense/:id", { id: "@id", where: filter }).query().$promise;
     }
 
     /**
      * Creates new expense
      * @param newExpense New expense object
-     * @returns created object
+     * @returns promise object
      */
     function createExpense(newExpense) {
-      return getRequest().save(newExpense);
+      return getRequest().save(newExpense).$promise;
     }
 
     /**
      * Updates expense by id
      * @param expenseId Expense id
      * @param newExpense New expense object
-     * @returns edited object
+     * @returns promise object
      */
     function editExpense(expenseId, newExpense) {
       var data = $resource("/expense/:id", { id: "@id" }, {
@@ -44,16 +57,16 @@ module.exports = function(app) {
           method: "PUT"
         }
       });
-      return data.update({ id: expenseId }, newExpense);
+      return data.update({ id: expenseId }, newExpense).$promise;
     }
 
     /**
      * Removes expense by id
      * @param expenseId Expense id
-     * @returns deleted object
+     * @returns promise object
      */
     function deleteExpense(expenseId) {
-      return getRequest().remove({ id: expenseId });
+      return getRequest().remove({ id: expenseId }).$promise;
     }
   }
 };

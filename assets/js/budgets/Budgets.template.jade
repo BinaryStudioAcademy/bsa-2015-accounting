@@ -2,44 +2,66 @@
 	form
 		input.btn.btn-primary(type='submit', value='save changes')
 		input.btn.btn-danger(type='button', value='discard changes')
-	table
-		col(width='40')
+
+	table.table.table-bordered.table-hover.table-condensed
 		thead
-			tr
-				th(colspan='2')
-					b
-						| Category 
-						i.fa.fa-caret-down
-				th
-					b
-						| Budget 
-						i.fa.fa-caret-down
-				th
-					b
-						| Used 
-						i.fa.fa-caret-down
+			tr(style='font-weight: bold')
+				td(style='width:35%' colspan='2') Category
+				td(style='width:20%') Budget
+				td(style='width:25%') Used
 			tr
 				td(colspan='2')
 					select
 						option(ng-repeat='year in budCtrl.years', value='volvo') Volvo
-				td {Budget}
-				td {Used}
+				td Budget 200000$ {{budget}}
+				td Used 3000$ {{used}}
+
 		tbody(ng-repeat='category in budCtrl.categories')
 			tr
-				th.toggle-subcategory-btn
-					i.fa.fa-caret-down
-				th {{category.name}}
-				th {{category.budget}}
-				th {{category.used}}
-			tr(ng-repeat='subcategory in category.subcategories')
-				td hide me
-				td {{subcategory.name}}
-				td {{subcategory.budget}}
+				th(style='width:10%',ng-click="budCtrl.toggleCustom($index)" class="review" )
+					i.fa.fa-caret-right(ng-show="!budCtrl.hiddenList[$index]")
+					i.fa.fa-caret-down(ng-hide="!budCtrl.hiddenList[$index]")
+				th
+					span(editable-text='category.name' name='name' e-form='headform' e-required='') {{ category.name || 'empty' }}
+				th 
+					span(editable-text='category.budget' name='budget' e-form='headform' e-required='') {{category.budget || 'empty' }}
+				th {{category.used || 'empty' }}
+				//- td(style='white-space: nowrap')
+				//- 	form.form-buttons.form-inline(editable-form='', name='headform', onbeforesave='saveUser($data, subcategory.id)', 
+				//- 		ng-show='headform.$visible', 	shown='inserted == subcategory')
+				//- 		button.btn.btn-primary(type='submit', ng-disabled='headform.$waiting')
+				//- 			| save
+				//- 		button.btn.btn-default(type='button', ng-disabled='headform.$waiting', ng-click='headform.$cancel()')
+				//- 			| cancel
+				//- 	.buttons(ng-show='!headform.$visible')
+				//- 		button.btn.btn-primary(ng-click='headform.$show()') edit
+				//- 		button.btn.btn-danger(ng-click='removeUser($index)') del
+
+
+
+			tr.hide-list(ng-repeat='subcategory in category.subcategories' ng-hide="!budCtrl.hiddenList[$parent.$index]")
+				td
+					form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible',	shown='inserted == subcategory')
+						button.btn.btn-primary(type='submit', ng-disabled='rowform.$waiting')
+							| save
+						button.btn.btn-default(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
+							| cancel
+					.buttons(ng-show='!rowform.$visible')
+						button.btn.btn-primary(ng-click='rowform.$show()') edit
+						button.btn.btn-danger(ng-click='removeUser($index)') del
+				td
+					span(editable-text='subcategory.name', e-name='subcategory.name', e-form='rowform', e-required='')
+						|{{subcategory.name || 'empty' }}
+				td
+					span(editable-text='subcategory.budget', e-name='subcategory.udget', e-form='rowform')
+						| {{ subcategory.budget || 'empty' }}
 				td {{subcategory.used}}
-			tr
-				td.hide-me hide me
-				th(colspan='3') add new sub cat
+				
+			tr(ng-hide="!budCtrl.hiddenList[$index]")
+				th(colspan='4',ng-click='budCtrl.addUser()')
+					a add new sub cat
 		tbody
 			tr
-				th(colspan='4') add new cat
+				th(colspan='4',ng-click='budCtrl.addUser()')
+					a add new cat
 
