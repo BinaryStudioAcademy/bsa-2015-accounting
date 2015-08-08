@@ -2,22 +2,22 @@ var _ = require('lodash');
 
 module.exports = function(app) {
 	app.controller('BudgetsController', BudgetsController);
+	app.run(function(editableOptions) {
+		editableOptions.theme = 'bs3';
+	});
 
 	BudgetsController.$inject = ['BudgetsService', 'ExpensesService', 'CategoriesService'];
 
 	function BudgetsController(BudgetsService, ExpensesService, CategoriesService) {
 		var vm = this;
 //togle list
-    vm.hiddenList=[];
-    vm.toggleCustom = function (index) {
-        vm.hiddenList[index] = !vm.hiddenList[index];
-    };
+		vm.hiddenList=[];
+		vm.toggleCustom = function (index) {
+				vm.hiddenList[index] = !vm.hiddenList[index];
+		};
 		vm.expenses = [];
-
 		vm.rawBudgets = [];
-
 		vm.budgets = [];
-
 		vm.categories = [];
 		//vm.year = new Date().getFullYear() + 1;
 		vm.years = [];
@@ -59,8 +59,6 @@ module.exports = function(app) {
 			});
 		};
 
-		
-
-
+	
 	}
 };

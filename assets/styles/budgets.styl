@@ -5,16 +5,30 @@
 			text-align center
 			border 1px solid #ddd
 			padding 10px
+			vertical-align middle
+			line-height 35px
+			font-size 17px
 		th
 			background #f2f2f2
 			font-weight normal
 	.hide-me
 		visibility hidden
-	form
-		float right
-	input
-		margin 10px
-	input[type="submit"]
-		margin-right 0
-	.toggle-subcategory-btn,.review, a
+		input
+			&[type="submit"]
+				margin-right 0
+			
+	button
+		&:first-child
+			margin-right 10px
+	.review, a
 		cursor pointer
+		width 154px
+	select
+		padding 10px
+		border-radius 5px
+	.editCanges
+		float right
+		margin 10px
+	th
+		span
+			cursor pointer

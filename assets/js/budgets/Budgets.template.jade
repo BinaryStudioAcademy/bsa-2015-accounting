@@ -1,14 +1,14 @@
 #budgets-view
-	form
-		input.btn.btn-primary(type='submit', value='save changes')
-		input.btn.btn-danger(type='button', value='discard changes')
+	form.editCanges
+		button.btn.btn-primary(type='submit') save changes
+		button.btn.btn-danger(type='button') discard changes
 
 	table.table.table-bordered.table-hover.table-condensed
 		thead
-			tr(style='font-weight: bold')
-				td(style='width:35%' colspan='2') Category
-				td(style='width:20%') Budget
-				td(style='width:25%') Used
+			tr
+				th(colspan='2') Category
+				th Budget
+				th Used
 			tr
 				td(colspan='2')
 					select#years(ng-model='budCtrl.year', ng-change="budCtrl.updateYear()")
@@ -18,13 +18,13 @@
 
 		tbody(ng-repeat='category in budCtrl.categories')
 			tr
-				th(style='width:10%',ng-click="budCtrl.toggleCustom($index)" class="review" )
+				th(ng-click="budCtrl.toggleCustom($index)" class="review" )
 					i.fa.fa-caret-right(ng-show="!budCtrl.hiddenList[$index]")
 					i.fa.fa-caret-down(ng-hide="!budCtrl.hiddenList[$index]")
 				th
-					span(editable-text='category.name' name='name' e-form='headform' e-required='') {{ category.name || 'empty' }}
+					span(editable-text='category.name' name='name') {{ category.name || 'empty' }}
 				th 
-					span(editable-text='category.budget' name='budget' e-form='headform' e-required='') {{category.budget || 'empty' | currency}}
+					span(editable-text='category.budget' name='budget') {{category.budget || 'empty' | currency}}
 				th {{category.used || 'empty' }}
 				//- td(style='white-space: nowrap')
 				//- 	form.form-buttons.form-inline(editable-form='', name='headform', onbeforesave='saveUser($data, subcategory.id)', 
@@ -58,9 +58,9 @@
 				td {{subcategory.used}}
 				
 			tr(ng-hide="!budCtrl.hiddenList[$index]")
-				th(colspan='4',ng-click='budCtrl.addUser()')
+				th(colspan='4',ng-click='budCtrl.addCategory()')
 					a add new sub cat
 		tbody
 			tr
-				th(colspan='4',ng-click='budCtrl.addUser()')
+				th(colspan='4',ng-click='budCtrl.addCategory()')
 					a add new cat
