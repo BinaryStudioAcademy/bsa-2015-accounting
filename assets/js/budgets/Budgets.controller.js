@@ -1,3 +1,5 @@
+var _ = require('lodash');
+
 module.exports = function(app) {
 	app.controller('BudgetsController', BudgetsController);
 
@@ -10,13 +12,18 @@ module.exports = function(app) {
 		vm.categories = [];
 
 		BudgetsService.getBudgets().then(function(budgets) {
-			console.log(budgets);
 			budgets.forEach(function(budget) {
-				var category = {name: budget.categoryId.name, budget: budget.budget, subcategories: budget.subcategories};
+				var subcategories = [];
+				budget.subcategories.forEach(function(sub) {
+					var nameIndex = _.findIndex(budget.categoryId.subcategories, function(s) {
+						return s.id === sub.id;
+					});
+					var subcategory = {name: budget.categoryId.subcategories[nameIndex].name, budget: sub.budget}
+					subcategories.push(subcategory);
+				});
+				var category = {name: budget.categoryId.name, budget: budget.budget, subcategories: subcategories, used: 'USED*'};
 				vm.categories.push(category);
 			});
 		});
-		// vm.expenses = ExpensesService.getExpenses();
-		// vm.categories = CategoriesService.getCategories();
 	}
 };

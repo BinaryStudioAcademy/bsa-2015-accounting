@@ -14,16 +14,17 @@
 					option(ng-repeat='year in budCtrl.years', value='volvo') Volvo
 			td {Budget}
 			td {Used}
-		tr(ng-repeat='category in budCtrl.categories')
-			th.toggle-subcategory-btn caret
-			th {{category.name}}
-			th {{category.budget}}
-			th {{category.used}}
-		tr(ng-repeat='subcategory in category.subcategories')
-			td hide me
-			td {{subcategory.name}}
-			td {{subcategory.budget}}
-			td {{subcategory.used}}
+		tbody(ng-repeat='category in budCtrl.categories')
+			tr
+				th.toggle-subcategory-btn caret
+				th {{category.name}}
+				th {{category.budget}}
+				th {{category.used}}
+			tr(ng-repeat='subcategory in category.subcategories')
+				td hide me
+				td {{subcategory.name}}
+				td {{subcategory.budget}}
+				td {subcategory.used}}
 		tr
 			td hide me
 			th(colspan='3') add new sub cat
