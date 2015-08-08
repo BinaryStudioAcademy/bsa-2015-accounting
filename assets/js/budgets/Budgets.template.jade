@@ -11,10 +11,10 @@
 				td(style='width:25%') Used
 			tr
 				td(colspan='2')
-					select
-						option(ng-repeat='year in budCtrl.years', value='volvo') Volvo
-				td Budget 200000$ {{budget}}
-				td Used 3000$ {{used}}
+					select#years(ng-model='budCtrl.year', ng-change="budCtrl.updateYear()")
+						option(ng-repeat='year in budCtrl.years', value='{{year}}') {{year}}
+				td {{budCtrl.budgetSum | currency}}
+				td {Used}
 
 		tbody(ng-repeat='category in budCtrl.categories')
 			tr
@@ -24,7 +24,7 @@
 				th
 					span(editable-text='category.name' name='name' e-form='headform' e-required='') {{ category.name || 'empty' }}
 				th 
-					span(editable-text='category.budget' name='budget' e-form='headform' e-required='') {{category.budget || 'empty' }}
+					span(editable-text='category.budget' name='budget' e-form='headform' e-required='') {{category.budget || 'empty' | currency}}
 				th {{category.used || 'empty' }}
 				//- td(style='white-space: nowrap')
 				//- 	form.form-buttons.form-inline(editable-form='', name='headform', onbeforesave='saveUser($data, subcategory.id)', 
@@ -54,7 +54,7 @@
 						|{{subcategory.name || 'empty' }}
 				td
 					span(editable-text='subcategory.budget', e-name='subcategory.udget', e-form='rowform')
-						| {{ subcategory.budget || 'empty' }}
+						| {{ subcategory.budget || 'empty' | currency }}
 				td {{subcategory.used}}
 				
 			tr(ng-hide="!budCtrl.hiddenList[$index]")
@@ -64,4 +64,3 @@
 			tr
 				th(colspan='4',ng-click='budCtrl.addUser()')
 					a add new cat
-
