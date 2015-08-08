@@ -18,10 +18,10 @@ module.exports = function(app) {
 
     /**
      * Gets expenses array
-     * @returns expenses array
+     * @returns promise object
      */
     function getExpenses(setLimit) {
-      return $resource("/expense/:id", { id: "@id", limit: setLimit }).query();
+      return $resource("/expense/:id", { id: "@id", limit: setLimit }).query().$promise;
     }
 
     function getExpensesByFilter(filters) {
@@ -33,23 +33,23 @@ module.exports = function(app) {
         }
       }
 
-      return $resource("/expense/:id", { id: "@id", where: filter }).query();
+      return $resource("/expense/:id", { id: "@id", where: filter }).query().$promise;
     }
 
     /**
      * Creates new expense
      * @param newExpense New expense object
-     * @returns created object
+     * @returns promise object
      */
     function createExpense(newExpense) {
-      return getRequest().save(newExpense);
+      return getRequest().save(newExpense).$promise;
     }
 
     /**
      * Updates expense by id
      * @param expenseId Expense id
      * @param newExpense New expense object
-     * @returns edited object
+     * @returns promise object
      */
     function editExpense(expenseId, newExpense) {
       var data = $resource("/expense/:id", { id: "@id" }, {
@@ -57,16 +57,16 @@ module.exports = function(app) {
           method: "PUT"
         }
       });
-      return data.update({ id: expenseId }, newExpense);
+      return data.update({ id: expenseId }, newExpense).$promise;
     }
 
     /**
      * Removes expense by id
      * @param expenseId Expense id
-     * @returns deleted object
+     * @returns promise object
      */
     function deleteExpense(expenseId) {
-      return getRequest().remove({ id: expenseId });
+      return getRequest().remove({ id: expenseId }).$promise;
     }
   }
 };

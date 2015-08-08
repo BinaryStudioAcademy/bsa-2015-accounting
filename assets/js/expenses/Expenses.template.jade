@@ -105,7 +105,7 @@ div
                   button.btn.btn-default(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
                     | cancel
                 .buttons(ng-show='!rowform.$visible')
-                  button.btn.btn-primary(ng-click='rowform.$show()') edit
+                  button.btn.btn-primary.edit-button(ng-click='rowform.$show()') edit
                   button.btn.btn-danger(ng-click="expCtr.deleteExpense(expense.id)") delete
 
             tr#mobile

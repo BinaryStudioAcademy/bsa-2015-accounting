@@ -5,6 +5,14 @@ module.exports = function(app) {
 
   function CurrencyController(CurrencyService) {
     var vm = this;
-    vm.exchangeRate = CurrencyService.getExchangeRateCash();
+    vm.exchangeRate = 0;
+
+    getRate();
+
+    function getRate() {
+      CurrencyService.getExchangeRate().then(function(data) {
+        vm.exchangeRate = data[0].rate;
+      })
+    }
   }
 };
