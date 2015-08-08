@@ -28,12 +28,12 @@ module.exports = function(app) {
 		BudgetsService.getBudgets().then(function(budgets) {
 			vm.rawBudgets = budgets;
 			budgets.forEach(function(budget) {
-				if (vm.years.indexOf(budget.year) < 0) vm.years.push(budget.year);
+				if (vm.years.indexOf(String(budget.year)) < 0) vm.years.push(String(budget.year));
 			});
+			
 			vm.year = vm.years[0];
-			vm.years.unshift(+vm.years[0] + 1 + "");
-			document.getElementById('years').value = vm.year;
 			vm.updateYear();
+			//vm.years.unshift(+vm.years[0] + 1 + "");
 
 			//ExpensesService.getRequest(expensesIndex, expensesCount).then(function(expenses) {
 			//	vm.expenses = expenses;
@@ -41,7 +41,7 @@ module.exports = function(app) {
 		});
 
 		vm.updateYear = function() {
-			vm.budgets = _.filter(vm.rawBudgets, {year: vm.year});
+			vm.budgets = _.filter(vm.rawBudgets, {year: Number(vm.year)});
 
 			vm.budgetSum = 0;
 			vm.categories = [];

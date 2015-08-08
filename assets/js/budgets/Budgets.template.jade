@@ -28,7 +28,7 @@
 			tr
 				th.toggle-subcategory-btn
 					i.fa.fa-caret-down
-				th(editable-text="category.name") {{category.name}}
+				th {{category.name}}
 				th {{category.budget | currency}}
 				th {{category.used}}
 			tr(ng-repeat='subcategory in category.subcategories')
