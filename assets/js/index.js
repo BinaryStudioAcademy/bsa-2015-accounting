@@ -1,4 +1,5 @@
 var angular = require('angular');
+
 	require('angular-xeditable');
 	require('angular-google-chart');
 
@@ -6,7 +7,6 @@ var app = angular.module('accounting', [
   require('angular-resource'),
   require('angular-route'),
   'xeditable'
-
 ]);
 
 require('./budgets/index.js')(app);
