@@ -30,13 +30,13 @@ module.exports.policies = {
 
   /*'*': 'isAuthenticated',*/
 
-  //'CurrencyController': {
-  //  '*': 'isAuthenticated'
-  //},
-
-  'UserController': {
+  'CurrencyController': {
     '*': 'isAuthenticated'
-  }
+  },
+
+  //'UserController': {
+  //  '*': 'isAuthenticated'
+  //}
 
   /***************************************************************************
   *                                                                          *
