@@ -40,7 +40,7 @@
       input(type='text', name='author', placeholder='Author', ng-model="expCtr.filters.creator", ng-change="expCtr.filterExpenses()")
   #main
     accordion(close-others='oneAtATime')
-      accordion-group(heading='{{date.time | date:"dd.MM.yyyy"}}', is-open="true", ng-repeat='date in expCtr.expenses')
+      accordion-group(heading='{{date.time | date:"dd.MM.yyyy"}}', is-open="true", ng-repeat="date in expCtr.expenses | orderBy:'-date'")
         table.table.table-bordered.table-hover.table-condensed
           colgroup
             col.table-description
@@ -73,7 +73,7 @@
             tr(ng-repeat="expense in expCtr.expenses | orderBy:expCtr.predicate:expCtr.reverse | filter: date.time")
               td(style='white-space: nowrap')
                 // form
-                form.form-buttons.form-inline(editable-form='', name='rowform', onbeforesave='saveUser($data, user.id)', ng-show='rowform.$visible', shown='inserted == user')
+                form.form-buttons.form-inline(editable-form='' name='rowform', onbeforesave='saveUser($data, user.id)', ng-show='rowform.$visible', shown='inserted == expense')
                   button.btn.btn-primary(type='submit', ng-disabled='rowform.$waiting')
                     | save
                   button.btn.btn-default(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
@@ -82,30 +82,25 @@
                   button.btn.btn-primary.edit-button(ng-click='rowform.$show()') edit
                   button.btn.btn-danger(ng-click="expCtr.deleteExpense(expense.id)") delete
               td
-                // editable username (text with validation)
                 span(editable-text='expense.name', e-name='name', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
                   | {{ expense.name  || 'empty' }}
               td
-                // editable username (text with validation)
                 span(editable-text='expense.price', e-name='price', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
                   | {{ expense.price  || 'empty' }} {{ expense.currency }}
               td
-                // editable username (text with validation)
                 span(editable-text='expense.categoryId.name', e-name='categoryId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
-                  | {{ expense.categoryId || 'empty' }}
+                  | {{ expense.categoryId.name || 'empty' }}
               td
-                // editable username (text with validation)
-                span(editable-text='expense.subcategoryId', e-name='subcategoryId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
-                  | {{ expense.subcategoryId.name || 'empty' }}
+                span(editable-text='expense.subcategoryName', e-name='subcategoryName', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
+                  | {{ expense.subcategoryName || 'empty' }}
               td
-                // editable username (text with validation)
-                span(editable-text='expense.subcategoryId', e-name='subcategoryId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
-                  | {{ expense.creatorId || 'empty' }}
+                span(editable-text='expense.creatorId.name', e-name='creatorId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
+                  | {{ expense.creatorId.name || 'empty' }}
               td
                 .btn-group(dropdown='')
                   button.btn(type='button', dropdown-toggle='')
                     i.fa.fa-info
-                  span.dropdown-menu(role='menu', aria-labelledby='split-button')
+                  span.dropdown-menu.dropdown-menu-right(role='menu', aria-labelledby='split-button')
                     | {{ expense.description }}
 
             tr#mobile

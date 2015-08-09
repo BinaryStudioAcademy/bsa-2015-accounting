@@ -18,6 +18,15 @@ module.exports = function(app) {
 
     function loadExpenses() {
       ExpensesService.getExpenses(expensesLimit).then(function(data) {
+        // Find subcategory name
+        data.forEach(function(expense) {
+          for(var subcategory in expense.categoryId.subcategories) {
+            if(expense.subcategoryId == expense.categoryId.subcategories[subcategory].id) {
+              expense.subcategoryName = expense.categoryId.subcategories[subcategory].name;
+              break;
+            }
+          }
+        });
         vm.expenses = data;
       });
     }
