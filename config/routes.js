@@ -47,6 +47,9 @@ module.exports.routes = {
   'get /signup': {
     view: 'signup'
   },
+  
+  'get /years': 'YearsController',
+  'get /expenses_by_year/:year': 'ExpenseController.byYear',
 
   'get /user/current': 'UserController.getCurrentUser'
 

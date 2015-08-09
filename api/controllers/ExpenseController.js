@@ -6,13 +6,33 @@
  */
 
 module.exports = {
-	//find: getExpenses
+	//find: getExpenses,
+	byYear: expensesByYear
 };
 
 function getExpenses(req, res) {
 	Expense.find({deletedBy: {$exists: false}}).populateAll().exec(function(err, expenses) {
 		return res.send(expenses);
 	});
+}
+
+function expensesByYear(req, res) {
+	var year = req.param('year');
+	var start = Date.parse('01/01/' + year + ' 00:00:00') / 1000;
+	var end = Date.parse('12/31/' + year + ' 23:59:59') / 1000;
+
+	Expense.find({deletedBy: {$exists: false}, time: {$gte: start, $lte: end }}).populateAll().exec(function(err, expenses) {
+		return res.send(expenses);
+	});
+	// Expense.native(function(err, collection) {
+	// 	if (err) return res.serverError(err);
+
+	// 	collection.find().toArray(function(err, results) {
+	// 		if (err) if (err) return res.serverError(err);
+
+	// 		res.ok(results);
+	// 	});
+	// });
 }
 
 //	---faster but more uglier---

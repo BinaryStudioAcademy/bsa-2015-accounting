@@ -73,7 +73,7 @@
             tr(ng-repeat="expense in expCtr.expenses | orderBy:expCtr.predicate:expCtr.reverse | filter: date.time")
               td(style='white-space: nowrap')
                 // form
-                form.form-buttons.form-inline(editable-form='', name='rowform', onbeforesave='saveUser($data, user.id)', ng-show='rowform.$visible', shown='inserted == user')
+                form.form-buttons.form-inline(editable-form='', name='rowform', onbeforesave='saveUser($data, user.id)', ng-show='rowform.$visible', shown='inserted == expense')
                   button.btn.btn-primary(type='submit', ng-disabled='rowform.$waiting')
                     | save
                   button.btn.btn-default(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
