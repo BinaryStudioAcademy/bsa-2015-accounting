@@ -23,7 +23,6 @@ module.exports = {
 		},
 		subcategories: {
 			type: 'array',
-			required: true,
 			defaultsTo: []
 		}
 	}
