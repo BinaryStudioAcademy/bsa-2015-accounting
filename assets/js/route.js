@@ -7,7 +7,8 @@ module.exports = function(app) {
     $routeProvider.
       when('/expenses', {
         templateUrl: '/templates/Expenses.html',
-        controller: 'ExpensesController'
+        controller: 'ExpensesController',
+        controllerAs:"expCtr"
       }).
       when('/planning', {
         templateUrl: '/templates/Budgets.html',
@@ -15,7 +16,8 @@ module.exports = function(app) {
       }).
       when('/charts', {
         templateUrl: '/templates/Charts.html',
-        controller: 'ChartsController'
+        controller: 'ChartsController',
+        controllerAs:'chartCtrl'
       }).
       otherwise({
         redirectTo: '/expenses'
