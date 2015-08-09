@@ -10,12 +10,12 @@
     form.expense-form(name="expenseForm", ng-controller="ExpenseFormController as formCtrl",
       ng-submit="expenseForm.$valid && formCtrl.createExpense()", novalidate)
       input(type='text', name='Name', placeholder='Expense', ng-model="formCtrl.expense.name", required)
-      select(name='Category', required)
-        option Category
-      select(name='Subcategory', placeholder='Subcategory', required)
-        option Subcategory
-      input(type='text', name='Date', placeholder='Date', ng-model="formCtrl.expense.date", required)
-      input(type='number', name='Cost', placeholder='Cost', ng-model="formCtrl.expense.cost", required)
+      input(type='date', name='Date', placeholder='Date', ng-model="formCtrl.date", required)
+      select(name='Category', ng-change="formCtrl.getSubcategories()", ng-model="formCtrl.selectedCategory" required)
+        option(ng-repeat="category in formCtrl.categories") {{category.name}}
+      select(name='Subcategory', placeholder='Subcategory', ng-change="formCtrl.setSubcategoryId()", ng-model="formCtrl.selectedSubcategory", required)
+        option(ng-repeat="subcategory in formCtrl.subcategories") {{subcategory}}
+      input(type='number', name='Cost', placeholder='Cost', ng-model="formCtrl.expense.price", required)
       select(name='Currency', ng-model="formCtrl.expense.currency", required)
         option USD
         option UAH
@@ -35,12 +35,12 @@
       i.fa.fa-caret-down
     form
       input(type='text', name='cost-range', placeholder='Expense', ng-model="expCtr.filters.name", ng-change="expCtr.filterExpenses()")
-      input(type='text', name='category', placeholder='Category', ng-model="expCtr.filters.category", ng-change="expCtr.filterExpenses()")
+      input(type='text', name='category', placeholder='Category', ng-model="expCtr.filters.categoryId.name", ng-change="expCtr.filterExpenses()")
       input(type='text', name='subcategory', placeholder='Subcategory', ng-model="expCtr.filters.subcategory", ng-change="expCtr.filterExpenses()")
       input(type='text', name='author', placeholder='Author', ng-model="expCtr.filters.creator", ng-change="expCtr.filterExpenses()")
   #main
     accordion(close-others='oneAtATime')
-      accordion-group(heading='{{date.time | date:"dd.MM.yyyy"}}', is-open="true", ng-repeat="date in expCtr.expenses | orderBy:'-date'")
+      accordion-group(heading='{{date | date:"dd.MM.yyyy"}}', is-open="true", ng-repeat="date in expCtr.dates")
         table.table.table-bordered.table-hover.table-condensed
           colgroup
             col.table-description
@@ -55,22 +55,17 @@
                 | Edit
               th
                 | Expense
-                i.fa.fa-caret-down
               th
                 | Cost
-                i.fa.fa-caret-down
               th
                 | Category
-                i.fa.fa-caret-down
               th
                 | Subcategory
-                i.fa.fa-caret-down
               th
                 | Added by
-                i.fa.fa-caret-down
               th
           tbody
-            tr(ng-repeat="expense in expCtr.expenses | orderBy:expCtr.predicate:expCtr.reverse | filter: date.time")
+            tr(ng-repeat="expense in expCtr.getExpensesByDate(date)")
               td(style='white-space: nowrap')
                 // form
                 form.form-buttons.form-inline(editable-form='' name='rowform', onbeforesave='saveUser($data, user.id)', ng-show='rowform.$visible', shown='inserted == expense')
@@ -80,12 +75,12 @@
                     | cancel
                 .buttons(ng-show='!rowform.$visible')
                   button.btn.btn-primary.edit-button(ng-click='rowform.$show()') edit
-                  button.btn.btn-danger(ng-click="expCtr.deleteExpense(expense.id)") delete
+                  button.btn.btn-danger(ng-click="expCtr.deleteExpense(expense.id, expense.name)") delete
               td
-                span(editable-text='expense.name', e-name='name', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
+                span(editable-text='expense.name', e-name='name', e-form='rowform', onbeforesave='expCtr.editExpense(expense.id, $data, "name")', e-required='')
                   | {{ expense.name  || 'empty' }}
               td
-                span(editable-text='expense.price', e-name='price', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
+                span(editable-text='expense.price', e-name='price', e-form='rowform', onbeforesave='expCtr.editExpense(expense.id, $data, "price")', e-required='')
                   | {{ expense.price  || 'empty' }} {{ expense.currency }}
               td
                 span(editable-text='expense.categoryId.name', e-name='categoryId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')

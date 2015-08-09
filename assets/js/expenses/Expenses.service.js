@@ -10,7 +10,8 @@ module.exports = function(app) {
       getExpensesByFilter: getExpensesByFilter,
       createExpense: createExpense,
       editExpense: editExpense,
-      deleteExpense: deleteExpense
+      deleteExpense: deleteExpense,
+      getCategories: getCategories
     };
 
     function getRequest() {
@@ -22,7 +23,7 @@ module.exports = function(app) {
      * @returns promise object
      */
     function getExpenses(setLimit) {
-      return $resource("/expense/:id", { id: "@id", limit: setLimit }).query().$promise;
+      return $resource("/expense/:id", { id: "@id", limit: setLimit, sort: "time desc" }).query().$promise;
     }
 
     function getAllExpenses() {
@@ -34,11 +35,11 @@ module.exports = function(app) {
 
       for(var field in filters) {
         if(filters.hasOwnProperty(field)) {
-          filter[field] = { "contains": filters[field] };
+            filter[field] = { "contains": filters[field] };
         }
       }
 
-      return $resource("/expense/:id", { id: "@id", where: filter }).query().$promise;
+      return $resource("/expense/:id", { id: "@id", where: filter, sort: "time desc" }).query().$promise;
     }
 
     /**
@@ -72,6 +73,10 @@ module.exports = function(app) {
      */
     function deleteExpense(expenseId) {
       return getRequest().remove({ id: expenseId }).$promise;
+    }
+
+    function getCategories() {
+      return $resource("/category/:id", { id: "@id" }).query().$promise;
     }
   }
 };
