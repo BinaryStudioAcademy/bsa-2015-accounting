@@ -52,6 +52,7 @@
     "angular-route": "~1.4.3",
     "angular-xeditable": "0.0.1",
     "lodash": "^3.10.0",
+    "angular-ui-bootstrap": "~0.13.0",
     "angular-google-chart":"0.0.11"
   }
 }

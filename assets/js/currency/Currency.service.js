@@ -5,18 +5,11 @@ module.exports = function(app) {
 
   function CurrencyService($resource) {
     return {
-      getExchangeRateCash: getExchangeRateCash,
-      getExchangeRateCashless: getExchangeRateCashless
+      getExchangeRate: getExchangeRate
     };
 
-    function getExchangeRateCash() {
-      var Rate = $resource("http://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5");
-      return Rate.get({ ccy: "USD" });
-    }
-
-    function getExchangeRateCashless() {
-      var Rate = $resource("http://api.privatbank.ua/p24api/pubinfo?exchange&json&coursid=11");
-      return Rate.get({ ccy: "USD" });
+    function getExchangeRate() {
+      return $resource("/currency").query({sort: "time desc", limit: 1}).$promise;
     }
   }
 };

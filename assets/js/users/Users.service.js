@@ -6,6 +6,7 @@ module.exports = function(app) {
   function UsersService($resource) {
     return {
       getUsers: getUsers,
+      getCurrentUser: getCurrentUser,
       createUser: createUser,
       editUser: editUser,
       deleteUser: deleteUser
@@ -21,6 +22,11 @@ module.exports = function(app) {
      */
     function getUsers() {
       return getRequest().query();
+    }
+
+    function getCurrentUser() {
+      var User = $resource("/user/current");
+      return User.get();
     }
 
     /**

@@ -6,6 +6,7 @@ var angular = require('angular');
 var app = angular.module('accounting', [
   require('angular-resource'),
   require('angular-route'),
+  require('angular-ui-bootstrap'),
   'xeditable'
 ]);
 

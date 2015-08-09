@@ -46,7 +46,9 @@ module.exports.routes = {
 
   'get /signup': {
     view: 'signup'
-  }
+  },
+
+  'get /user/current': 'UserController.getCurrentUser'
 
   /***************************************************************************
   *                                                                          *

@@ -52,6 +52,7 @@
           thead
             tr
               th
+                | Edit
               th
                 | Expense
                 i.fa.fa-caret-down
@@ -68,35 +69,8 @@
                 | Added by
                 i.fa.fa-caret-down
               th
-                | Edit
           tbody
             tr(ng-repeat="expense in expCtr.expenses | orderBy:expCtr.predicate:expCtr.reverse | filter: date.time")
-              td
-                .btn-group(dropdown='')
-                  button.btn(type='button', dropdown-toggle='')
-                    i.fa.fa-info
-                  span.dropdown-menu(role='menu', aria-labelledby='split-button')
-                    | {{ expense.description }}
-              td
-                // editable username (text with validation)
-                span(editable-text='expense.name', e-name='name', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
-                  | {{ expense.name  || 'empty' }}
-              td
-                // editable username (text with validation)
-                span(editable-text='expense.price', e-name='price', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
-                  | {{ expense.price  || 'empty' }} {{ expense.currency }}
-              td
-                // editable username (text with validation)
-                span(editable-text='expense.categoryId', e-name='categoryId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
-                  | {{ expense.categoryId || 'empty' }}
-              td
-                // editable username (text with validation)
-                span(editable-text='expense.subcategoryId', e-name='subcategoryId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
-                  | {{ expense.subcategoryId || 'empty' }}
-              td
-                // editable username (text with validation)
-                span(editable-text='expense.subcategoryId', e-name='subcategoryId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
-                  | {{ expense.creatorId || 'empty' }}
               td(style='white-space: nowrap')
                 // form
                 form.form-buttons.form-inline(editable-form='', name='rowform', onbeforesave='saveUser($data, user.id)', ng-show='rowform.$visible', shown='inserted == user')
@@ -107,6 +81,32 @@
                 .buttons(ng-show='!rowform.$visible')
                   button.btn.btn-primary.edit-button(ng-click='rowform.$show()') edit
                   button.btn.btn-danger(ng-click="expCtr.deleteExpense(expense.id)") delete
+              td
+                // editable username (text with validation)
+                span(editable-text='expense.name', e-name='name', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
+                  | {{ expense.name  || 'empty' }}
+              td
+                // editable username (text with validation)
+                span(editable-text='expense.price', e-name='price', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
+                  | {{ expense.price  || 'empty' }} {{ expense.currency }}
+              td
+                // editable username (text with validation)
+                span(editable-text='expense.categoryId.name', e-name='categoryId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
+                  | {{ expense.categoryId || 'empty' }}
+              td
+                // editable username (text with validation)
+                span(editable-text='expense.subcategoryId', e-name='subcategoryId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
+                  | {{ expense.subcategoryId.name || 'empty' }}
+              td
+                // editable username (text with validation)
+                span(editable-text='expense.subcategoryId', e-name='subcategoryId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
+                  | {{ expense.creatorId || 'empty' }}
+              td
+                .btn-group(dropdown='')
+                  button.btn(type='button', dropdown-toggle='')
+                    i.fa.fa-info
+                  span.dropdown-menu(role='menu', aria-labelledby='split-button')
+                    | {{ expense.description }}
 
             tr#mobile
               td(colspan='3')
@@ -138,3 +138,4 @@
             //  td {{ expense.subcategory }}
             //  td {{ expense.addBy }}
     button.load-more(ng-click="expCtr.loadMoreExpenses()") Load more
+

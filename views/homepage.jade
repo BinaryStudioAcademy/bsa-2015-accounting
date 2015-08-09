@@ -5,9 +5,9 @@ block body
 	header
 		i#menu-btn.fa.fa-bars
 		#page-name Accounting
-		#user-info
+		#user-info(ng-controller="UsersController as userCtrl")
 			img#user-logo(src='http://lorempixel.com/40/40/cats/4/', alt='user logo')
-			span#user-name John Doe
+			span#user-name {{userCtrl.currentUser.name}}
 	nav
 		ul
 			li
