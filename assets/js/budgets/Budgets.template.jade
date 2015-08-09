@@ -1,9 +1,11 @@
 #budgets-view
-	form.editCanges
+	div.editCanges
 		button.btn.btn-primary(type='submit') save changes
 		button.btn.btn-danger(type='button') discard changes
 
-	table.table.table-bordered.table-hover.table-condensed
+	table.table-hover
+		col(width='150')
+		col(width='250')
 		thead
 			tr
 				th(colspan='2') Category
@@ -23,16 +25,16 @@
 		tbody(ng-repeat='category in budCtrl.categories')
 			tr
 				th(class="review" )
-					button.btn.btn-xs.btn-warning(ng-click="budCtrl.toggleCustom($index)" ng-show="!budCtrl.hiddenList[$index]")
-						i.fa.fa-caret-right
-					button.btn.btn-xs.btn-warning(ng-click="budCtrl.toggleCustom($index)" ng-hide="!budCtrl.hiddenList[$index]")
-						i.fa.fa-caret-down
 					form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible',	shown='inserted == category')
+						i.fa.fa-chevron-right(ng-click="budCtrl.toggleCustom($index)" ng-show="!budCtrl.hiddenList[$index]")
+						i.fa.fa-chevron-down(ng-click="budCtrl.toggleCustom($index)" ng-hide="!budCtrl.hiddenList[$index]")
 						button.btn.btn-xs.btn-primary(type='submit', ng-disabled='rowform.$waiting')
 							| save
 						button.btn.btn-xs.btn-default(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
 							| cancel
 					.buttons(ng-show='!rowform.$visible')
+						i.fa.fa-chevron-right(ng-click="budCtrl.toggleCustom($index)" ng-show="!budCtrl.hiddenList[$index]")
+						i.fa.fa-chevron-down(ng-click="budCtrl.toggleCustom($index)" ng-hide="!budCtrl.hiddenList[$index]")
 						button.btn.btn-xs.btn-primary(ng-click='rowform.$show()') edit
 						button.btn.btn-xs.btn-danger(ng-click='removeUser($index)') del
 				th
