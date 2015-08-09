@@ -350,7 +350,10 @@ module.exports = function(app) {
 					confirmButtonText: "Yes, send it!",
 					closeOnConfirm: false
 				},
-				function(){swal("Database updated!", "Well, actually it is not. This feature is not yet implemented :(", "success"); });
+				function(){
+					swal("Database updated!", "Well, actually it is not. This feature is not yet implemented :(", "success"); 
+					vm.updateYear();
+				});
 
 				//var confirmation = confirm("Are you sure? Changes will be sent to the server");
 				//if (confirmation) {
