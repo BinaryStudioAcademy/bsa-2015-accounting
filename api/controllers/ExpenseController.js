@@ -9,11 +9,11 @@ module.exports = {
 	//find: getExpenses
 };
 
-//function getExpenses(req, res) {
-//	Expense.find({deletedBy: {$exists: false}}).limit(10).populateAll().exec(function(err, expenses) {
-//		return res.send(expenses);
-//	});
-//}
+function getExpenses(req, res) {
+	Expense.find({deletedBy: {$exists: false}}).populateAll().exec(function(err, expenses) {
+		return res.send(expenses);
+	});
+}
 
 //	---faster but more uglier---
 //function getExpenses(req, res) {

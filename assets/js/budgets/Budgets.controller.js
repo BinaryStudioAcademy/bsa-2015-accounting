@@ -58,6 +58,7 @@ module.exports = function(app) {
 
 			vm.annualBudget = 0;
 			vm.annualUsed = 0;
+			vm.annualDistributed = 0;
 
 			vm.categories = [];
 			vm.budgets.forEach(function(budget) {
@@ -65,6 +66,8 @@ module.exports = function(app) {
 				var subcategories = [];
 
 				var catUsed = 0;
+
+				var catDistributed = 0;
 
 				budget.subcategories.forEach(function(sub) {
 					var nameIndex = _.findIndex(budget.categoryId.subcategories, function(s) {
@@ -81,6 +84,7 @@ module.exports = function(app) {
 					});
 
 					catUsed += subUsed;
+					catDistributed += sub.budget;
 
 					var subcategory = {name: budget.categoryId.subcategories[nameIndex].name, budget: sub.budget, used: subUsed}
 						subcategories.push(subcategory);
@@ -88,19 +92,46 @@ module.exports = function(app) {
 
 
 
-				var category = {name: budget.categoryId.name, budget: budget.budget, subcategories: subcategories, used: catUsed};
+				var category = {name: budget.categoryId.name, budget: budget.budget, subcategories: subcategories, used: catUsed, undistributed: (budget.budget - catDistributed)};
 				vm.categories.push(category);
+				vm.annualUsed += catUsed;
+				vm.annualDistributed += catDistributed;
 			});
+			vm.annualUndistributed = vm.annualBudget - vm.annualDistributed;
 		};
 
-		vm.addCatagory = function() {
-		var category = {
-			year: vm.year,
-			budget: '0',
-			subcategories: []
-		};
-		vm.categories.push(category);
-	};
+		vm.addBudget = function() {
+			var newBud = {
+				//creatorId: "",
+				year: Number(vm.year),
+				//categoryId: "",
+				budget: 0,
+				subcategories: []
+			};
+			
+			console.log(vm.budgets);
+			console.log(vm.categories);
 
+			vm.budgets.push(newBud);
+		}
+
+		vm.addCategory = function() {
+			var newCat = {
+				name: "",
+				subcategories: "",
+				managers: ""
+			};
+
+			vm.categories.push(newCat);
+		}
+
+		vm.addSubcategory = function(category) {
+			var newSubcat = {
+				id: "",
+				name: ""
+			};
+
+			vm.subcategories.push(newSubcat);
+		}
 	}
 };
