@@ -1,108 +1,86 @@
-#chart-view(ng-controller="ChartsController as chartCntr")
-	.chart-Topcontainer
-		.chart-leftBlock
-			ul.chart-filterList
-				li
-					label Year
-					select.form-control
-						option(selected='selected') Year
-						optgroup(label='Year')
-							option 2007
-							option 2008
-							option 2009
-							option 2010
-							option 2011
-							option 2012
-							option 2013
-							option 2014
-							option 2015
-				li
-					label Period
-					select.form-control
-						option(selected='selected') Period
-						optgroup(label='Month')
-							option January
-							option February
-							option March
-							option April
-							option May
-							option June
-							option July
-							option August
-							option September
-							option Oktober
-							option November
-							option Desember
-				li
-					label Quarter
-					select.form-control
-						optgroup(label='Quarter')
-							option 1 quarter(january-march)
-							option 2 quarter(april-june)
-							option 3 quarter(july-september)
-							option 4 quarter(october-december)
-				li
-					label Or range of dates
-					input.form-control(type='text', placeholder='Date')
-				li
-					label Categories
-					select#category.form-control
-						option(selected='selected') Category
-						optgroup(label='HR')
-							option Office
-							option Parties
-							option Salary
-							option Course
-						optgroup(label='Marketing')
-							option subcategory
-							option subcategory
-							option subcategory
-							option subcategory
-						optgroup(label='Accounting')
-							option Tax
-							option sallary
-							option subcategory
-							option subcategory
-		.chart-rightBlock
-			h4 Amount data by categories 
-			select.form-control(multiple='multiple')
-				optgroup(label='HR')
-					option(value='1') Office
-					option(value='2') Parties
-					option(value='3') Salary
-					option(value='4') Course
-				optgroup(label='Marketing')
-					option(value='5') subcategory
-					option(value='6') subcategory
-					option(value='7') subcategory
-					option(value='8') subcategory
-				optgroup(label='Accounting')
-					option(value='9') Tax
-					option(value='10') sallary
-					option(value='11') subcategory
-					option(value='12') subcategory
-			button.chart-butSum Sum
-			.chart-radiPeriodr
-				p Display by:
-				label Month
-				input(type='radio')
-				label Quarter
-				input(type='radio')
-				label Year
-				input(type='radio')
-	div(google-chart="", chart='chartCntr.chart', style='border:1px inset black;padding:0;width:400px')
-	p
-		| Software: 
-		input(type='range', min='10000', max='100000', value='{{chartCntr.aa}}', ng-model='aa', ng-change='chartCntr.chart.data[1][1]=1*aa')
-		|  {{chartCntr.aa}}
-	p
-		| Hardware: 
-		input(type='range', min='10000', max='100000', value='{{chartCntr.bb}}', ng-model='bb', ng-change='chartCntr.chart.data[2][1]=1*bb')
-		| {{chartCntr.bb}}
-	p
-		| Services: 
-		input(type='range', min='10000', max='100000', value='{{chartCntr.cc}}', ng-model='cc', ng-change='chartCntr.chart.data[3][1]=1*cc')
-		| {{chartCntr.cc}}
-	
-
-
+#chart-view
+  .chart-Topcontainer
+    .chart-leftBlock
+      ul.chart-filterList
+        li
+          label Year
+          select.form-control(ng-change="chartCtrl.getBudgetsByYear()", ng-model="chartCtrl.selectedYear")
+            option(ng-repeat="year in chartCtrl.years") {{year}}
+        li
+          label Period
+          select.form-control
+            option(selected='selected') Period
+            optgroup(label='Month')
+              option January
+              option February
+              option March
+              option April
+              option May
+              option June
+              option July
+              option August
+              option September
+              option Oktober
+              option November
+              option Desember
+        li
+          label Quarter
+          select.form-control
+            optgroup(label='Quarter')
+              option 1 quarter(january-march)
+              option 2 quarter(april-june)
+              option 3 quarter(july-september)
+              option 4 quarter(october-december)
+        li
+          label Or range of dates
+          input.form-control(type='text', placeholder='Date')
+        li
+          label Categories
+          select#category.form-control
+            option(selected='selected') Category
+            optgroup(label='HR')
+              option Office
+              option Parties
+              option Salary
+              option Course
+            optgroup(label='Marketing')
+              option subcategory
+              option subcategory
+              option subcategory
+              option subcategory
+            optgroup(label='Accounting')
+              option Tax
+              option sallary
+              option subcategory
+              option subcategory
+    .chart-rightBlock
+      h4 Amount data by categories
+      select.form-control(multiple='multiple')
+        optgroup(label='HR')
+          option(value='1') Office
+          option(value='2') Parties
+          option(value='3') Salary
+          option(value='4') Course
+        optgroup(label='Marketing')
+          option(value='5') subcategory
+          option(value='6') subcategory
+          option(value='7') subcategory
+          option(value='8') subcategory
+        optgroup(label='Accounting')
+          option(value='9') Tax
+          option(value='10') sallary
+          option(value='11') subcategory
+          option(value='12') subcategory
+      button.chart-butSum Sum
+      .chart-radiPeriodr
+        p Display by:
+        label Month
+        input(type='radio')
+        label Quarter
+        input(type='radio')
+        label Year
+        input(type='radio')
+  div(google-chart, chart="chartCtrl.barChart")
+  br
+  div(google-chart, chart="chartCtrl.pieChart", style="width: 100%; height: 400px")
+  br

@@ -18,7 +18,7 @@ module.exports = function(app) {
       when('/charts', {
         templateUrl: '/templates/Charts.html',
         controller: 'ChartsController',
-        controllerAs:'chartCntr'
+        controllerAs:'chartCtrl'
       }).
       otherwise({
         redirectTo: '/expenses'
