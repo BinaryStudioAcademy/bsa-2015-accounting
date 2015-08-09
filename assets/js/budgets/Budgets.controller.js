@@ -13,19 +13,21 @@ module.exports = function(app) {
 //togle list
 		vm.hiddenList=[];
 		vm.toggleCustom = function (index) {
-				vm.hiddenList[index] = !vm.hiddenList[index];
+			vm.hiddenList[index] = !vm.hiddenList[index];
 		};
 
 		vm.rawBudgets = [];
 		vm.rawExpenses = [];
 
+		vm.years = [];
+
+
 		vm.budgets = [];
 		vm.expenses = [];
-
 		vm.categories = [];
-		//vm.year = new Date().getFullYear() + 1;
-		vm.years = [];
-		//vm.years = [];
+		vm.annualBudget = 0;
+		vm.annualUsed = 0;
+		vm.annualDistributed = 0;
 
 		////////create route /years ???
 		BudgetsService.getBudgets().then(function(rawBudgets) {
@@ -34,13 +36,14 @@ module.exports = function(app) {
 				if (vm.years.indexOf(String(budget.year)) < 0) vm.years.push(String(budget.year));
 			});
 
+			vm.year = vm.years[0];
+
 			ExpensesService.getAllExpenses().then(function(rawExpenses) {
 				vm.rawExpenses = rawExpenses;
-				
-				vm.year = vm.years[0];
+
 				vm.updateYear();
 			});
-			
+
 
 
 
@@ -49,6 +52,34 @@ module.exports = function(app) {
 
 		});
 
+		vm.calcAnnualBudget = function() {
+			var annualBudget = 0;
+			for (var i = 0; i < vm.categories.length; i++) {
+				annualBudget += Number(vm.categories[i].budget);
+			}
+			return annualBudget;
+		}
+
+		vm.calcAnnualUsed = function() {
+			var annualUsed = 0;
+			for (var i = 0; i < vm.categories.length; i++) {
+				annualUsed += vm.categories[i].used;
+			}
+			return annualUsed;
+		}
+
+		vm.calcAnnualUndistributed = function() {
+			var annualUndistributed = 0;
+			for (var i = 0; i < vm.categories.length; i++) {
+				annualUndistributed += vm.categories[i].undistributed();
+			}
+			return annualUndistributed;
+		}
+
+		//func category.undistributed
+
+
+
 		vm.updateYear = function() {
 			vm.budgets = _.filter(vm.rawBudgets, {year: Number(vm.year)});
 
@@ -56,18 +87,19 @@ module.exports = function(app) {
 				return (new Date(expense.time * 1000)).getFullYear() == vm.year;
 			});
 
-			vm.annualBudget = 0;
-			vm.annualUsed = 0;
-			vm.annualDistributed = 0;
+			//vm.annualBudget = 0;
+			//vm.annualUsed = 0;
+			//vm.annualDistributed = 0;
 
 			vm.categories = [];
+
 			vm.budgets.forEach(function(budget) {
 				vm.annualBudget += budget.budget;
 				var subcategories = [];
 
 				var catUsed = 0;
 
-				var catDistributed = 0;
+				//var /*****/catDistributed = 0;
 
 				budget.subcategories.forEach(function(sub) {
 					var nameIndex = _.findIndex(budget.categoryId.subcategories, function(s) {
@@ -84,21 +116,29 @@ module.exports = function(app) {
 					});
 
 					catUsed += subUsed;
-					catDistributed += sub.budget;
+					//*****/catDistributed += sub.budget;
 
 					var subcategory = {name: budget.categoryId.subcategories[nameIndex].name, budget: sub.budget, used: subUsed}
 						subcategories.push(subcategory);
 					});
 
+				var calcUndistributed = function() {
+					var distributed = 0;
+					for (var i = 0; i < this.subcategories.length; i++) {
+						distributed += Number(this.subcategories[i].budget);
+					}
+					return (this.budget - distributed);
+				};
 
-
-				var category = {name: budget.categoryId.name, budget: budget.budget, subcategories: subcategories, used: catUsed, undistributed: (budget.budget - catDistributed)};
+				var category = {name: budget.categoryId.name, budget: budget.budget, subcategories: subcategories, used: catUsed, undistributed: calcUndistributed};
 				vm.categories.push(category);
-				vm.annualUsed += catUsed;
-				vm.annualDistributed += catDistributed;
+				//vm.annualUsed += catUsed;
+				//vm.annualDistributed += /*****/catDistributed;
 			});
-			vm.annualUndistributed = vm.annualBudget - vm.annualDistributed;
+			//vm.annualUndistributed = vm.annualBudget - vm.annualDistributed;
 		};
+
+
 
 		vm.addBudget = function() {
 			var newBud = {

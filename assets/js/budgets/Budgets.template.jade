@@ -13,11 +13,11 @@
 				td(colspan='2')
 					select#years(ng-model='budCtrl.year', ng-change="budCtrl.updateYear()")
 						option(ng-repeat='year in budCtrl.years', value='{{year}}') {{year}}
-				td {{budCtrl.annualBudget | currency}} (
-					span(ng-class="{'status-good': (budCtrl.annualUndistributed > 0), 'status-bad': (budCtrl.annualUndistributed < 0)}") {{budCtrl.annualUndistributed | currency}} 
+				td {{budCtrl.calcAnnualBudget() | currency}} (
+					span(ng-class="{'status-good': (budCtrl.calcAnnualUndistributed() > 0), 'status-bad': (budCtrl.calcAnnualUndistributed() < 0)}") {{budCtrl.calcAnnualUndistributed() | currency}} 
 					| undistributed)
-				td {{budCtrl.annualUsed | currency}} (
-					span(ng-class="{'status-good': (budCtrl.annualBudget - budCtrl.annualUsed > 0), 'status-bad': (budCtrl.annualBudget - budCtrl.annualUsed < 0)}") {{budCtrl.annualBudget - budCtrl.annualUsed | currency}} 
+				td {{budCtrl.calcAnnualUsed() | currency}} (
+					span(ng-class="{'status-good': (budCtrl.calcAnnualBudget() - budCtrl.calcAnnualUsed() > 0), 'status-bad': (budCtrl.calcAnnualBudget() - budCtrl.calcAnnualUsed() < 0)}") {{budCtrl.calcAnnualBudget() - budCtrl.calcAnnualUsed() | currency}} 
 					| left)
 
 		tbody(ng-repeat='category in budCtrl.categories')
@@ -30,7 +30,7 @@
 				th 
 					span(editable-text='category.budget' name='budget') {{category.budget || 'empty' | currency}} 
 					| (
-					span(ng-class="{'status-good': (category.undistributed > 0), 'status-bad': (category.undistributed < 0)}") {{category.undistributed | currency}} 
+					span(ng-class="{'status-good': (category.undistributed() > 0), 'status-bad': (category.undistributed() < 0)}") {{category.undistributed() | currency}} 
 					| undistributed)
 				th {{category.used | currency}} (
 					span(ng-class="{'status-good': (category.budget - category.used > 0), 'status-bad': (category.budget - category.used < 0)}") {{category.budget - category.used | currency}} 
