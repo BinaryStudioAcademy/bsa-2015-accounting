@@ -48,7 +48,7 @@ module.exports = function(app) {
           });
 
           // Get category by id in the current budget
-          ChartsService.getCategory(budget.categoryId).then(function(data) {
+          ChartsService.getCategory(budget.categoryId.id).then(function(data) {
             // Push data for the bar chart
             vm.barChartData.push({c: [{v: data.name}, {v: budget.budget}]});
 
