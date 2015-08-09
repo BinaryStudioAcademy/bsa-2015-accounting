@@ -6,9 +6,9 @@ module.exports = function(app) {
 		editableOptions.theme = 'bs3';
 	});
 
-	BudgetsController.$inject = ['BudgetsService', 'ExpensesService', 'CategoriesService'];
+	BudgetsController.$inject = ['BudgetsService', 'ExpensesService', 'CategoriesService', 'YearsService'];
 
-	function BudgetsController(BudgetsService, ExpensesService, CategoriesService) {
+	function BudgetsController(BudgetsService, ExpensesService, CategoriesService, YearsService) {
 		var vm = this;
 //togle list
 		vm.hiddenList=[];
@@ -18,7 +18,6 @@ module.exports = function(app) {
 
 		vm.rawBudgets = [];
 		vm.rawExpenses = [];
-
 		vm.years = [];
 
 
@@ -29,28 +28,19 @@ module.exports = function(app) {
 		vm.annualUsed = 0;
 		vm.annualDistributed = 0;
 
-		////////create route /years ???
-		BudgetsService.getBudgets().then(function(rawBudgets) {
-			vm.rawBudgets = rawBudgets;
-			vm.rawBudgets.forEach(function(budget) {
-				if (vm.years.indexOf(String(budget.year)) < 0) vm.years.push(String(budget.year));
-			});
-
-			vm.year = vm.years[0];
-
-			ExpensesService.getAllExpenses().then(function(rawExpenses) {
-				vm.rawExpenses = rawExpenses;
-
-				vm.updateYear();
-			});
 
 
-
-
-			
-			//vm.years.unshift(+vm.years[0] + 1 + "");
-
+		YearsService.getYears().then(function(years) {
+			vm.years = years.sort(function(a, b){return b - a});
+			vm.year = String(vm.years[0]);
+			vm.updateYear();
 		});
+
+
+		
+
+
+		
 
 		vm.calcAnnualBudget = function() {
 			var annualBudget = 0;
@@ -76,66 +66,59 @@ module.exports = function(app) {
 			return annualUndistributed;
 		}
 
-		//func category.undistributed
-
 
 
 		vm.updateYear = function() {
-			vm.budgets = _.filter(vm.rawBudgets, {year: Number(vm.year)});
+			BudgetsService.getBudgets(vm.year).then(function(budgets) {
+				vm.budgets = budgets;
+				ExpensesService.getAllExpenses(vm.year).then(function(expenses) {
+					vm.expenses = expenses;
 
-			vm.expenses = _.filter(vm.rawExpenses, function(expense) {
-				return (new Date(expense.time * 1000)).getFullYear() == vm.year;
+					vm.categories = [];
+					vm.budgets.forEach(function(budget) {
+						vm.annualBudget += budget.budget;
+						var subcategories = [];
+
+						var catUsed = 0;
+
+
+						budget.subcategories.forEach(function(sub) {
+							var nameIndex = _.findIndex(budget.categoryId.subcategories, function(s) {
+								return s.id === sub.id;
+							});
+
+							var subExpenses = _.filter(vm.expenses, {subcategoryId: sub.id});
+							
+							
+							var subUsed = 0;
+
+							subExpenses.forEach(function(subExpense) {
+								subUsed += subExpense.price;
+							});
+
+							catUsed += subUsed;
+
+							var subcategory = {name: budget.categoryId.subcategories[nameIndex].name, budget: sub.budget, used: subUsed};
+							subcategories.push(subcategory);
+						});
+
+						var calcUndistributed = function() {
+							var distributed = 0;
+							for (var i = 0; i < this.subcategories.length; i++) {
+								distributed += Number(this.subcategories[i].budget);
+							}
+							return (this.budget - distributed);
+						};
+
+						var category = {name: budget.categoryId.name, budget: budget.budget, subcategories: subcategories, used: catUsed, undistributed: calcUndistributed};
+						vm.categories.push(category);
+
+					});
+				});
 			});
 
-			//vm.annualBudget = 0;
-			//vm.annualUsed = 0;
-			//vm.annualDistributed = 0;
 
-			vm.categories = [];
-
-			vm.budgets.forEach(function(budget) {
-				vm.annualBudget += budget.budget;
-				var subcategories = [];
-
-				var catUsed = 0;
-
-				//var /*****/catDistributed = 0;
-
-				budget.subcategories.forEach(function(sub) {
-					var nameIndex = _.findIndex(budget.categoryId.subcategories, function(s) {
-						return s.id === sub.id;
-					});
-
-					var subExpenses = _.filter(vm.expenses, {subcategoryId: sub.id});
-					
-					
-					var subUsed = 0;
-
-					subExpenses.forEach(function(subExpense) {
-						subUsed += subExpense.price;
-					});
-
-					catUsed += subUsed;
-					//*****/catDistributed += sub.budget;
-
-					var subcategory = {name: budget.categoryId.subcategories[nameIndex].name, budget: sub.budget, used: subUsed}
-						subcategories.push(subcategory);
-					});
-
-				var calcUndistributed = function() {
-					var distributed = 0;
-					for (var i = 0; i < this.subcategories.length; i++) {
-						distributed += Number(this.subcategories[i].budget);
-					}
-					return (this.budget - distributed);
-				};
-
-				var category = {name: budget.categoryId.name, budget: budget.budget, subcategories: subcategories, used: catUsed, undistributed: calcUndistributed};
-				vm.categories.push(category);
-				//vm.annualUsed += catUsed;
-				//vm.annualDistributed += /*****/catDistributed;
-			});
-			//vm.annualUndistributed = vm.annualBudget - vm.annualDistributed;
+	
 		};
 
 

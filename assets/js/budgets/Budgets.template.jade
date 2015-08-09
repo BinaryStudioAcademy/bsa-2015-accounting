@@ -15,12 +15,16 @@
 				td(colspan='2')
 					select#years(ng-model='budCtrl.year', ng-change="budCtrl.updateYear()")
 						option(ng-repeat='year in budCtrl.years', value='{{year}}') {{year}}
-				td {{budCtrl.calcAnnualBudget() | currency}} (
+				td
+					b {{budCtrl.calcAnnualBudget() | currency}}
+					br
 					span(ng-class="{'status-good': (budCtrl.calcAnnualUndistributed() > 0), 'status-bad': (budCtrl.calcAnnualUndistributed() < 0)}") {{budCtrl.calcAnnualUndistributed() | currency}} 
-					| undistributed)
-				td {{budCtrl.calcAnnualUsed() | currency}} (
+					| undistributed
+				td
+					b {{budCtrl.calcAnnualUsed() | currency}}
+					br
 					span(ng-class="{'status-good': (budCtrl.calcAnnualBudget() - budCtrl.calcAnnualUsed() > 0), 'status-bad': (budCtrl.calcAnnualBudget() - budCtrl.calcAnnualUsed() < 0)}") {{budCtrl.calcAnnualBudget() - budCtrl.calcAnnualUsed() | currency}} 
-					| left)
+					| left
 
 		tbody(ng-repeat='category in budCtrl.categories')
 			tr
@@ -40,13 +44,15 @@
 				th
 					span(editable-text='category.name' name='name' e-form='rowform') {{ category.name || 'empty' }}
 				th
-					span(editable-number='category.budget' name='budget' e-form='rowform') {{category.budget || 'empty' | currency}} 
-					| (
+					b(editable-number='category.budget' name='budget' e-form='rowform') {{category.budget || 'empty' | currency}}
+					br
 					span(ng-class="{'status-good': (category.undistributed() > 0), 'status-bad': (category.undistributed() < 0)}") {{category.undistributed() | currency}} 
-					| undistributed)
-				th {{category.used | currency}} (
+					| undistributed
+				th 
+					b {{category.used | currency}}
+					br
 					span(ng-class="{'status-good': (category.budget - category.used > 0), 'status-bad': (category.budget - category.used < 0)}") {{category.budget - category.used | currency}} 
-					| left)
+					| left
 
 
 
@@ -65,19 +71,21 @@
 						|{{subcategory.name || 'empty' }}
 				td
 					span(editable-number='subcategory.budget', e-name='subcategory.udget', e-form='rowform')
-						| {{ subcategory.budget || 'empty' | currency }}
-				td {{subcategory.used | currency}} (
+						b {{ subcategory.budget || 'empty' | currency }}
+				td 
+					b {{subcategory.used | currency}} 
+					br
 					span(ng-class="{'status-good': (subcategory.budget - subcategory.used > 0), 'status-bad': (subcategory.budget - subcategory.used < 0)}") {{subcategory.budget - subcategory.used | currency}} 
-					| left)
+					| left
 				
 			tr(ng-hide="!budCtrl.hiddenList[$index]")
-				th(colspan='4')
+				td(colspan='4')
 					a 
 						| new subcategory in {{category.name}} 
 						i.fa.fa-plus 
 		tbody
 			tr
-				th(colspan='4')
+				td(colspan='4')
 					a(ng-click="budCtrl.addBudget()")
 						| new category in year {{budCtrl.year}} 
 						i.fa.fa-plus
