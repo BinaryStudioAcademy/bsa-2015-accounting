@@ -6,7 +6,7 @@
  */
 
 module.exports = {
-	find: getExpenses
+	//find: getExpenses
 };
 
 function getExpenses(req, res) {

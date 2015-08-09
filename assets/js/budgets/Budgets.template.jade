@@ -70,14 +70,14 @@
 					| left)
 				
 			tr(ng-hide="!budCtrl.hiddenList[$index]")
-				th(colspan='4',ng-click='budCtrl.addCategory()')
+				th(colspan='4')
 					a 
 						| new subcategory in {{category.name}} 
 						i.fa.fa-plus 
 		tbody
 			tr
-				th(colspan='4',ng-click='budCtrl.addCategory()')
-					a
+				th(colspan='4')
+					a(ng-click="budCtrl.addBudget()")
 						| new category in year {{budCtrl.year}} 
 						i.fa.fa-plus
 

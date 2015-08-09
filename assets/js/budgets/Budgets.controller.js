@@ -100,6 +100,40 @@ module.exports = function(app) {
 			vm.annualUndistributed = vm.annualBudget - vm.annualDistributed;
 		};
 
+		vm.addBudget = function() {
+			var newBud = {
+				//creatorId: "",
+				year: Number(vm.year),
+				//categoryId: "",
+				budget: 0,
+				subcategories: []
+			};
+			
+			console.log(vm.budgets);
+			console.log(vm.categories);
+
+			vm.budgets.push(newBud);
+		}
+
+		vm.addCategory = function() {
+			var newCat = {
+				name: "",
+				subcategories: "",
+				managers: ""
+			};
+
+			vm.categories.push(newCat);
+		}
+
+		vm.addSubcategory = function(category) {
+			var newSubcat = {
+				id: "",
+				name: ""
+			};
+
+			vm.subcategories.push(newSubcat);
+		}
+
 	
 	}
 };
