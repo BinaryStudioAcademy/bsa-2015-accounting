@@ -1,241 +1,119 @@
 #expenses-view
-  #expenses
-    margin 0
-    box-sizing border-box
-    font-family Roboto, sans-serif
-    background-color #fcfcfc
-    text-align center
+	#rightBlock
+		position absolute
+		right 10px
+		width 320px
+	#leftBlock
+		width 70%
+		float left
+		margin-left 3%
+	.btnAdd
+		color white
+		font-size 1.2em
+		background-color #009688
+		padding 9px 5px
+		border none
+		width 100%
+		border-radius 3px
+	.exchange
+		text-align center
+		color #222222
+		padding 12px 10px
+	.exchange, .expense-form
+		width 100%
+		border solid 1px #ddd
+		padding 10px
+		margin-bottom 10px
+	.expense-form input, .expense-form select, .expense-form textarea
+		padding-left 10px
+		font-size 1em
+		border solid 1px #ddd
+		border-radius 3px
+		margin-bottom 10px
+		background-color white
+		color #A9A9A9
+		float left
+		height: 40px;
+	.expense-form
+		input
+			padding-left 10px
+			
+		input[name="Name"]
+			width 100%
+		input[name="Cost"]
+			width 67.5%
+		select[name="Currency"]
+			width 30%
+			margin-left 2.5%
+		textarea
+			width 100%
+		button
+			color white
+			font-size 1.2em
+			background-color #009688
+			padding 9px 5px
+			border none
+			width 100%
+			border-radius 3px
+		.ng-valid.ng-dirty
+			border-color #78FA89
+	.expense-form  select[name="Category"]
+		width 48.75%
 
-  #main, .filters
-    margin-top 10px
-    margin-right 320px
+	.expense-form  select[name="Subcategory"]
+		width 48.75%
+		margin-left 2.5%
 
-  .panel-group .panel
-    width 96%
-    margin-left 2%
+	.expense-form input[name='Date']
+		width 100%
 
-  table
-    width 97% !important
-    margin 0 2%
-    border-collapse collapse
+	.filters
+		form
+			width 100%
+			border solid 1px #ddd
+			padding 10px
+			height 60px
+		button
+			padding 9px 30px
+			background-color rgb(0, 150, 136)
+			color #FFF
+			border none
+			border-radius 3px
+			margin-left 10px
+			margin-top 1px
+			font-weight 700
 
-  tr, th, td
-    border solid 1px #ddd
-
-  td, th
-    text-align center !important
-    padding 10px 0
-
-  tbody
-    tr
-      &:nth-child(odd)
-        background-color #f2f2f2
-
-  .table-expense
-    width 22%
-
-  .table-cost
-    width 10%
-
-  .table-category
-    width 11%
-
-  .table-sub
-    width 22%
-
-  .table-added
-    width 20%
-
-  .table-description
-    width 4%
-    border solid 1px #ddd
-
-  .description
-    color #1e88e5
-    font-weight 700
-
-  .load-more
-    display inline-block
-    background-color #f2f2f2
-    margin 10px auto
-    padding 15px
-    border solid 1px #ddd
-    border-radius 5px
-
-  aside
-    position absolute
-    right 10px
-    width 320px
-
-  .exchange
-    text-align center
-    color #222222
-    padding 12px 10px
-
-  .exchange, .expense-form
-    width 100%
-    border solid 1px #ddd
-    padding 10px
-    margin-bottom 10px
-
-  .expense-form input, .expense-form select, .expense-form textarea
-    padding 10px
-    font-size 1em
-    border solid 1px #ddd
-    border-radius 3px
-    margin-bottom 10px
-    background-color white
-    color #A9A9A9
-    float left
-
-  .expense-form
-    select
-      //padding 9px 10px
-      padding 11px 10px
-    input[name="Name"]
-      width 100%
-    input[name="Cost"]
-      width 67.5%
-    select[name="Currency"]
-      width 30%
-      margin-left 2.5%
-    textarea
-      width 100%
-    button
-      color white
-      font-size 1.2em
-      background-color #009688
-      padding 9px 5px
-      border none
-      width 100%
-      border-radius 3px
-    .ng-valid.ng-dirty
-      border-color #78FA89
-
-  .ng-submitted
-    .ng-invalid.ng-untouched
-      border-color #FA787E
-    .ng-dirty.ng-untouched
-      border-color #ddd
-
-  .expense-form  select[name="Category"]
-    width 48.75%
-
-  .expense-form  select[name="Subcategory"]
-    width 48.75%
-    margin-left 2.5%
-
-  .expense-form input[name='Date']
-    width 100%
-
-  .money-left
-    float left
-    width 100%
-    margin-bottom 10px
-    line-height 1.3
-    vertical-align middle
-    text-align left
-    color #A9A9A9
-    font-size 1em
-    padding 10px
-    border solid 1px #ddd
-    border-radius 3px
-
-  .green
-    color #009688
-
-  .form-preview
-    display none
-    width 96%
-    margin 0 2%
-    margin-bottom 10px
-    padding 10px
-    text-align center
-    border solid 1px #ddd
-    border-radius 3px
-
-  .filters
-    form
-      width 96%
-      margin 0 2%
-      border solid 1px #ddd
-      padding 10px
-      height 60px
-    button
-      padding 9px 30px
-      background-color rgb(0, 150, 136)
-      color #FFF
-      border none
-      border-radius 3px
-      margin-left 10px
-      margin-top 1px
-      font-weight 700
-
-  .filters form select, .filters form input
-    padding 10px
-    font-size 1em
-    border solid 1px #ddd
-    border-radius 3px
-    margin-bottom 10px
-    background-color white
-    color #A9A9A9
-    float left
-    margin-left 10px
-    width 23%
-
-  #mobile
-    display none
-    td
-      border none
-      text-align left
-    ul
-      list-style none
-
-  #toggle
-    background-color white
-    span
-      border-right solid 1px #ddd
-      border-left solid 1px #ddd
-      background-color #e2e2e2
-      width 90%
-      padding 10px
-      display block
-      margin 0 auto
-
-  #toggle, #toggle td
-    border solid 1px #fcfcfc
-    padding 0
-
-  .date-row
-    background-color #e2e2e2
-    font-weight 600
-
-  // Table
-  .sortorder
-    &:after
-      content '\25b2'
-    &.reverse
-      &:after
-        content '\25bc'
-
-  .fa.fa-info:before
-    color #009688
-
-  button.btn
-    margin-left 5px
-
-  div
-    .panel-default
-      & > .panel-heading
-        background-color rgba(137, 177, 177, 0.56)
-
-  span
-    &.dropdown-menu
-      &.ng-binding
-        min-width 400px
-        min-height 60px
-        margin -15px 20px 0
-        padding 5px
-  .fa
-    padding 0 10px
-    cursor pointer
+	.filters form select, .filters form input
+		padding 10px
+		font-size 1em
+		border solid 1px #ddd
+		border-radius 3px
+		margin-bottom 10px
+		background-color white
+		color #A9A9A9
+		float left
+		margin-left 10px
+		width 23%
+	table
+		width 100%
+		margin 3% 0
+		td, th
+			text-align center
+			border 1px solid #ddd
+			padding 10px
+			vertical-align middle
+			font-size 14px
+		th
+			background #f2f2f2
+			font-weight normal
+	button
+		margin-right 10px
+		&:last-child
+			margin-right 0
+	i, a
+		cursor pointer
+	select
+		padding 10px
+		border-radius 5px
+	.dropdown-menu
+		padding 10px
