@@ -14,7 +14,7 @@ module.exports = function(app) {
     };
 
     function getRequest() {
-      return $resource("/expense/:id?sort=time%20DESC", { id: "@id" });
+      return $resource("/expense/:id", { id: "@id" });
     }
 
     /**

@@ -13,7 +13,7 @@ module.exports = function(app) {
 
     function getRequest(year) {
       if (year) return $resource("/budget", { where: {"year": year}});
-      else return $resource("/budget/:id?sort=year%20DESC", { id: "@id"});
+      else return $resource("/budget/:id", { id: "@id"});
     }
 
     /**
