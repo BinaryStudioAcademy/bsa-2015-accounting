@@ -1,3 +1,5 @@
+var swal = require('sweetalert');
+
 module.exports = function(app) {
   app.controller('ExpensesController', ExpensesController);
 
@@ -10,9 +12,11 @@ module.exports = function(app) {
     vm.deleteExpense = deleteExpense;
     vm.editExpense = editExpense;
     vm.filterExpenses = filterExpenses;
+    vm.getExpensesByDate = getExpensesByDate;
 
     var expensesLimit = 10;
     vm.expenses = [];
+    vm.dates = [];
 
     loadExpenses();
 
@@ -20,6 +24,9 @@ module.exports = function(app) {
       ExpensesService.getExpenses(expensesLimit).then(function(data) {
         // Find subcategory name
         data.forEach(function(expense) {
+          expense.time = new Date(expense.time * 1000).toDateString();
+          if(vm.dates.indexOf(String(expense.time)) < 0) vm.dates.push(String(expense.time));
+
           for(var subcategory in expense.categoryId.subcategories) {
             if(expense.subcategoryId == expense.categoryId.subcategories[subcategory].id) {
               expense.subcategoryName = expense.categoryId.subcategories[subcategory].name;
@@ -31,29 +38,48 @@ module.exports = function(app) {
       });
     }
 
-    function loadMoreExpenses() {
-      expensesLimit += 10;
-      ExpensesService.getExpenses(expensesLimit).then(function(data) {
-        vm.expenses = data;
-      });
-    }
-
-    function deleteExpense(id) {
-      ExpensesService.deleteExpense(id).then(function() {
-        for(var i = 0; i < vm.expenses.length; i++) {
-          if(vm.expenses[i].id === id) {
-            vm.expenses.splice(i, 1);
-            break;
-          }
+    function getExpensesByDate(date) {
+      var expenses = [];
+      vm.expenses.forEach(function(expense) {
+        if(date == expense.time) {
+          expenses.push(expense);
         }
       });
+      return expenses;
     }
 
-    // Edit properties
-    vm.expense = {};
+    function loadMoreExpenses() {
+      expensesLimit += 10;
+      loadExpenses();
+    }
 
-    function editExpense(id) {
-      ExpensesService.editExpense(id, vm.expense);
+    function deleteExpense(id, name) {
+      swal({
+          title: "Are you sure?",
+          text: "Are you sure want do delete expense '" + name + "'?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#DD6B55",
+          confirmButtonText: "Yes, delete it!",
+          closeOnConfirm: false
+        },
+        function() {
+          ExpensesService.deleteExpense(id).then(function() {
+            for(var i = 0; i < vm.expenses.length; i++) {
+              if(vm.expenses[i].id === id) {
+                vm.expenses.splice(i, 1);
+                break;
+              }
+            }
+          });
+          swal("Deleted!", "Expense has been deleted.", "success");
+        });
+    }
+
+    function editExpense(id, data, field) {
+      var expense = {};
+      expense[field] = data;
+      ExpensesService.editExpense(id, expense);
     }
 
     // Filter properties
@@ -61,6 +87,18 @@ module.exports = function(app) {
 
     function filterExpenses() {
       ExpensesService.getExpensesByFilter(vm.filters).then(function(data) {
+        vm.dates = [];
+        data.forEach(function(expense) {
+          expense.time = new Date(expense.time * 1000).toDateString();
+          if(vm.dates.indexOf(String(expense.time)) < 0) vm.dates.push(String(expense.time));
+
+          for(var subcategory in expense.categoryId.subcategories) {
+            if(expense.subcategoryId == expense.categoryId.subcategories[subcategory].id) {
+              expense.subcategoryName = expense.categoryId.subcategories[subcategory].name;
+              break;
+            }
+          }
+        });
         vm.expenses = data;
       });
     }
