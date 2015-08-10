@@ -2,13 +2,15 @@ var angular = require('angular');
 
 require('angular-xeditable');
 require('angular-google-chart');
+require('ng-alertify');
 
 var app = angular.module('accounting', [
   require('angular-resource'),
   require('angular-route'),
   require('angular-ui-bootstrap'),
   'xeditable',
-  "googlechart"
+  "googlechart",
+   'Alertify'
 ]);
 
 require('./budgets/index.js')(app);
@@ -19,3 +21,4 @@ require('./currency/index.js')(app);
 require('./charts/index.js')(app);
 require('./shared/index.js')(app);
 require('./route.js')(app);
+			
