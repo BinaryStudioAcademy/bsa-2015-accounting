@@ -1,3 +1,5 @@
+var swal = require('sweetalert');
+
 module.exports = function(app) {
   app.controller('ExpensesController', ExpensesController);
 
@@ -52,14 +54,26 @@ module.exports = function(app) {
     }
 
     function deleteExpense(id, name) {
-      ExpensesService.deleteExpense(id).then(function() {
-        for(var i = 0; i < vm.expenses.length; i++) {
-          if(vm.expenses[i].id === id) {
-            vm.expenses.splice(i, 1);
-            break;
-          }
-        }
-      });
+      swal({
+          title: "Are you sure?",
+          text: "Are you sure want do delete expense '" + name + "'?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#DD6B55",
+          confirmButtonText: "Yes, delete it!",
+          closeOnConfirm: false
+        },
+        function() {
+          ExpensesService.deleteExpense(id).then(function() {
+            for(var i = 0; i < vm.expenses.length; i++) {
+              if(vm.expenses[i].id === id) {
+                vm.expenses.splice(i, 1);
+                break;
+              }
+            }
+          });
+          swal("Deleted!", "Expense has been deleted.", "success");
+        });
     }
 
     function editExpense(id, data, field) {

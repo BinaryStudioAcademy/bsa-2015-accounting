@@ -1,3 +1,5 @@
+var swal = require('sweetalert');
+
 module.exports = function(app) {
   app.controller('ExpenseFormController', ExpenseFormController);
 
@@ -18,6 +20,7 @@ module.exports = function(app) {
       // Post
       ExpensesService.createExpense(vm.expense).then(function() {
         vm.expense = {};
+        swal("Successfully added!", "You added new expense!", "success");
       });
     }
 
