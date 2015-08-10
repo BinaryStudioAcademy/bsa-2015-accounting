@@ -11,16 +11,17 @@ module.exports = function(app) {
       deleteBudget: deleteBudget
     };
 
-    function getRequest() {
-      return $resource("/budget/:id?sort=year%20DESC", { id: "@id" });
+    function getRequest(year) {
+      if (year) return $resource("/budget", { where: {"year": year}});
+      else return $resource("/budget/:id", { id: "@id"});
     }
 
     /**
      * Gets budgets array
      * @returns budgets array
      */
-    function getBudgets() {
-      return getRequest().query().$promise;
+    function getBudgets(year) {
+      return getRequest(year).query().$promise;
     }
 
     /**

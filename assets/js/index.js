@@ -19,5 +19,6 @@ require('./expenses/index.js')(app);
 require('./users/index.js')(app);
 require('./currency/index.js')(app);
 require('./charts/index.js')(app);
+require('./shared/index.js')(app);
 require('./route.js')(app);
 			
