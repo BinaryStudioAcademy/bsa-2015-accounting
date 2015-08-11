@@ -33,33 +33,35 @@
 				input.form-control(type='text', name='category', placeholder='Category', ng-model="expCtr.filters.categoryId.name", ng-change="expCtr.filterExpenses()")
 				input.form-control(type='text', name='subcategory', placeholder='Subcategory', ng-model="expCtr.filters.subcategory", ng-change="expCtr.filterExpenses()")
 				input.form-control(type='text', name='author', placeholder='Author', ng-model="expCtr.filters.creator", ng-change="expCtr.filterExpenses()")
+		
+		table.table-hover
+			colgroup
+				col.table-description
+				col.table-expense
+				col.table-cost
+				col.table-category
+				col.table-sub
+				col.table-added
+			thead
+				tr
+					th
+						| Edit
+					th
+						| Expense
+					th
+						| Cost
+					th
+						| $ / &#8372;
+					th
+						| Category
+					th
+						| Subcategory
+					th
+						| Added by
+					th
+						i.fa.fa-info-circle
 		#main
 			table.table-hover
-				colgroup
-					col.table-description
-					col.table-expense
-					col.table-cost
-					col.table-category
-					col.table-sub
-					col.table-added
-				thead
-					tr
-						th(style='width:10%')
-							| Edit
-						th(style='width:15%')
-							| Expense
-						th(style='width:10%')
-							| Cost
-						th(style='width:10%')
-							| $ / &#8372;
-						th(style='width:15%')
-							| Category
-						th(style='width:15%')
-							| Subcategory
-						th(style='width:20%')
-							| Added by
-						th(style='width:4%')
-							i.fa.fa-info-circle
 				tbody(ng-repeat="date in expCtr.dates")
 					tr
 						td
