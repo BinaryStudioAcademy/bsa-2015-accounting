@@ -13,13 +13,17 @@ module.exports = function(app) {
     vm.editExpense = editExpense;
     vm.filterExpenses = filterExpenses;
     vm.getExpensesByDate = getExpensesByDate;
-
+    vm.toggleCustom =toggleCustom;
+    
     var expensesLimit = 10;
     vm.expenses = [];
     vm.dates = [];
 
     loadExpenses();
-
+    vm.hiddenList=[];
+   function toggleCustom(index) {
+      vm.hiddenList[index] = !vm.hiddenList[index];
+    };
     function loadExpenses() {
       ExpensesService.getExpenses(expensesLimit).then(function(data) {
         // Find subcategory name
