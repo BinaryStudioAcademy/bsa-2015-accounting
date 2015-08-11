@@ -20,9 +20,11 @@ function getAllYears(req, res) {
 				}
 			}
 		]).toArray(function(err, results) {
-			if (err) if (err) return res.serverError(err);
-
-			res.ok(results[0].years);
+			if (err) return res.serverError(err);
+			if (results && results.length !== 0) {
+				res.ok(results[0].years);
+			}
+			else res.ok([]);
 		});
 	});
 }

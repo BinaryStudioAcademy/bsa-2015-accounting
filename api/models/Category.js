@@ -6,7 +6,7 @@
 */
 
 module.exports = {
-	
+
 	identity: 'category',
 
 	attributes: {
@@ -14,20 +14,22 @@ module.exports = {
 			type: 'string',
 			required: true
 		},
-		subcategories: [{
-			id: {
-				type: 'string',
-				required: true,
-				unique: true
-			},
-			name: {
-				type: 'string',
-				required: true
-			}
-		}],
+		//subcategories: [{
+		//	id: {
+		//		type: 'string',
+		//		unique: true
+		//	},
+		//	name: {
+		//		type: 'string'
+		//	}
+		//}],
+		subcategories: {
+			type: 'array',
+			defaultsTo: []
+		},
 		managers: {
 			type: 'array',
-			required: true
+			defaultsTo: []
 		}
 	}
 };
