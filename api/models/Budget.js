@@ -21,6 +21,15 @@ module.exports = {
 			type: 'float',
 			required: true
 		},
+		//subcategories: [{
+		//	id: {
+		//		type: 'string',
+		//		unique: true
+		//	},
+		//	budget: {
+		//		type: 'float'
+		//	}
+		//}]
 		subcategories: {
 			type: 'array',
 			defaultsTo: []

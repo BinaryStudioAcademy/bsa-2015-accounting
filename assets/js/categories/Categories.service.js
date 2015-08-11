@@ -21,7 +21,7 @@ module.exports = function(app) {
      * @returns categories array
      */
     function getCategories() {
-      return getRequest().query();
+      return getRequest().query().$promise;
     }
 
     /**
@@ -29,7 +29,7 @@ module.exports = function(app) {
      * @returns category object
      */
     function getCategory(categoryId) {
-      return getRequest().get({ id: categoryId });
+      return getRequest().get({ id: categoryId }).$promise;
     }
 
     /**
@@ -38,7 +38,7 @@ module.exports = function(app) {
      * @returns created object
      */
     function createCategory(newCategory) {
-      return getRequest().save(newCategory);
+      return getRequest().save(newCategory).$promise;
     }
 
     /**
@@ -53,7 +53,7 @@ module.exports = function(app) {
           method: "PUT"
         }
       });
-      return data.update({ id: categoryId }, newCategory);
+      return data.update({ id: categoryId }, newCategory).$promise;
     }
 
     /**

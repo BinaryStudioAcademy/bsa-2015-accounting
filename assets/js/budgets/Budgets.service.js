@@ -30,7 +30,7 @@ module.exports = function(app) {
      * @returns created object
      */
     function createBudget(newBudget) {
-      return getRequest().save(newBudget);
+      return getRequest().save(newBudget).$promise;
     }
 
     /**
@@ -45,7 +45,7 @@ module.exports = function(app) {
           method: "PUT"
         }
       });
-      return data.update({ id: budgetId }, newBudget);
+      return data.update({ id: budgetId }, newBudget).$promise;
     }
 
     /**
