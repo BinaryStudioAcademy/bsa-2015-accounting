@@ -1,140 +1,159 @@
 var swal = require('sweetalert');
 
 module.exports = function(app) {
-	app.controller('ExpensesController', ExpensesController);
+  app.controller('ExpensesController', ExpensesController);
 
-	ExpensesController.$inject = ['ExpensesService', 'CategoriesService'];
+  ExpensesController.$inject = ['ExpensesService', '$rootScope', 'CategoriesService'];
 
-	function ExpensesController(ExpensesService, CategoriesService) {
-		var vm = this;
+  function ExpensesController(ExpensesService, $rootScope, CategoriesService) {
+    var vm = this;
 
-		vm.loadMoreExpenses = loadMoreExpenses;
-		vm.deleteExpense = deleteExpense;
-		vm.editExpense = editExpense;
-		vm.filterExpenses = filterExpenses;
-		vm.getExpensesByDate = getExpensesByDate;
-		vm.toggleCustom =toggleCustom;
-		
-		var expensesLimit = 10;
-		vm.expenses = [];
-		vm.dates = [];
+    vm.loadAllExpenses = loadAllExpenses;
+    vm.loadExpenses = loadExpenses;
+    vm.isLoadMore = isLoadMore;
+    vm.deleteExpense = deleteExpense;
+    vm.editExpense = editExpense;
+    vm.getExpensesByDate = getExpensesByDate;
+    vm.toggleCustom = toggleCustom;
 
-		loadExpenses();
-		vm.hiddenList=[];
-	 function toggleCustom(index) {
-			vm.hiddenList[index] = !vm.hiddenList[index];
-		};
-		function loadExpenses() {
-			ExpensesService.getExpenses(expensesLimit).then(function(data) {
-				// Find subcategory name
-				data.forEach(function(expense) {
-					expense.time = new Date(expense.time * 1000).toDateString();
-					if(vm.dates.indexOf(String(expense.time)) < 0) vm.dates.push(String(expense.time));
+    var MAX_LOAD = 10;
+    var startExpensesLimit = 0;
+    var expensesLimit = MAX_LOAD;
 
-					for(var subcategory in expense.categoryId.subcategories) {
-						if(expense.subcategoryId == expense.categoryId.subcategories[subcategory].id) {
-							expense.subcategoryName = expense.categoryId.subcategories[subcategory].name;
-							break;
-						}
-					}
-				});
-				vm.expenses = data;
-			});
-		}
+    vm.allExpenses = [];
+    vm.expenses = [];
+    vm.dates = [];
 
-		function getExpensesByDate(date) {
-			var expenses = [];
-			vm.expenses.forEach(function(expense) {
-				if(date == expense.time) {
-					expenses.push(expense);
-				}
-			});
-			return expenses;
-		}
+    loadAllExpenses(2005);
 
-		function loadMoreExpenses() {
-			expensesLimit += 10;
-			loadExpenses();
-		}
+    vm.hiddenList=[];
+    function toggleCustom(index) {
+      vm.hiddenList[index] = !vm.hiddenList[index];
+    }
 
-		function deleteExpense(id, name) {
-			swal({
-					title: "Are you sure?",
-					text: "Are you sure want do delete expense '" + name + "'?",
-					type: "warning",
-					showCancelButton: true,
-					confirmButtonColor: "#DD6B55",
-					confirmButtonText: "Yes, delete it!",
-					closeOnConfirm: false
-				},
-				function() {
-					ExpensesService.deleteExpense(id).then(function() {
-						for(var i = 0; i < vm.expenses.length; i++) {
-							if(vm.expenses[i].id === id) {
-								vm.expenses.splice(i, 1);
-								break;
-							}
-						}
-					});
-					swal("Deleted!", "Expense has been deleted.", "success");
-				});
-		}
+    function loadAllExpenses(year) {
+      ExpensesService.getAllExpenses(year).then(function(data) {
+        vm.allExpenses = data;
+        convertDates(vm.allExpenses);
+        loadExpenses();
+      });
+    }
 
-		function editExpense(id, data, field) {
-			console.log(data);
+    function convertDates(array) {
+      array.forEach(function(item) {
+        item.time = new Date(item.time * 1000).toDateString();
+      });
+    }
 
-			var expense = {};
-			expense[field] = data;
-			ExpensesService.editExpense(id, expense);
-		}
+    function isLoadMore() {
+      if(typeof vm.allExpenses != "undefined") {
+        if(vm.allExpenses.length <= MAX_LOAD && vm.allExpenses.length != 0) {
+          startExpensesLimit = 0;
+          expensesLimit = vm.allExpenses.length;
+          return false;
+        } else return true;
+      }
+    }
 
-		// Filter properties
-		vm.filters = {};
+    function loadExpenses() {
+      // Check for length
+      isLoadMore();
 
-		function filterExpenses() {
-			ExpensesService.getExpensesByFilter(vm.filters).then(function(data) {
-				vm.dates = [];
-				data.forEach(function(expense) {
-					expense.time = new Date(expense.time * 1000).toDateString();
-					if(vm.dates.indexOf(String(expense.time)) < 0) vm.dates.push(String(expense.time));
+      for(var i = startExpensesLimit; i < expensesLimit; i++) {
+        // Push dates
+        if(vm.dates.indexOf(String(vm.allExpenses[i].time)) < 0) vm.dates.push(String(vm.allExpenses[i].time));
 
-					for(var subcategory in expense.categoryId.subcategories) {
-						if(expense.subcategoryId == expense.categoryId.subcategories[subcategory].id) {
-							expense.subcategoryName = expense.categoryId.subcategories[subcategory].name;
-							break;
-						}
-					}
-				});
-				vm.expenses = data;
-			});
-		}
-vm.categories = [];
-vm.subcategories = [];
-vm.getSubcategories = getSubcategories;
+        // Find subcategory names
+        for (var subcategory in vm.allExpenses[i].categoryId.subcategories) {
+          if(vm.allExpenses[i].subcategoryId == vm.allExpenses[i].categoryId.subcategories[subcategory].id) {
+            vm.allExpenses[i].subcategoryName = vm.allExpenses[i].categoryId.subcategories[subcategory].name;
+            break;
+          }
+        }
 
-getCategories();
+        // Add expense to the common array
+        vm.expenses[i] = vm.allExpenses[i];
+        vm.expenses[i].categoryName = vm.allExpenses[i].categoryId.name;
+        vm.expenses[i].authorName = vm.allExpenses[i].creatorId.name;
+      }
 
-function getCategories() {
-	CategoriesService.getCategories().then(function(data) {
-		data.forEach(function (category) {
-			vm.categories.push(category);
-		});
-	});
-}
+      startExpensesLimit += MAX_LOAD;
+      expensesLimit += MAX_LOAD;
+    }
 
-function getSubcategories(categoryModel) {
-	console.log(categoryModel);
-	if(categoryModel != null) {
-		for(var category in vm.categories) {
-			if(vm.categories[category].name == categoryModel.name) {
-				vm.subcategories = [];
-				vm.categories[category].subcategories.forEach(function(subcategory) {
-					vm.subcategories.push(subcategory);
-				});
-				break;
-			}
-		}
-	}
-}
-	}
+    function getExpensesByDate(date) {
+      var expenses = [];
+      vm.expenses.forEach(function(expense) {
+        if(date == expense.time) {
+          expenses.push(expense);
+        }
+      });
+      return expenses;
+    }
+
+    // On new expense
+    $rootScope.$on('new-expense', function(event, args) {
+      if(vm.dates.indexOf(String(args.time)) < 0) vm.dates.unshift(String(args.time));
+      vm.expenses.push(args);
+    });
+
+    function deleteExpense(id, name) {
+      swal({
+          title: "Are you sure?",
+          text: "Are you sure want do delete expense '" + name + "'?",
+          type: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#DD6B55",
+          confirmButtonText: "Yes, delete it!",
+          closeOnConfirm: false
+        },
+        function() {
+          ExpensesService.deleteExpense(id).then(function() {
+            for(var i = 0; i < vm.expenses.length; i++) {
+              if(vm.expenses[i].id === id) {
+                vm.expenses.splice(i, 1);
+                vm.allExpenses.splice(i, 1);
+                break;
+              }
+            }
+          });
+          swal("Deleted!", "Expense has been deleted.", "success");
+        });
+    }
+
+    function editExpense(id, data, field) {
+      var expense = {};
+      expense[field] = data;
+      ExpensesService.editExpense(id, expense);
+    }
+
+    // Filter combo boxes
+    vm.categories = [];
+    vm.subcategories = [];
+    vm.getSubcategories = getSubcategories;
+
+    getCategories();
+
+    function getCategories() {
+      CategoriesService.getCategories().then(function(data) {
+        data.forEach(function (category) {
+          vm.categories.push(category);
+        });
+      });
+    }
+
+    function getSubcategories(categoryModel) {
+      if(categoryModel != null) {
+        for(var category in vm.categories) {
+          if(vm.categories[category].name == categoryModel.name) {
+            vm.subcategories = [];
+            vm.categories[category].subcategories.forEach(function(subcategory) {
+              vm.subcategories.push(subcategory);
+            });
+            break;
+          }
+        }
+      }
+    }
+  }
 };
