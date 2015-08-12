@@ -8,14 +8,20 @@
 module.exports = {
 	attributes: {
 		categoryId: {
-			model: 'category'
+			type: 'string',
+			required: true
+		},
+		subcategoryId: {
+			type: 'string',
+			required: true
 		},
 		time: {
 			type: 'integer',
 			required: true
 		},
 		creatorId: {
-			model: 'user'
+			type: 'string',
+			required: true
 		},
 		price: {
 			type: 'float',
@@ -30,12 +36,7 @@ module.exports = {
 			required: true
 		},
 		description: {
-			type: 'string',
-			required: false
-		},
-		subcategoryId: {
-			type: 'string',
-			required: true
+			type: 'string'
 		}
 	}
 };

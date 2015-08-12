@@ -1,9 +1,6 @@
 var bcrypt = require('bcryptjs');
 
 module.exports = {
-
-	identity: 'user',
-
 	attributes: {
 		login: {
 			type: 'email',

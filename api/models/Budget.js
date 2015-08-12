@@ -8,17 +8,15 @@
 module.exports = {
 	attributes: {
 		creatorId: {
-			model: 'user'
+			type: 'string',
+			required: true
 		},
 		year: {
 			type: 'integer',
 			required: true
 		},
-		categoryId: {
-			model: 'category'
-		},
-		budget: {
-			type: 'float',
+		category: {
+			type: 'json',
 			required: true
 		},
 		//subcategories: [{
@@ -36,4 +34,3 @@ module.exports = {
 		}
 	}
 };
-

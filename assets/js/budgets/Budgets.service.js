@@ -54,7 +54,7 @@ module.exports = function(app) {
      * @returns deleted object
      */
     function deleteBudget(budgetId) {
-      return getRequest().remove({ id: budgetId });
+      return getRequest().remove({ id: budgetId }).$promise;
     }
   }
 };

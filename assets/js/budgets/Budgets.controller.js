@@ -7,9 +7,9 @@ module.exports = function(app) {
 		editableOptions.theme = 'bs3';
 	});
 
-	BudgetsController.$inject = ['BudgetsService', 'ExpensesService', 'CategoriesService', 'YearsService'];
+	BudgetsController.$inject = ['BudgetsService', 'ExpensesService', 'CategoriesService', 'YearsService', '$q'];
 
-	function BudgetsController(BudgetsService, ExpensesService, CategoriesService, YearsService) {
+	function BudgetsController(BudgetsService, ExpensesService, CategoriesService, YearsService, $q) {
 		var vm = this;
 
 		//togglig lists
@@ -19,7 +19,7 @@ module.exports = function(app) {
 		};
 
 		vm.years = [];
-		vm.categories = [];
+		vm.budgets = [];
 		vm.expenses = [];
 
 		YearsService.getYears().then(function(years) {
@@ -31,8 +31,7 @@ module.exports = function(app) {
 
 		vm.updateYear = function() {
 			BudgetsService.getBudgets(vm.year).then(function(budgets) {
-				vm.categories = budgets || [];
-				console.log(vm.categories);
+				vm.budgets = budgets || [];
 
 				vm.annualBudget = 0;
 				vm.annualUsed = 0;
@@ -41,13 +40,13 @@ module.exports = function(app) {
 				ExpensesService.getAllExpenses(vm.year).then(function(expenses) {
 					vm.expenses = expenses || [];
 
-					vm.categories.forEach(function(category) {
-						//category used money amount
+					vm.budgets.forEach(function(budget) {
+						//budget used money amount
 						var catUsed = 0;
 						var distributed = 0;
 
-						category.subcategories.forEach(function(subcategory) {
-							var subExpenses = _.filter(vm.expenses, {subcategoryId: subcategory.id});
+						budget.category.subcategories.forEach(function(subcategory) {
+							var subExpenses = _.filter(vm.expenses.subcategory, {id: subcategory.id});
 							var subUsed = 0;
 
 							subExpenses.forEach(function(subExpense) {
@@ -56,17 +55,15 @@ module.exports = function(app) {
 
 							catUsed += subUsed;
 							distributed += subcategory.budget;
-							subcategory.name = _.find(category.categoryId.subcategories, {id: subcategory.id}).name;
 							subcategory.used = subUsed;
 						});
 
-						category.name = category.categoryId.name;
-						category.used = catUsed;
-						category.undistributed = category.budget - distributed;
+						budget.used = catUsed;
+						budget.undistributed = budget.budget - distributed;
 
-						vm.annualBudget += category.budget;
-						vm.annualUsed += category.used;
-						vm.annualUndistributed += category.undistributed;
+						vm.annualBudget += budget.budget;
+						vm.annualUsed += budget.used;
+						vm.annualUndistributed += budget.undistributed;
 					});
 				});
 			});
@@ -79,27 +76,12 @@ module.exports = function(app) {
 		};
 
 		vm.addCategory = function() {
-			vm.categories.push({
+			vm.budgets.push({
 				name: "",
 				budget: 0,
 				used: 0,
 				subcategories: []
 			});
-			//var newCategory = {
-			//	name: "New category"
-			//}
-			//
-			//CategoriesService.createCategory(newCategory).then(function(category) {
-			//	var newBudget = {
-			//		creatorId: "unknown_id",
-			//		year: Number(vm.year),
-			//		categoryId: category.id,
-			//		budget: 0
-			//	}
-			//	BudgetsService.createBudget(newBudget).then(function(category) {
-			//		vm.updateYear();
-			//	});
-			//});
 		};
 
 		vm.addSubcategory = function(category) {
@@ -111,59 +93,71 @@ module.exports = function(app) {
 				});
 			}
 			else swal("Slow down buddy!", "You have to name that category first");
-			//var newId = vm.getRandomId();
-			//var subcategories = [];
-			//category.subcategories.forEach(function(subcategory) {
-			//	subcategories.push({
-			//		id: subcategory.id,
-			//		name: subcategory.name
-			//	});
-			//});
-			//subcategories.push({
-			//	id: newId,
-			//	name: "New subcategory"
-			//});
-			//var newCategory = {
-			//	subcategories: subcategories
-			//}
-			//CategoriesService.editCategory(category.categoryId.id, newCategory).then(function(updatedCategory) {
-			//	var subcategories = [];
-			//	category.subcategories.forEach(function(subcategory) {
-			//		subcategories.push({
-			//			id: subcategory.id,
-			//			budget: subcategory.budget
-			//		});
-			//	});
-			//	subcategories.push({
-			//		id: newId,
-			//		budget: 0
-			//	});
-			//	var newBudget = {
-			//		subcategories: subcategories
-			//	}
-			//	BudgetsService.editBudget(category.id, newBudget).then(function(updatedBudget) {
-			//		vm.updateYear();
-			//	});
-			//});
 		};
 
-		vm.saveCategoryName = function(data, category) {
-		};
+		vm.checkName = function(data, category, subcategory) {
+			if (data == "") {
+				return "You call that a name???";
+			}
+			var flag = false;
+			if (subcategory && data !== subcategory.name) {
+				flag = _.find(category.subcategories, {name: data});
+			}
+			else if (data !== category.name) {
+				flag = _.find(vm.budgets, {name: data});
+			}
+			if (flag) {
+				return "There already is " + data;
+			}
+		}
 
-		vm.saveSubcategoryName = function(data, category, subcategory) {
-		};
+		vm.checkBudget = function(data, category, subcategory) {
+			if (data == null) {
+				return "Maybe you meant 0?";
+			}
+			if (data < 0) {
+				return "Negative budgets not allowed";
+			}
+		}
 
-		vm.saveCategoryBudget = function(data, category) {
-		};
-
-		vm.saveSubcategoryBudget = function(data, category, subcategory) {
-		};
-
-		vm.deleteCategory = function(category) {
-		};
-
-		vm.deleteSubcategory = function(category, subcategory) {
-		};
+		vm.sendData = function(category, subcategory) {
+			if (subcategory) {
+				if (subcategory.id) {
+					_.find(category.categoryId.subcategories, {id: subcategory.id}).name = subcategory.name;
+				}
+				if (!subcategory.id) {
+					var newId = vm.getRandomId();
+					subcategory.id = newId;
+					console.log("subcategory", subcategory);
+					category.categoryId.subcategories.push({
+						id: newId,
+						name: subcategory.name
+					});
+					console.log("category.categoryId.subcategories", category.categoryId.subcategories);
+				}
+				var categoriesPromise = CategoriesService.editCategory(category.categoryId.id, {subcategories: category.categoryId.subcategories});
+				var budgetsPromise = BudgetsService.editBudget(category.id, {subcategories: category.subcategories});
+				return $q.all([categoriesPromise, budgetsPromise]).then(function () {
+					return vm.updateYear();
+				});
+			}
+			else {
+				if (category.categoryId) {
+					var categoriesPromise = CategoriesService.editCategory(category.categoryId.id, {name: category.name});
+					var budgetsPromise = BudgetsService.editBudget(category.id, {budget: category.budget});
+					return $q.all([categoriesPromise, budgetsPromise]).then(function () {
+						return vm.updateYear();
+					});
+				}
+				else {
+					CategoriesService.createCategory({name: category.name}).then(function(newCat) {
+						BudgetsService.createBudget({year: vm.year, categoryId: newCat.id}).then(function() {
+							return vm.updateYear();
+						});
+					});
+				}
+			}
+		}
 
 		vm.getRandomId = function() {
 			return String(Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 9999999);
