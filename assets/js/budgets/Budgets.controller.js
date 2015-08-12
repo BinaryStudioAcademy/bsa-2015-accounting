@@ -135,10 +135,7 @@ module.exports = function(app) {
 						return vm.updateYear();
 					}
 					else {
-						category.subcategories.push({
-							id: newId,
-							budget: 0
-						});
+						subcategory.id = newId;
 						BudgetsService.editBudget(category.id, {subcategories: category.subcategories}).then(function() {
 							return vm.updateYear();
 						});
