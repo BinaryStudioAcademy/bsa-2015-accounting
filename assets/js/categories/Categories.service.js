@@ -21,7 +21,7 @@ module.exports = function(app) {
      * @returns categories array
      */
     function getCategories() {
-      return getRequest().query();
+      return getRequest().query().$promise;
     }
 
     /**
