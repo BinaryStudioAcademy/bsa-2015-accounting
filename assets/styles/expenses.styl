@@ -1,12 +1,15 @@
 #expenses-view
+	margin-top 50px
 	#rightBlock
 		position absolute
 		right 10px
-		width 320px
+		width 20%
 	#leftBlock
-		width 70%
+		width 71%
 		float left
 		margin-left 3%
+		height
+		
 	.btnAdd
 		color white
 		font-size 1.2em
@@ -96,13 +99,13 @@
 		width 23%
 	table
 		width 100%
-		margin 3% 0
 		td, th
 			text-align center
 			border 1px solid #ddd
 			padding 10px
 			vertical-align middle
 			font-size 14px
+			
 		th
 			background #f2f2f2
 			font-weight normal
@@ -117,3 +120,19 @@
 		border-radius 5px
 	.dropdown-menu
 		padding 10px
+	#main
+		overflow auto
+		height 600px
+	table
+		&.fixed
+			table-layout fixed
+	.table-edit,
+	.table-expense,
+	.table-cost,
+	.table-carrency,
+	.table-category,
+	.table-sub,
+	.table-addBy
+		width 100px
+	.table-description
+		width 70px

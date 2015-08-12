@@ -33,33 +33,46 @@
 				input.form-control(type='text', name='category', placeholder='Category', ng-model="expCtr.filters.categoryId.name", ng-change="expCtr.filterExpenses()")
 				input.form-control(type='text', name='subcategory', placeholder='Subcategory', ng-model="expCtr.filters.subcategory", ng-change="expCtr.filterExpenses()")
 				input.form-control(type='text', name='author', placeholder='Author', ng-model="expCtr.filters.creator", ng-change="expCtr.filterExpenses()")
+		
+		table.table-hover.fixed
+			colgroup
+				col.table-edit
+				col.table-expense
+				col.table-cost
+				col.table-carrency
+				col.table-category
+				col.table-sub
+				col.table-addBy
+				col.table-description
+			thead
+				tr
+					th
+						| Edit
+					th
+						| Expense
+					th
+						| Cost
+					th
+						| $ / &#8372;
+					th
+						| Category
+					th
+						| Subcategory
+					th
+						| Added by
+					th
+						i.fa.fa-info-circle
 		#main
-			table.table-hover
+			table.table-hover.fixed
 				colgroup
-					col.table-description
+					col.table-edit
 					col.table-expense
 					col.table-cost
+					col.table-carrency
 					col.table-category
 					col.table-sub
-					col.table-added
-				thead
-					tr
-						th(style='width:10%')
-							| Edit
-						th(style='width:15%')
-							| Expense
-						th(style='width:10%')
-							| Cost
-						th(style='width:10%')
-							| $ / &#8372;
-						th(style='width:15%')
-							| Category
-						th(style='width:15%')
-							| Subcategory
-						th(style='width:20%')
-							| Added by
-						th(style='width:4%')
-							i.fa.fa-info-circle
+					col.table-addBy
+					col.table-description
 				tbody(ng-repeat="date in expCtr.dates")
 					tr
 						td
@@ -83,7 +96,7 @@
 							span(editable-text='expense.name', e-name='name', e-form='rowform', onbeforesave='expCtr.editExpense(expense.id, $data, "name")', e-required='')
 								| {{ expense.name  || 'empty' }}
 						td
-							span(editable-text='expense.price', e-name='price', e-form='rowform', onbeforesave='expCtr.editExpense(expense.id, $data, "price")', e-required='')
+							span(editable-number='expense.price', e-name='price', e-form='rowform', onbeforesave='expCtr.editExpense(expense.id, $data, "price")', e-required='')
 								| {{ expense.price  || 'empty' }}
 						td
 							span(editable-select='expense.currenc', e-name='status', e-form='rowform', e-ng-options='s.value as s.text for s in statuses' name='Currency', ng-model="formCtrl.expense.currency", required)
@@ -97,7 +110,7 @@
 						td
 							span(editable-text='expense.creatorId.name', e-name='creatorId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
 								| {{ expense.creatorId.name || 'empty' }}
-						td
+						td.infoTd
 							.btn-group(dropdown='')
 								button.btn(type='button', dropdown-toggle='')
 									i.fa.fa-info
