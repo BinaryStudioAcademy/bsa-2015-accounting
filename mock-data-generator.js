@@ -91,7 +91,7 @@ _.times(5, function(n) {
 			return {id: sub.id, budget: money};
 		});
 		var budget_money = Math.round((total * casual.random_element([1, Number((Math.random() * (1.15 - 1) + 1).toFixed(2))])) / 1000 ) * 1000;
-		var budget = Factory.build('Budget', {budget: budget_money, year: 2000 + n, categoryId: category._id, subcategories: sub_with_money, creatorId: _.sample(managers, 1)[0]});
+		var budget = Factory.build('Budget', {year: 2000 + n, category: {id: category._id, budget: budget_money}, subcategories: sub_with_money, creatorId: _.sample(managers, 1)[0]});
 		db.budget.push(budget);
 	});
 });

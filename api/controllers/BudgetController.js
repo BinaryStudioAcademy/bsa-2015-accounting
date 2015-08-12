@@ -23,12 +23,8 @@ function getBudgets(req, res) {
 		return [budgets, users, categories];
 	}).spread(function(budgets, users, categories) {
 		budgets.forEach(function(budget) {
-			var category = _.find(categories, {id: budget.categoryId});
-			budget.category = {
-				id: budget.categoryId,
-				name: category.name
-			};
-			delete budget.categoryId;
+			var category = _.find(categories, {id: budget.category.id});
+			budget.category.name = category.name;
 			budget.subcategories.forEach(function(subcategory) {
 				subcategory.name = _.find(category.subcategories, {id: subcategory.id}).name;
 			});
