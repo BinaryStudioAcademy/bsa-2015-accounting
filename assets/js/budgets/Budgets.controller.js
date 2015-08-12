@@ -32,7 +32,6 @@ module.exports = function(app) {
 		vm.updateYear = function() {
 			BudgetsService.getBudgets(vm.year).then(function(budgets) {
 				vm.categories = budgets || [];
-				console.log(vm.categories);
 
 				vm.annualBudget = 0;
 				vm.annualUsed = 0;
@@ -85,21 +84,6 @@ module.exports = function(app) {
 				used: 0,
 				subcategories: []
 			});
-			//var newCategory = {
-			//	name: "New category"
-			//}
-			//
-			//CategoriesService.createCategory(newCategory).then(function(category) {
-			//	var newBudget = {
-			//		creatorId: "unknown_id",
-			//		year: Number(vm.year),
-			//		categoryId: category.id,
-			//		budget: 0
-			//	}
-			//	BudgetsService.createBudget(newBudget).then(function(category) {
-			//		vm.updateYear();
-			//	});
-			//});
 		};
 
 		vm.addSubcategory = function(category) {
@@ -111,58 +95,109 @@ module.exports = function(app) {
 				});
 			}
 			else swal("Slow down buddy!", "You have to name that category first");
-			//var newId = vm.getRandomId();
-			//var subcategories = [];
-			//category.subcategories.forEach(function(subcategory) {
-			//	subcategories.push({
-			//		id: subcategory.id,
-			//		name: subcategory.name
-			//	});
-			//});
-			//subcategories.push({
-			//	id: newId,
-			//	name: "New subcategory"
-			//});
-			//var newCategory = {
-			//	subcategories: subcategories
-			//}
-			//CategoriesService.editCategory(category.categoryId.id, newCategory).then(function(updatedCategory) {
-			//	var subcategories = [];
-			//	category.subcategories.forEach(function(subcategory) {
-			//		subcategories.push({
-			//			id: subcategory.id,
-			//			budget: subcategory.budget
-			//		});
-			//	});
-			//	subcategories.push({
-			//		id: newId,
-			//		budget: 0
-			//	});
-			//	var newBudget = {
-			//		subcategories: subcategories
-			//	}
-			//	BudgetsService.editBudget(category.id, newBudget).then(function(updatedBudget) {
-			//		vm.updateYear();
-			//	});
-			//});
 		};
 
 		vm.saveCategoryName = function(data, category) {
+			if (data == "") {
+				return "You call that a name???";
+			}
+			else if (data !== category.name) {
+				if (category.categoryId) {
+					return CategoriesService.editCategory(category.categoryId.id, {name: data});
+				}
+				else {
+					CategoriesService.createCategory({name: data}).then(function(category) {
+						BudgetsService.createBudget({year: vm.year, categoryId: category.id}).then(function() {
+							return vm.updateYear();
+						});
+					});
+				}
+			}
 		};
 
 		vm.saveSubcategoryName = function(data, category, subcategory) {
+			if (data == "") {
+				return "You call that a name???";
+			}
+			else if (data !== subcategory.name) {
+				var newId = vm.getRandomId();
+				if (!subcategory.id) {
+					category.categoryId.subcategories.push({
+						id: newId,
+						name: data
+					});
+				}
+				else {
+					_.find(category.categoryId.subcategories, {id: subcategory.id}).name = data;
+				}
+				CategoriesService.editCategory(category.categoryId.id, {subcategories: category.categoryId.subcategories}).then(function() {
+					if (subcategory.id) {
+						return vm.updateYear();
+					}
+					else {
+						category.subcategories.push({
+							id: newId,
+							budget: 0
+						});
+						BudgetsService.editBudget(category.id, {subcategories: category.subcategories}).then(function() {
+							return vm.updateYear();
+						});
+					}
+				});
+			}
 		};
 
 		vm.saveCategoryBudget = function(data, category) {
+			if (data == null) {
+				return "Maybe you meant 0?";
+			}
+			if (data < 0) {
+				return "Negative budgets not allowed";
+			}
+			if (data !== category.budget) {
+				BudgetsService.editBudget(category.id, {budget: data}).then(function() {
+					return vm.updateYear();
+				});
+			}
 		};
 
 		vm.saveSubcategoryBudget = function(data, category, subcategory) {
+			if (data == null) {
+				return "Maybe you meant 0?";
+			}
+			if (data < 0) {
+				return "Negative budgets not allowed";
+			}
+			if (data !== subcategory.budget) {
+				_.find(category.subcategories, {id: subcategory.id}).budget = data;
+				BudgetsService.editBudget(category.id, {subcategories: category.subcategories}).then(function() {
+					return vm.updateYear();
+				});
+			}
 		};
 
 		vm.deleteCategory = function(category) {
+			if (!category.categoryId) {
+				var i = vm.categories.indexOf(category);
+				vm.categories.splice(i, 1);
+			}
+			else {
+				BudgetsService.deleteBudget(category.id).then(function() {
+					return vm.updateYear();
+				});
+			}
 		};
 
 		vm.deleteSubcategory = function(category, subcategory) {
+			if (!subcategory.id) {
+				var i = category.subcategories.indexOf(subcategory);
+				category.subcategories.splice(i, 1);
+			}
+			//else {
+			//	BudgetsService.deleteBudget(budgetId).then(function() {
+			//		return vm.updateYear();
+			//	});
+			//}
 		};
 
 		vm.getRandomId = function() {

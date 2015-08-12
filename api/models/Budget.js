@@ -19,7 +19,7 @@ module.exports = {
 		},
 		budget: {
 			type: 'float',
-			required: true
+			defaultsTo: 0
 		},
 		//subcategories: [{
 		//	id: {
