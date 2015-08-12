@@ -7,6 +7,7 @@
 		form.expense-form(name="expenseForm", ng-controller="ExpenseFormController as formCtrl",
 		ng-submit="expenseForm.$valid && formCtrl.createExpense(categoryModel, subcategoryModel)", novalidate)
 			input.form-control(type='text', name='Name', placeholder='Expense', ng-model="formCtrl.expense.name", required)
+			input.form-control(editable-text="formCtrl.expense.name" buttons='no' e-typeahead="state for state in states | filter:$viewValue | limitTo:8")
 			input.form-control(type='date', name='Date', placeholder='Date', ng-model="formCtrl.date", required)
 			select(name='Category', ng-model="categoryModel", ng-change="formCtrl.getSubcategories(categoryModel)",
 			ng-options="category.name for category in formCtrl.categories", required)
@@ -108,22 +109,22 @@
 							span(editable-number='expense.price', e-name='price', e-form='rowform', onbeforesave='expCtr.editExpense(expense.id, $data, "price")', e-required='')
 								| {{ expense.price  || 'empty' }}
 						td
-							span(editable-select='expense.currenc', e-name='status', e-form='rowform', e-ng-options='s.value as s.text for s in statuses' name='Currency', required)
+							span(editable-select='expense.currency', e-name='status', e-form='rowform', e-ng-options='s.value as s.text for s in statuses' name='Currency', required)
 								| {{ expense.currency }}
 
 
 						//-select
 						td
-							span(editable-select='expense.categoryId.name', e-name='name', onshow="expCtr.getCategories()", e-form='rowform', onbeforesave='expCtr.editExpense(expense.id, $data, "name")', e-required='' e-ng-options='category.id as category.name for category in expCtr.categories' e-ng-change="expCtr.getSubcategories($data)")
-								| {{ expense.categoryId.name || 'empty' }}
+							span(editable-select='expense.category.name', e-name='name', onshow="expCtr.getCategories()", e-form='rowform', onbeforesave='expCtr.editExpense(expense.id, $data, "name")', e-required='' e-ng-options='category.name for category in expCtr.categories' e-ng-change="expCtr.getSubcategories($data)")
+								| {{ expense.category.name || 'empty' }}
 						td
 							span(editable-select='expense.subcategoryName', e-name='subcategoryName', e-form='rowform', onbeforesave='expCtr.editExpense(expense.id, $data, "subcategoryName")', e-required='', e-ng-options='subcategory.name for subcategory in expCtr.subcategories')
 								| {{ expense.subcategoryName || 'empty' }}
 
 
 						td
-							span(editable-text='expense.creatorId.name', e-name='creatorId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
-								| {{ expense.creatorId.name || 'empty' }}
+							span(editable-text='expense.creator.name', e-name='creator', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
+								| {{ expense.creator.name || 'empty' }}
 						td.infoTd
 							.btn-group(dropdown='')
 								button.btn(type='button', dropdown-toggle='')

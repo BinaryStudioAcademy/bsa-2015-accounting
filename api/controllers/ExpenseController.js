@@ -4,8 +4,8 @@
  * @description :: Server-side logic for managing expenses
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
-
-var _ = require('lodash');
+var actionUtil = require('sails/lib/hooks/blueprints/actionUtil'),
+  _ = require('lodash');
 
 module.exports = {
 	find: getExpenses,
@@ -24,6 +24,7 @@ function expensesByYear(req, res) {
 
 function getExpenses(req, res) {
 	Expense.find({deletedBy: {$exists: false}})
+    .sort(actionUtil.parseSort(req))
 	.then(function(expenses) {
 		var users = User.find().then(function(users) {
 			return users;
@@ -54,5 +55,5 @@ function getExpenses(req, res) {
 		return res.send(expenses);
 	}).fail(function(err) {
 		return res.send(err);
-	}) 
+	})
 }
