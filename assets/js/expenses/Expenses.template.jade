@@ -32,6 +32,7 @@
 		.filters
 			form
 				input(type='text', name='cost-range', placeholder='Expense', ng-model="nameModelFilter")
+				input(editable-text="expCtr.filterWord" buttons='no' e-typeahead="expense.name for expense.name in expCtr.allExpenses | filter:$viewValue | limitTo:8" e-ng-model="nameModelFilter")
 				select(name='category', ng-model="categoryModelFilter", ng-change="expCtr.getSubcategories(categoryModelFilter)", ng-options="category.name for category in expCtr.categories")
 					option(value="") Category
 				select(name='subcategory', ng-model="subcategoryModelFilter", ng-options="subcategory.name for subcategory in expCtr.subcategories")
@@ -39,7 +40,7 @@
 				input(type='text', name='author', placeholder='Author', ng-model="authorModelFilter")
 				input(type='date', name='startDate', placeholder='Date', ng-model="startDateFilter")
 				input(type='date', name='endDate', placeholder='Date', ng-model="endDateFilter")
-
+				
 		table.table-hover.fixed
 			colgroup
 				col.table-edit
@@ -114,10 +115,10 @@
 
 						//-select
 						td
-							span(editable-select='expense.categoryId.name', e-name='name', onshow="expCtr.getCategories()", e-form='rowform', onbeforesave='expCtr.editExpense(expense.id, $data, "name")', e-required='' e-ng-options='category.name for category in expCtr.categories' e-ng-change="expCtr.getSubcategories($data)")
+							span(editable-select='expense.categoryId.name', e-name='name', onshow="expCtr.getCategories()", e-form='rowform', onbeforesave='expCtr.editExpense(expense.id, $data, "name")', e-required='' e-ng-options='category.id as category.name for category in expCtr.categories' e-ng-change="expCtr.getSubcategories($data)")
 								| {{ expense.categoryId.name || 'empty' }}
 						td
-							span(editable-select='expense.subcategoryName', e-name='subcategoryName', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='', e-ng-options='subcategory.name for subcategory in expCtr.subcategories')
+							span(editable-select='expense.subcategoryName', e-name='subcategoryName', e-form='rowform', onbeforesave='expCtr.editExpense(expense.id, $data, "subcategoryName")', e-required='', e-ng-options='subcategory.name for subcategory in expCtr.subcategories')
 								| {{ expense.subcategoryName || 'empty' }}
 
 

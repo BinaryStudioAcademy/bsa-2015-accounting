@@ -3,9 +3,9 @@ var swal = require('sweetalert');
 module.exports = function(app) {
   app.controller('ExpensesController', ExpensesController);
 
-  ExpensesController.$inject = ['ExpensesService', '$rootScope', 'CategoriesService'];
+  ExpensesController.$inject = ['ExpensesService', '$rootScope','CategoriesService','$filter'];
 
-  function ExpensesController(ExpensesService, $rootScope, CategoriesService) {
+  function ExpensesController(ExpensesService, $rootScope, CategoriesService, $filter) {
     var vm = this;
 
     vm.loadAllExpenses = loadAllExpenses;
@@ -15,7 +15,7 @@ module.exports = function(app) {
     vm.editExpense = editExpense;
     vm.getExpensesByDate = getExpensesByDate;
     vm.toggleCustom = toggleCustom;
-
+    vm.filterWord='';
     var MAX_LOAD = 10;
     var startExpensesLimit = 0;
     var expensesLimit = MAX_LOAD;
@@ -36,7 +36,9 @@ module.exports = function(app) {
         vm.allExpenses = data;
         convertDates(vm.allExpenses);
         loadExpenses();
+     console.log(vm.allExpenses);
       });
+
     }
 
     function convertDates(array) {

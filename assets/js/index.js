@@ -8,7 +8,8 @@ var app = angular.module('accounting', [
   require('angular-route'),
   require('angular-ui-bootstrap'),
   'xeditable',
-  "googlechart"
+  "googlechart",
+
 ]);
 
 require('./budgets/index.js')(app);
