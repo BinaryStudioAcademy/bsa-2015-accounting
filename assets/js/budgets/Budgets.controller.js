@@ -19,7 +19,7 @@ module.exports = function(app) {
 		};
 
 		vm.years = [];
-		vm.categories = [];
+		vm.budgets = [];
 		vm.expenses = [];
 
 		YearsService.getYears().then(function(years) {
@@ -31,7 +31,7 @@ module.exports = function(app) {
 
 		vm.updateYear = function() {
 			BudgetsService.getBudgets(vm.year).then(function(budgets) {
-				vm.categories = budgets || [];
+				vm.budgets = budgets || [];
 
 				vm.annualBudget = 0;
 				vm.annualUsed = 0;
@@ -40,13 +40,13 @@ module.exports = function(app) {
 				ExpensesService.getAllExpenses(vm.year).then(function(expenses) {
 					vm.expenses = expenses || [];
 
-					vm.categories.forEach(function(category) {
-						//category used money amount
+					vm.budgets.forEach(function(budget) {
+						//budget used money amount
 						var catUsed = 0;
 						var distributed = 0;
 
-						category.subcategories.forEach(function(subcategory) {
-							var subExpenses = _.filter(vm.expenses, {subcategoryId: subcategory.id});
+						budget.subcategories.forEach(function(subcategory) {
+							var subExpenses = _.filter(vm.expenses.subcategory, {id: subcategory.id});
 							var subUsed = 0;
 
 							subExpenses.forEach(function(subExpense) {
@@ -55,17 +55,16 @@ module.exports = function(app) {
 
 							catUsed += subUsed;
 							distributed += subcategory.budget;
-							subcategory.name = _.find(category.categoryId.subcategories, {id: subcategory.id}).name;
 							subcategory.used = subUsed;
 						});
 
-						category.name = category.categoryId.name;
-						category.used = catUsed;
-						category.undistributed = category.budget - distributed;
+						//budget.name = budget.categoryId.name;
+						//budget.used = catUsed;
+						//budget.undistributed = budget.budget - distributed;
 
-						vm.annualBudget += category.budget;
-						vm.annualUsed += category.used;
-						vm.annualUndistributed += category.undistributed;
+						//vm.annualBudget += budget.budget;
+						//vm.annualUsed += budget.used;
+						//vm.annualUndistributed += budget.undistributed;
 					});
 				});
 			});
@@ -78,7 +77,7 @@ module.exports = function(app) {
 		};
 
 		vm.addCategory = function() {
-			vm.categories.push({
+			vm.budgets.push({
 				name: "",
 				budget: 0,
 				used: 0,
@@ -106,7 +105,7 @@ module.exports = function(app) {
 				flag = _.find(category.subcategories, {name: data});
 			}
 			else if (data !== category.name) {
-				flag = _.find(vm.categories, {name: data});
+				flag = _.find(vm.budgets, {name: data});
 			}
 			if (flag) {
 				return "There already is " + data;
@@ -239,8 +238,8 @@ module.exports = function(app) {
 //
 		//vm.deleteCategory = function(category) {
 		//	if (!category.categoryId) {
-		//		var i = vm.categories.indexOf(category);
-		//		vm.categories.splice(i, 1);
+		//		var i = vm.budgets.indexOf(category);
+		//		vm.budgets.splice(i, 1);
 		//	}
 		//	else {
 		//		BudgetsService.deleteBudget(category.id).then(function() {
