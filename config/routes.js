@@ -49,7 +49,7 @@ module.exports.routes = {
   },
   
   'get /years': 'YearsController',
-  'get /expenses_by_year/:year': 'ExpenseController.byYear',
+  'get /expenses_by_year/:year': 'ExpenseController.find',
 
   'get /user/current': 'UserController.getCurrentUser'
 

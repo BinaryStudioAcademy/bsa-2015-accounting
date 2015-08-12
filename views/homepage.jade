@@ -2,14 +2,14 @@ extends ./layout
 
 
 block body
-	#menu-view
+	#menu-view(ng-controller='UsersController as menuCrt')
 		header
-			i#menu-btn.fa.fa-bars
+			i#menu-btn.fa.fa-bars(ng-click='menuCrt.toggleMenu()')
 			#page-name Accounting
 			#user-info
 				img#user-logo(src='http://lorempixel.com/40/40/cats/4/', alt='user logo')
 				span#user-name John Connor
-		nav
+		nav(ng-class="{'menu-active': menuCrt.menuTabs}")
 			ul.nav.nav-tabs.tabs-left
 				li
 					a(href='#/expenses', data-toggle='tab') Expenses
