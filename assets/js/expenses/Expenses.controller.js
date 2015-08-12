@@ -24,15 +24,15 @@ module.exports = function(app) {
     vm.expenses = [];
     vm.dates = [];
 
-    loadAllExpenses(2005);
+    loadAllExpenses();
 
-    vm.hiddenList=[];
+    vm.hiddenList = [];
     function toggleCustom(index) {
       vm.hiddenList[index] = !vm.hiddenList[index];
     }
 
-    function loadAllExpenses(year) {
-      ExpensesService.getAllExpenses(year).then(function(data) {
+    function loadAllExpenses() {
+      ExpensesService.getExpenses().then(function(data) {
         vm.allExpenses = data;
         convertDates(vm.allExpenses);
         loadExpenses();
@@ -64,17 +64,17 @@ module.exports = function(app) {
         if(vm.dates.indexOf(String(vm.allExpenses[i].time)) < 0) vm.dates.push(String(vm.allExpenses[i].time));
 
         // Find subcategory names
-        for (var subcategory in vm.allExpenses[i].categoryId.subcategories) {
-          if(vm.allExpenses[i].subcategoryId == vm.allExpenses[i].categoryId.subcategories[subcategory].id) {
-            vm.allExpenses[i].subcategoryName = vm.allExpenses[i].categoryId.subcategories[subcategory].name;
+        for (var subcategory in vm.allExpenses[i].category.subcategories) {
+          if(vm.allExpenses[i].subcategory == vm.allExpenses[i].category.subcategories[subcategory].id) {
+            vm.allExpenses[i].subcategoryName = vm.allExpenses[i].category.subcategories[subcategory].name;
             break;
           }
         }
 
         // Add expense to the common array
         vm.expenses[i] = vm.allExpenses[i];
-        vm.expenses[i].categoryName = vm.allExpenses[i].categoryId.name;
-        vm.expenses[i].authorName = vm.allExpenses[i].creatorId.name;
+        vm.expenses[i].categoryName = vm.allExpenses[i].category.name;
+        vm.expenses[i].authorName = vm.allExpenses[i].creator.name;
       }
 
       startExpensesLimit += MAX_LOAD;

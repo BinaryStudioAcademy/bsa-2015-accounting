@@ -22,8 +22,8 @@ module.exports = function(app) {
      * Gets expenses array
      * @returns promise object
      */
-    function getExpenses(setLimit) {
-      return $resource("/expense/:id", { id: "@id", limit: setLimit, sort: "time desc" }).query().$promise;
+    function getExpenses() {
+      return $resource("/expense/:id", { id: "@id", sort: "time desc" }).query().$promise;
     }
 
     function getAllExpenses(year) {

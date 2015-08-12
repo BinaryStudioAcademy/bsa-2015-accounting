@@ -20,8 +20,7 @@ module.exports = {
 			required: true
 		},
 		creatorId: {
-			type: 'string',
-			required: true
+			type: 'string'
 		},
 		price: {
 			type: 'float',
