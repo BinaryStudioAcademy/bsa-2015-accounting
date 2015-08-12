@@ -8,14 +8,16 @@
 module.exports = {
 	attributes: {
 		creatorId: {
-			model: 'user'
+			type: 'string',
+			required: true
 		},
 		year: {
 			type: 'integer',
 			required: true
 		},
 		categoryId: {
-			model: 'category'
+			type: 'string',
+			required: true
 		},
 		budget: {
 			type: 'float',

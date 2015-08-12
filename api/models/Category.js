@@ -6,9 +6,6 @@
 */
 
 module.exports = {
-
-	identity: 'category',
-
 	attributes: {
 		name: {
 			type: 'string',
