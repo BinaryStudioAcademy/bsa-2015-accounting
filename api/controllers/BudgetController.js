@@ -5,7 +5,8 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
-var _ = require('lodash');
+var actionUtil = require('sails/lib/hooks/blueprints/actionUtil'),
+		_ = require('lodash');
 
 module.exports = {
 	find: getBudgets
@@ -13,6 +14,7 @@ module.exports = {
 
 function getBudgets(req, res) {
 	Budget.find({deletedBy: {$exists: false}})
+	.where( actionUtil.parseCriteria(req) )
 	.then(function(budgets) {
 		var users = User.find().then(function(users) {
 			return users;

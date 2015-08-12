@@ -8,22 +8,19 @@
 var _ = require('lodash');
 
 module.exports = {
-	find: getExpenses,
-	byYear: expensesByYear
+	find: getExpenses
 };
 
-function expensesByYear(req, res) {
-	var year = req.param('year');
-	var start = Date.parse('01/01/' + year + ' 00:00:00') / 1000;
-	var end = Date.parse('12/31/' + year + ' 23:59:59') / 1000;
-
-	Expense.find({deletedBy: {$exists: false}, time: {$gte: start, $lte: end }}).populateAll().exec(function(err, expenses) {
-		return res.send(expenses);
-	});
-}
-
 function getExpenses(req, res) {
-	Expense.find({deletedBy: {$exists: false}})
+	var year = req.param('year');
+	var filter = {deletedBy: {$exists: false}};
+	if (year) {
+		var start = Date.parse('01/01/' + year + ' 00:00:00') / 1000;
+		var end = Date.parse('12/31/' + year + ' 23:59:59') / 1000;
+		filter = {deletedBy: {$exists: false}, time: {$gte: start, $lte: end }}
+	}
+
+	Expense.find(filter)
 	.then(function(expenses) {
 		var users = User.find().then(function(users) {
 			return users;

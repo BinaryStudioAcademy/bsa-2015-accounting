@@ -46,7 +46,9 @@ module.exports = function(app) {
 						var distributed = 0;
 
 						budget.category.subcategories.forEach(function(subcategory) {
-							var subExpenses = _.filter(vm.expenses.subcategory, {id: subcategory.id});
+							var subExpenses = _.filter(vm.expenses, function(expense) {
+								return expense.subcategory.id == subcategory.id;
+							});
 							var subUsed = 0;
 
 							subExpenses.forEach(function(subExpense) {
@@ -58,12 +60,12 @@ module.exports = function(app) {
 							subcategory.used = subUsed;
 						});
 
-						budget.used = catUsed;
-						budget.undistributed = budget.budget - distributed;
+						budget.category.used = catUsed;
+						budget.category.undistributed = budget.category.budget - distributed;
 
-						vm.annualBudget += budget.budget;
-						vm.annualUsed += budget.used;
-						vm.annualUndistributed += budget.undistributed;
+						vm.annualBudget += budget.category.budget;
+						vm.annualUsed += budget.category.used;
+						vm.annualUndistributed += budget.category.undistributed;
 					});
 				});
 			});
@@ -128,12 +130,10 @@ module.exports = function(app) {
 				if (!subcategory.id) {
 					var newId = vm.getRandomId();
 					subcategory.id = newId;
-					console.log("subcategory", subcategory);
 					category.categoryId.subcategories.push({
 						id: newId,
 						name: subcategory.name
 					});
-					console.log("category.categoryId.subcategories", category.categoryId.subcategories);
 				}
 				var categoriesPromise = CategoriesService.editCategory(category.categoryId.id, {subcategories: category.categoryId.subcategories});
 				var budgetsPromise = BudgetsService.editBudget(category.id, {subcategories: category.subcategories});
