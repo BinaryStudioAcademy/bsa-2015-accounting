@@ -32,6 +32,8 @@ function getBudgets(req, res) {
 			budget.subcategories.forEach(function(subcategory) {
 				subcategory.name = _.find(category.subcategories, {id: subcategory.id}).name;
 			});
+			budget.category.subcategories = budget.subcategories;
+			delete budget.subcategories;
 			budget.creator = {
 				id: budget.creatorId,
 				name: _.find(users, {id: budget.creatorId}).name
