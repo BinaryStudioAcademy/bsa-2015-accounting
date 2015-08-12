@@ -11,6 +11,10 @@ module.exports = {
 			type: 'string',
 			required: true
 		},
+		subcategoryId: {
+			type: 'string',
+			required: true
+		},
 		time: {
 			type: 'integer',
 			required: true
@@ -33,10 +37,6 @@ module.exports = {
 		},
 		description: {
 			type: 'string'
-		},
-		subcategoryId: {
-			type: 'string',
-			required: true
 		}
 	}
 };
