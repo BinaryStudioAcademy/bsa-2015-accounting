@@ -1,142 +1,133 @@
 #expenses-view
-  aside
+  #rightBlock
     .exchange(ng-controller="CurrencyController as currencyCtrl")
       b Today currency exchange rate
       br
-      |      {{currencyCtrl.exchangeRate}} UAH for 1 USD
-    .form-preview
-      | Add expense
-      i.fa.fa-caret-down
+      |{{currencyCtrl.exchangeRate}} UAH for 1 USD
     form.expense-form(name="expenseForm", ng-controller="ExpenseFormController as formCtrl",
-      ng-submit="expenseForm.$valid && formCtrl.createExpense(categoryModel, subcategoryModel)", novalidate)
-      input(type='text', name='Name', placeholder='Expense', ng-model="formCtrl.expense.name", required)
-      input(type='date', name='Date', placeholder='Date', ng-model="formCtrl.date", required)
+    ng-submit="expenseForm.$valid && formCtrl.createExpense(categoryModel, subcategoryModel)", novalidate)
+      input.form-control(type='text', name='Name', placeholder='Expense', ng-model="formCtrl.expense.name", required)
+      input.form-control(type='date', name='Date', placeholder='Date', ng-model="formCtrl.date", required)
       select(name='Category', ng-model="categoryModel", ng-change="formCtrl.getSubcategories(categoryModel)",
-        ng-options="category.name for category in formCtrl.categories", required)
+      ng-options="category.name for category in formCtrl.categories", required)
         option(value="") Category
       select(name='Subcategory', ng-model="subcategoryModel",
-        ng-options="subcategory.name for subcategory in formCtrl.subcategories", required)
+      ng-options="subcategory.name for subcategory in formCtrl.subcategories", required)
         option(value="") Subcategory
-      input(type='number', name='Cost', placeholder='Cost', ng-model="formCtrl.expense.price", required)
-      select(name='Currency', ng-model="formCtrl.expense.currency", required)
+      input.form-control(type='number', name='Cost', placeholder='Cost', ng-model="formCtrl.expense.price", required)
+      select.form-control(name='Currency', ng-model="formCtrl.expense.currency", required)
         option USD
         option UAH
-      textarea(placeholder='Description', ng-model="formCtrl.expense.description")
+      textarea.form-control(placeholder='Description', ng-model="formCtrl.expense.description", required)
       .money-left
-        b {{formCtrl.selectedCategory}} budget:
-        span.green
+        b Marketing budget:
+        span.green $10000
         |  left
         br
-        b {{formCtrl.selectedSubcategory}} budget:
+        b Parties budget:
         span.green $3000
         |  left
-      button(type="submit") Add expense
-  .filters
-    .form-preview
-      | Filters
-      i.fa.fa-caret-down
-    form
-      input(type='text', name='cost-range', placeholder='Expense', ng-model="nameModelFilter")
-      select(name='category', ng-model="categoryModelFilter", ng-change="expCtr.getSubcategories(categoryModelFilter)", ng-options="category.name for category in expCtr.categories")
-        option(value="") Category
-      select(name='subcategory', ng-model="subcategoryModelFilter", ng-options="subcategory.name for subcategory in expCtr.subcategories")
-        option(value="") Subcategory
-      input(type='text', name='author', placeholder='Author', ng-model="authorModelFilter")
-      input(type='date', name='startDate', placeholder='Date', ng-model="startDateFilter")
-      input(type='date', name='endDate', placeholder='Date', ng-model="endDateFilter")
-  #main
-    accordion(close-others='oneAtATime')
-      accordion-group(heading='{{date | date:"dd.MM.yyyy"}}', is-open="true",
-        ng-repeat="date in expCtr.dates", ng-hide="!(filteredData = (expCtr.getExpensesByDate(date) " +
-      "| filter: {name: nameModelFilter, categoryName: categoryModelFilter.name, " +
-      "subcategoryName: subcategoryModelFilter.name, authorName: authorModelFilter} " +
-      "| dateRange:startDateFilter:endDateFilter)).length")
-        table.table.table-bordered.table-hover.table-condensed
-          colgroup
-            col.table-description
-            col.table-expense
-            col.table-cost
-            col.table-category
-            col.table-sub
-            col.table-added
-          thead
-            tr
-              th
-                | Edit
-              th
-                | Expense
-              th
-                | Cost
-              th
-                | Category
-              th
-                | Subcategory
-              th
-                | Added by
-              th
-          tbody
-            tr(ng-repeat="expense in filteredData")
-              td(style='white-space: nowrap')
-                // form
-                form.form-buttons.form-inline(editable-form='', name='rowform', onbeforesave='saveUser($data, user.id)', ng-show='rowform.$visible', shown='inserted == expense')
+      button.btnAdd(type="submit") Add expense
+  #leftBlock
+    .filters
+      form
+        input(type='text', name='cost-range', placeholder='Expense', ng-model="nameModelFilter")
+        select(name='category', ng-model="categoryModelFilter", ng-change="expCtr.getSubcategories(categoryModelFilter)", ng-options="category.name for category in expCtr.categories")
+          option(value="") Category
+        select(name='subcategory', ng-model="subcategoryModelFilter", ng-options="subcategory.name for subcategory in expCtr.subcategories")
+          option(value="") Subcategory
+        input(type='text', name='author', placeholder='Author', ng-model="authorModelFilter")
+        input(type='date', name='startDate', placeholder='Date', ng-model="startDateFilter")
+        input(type='date', name='endDate', placeholder='Date', ng-model="endDateFilter")
 
-                  button.btn.btn-primary(type='submit', ng-disabled='rowform.$waiting')
-                    | save
-                  button.btn.btn-default(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
-                    | cancel
-                .buttons(ng-show='!rowform.$visible')
-                  button.btn.btn-primary.edit-button(ng-click='rowform.$show()') edit
-                  button.btn.btn-danger(ng-click="expCtr.deleteExpense(expense.id, expense.name)") delete
-              td
-                span(editable-text='expense.name', e-name='name', e-form='rowform', onbeforesave='expCtr.editExpense(expense.id, $data, "name")', e-required='')
-                  | {{ expense.name  || 'empty' }}
-              td
-                span(editable-text='expense.price', e-name='price', e-form='rowform', onbeforesave='expCtr.editExpense(expense.id, $data, "price")', e-required='')
-                  | {{ expense.price  || 'empty' }} {{ expense.currency }}
-              td
-                span(editable-text='expense.categoryId.name', e-name='categoryId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
-                  | {{ expense.categoryId.name || 'empty' }}
-              td
-                span(editable-text='expense.subcategoryName', e-name='subcategoryName', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
-                  | {{ expense.subcategoryName || 'empty' }}
-              td
-                span(editable-text='expense.creatorId.name', e-name='creatorId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
-                  | {{ expense.creatorId.name || 'empty' }}
-              td
-                .btn-group(dropdown='')
-                  button.btn(type='button', dropdown-toggle='')
-                    i.fa.fa-info
-                  span.dropdown-menu.dropdown-menu-right(role='menu', aria-labelledby='split-button')
-                    | {{ expense.description }}
+    table.table-hover.fixed
+      colgroup
+        col.table-edit
+        col.table-expense
+        col.table-cost
+        col.table-carrency
+        col.table-category
+        col.table-sub
+        col.table-addBy
+        col.table-description
+      thead
+        tr
+          th
+            | Edit
+          th
+            | Expense
+          th
+            | Cost
+          th
+            | $ / &#8372;
+          th
+            | Category
+          th
+            | Subcategory
+          th
+            | Added by
+          th
+            i.fa.fa-info-circle
+    #main
+      table.table-hover.fixed
+        colgroup
+          col.table-edit
+          col.table-expense
+          col.table-cost
+          col.table-carrency
+          col.table-category
+          col.table-sub
+          col.table-addBy
+          col.table-description
+        tbody(ng-repeat="date in expCtr.dates", ng-hide="!(filteredData = (expCtr.getExpensesByDate(date) " +
+        "| filter: {name: nameModelFilter, categoryName: categoryModelFilter.name, " +
+        "subcategoryName: subcategoryModelFilter.name, authorName: authorModelFilter} " +
+        "| dateRange:startDateFilter:endDateFilter)).length")
+          tr
+            td
+              i.fa.fa-chevron-right(ng-click="expCtr.toggleCustom($index)" ng-show="!expCtr.hiddenList[$index]")
+              i.fa.fa-chevron-down(ng-click="expCtr.toggleCustom($index)" ng-hide="!expCtr.hiddenList[$index]")
+            td(colspan='7')
+              | {{date | date:"dd.MM.yyyy"}}
+          tr(ng-repeat="expense in filteredData" ng-hide="!expCtr.hiddenList[$parent.$index]" )
+            td(style='white-space: nowrap')
+              // form
+              form.form-buttons.form-inline(editable-form='', name='rowform', onbeforesave='saveUser($data, user.id)', ng-show='rowform.$visible', shown='inserted == expense')
 
-            tr#mobile
-              td(colspan='3')
-                table.shortTable
-                  tr
-                    td Expense
-                    td {{ expense.expenseTable }}
-                  tr
-                    td Category
-                    td {{ expense.category}}
-                  tr
-                    td Added by
-                    td {{ expense.addBy }}
-                  tr
-                    td Description
-                    td {{ expense.description }}
-            //tr
-            //tr#toggle
-            //  td(colspan='6')
-            //    span {{ expense.description }}
-            //tr
-            //  td.date-row(colspan='6') {{ expCtr.expens.date}}
-            //tr
-            //  td
-            //    i.fa.fa-caret-right
-            //  td {{ expense.expenseTable }}
-            //  td {{ expense.costs }}
-            //  td {{ expense.category}}
-            //  td {{ expense.subcategory }}
-            //  td {{ expense.addBy }}
+                button.btn-xs.btn.btn-primary(type='submit', ng-disabled='rowform.$waiting')
+                  | save
+                button.btn-xs.btn.btn-default(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
+                  | cancel
+              .buttons(ng-show='!rowform.$visible')
+                button.btn-xs.btn.btn-primary.edit-button(ng-click='rowform.$show()') edit
+                button.btn-xs.btn.btn-danger(ng-click="expCtr.deleteExpense(expense.id, expense.name)") delete
+            td
+              span(editable-text='expense.name', e-name='name', e-form='rowform', onbeforesave='expCtr.editExpense(expense.id, $data, "name")', e-required='')
+                | {{ expense.name  || 'empty' }}
+            td
+              span(editable-number='expense.price', e-name='price', e-form='rowform', onbeforesave='expCtr.editExpense(expense.id, $data, "price")', e-required='')
+                | {{ expense.price  || 'empty' }}
+            td
+              span(editable-select='expense.currenc', e-name='status', e-form='rowform', e-ng-options='s.value as s.text for s in statuses' name='Currency', required)
+                | {{ expense.currency }}
+
+
+            //-select
+            td
+              span(editable-select='expense.categoryId.name', e-name='name', onshow="expCtr.getCategories()", e-form='rowform', onbeforesave='expCtr.editExpense(expense.id, $data, "name")', e-required='' e-ng-options='category.name for category in expCtr.categories' e-ng-change="expCtr.getSubcategories($data)")
+                | {{ expense.categoryId.name || 'empty' }}
+            td
+              span(editable-select='expense.subcategoryName', e-name='subcategoryName', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='', e-ng-options='subcategory.name for subcategory in expCtr.subcategories')
+                | {{ expense.subcategoryName || 'empty' }}
+
+
+            td
+              span(editable-text='expense.creatorId.name', e-name='creatorId', e-form='rowform', onbeforesave='checkName($data, user.id)', e-required='')
+                | {{ expense.creatorId.name || 'empty' }}
+            td.infoTd
+              .btn-group(dropdown='')
+                button.btn(type='button', dropdown-toggle='')
+                  i.fa.fa-info
+                span.dropdown-menu.dropdown-menu-right(role='menu', aria-labelledby='split-button')
+                  | {{ expense.description }}
     button.load-more(ng-click="expCtr.loadExpenses()", ng-show="expCtr.isLoadMore()") Load more
-
