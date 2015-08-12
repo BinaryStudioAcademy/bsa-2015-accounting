@@ -3,9 +3,9 @@ var swal = require('sweetalert');
 module.exports = function(app) {
   app.controller('ExpensesController', ExpensesController);
 
-  ExpensesController.$inject = ['ExpensesService', '$rootScope','CategoriesService','$filter'];
+  ExpensesController.$inject = ['ExpensesService', '$rootScope','CategoriesService'];
 
-  function ExpensesController(ExpensesService, $rootScope, CategoriesService, $filter) {
+  function ExpensesController(ExpensesService, $rootScope, CategoriesService) {
     var vm = this;
 
     vm.loadAllExpenses = loadAllExpenses;

@@ -32,7 +32,6 @@
 		.filters
 			form
 				input(type='text', name='cost-range', placeholder='Expense', ng-model="nameModelFilter")
-				input(editable-text="expCtr.filterWord" buttons='no' e-typeahead="expense.name for expense.name in expCtr.allExpenses | filter:$viewValue | limitTo:8" e-ng-model="nameModelFilter")
 				select(name='category', ng-model="categoryModelFilter", ng-change="expCtr.getSubcategories(categoryModelFilter)", ng-options="category.name for category in expCtr.categories")
 					option(value="") Category
 				select(name='subcategory', ng-model="subcategoryModelFilter", ng-options="subcategory.name for subcategory in expCtr.subcategories")
