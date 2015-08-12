@@ -3,9 +3,9 @@ var swal = require('sweetalert');
 module.exports = function(app) {
   app.controller('ExpensesController', ExpensesController);
 
-  ExpensesController.$inject = ['ExpensesService', '$rootScope', 'CategoriesService'];
+  ExpensesController.$inject = ['ExpensesService', '$rootScope', 'CategoriesService', '$filter'];
 
-  function ExpensesController(ExpensesService, $rootScope, CategoriesService) {
+  function ExpensesController(ExpensesService, $rootScope, CategoriesService, $filter) {
     var vm = this;
 
     vm.loadAllExpenses = loadAllExpenses;
@@ -63,17 +63,10 @@ module.exports = function(app) {
         // Push dates
         if(vm.dates.indexOf(String(vm.allExpenses[i].time)) < 0) vm.dates.push(String(vm.allExpenses[i].time));
 
-        // Find subcategory names
-        for (var subcategory in vm.allExpenses[i].category.subcategories) {
-          if(vm.allExpenses[i].subcategory == vm.allExpenses[i].category.subcategories[subcategory].id) {
-            vm.allExpenses[i].subcategoryName = vm.allExpenses[i].category.subcategories[subcategory].name;
-            break;
-          }
-        }
-
         // Add expense to the common array
         vm.expenses[i] = vm.allExpenses[i];
         vm.expenses[i].categoryName = vm.allExpenses[i].category.name;
+        vm.expenses[i].subcategoryName = vm.allExpenses[i].subcategory.name;
         vm.expenses[i].authorName = vm.allExpenses[i].creator.name;
       }
 
@@ -121,10 +114,34 @@ module.exports = function(app) {
         });
     }
 
-    function editExpense(id, data, field) {
-      var expense = {};
+    // Edit properties
+    var expense = {};
+    vm.editExpenseObject = editExpenseObject;
+    vm.getField = getField;
+    vm.checkField = checkField;
+
+    function editExpenseObject(data, field) {
       expense[field] = data;
+    }
+
+    function editExpense(id) {
       ExpensesService.editExpense(id, expense);
+    }
+
+    function getField(fieldId, fieldName) {
+      var selected;
+      if(fieldName == "category") {
+        selected = $filter('filter')(vm.categories, {id: fieldId});
+        return selected[0].name;
+      } else if(fieldName == "subcategory") {
+        selected = $filter('filter')(vm.subcategories, {id: fieldId});
+        return selected.length ? selected[0].name : selected.length;
+      }
+    }
+
+    function checkField(field) {
+      if(typeof field == "undefined") return "Fill in that field";
+
     }
 
     // Filter combo boxes
@@ -145,7 +162,7 @@ module.exports = function(app) {
     function getSubcategories(categoryModel) {
       if(categoryModel != null) {
         for(var category in vm.categories) {
-          if(vm.categories[category].name == categoryModel.name) {
+          if(vm.categories[category].id == categoryModel) {
             vm.subcategories = [];
             vm.categories[category].subcategories.forEach(function(subcategory) {
               vm.subcategories.push(subcategory);
