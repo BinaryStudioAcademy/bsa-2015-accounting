@@ -26,7 +26,7 @@
 					span(ng-class="{'status-good': (budCtrl.annualBudget - budCtrl.annualUsed > 0), 'status-bad': (budCtrl.annualBudget - budCtrl.annualUsed < 0)}") {{budCtrl.annualBudget - budCtrl.annualUsed | currency}} 
 					| left
 
-		tbody(ng-repeat='category in budCtrl.categories')
+		tbody(ng-repeat='category in budCtrl.budgets.category')
 			tr
 				th(class="review" )
 					form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', shown='inserted == category' onaftersave="budCtrl.sendData(category)")

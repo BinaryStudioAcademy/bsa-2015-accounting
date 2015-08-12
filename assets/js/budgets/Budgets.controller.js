@@ -45,7 +45,7 @@ module.exports = function(app) {
 						var catUsed = 0;
 						var distributed = 0;
 
-						budget.subcategories.forEach(function(subcategory) {
+						budget.category.subcategories.forEach(function(subcategory) {
 							var subExpenses = _.filter(vm.expenses.subcategory, {id: subcategory.id});
 							var subUsed = 0;
 
@@ -58,13 +58,12 @@ module.exports = function(app) {
 							subcategory.used = subUsed;
 						});
 
-						//budget.name = budget.categoryId.name;
-						//budget.used = catUsed;
-						//budget.undistributed = budget.budget - distributed;
+						budget.used = catUsed;
+						budget.undistributed = budget.budget - distributed;
 
-						//vm.annualBudget += budget.budget;
-						//vm.annualUsed += budget.used;
-						//vm.annualUndistributed += budget.undistributed;
+						vm.annualBudget += budget.budget;
+						vm.annualUsed += budget.used;
+						vm.annualUndistributed += budget.undistributed;
 					});
 				});
 			});
@@ -159,106 +158,6 @@ module.exports = function(app) {
 				}
 			}
 		}
-
-		//vm.saveCategoryName = function(data, category) {
-		//	if (data == "") {
-		//		return "You call that a name???";
-		//	}
-		//	else if (data !== category.name) {
-		//		if (category.categoryId) {
-		//			return CategoriesService.editCategory(category.categoryId.id, {name: data});
-		//		}
-		//		else {
-		//			CategoriesService.createCategory({name: data}).then(function(category) {
-		//				BudgetsService.createBudget({year: vm.year, categoryId: category.id}).then(function() {
-		//					return vm.updateYear();
-		//				});
-		//			});
-		//		}
-		//	}
-		//};
-//
-		//vm.saveSubcategoryName = function(data, category, subcategory) {
-		//	if (data == "") {
-		//		return "You call that a name???";
-		//	}
-		//	else if (data !== subcategory.name) {
-		//		var newId = vm.getRandomId();
-		//		if (!subcategory.id) {
-		//			category.categoryId.subcategories.push({
-		//				id: newId,
-		//				name: data
-		//			});
-		//		}
-		//		else {
-		//			_.find(category.categoryId.subcategories, {id: subcategory.id}).name = data;
-		//		}
-		//		CategoriesService.editCategory(category.categoryId.id, {subcategories: category.categoryId.subcategories}).then(function() {
-		//			if (subcategory.id) {
-		//				return vm.updateYear();
-		//			}
-		//			else {
-		//				subcategory.id = newId;
-		//				BudgetsService.editBudget(category.id, {subcategories: category.subcategories}).then(function() {
-		//					return vm.updateYear();
-		//				});
-		//			}
-		//		});
-		//	}
-		//};
-//
-		//vm.saveCategoryBudget = function(data, category) {
-		//	if (data == null) {
-		//		return "Maybe you meant 0?";
-		//	}
-		//	if (data < 0) {
-		//		return "Negative budgets not allowed";
-		//	}
-		//	if (data !== category.budget) {
-		//		BudgetsService.editBudget(category.id, {budget: data}).then(function() {
-		//			return vm.updateYear();
-		//		});
-		//	}
-		//};
-//
-		//vm.saveSubcategoryBudget = function(data, category, subcategory) {
-		//	if (data == null) {
-		//		return "Maybe you meant 0?";
-		//	}
-		//	if (data < 0) {
-		//		return "Negative budgets not allowed";
-		//	}
-		//	if (data !== subcategory.budget) {
-		//		_.find(category.subcategories, {id: subcategory.id}).budget = data;
-		//		BudgetsService.editBudget(category.id, {subcategories: category.subcategories}).then(function() {
-		//			return vm.updateYear();
-		//		});
-		//	}
-		//};
-//
-		//vm.deleteCategory = function(category) {
-		//	if (!category.categoryId) {
-		//		var i = vm.budgets.indexOf(category);
-		//		vm.budgets.splice(i, 1);
-		//	}
-		//	else {
-		//		BudgetsService.deleteBudget(category.id).then(function() {
-		//			return vm.updateYear();
-		//		});
-		//	}
-		//};
-//
-		//vm.deleteSubcategory = function(category, subcategory) {
-		//	if (!subcategory.id) {
-		//		var i = category.subcategories.indexOf(subcategory);
-		//		category.subcategories.splice(i, 1);
-		//	}
-		//	//else {
-		//	//	BudgetsService.deleteBudget(budgetId).then(function() {
-		//	//		return vm.updateYear();
-		//	//	});
-		//	//}
-		//};
 
 		vm.getRandomId = function() {
 			return String(Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 9999999);

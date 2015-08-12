@@ -15,13 +15,9 @@ module.exports = {
 			type: 'integer',
 			required: true
 		},
-		categoryId: {
-			type: 'string',
+		category: {
+			type: 'json',
 			required: true
-		},
-		budget: {
-			type: 'float',
-			defaultsTo: 0
 		},
 		//subcategories: [{
 		//	id: {
@@ -38,4 +34,3 @@ module.exports = {
 		}
 	}
 };
-
