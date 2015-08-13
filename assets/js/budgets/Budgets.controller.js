@@ -7,9 +7,9 @@ module.exports = function(app) {
 		editableOptions.theme = 'bs3';
 	});
 
-	BudgetsController.$inject = ['BudgetsService', 'ExpensesService', 'CategoriesService', 'YearsService', '$q'];
+	BudgetsController.$inject = ['BudgetsService', 'ExpensesService', 'CategoriesService', 'YearsService', 'UsersService', '$q'];
 
-	function BudgetsController(BudgetsService, ExpensesService, CategoriesService, YearsService, $q) {
+	function BudgetsController(BudgetsService, ExpensesService, CategoriesService, YearsService, UsersService, $q) {
 		var vm = this;
 
 		//togglig lists
@@ -23,6 +23,11 @@ module.exports = function(app) {
 		vm.expenses = [];
 		vm.categoriesList = [];
 
+		vm.user = {
+			id: "unknown id",
+			name: "unknown name"
+		};
+
 		YearsService.getYears().then(function(years) {
 			vm.years = years.sort(function(a, b){return b - a});
 			if (!vm.years.length) vm.years = [(new Date().getFullYear())];
@@ -35,10 +40,15 @@ module.exports = function(app) {
 			var budgetsPromise = BudgetsService.getBudgets(vm.year);
 			var expensesPromise = ExpensesService.getAllExpenses(vm.year);
 
+			//var userPromise = UsersService.getCurrentUser();
+
 			return $q.all([categoriesPromise, budgetsPromise, expensesPromise]).then(function (data) {
 				vm.categoriesList = data[0] || [];
 				vm.budgets = data[1] || [];
 				vm.expenses = data[2] || [];
+
+				//vm.user = data[3] || {id: "unknown id", name: "unknown name"};
+				//console.log(vm.user);
 
 				vm.annualBudget = 0;
 				vm.annualUsed = 0;
@@ -69,7 +79,6 @@ module.exports = function(app) {
 					vm.annualBudget += budget.category.budget;
 					vm.annualUsed += budget.category.used;
 					vm.annualUndistributed += budget.category.undistributed;
-					console.log(vm.budgets);
 				});
 			});
 		};
@@ -151,7 +160,7 @@ module.exports = function(app) {
 						});
 					}
 				});
-				_.find(subcategories, {id: subcategory.id}).deletedBy = "Anonymous";/////////////////////////////////////////////////////////
+				_.find(subcategories, {id: subcategory.id}).deletedBy = vm.user.id;
 				BudgetsService.editBudget(budget.id, {subcategories: subcategories}).then(function () {
 					return vm.updateYear();
 				});

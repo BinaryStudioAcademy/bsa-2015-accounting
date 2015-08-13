@@ -33,14 +33,11 @@ function getExpenses(req, res) {
 		return [expenses, users, categories];
 	}).spread(function(expenses, users, categories) {
 		expenses.forEach(function(expense) {
-			console.log("expense", expense);
 			var category = _.find(categories, {id: expense.categoryId});
-			console.log("category", category);
 			expense.category = {
 				id: expense.categoryId,
 				name: category.name
 			};
-			console.log("subcat:", _.find(category.subcategories, {id: expense.subcategoryId}));
 			expense.subcategory = {
 				id: expense.subcategoryId,
 				name: _.find(category.subcategories, {id: expense.subcategoryId}).name
