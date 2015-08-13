@@ -25,7 +25,7 @@ module.exports = function(app) {
     vm.dates = [];
 
     loadAllExpenses();
-
+ 
     vm.hiddenList = [];
     function toggleCustom(index) {
       vm.hiddenList[index] = !vm.hiddenList[index];
@@ -76,7 +76,7 @@ module.exports = function(app) {
         vm.expenses[i] = vm.allExpenses[i];
         vm.expenses[i].categoryName = vm.allExpenses[i].category.name;
         vm.expenses[i].authorName = vm.allExpenses[i].creator.name;
-        console.log(vm.allExpenses[i].name);
+        console.log(vm.expenses[i].name);
       }
       startExpensesLimit += MAX_LOAD;
       expensesLimit += MAX_LOAD;

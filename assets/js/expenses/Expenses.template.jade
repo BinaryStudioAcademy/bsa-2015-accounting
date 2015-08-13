@@ -1,13 +1,14 @@
 #expenses-view
+	
+	
 	#rightBlock
 		.exchange(ng-controller="CurrencyController as currencyCtrl")
 			b Today currency exchange rate
 			br
 			|{{currencyCtrl.exchangeRate}} UAH for 1 USD
-		form.expense-form(name="expenseForm", ng-controller="ExpenseFormController as formCtrl",
+		form.expense-form(editable-form='', name="expenseForm", ng-controller="ExpenseFormController as formCtrl",
 		ng-submit="expenseForm.$valid && formCtrl.createExpense(categoryModel, subcategoryModel)", novalidate)
 			input.form-control(type='text', name='Name', placeholder='Expense', ng-model="formCtrl.expense.name", required)
-			input.form-control(editable-text="formCtrl.expense.name" buttons='no' e-typeahead="state for state in states | filter:$viewValue | limitTo:8")
 			input.form-control(type='date', name='Date', placeholder='Date', ng-model="formCtrl.date", required)
 			select(name='Category', ng-model="categoryModel", ng-change="formCtrl.getSubcategories(categoryModel)",
 			ng-options="category.name for category in formCtrl.categories", required)
@@ -131,5 +132,4 @@
 									i.fa.fa-info
 								span.dropdown-menu.dropdown-menu-right(role='menu', aria-labelledby='split-button')
 									| {{ expense.description }}
-		button.load-more(ng-click="expCtr.loadExpenses()", ng-show="expCtr.isLoadMore()") Load more
-
+		button.load-more.btn.btn-info(ng-click="expCtr.loadExpenses()", ng-show="expCtr.isLoadMore()") Load more

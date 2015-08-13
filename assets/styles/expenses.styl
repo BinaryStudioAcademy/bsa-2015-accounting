@@ -7,9 +7,7 @@
 	#leftBlock
 		width 71%
 		float left
-		margin-left 3%
-		height
-
+		min-width 771px
 	.btnAdd
 		color white
 		font-size 1.2em
@@ -107,7 +105,7 @@
 
 		th
 			background #f2f2f2
-			font-weight normal
+			font-weight bold
 	button
 		margin-right 10px
 		&:last-child
@@ -122,18 +120,25 @@
 	#main
 		overflow auto
 		height 540px
+		width 100%
 	table
 		&.fixed
 			table-layout fixed
 	.table-edit,
 	.table-expense,
-	.table-cost,
-	.table-carrency,
 	.table-category,
 	.table-sub,
 	.table-addBy
 		width 100px
+
+	.table-cost,
+	.table-carrency,
 	.table-description
 		width 70px
+
 	select
 		height 36px
+	@media screen and (max-width: 1235px)
+		#leftBlock
+
+			margin-left 1%

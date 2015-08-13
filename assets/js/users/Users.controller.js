@@ -19,7 +19,10 @@ module.exports = function(app) {
 		vm.students = [
 			{Name: "Laura",Surname: "Sherm",Category: "HR", selected: false},
 			{Name: "Bob",Surname: "Martin",Category: "Marketing", selected: false},
-			{Name: "Alex",Surname: "Lion",Category: "Finance", selected: false}
+			{Name: "Alex",Surname: "Lion",Category: "Finance", selected: false},
+			{Name: "Jon",Surname: "Smit",Category: "HR", selected: false},
+			{Name: "Mike",Surname: "Norton",Category: "Marketing", selected: false},
+			{Name: "Steew",Surname: "Mage",Category: "Finance", selected: false}
 		];
 
 		vm.save = function(){

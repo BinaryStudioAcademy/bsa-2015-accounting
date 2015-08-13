@@ -12,7 +12,9 @@ module.exports = function(app) {
     vm.expense = {};
     vm.date = new Date();
     vm.createExpense = createExpense;
-
+   vm.zminna =[
+    {name:'aaa'},{name:'a2'}
+    ]
     function createExpense(categoryModel, subcategoryModel) {
       // Setting id's
       vm.expense.categoryId = categoryModel.id;
