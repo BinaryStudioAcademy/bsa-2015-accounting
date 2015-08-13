@@ -4,26 +4,25 @@
  * @description :: Server-side logic for managing expenses
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+
 var actionUtil = require('sails/lib/hooks/blueprints/actionUtil'),
-  _ = require('lodash');
+		_ = require('lodash');
 
 module.exports = {
 	find: getExpenses,
-	byYear: expensesByYear
+	create: createExpense
 };
 
-function expensesByYear(req, res) {
-	var year = req.param('year');
-	var start = Date.parse('01/01/' + year + ' 00:00:00') / 1000;
-	var end = Date.parse('12/31/' + year + ' 23:59:59') / 1000;
-
-	Expense.find({deletedBy: {$exists: false}, time: {$gte: start, $lte: end }}).populateAll().exec(function(err, expenses) {
-		return res.send(expenses);
-	});
-}
-
 function getExpenses(req, res) {
-	Expense.find({deletedBy: {$exists: false}})
+	var year = req.param('year');
+	var filter = {deletedBy: {$exists: false}};
+	if (year) {
+		var start = Date.parse('01/01/' + year + ' 00:00:00') / 1000;
+		var end = Date.parse('12/31/' + year + ' 23:59:59') / 1000;
+		filter = {deletedBy: {$exists: false}, time: {$gte: start, $lte: end }};
+	}
+
+  Expense.find(filter)
     .sort(actionUtil.parseSort(req))
 	.then(function(expenses) {
 		var users = User.find().then(function(users) {
@@ -46,9 +45,10 @@ function getExpenses(req, res) {
 			};
 			delete expense.categoryId;
 			delete expense.subcategoryId;
+			var user = _.find(users, {id: expense.creatorId}) || {id: "unknown id", name: "unknown name"};
 			expense.creator = {
-				id: expense.creatorId,
-				name: _.find(users, {id: expense.creatorId}).name
+				id: user.id,
+				name: user.name
 			};
 			delete expense.creatorId;
 		});
@@ -56,4 +56,13 @@ function getExpenses(req, res) {
 	}).fail(function(err) {
 		return res.send(err);
 	})
+}
+
+function createExpense(req, res) {
+	var data = actionUtil.parseValues(req);
+	data.creatorId = req.session.passport.user || "unknown id";;
+	Expense.create(data).exec(function created (err, newInstance) {
+		if (err) return res.negotiate(err);
+		res.created(newInstance);
+	});
 }

@@ -26,10 +26,10 @@
 					span(ng-class="{'status-good': (budCtrl.annualBudget - budCtrl.annualUsed > 0), 'status-bad': (budCtrl.annualBudget - budCtrl.annualUsed < 0)}") {{budCtrl.annualBudget - budCtrl.annualUsed | currency}} 
 					| left
 
-		tbody(ng-repeat='category in budCtrl.budgets.category')
+		tbody(ng-repeat='budget in budCtrl.budgets')
 			tr
 				th(class="review" )
-					form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', shown='inserted == category' onaftersave="budCtrl.sendData(category)")
+					form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', shown='inserted == budget.category' onaftersave="budCtrl.sendData(budget)")
 						i.fa.fa-chevron-right(ng-click="budCtrl.toggleCustom($index)" ng-show="!budCtrl.hiddenList[$index]")
 						i.fa.fa-chevron-down(ng-click="budCtrl.toggleCustom($index)" ng-hide="!budCtrl.hiddenList[$index]")
 						button.btn.btn-xs.btn-primary(type='submit', ng-disabled='rowform.$waiting')
@@ -40,37 +40,37 @@
 						i.fa.fa-chevron-right(ng-click="budCtrl.toggleCustom($index)" ng-show="!budCtrl.hiddenList[$index]")
 						i.fa.fa-chevron-down(ng-click="budCtrl.toggleCustom($index)" ng-hide="!budCtrl.hiddenList[$index]")
 						button.btn.btn-xs.btn-primary(ng-click='rowform.$show()') edit
-						button.btn.btn-xs.btn-danger(ng-click='budCtrl.deleteCategory(category)') del
+						button.btn.btn-xs.btn-danger(ng-click='budCtrl.deleteBudget(budget)') del
 				th
-					span(editable-text='category.name' name='name' e-form='rowform' onbeforesave='budCtrl.checkName($data, category)') {{category.name || 'Unnamed category'}}
+					span(editable-text='budget.category.name' name='name' e-form='rowform' onbeforesave='budCtrl.checkName($data, budget)') {{budget.category.name || 'Unnamed category'}}
 				th
-					b(editable-number='category.budget' name='budget' e-form='rowform' onbeforesave='budCtrl.checkBudget($data, category)') {{category.budget || '0' | currency}}
+					b(editable-number='budget.category.budget' name='budget' e-form='rowform' onbeforesave='budCtrl.checkBudget($data)') {{budget.category.budget || '0' | currency}}
 					br
-					span(ng-class="{'status-good': (category.undistributed > 0), 'status-bad': (category.undistributed < 0)}") {{category.undistributed | currency}} 
+					span(ng-class="{'status-good': (budget.category.undistributed > 0), 'status-bad': (budget.category.undistributed < 0)}") {{budget.category.undistributed | currency}} 
 					| undistributed
 				th 
-					b {{category.used | currency}}
+					b {{budget.category.used | currency}}
 					br
-					span(ng-class="{'status-good': (category.budget - category.used > 0), 'status-bad': (category.budget - category.used < 0)}") {{category.budget - category.used | currency}} 
+					span(ng-class="{'status-good': (budget.category.budget - budget.category.used > 0), 'status-bad': (budget.category.budget - budget.category.used < 0)}") {{budget.category.budget - budget.category.used | currency}} 
 					| left
 
 
 
-			tr.hide-list(ng-repeat='subcategory in category.subcategories' ng-hide="!budCtrl.hiddenList[$parent.$index]")
+			tr.hide-list(ng-repeat='subcategory in budget.category.subcategories' ng-hide="!budCtrl.hiddenList[$parent.$index]")
 				td
-					form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible',	shown='inserted == subcategory' onaftersave="budCtrl.sendData(category, subcategory)")
+					form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible',	shown='inserted == subcategory' onaftersave="budCtrl.sendData(budget, subcategory)")
 						button.btn.btn-xs.btn-primary(type='submit', ng-disabled='rowform.$waiting')
 							| save
 						button.btn.btn-xs.btn-default(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
 							| cancel
 					.buttons(ng-show='!rowform.$visible')
 						button.btn.btn-xs.btn-primary(ng-click='rowform.$show()') edit
-						button.btn.btn-xs.btn-danger(ng-click='budCtrl.deleteSubcategory(category, subcategory)') del
+						button.btn.btn-xs.btn-danger(ng-click='budCtrl.deleteSubcategory(budget, subcategory)') del
 				td
-					span(editable-text='subcategory.name', e-name='subcategory.name', e-form='rowform' onbeforesave='budCtrl.checkName($data, category, subcategory)')
+					span(editable-text='subcategory.name', e-name='subcategory.name', e-form='rowform' onbeforesave='budCtrl.checkName($data, budget.category, subcategory)')
 						|{{subcategory.name || 'Unnamed subcategory' }}
 				td
-					span(editable-number='subcategory.budget', e-name='subcategory.budget', e-form='rowform' onbeforesave='budCtrl.checkBudget($data, category, subcategory)')
+					span(editable-number='subcategory.budget', e-name='subcategory.budget', e-form='rowform' onbeforesave='budCtrl.checkBudget($data)')
 						b {{ subcategory.budget || '0' | currency }}
 				td 
 					b {{subcategory.used | currency}} 
@@ -80,12 +80,12 @@
 				
 			tr(ng-hide="!budCtrl.hiddenList[$index]")
 				td(colspan='4')
-					a(ng-click="budCtrl.addSubcategory(category)")
-						| new subcategory in {{category.name}} 
+					a(ng-click="budCtrl.addSubcategory(budget.category)")
+						| new subcategory in {{budget.category.name}} 
 						i.fa.fa-plus 
 		tbody
 			tr
 				td(colspan='4')
-					a(ng-click="budCtrl.addCategory()")
+					a(ng-click="budCtrl.addBudget()")
 						| new category in year {{budCtrl.year}} 
 						i.fa.fa-plus

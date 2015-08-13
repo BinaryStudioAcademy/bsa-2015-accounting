@@ -26,7 +26,7 @@ module.exports = function(app) {
 
     function getCurrentUser() {
       var User = $resource("/user/current");
-      return User.get();
+      return User.get().$promise;
     }
 
     /**

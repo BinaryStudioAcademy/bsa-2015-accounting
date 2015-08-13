@@ -27,8 +27,7 @@ module.exports = function(app) {
     }
 
     function getAllExpenses(year) {
-      if (year) return $resource("/expenses_by_year/" + year).query().$promise;
-      else return $resource("/expense").query().$promise;
+      return $resource("/expenses_by_year/" + year).query().$promise;
     }
 
     function getExpensesByFilter(filters) {
