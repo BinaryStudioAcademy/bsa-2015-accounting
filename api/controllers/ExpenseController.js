@@ -5,10 +5,12 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
-var _ = require('lodash');
+var actionUtil = require('sails/lib/hooks/blueprints/actionUtil'),
+		_ = require('lodash');
 
 module.exports = {
-	find: getExpenses
+	find: getExpenses,
+	create: createExpense
 };
 
 function getExpenses(req, res) {
@@ -17,7 +19,7 @@ function getExpenses(req, res) {
 	if (year) {
 		var start = Date.parse('01/01/' + year + ' 00:00:00') / 1000;
 		var end = Date.parse('12/31/' + year + ' 23:59:59') / 1000;
-		filter = {deletedBy: {$exists: false}, time: {$gte: start, $lte: end }}
+		filter = {deletedBy: {$exists: false}, time: {$gte: start, $lte: end }};
 	}
 
 	Expense.find(filter)
@@ -31,20 +33,24 @@ function getExpenses(req, res) {
 		return [expenses, users, categories];
 	}).spread(function(expenses, users, categories) {
 		expenses.forEach(function(expense) {
+			console.log("expense", expense);
 			var category = _.find(categories, {id: expense.categoryId});
+			console.log("category", category);
 			expense.category = {
 				id: expense.categoryId,
 				name: category.name
 			};
+			console.log("subcat:", _.find(category.subcategories, {id: expense.subcategoryId}));
 			expense.subcategory = {
 				id: expense.subcategoryId,
 				name: _.find(category.subcategories, {id: expense.subcategoryId}).name
 			};
 			delete expense.categoryId;
 			delete expense.subcategoryId;
+			var user = _.find(users, {id: expense.creatorId}) || {id: "unknown id", name: "unknown name"};
 			expense.creator = {
-				id: expense.creatorId,
-				name: _.find(users, {id: expense.creatorId}).name
+				id: user.id,
+				name: user.name
 			};
 			delete expense.creatorId;
 		});
@@ -52,4 +58,13 @@ function getExpenses(req, res) {
 	}).fail(function(err) {
 		return res.send(err);
 	}) 
+}
+
+function createExpense(req, res) {
+	var data = actionUtil.parseValues(req);
+	data.creatorId = req.session.passport.user || "unknown id";;
+	Expense.create(data).exec(function created (err, newInstance) {
+		if (err) return res.negotiate(err);
+		res.created(newInstance);
+	});
 }

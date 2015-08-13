@@ -8,8 +8,7 @@
 module.exports = {
 	attributes: {
 		creatorId: {
-			type: 'string',
-			required: true
+			type: 'string'
 		},
 		year: {
 			type: 'integer',

@@ -9,7 +9,8 @@ var actionUtil = require('sails/lib/hooks/blueprints/actionUtil'),
 		_ = require('lodash');
 
 module.exports = {
-	find: getBudgets
+	find: getBudgets,
+	create: createBudget
 };
 
 function getBudgets(req, res) {
@@ -32,9 +33,10 @@ function getBudgets(req, res) {
 			});
 			budget.category.subcategories = budget.subcategories;
 			delete budget.subcategories;
+			var user = _.find(users, {id: budget.creatorId}) || {id: "unknown id", name: "unknown name"};
 			budget.creator = {
-				id: budget.creatorId,
-				name: _.find(users, {id: budget.creatorId}).name
+				id: user.id,
+				name: user.name
 			};
 			delete budget.creatorId;
 		});
@@ -42,4 +44,13 @@ function getBudgets(req, res) {
 	}).fail(function(err) {
 		return res.send(err);
 	}) 
+}
+
+function createBudget(req, res) {
+	var data = actionUtil.parseValues(req);
+	data.creatorId = req.session.passport.user || "unknown id";
+	Budget.create(data).exec(function created (err, newInstance) {
+		if (err) return res.negotiate(err);
+		res.created(newInstance);
+	});
 }

@@ -11,9 +11,8 @@ module.exports = function(app) {
       deleteBudget: deleteBudget
     };
 
-    function getRequest(year) {
-      if (year) return $resource("/budget", { where: {"year": year}});
-      else return $resource("/budget/:id", { id: "@id"});
+    function getRequest() {
+      return $resource("/budget/:id", { id: "@id"});
     }
 
     /**
@@ -21,7 +20,7 @@ module.exports = function(app) {
      * @returns budgets array
      */
     function getBudgets(year) {
-      return getRequest(year).query().$promise;
+      return $resource("/budget", { where: {"year": year}}).query().$promise;
     }
 
     /**
