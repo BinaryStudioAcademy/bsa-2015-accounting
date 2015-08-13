@@ -108,7 +108,7 @@
 							span(editable-number='expense.price', e-name='price', e-form='rowform', onaftersave='expCtr.editExpenseObject($data, "price")', onbeforesave="expCtr.checkField($data)", e-required="")
 								| {{ expense.price  || 'empty' }}
 						td
-							span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency.name for value in expCtr.currency', onaftersave='expCtr.editExpenseObject($data, "currency")' e-required="")
+							span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in expCtr.currency', onaftersave='expCtr.editExpenseObject($data, "currency")' e-required="")
 								| {{ expense.currency }}
 						td
 							span(editable-select='expense.category.id', e-name='category.name', onshow="expCtr.getSubcategories($data)", e-form='rowform', onaftersave='expCtr.editExpenseObject($data, "categoryId")', e-ng-options='category.id as category.name for category in expCtr.categories' e-ng-change="expCtr.getSubcategories($data)", e-required="")

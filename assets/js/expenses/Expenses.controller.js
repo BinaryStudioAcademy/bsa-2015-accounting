@@ -119,6 +119,7 @@ module.exports = function(app) {
     vm.editExpenseObject = editExpenseObject;
     vm.getField = getField;
     vm.checkField = checkField;
+    vm.currency = ["UAH", "USD"];
 
     function editExpenseObject(data, field) {
       expense[field] = data;
