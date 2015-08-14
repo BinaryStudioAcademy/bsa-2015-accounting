@@ -20,6 +20,8 @@ module.exports = function(app) {
       vm.expense.creatorId = "62345";
       // Convert time to timestamp
       vm.expense.time = Math.round(new Date(vm.date).getTime() / 1000);
+      // Personal
+      if(!vm.expense.personal) delete vm.expense.personal;
 
       // Posting
       ExpensesService.createExpense(vm.expense).then(function() {

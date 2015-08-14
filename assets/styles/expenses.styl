@@ -40,6 +40,10 @@
 	.expense-form
 		input
 			padding-left 10px
+			.ng-invalid.ng-dirty
+				border-color #FA787E
+			.ng-valid.ng-dirty
+				border-color #78FA89
 
 		input[name="Name"]
 			width 100%
@@ -58,8 +62,7 @@
 			border none
 			width 100%
 			border-radius 3px
-		.ng-valid.ng-dirty
-			border-color #78FA89
+			
 	.expense-form  select[name="Category"]
 		width 48.75%
 
@@ -69,6 +72,21 @@
 
 	.expense-form input[name='Date']
 		width 100%
+		
+	.expense-form #personal-container
+		height 40px
+		margin-top 200px
+		border 1px solid #ddd
+		border-radius 3px
+		margin-bottom 9px
+	.expense-form input[name='Personal']
+		margin-left 10px
+		height 15px
+		margin-top 12px
+	.expense-form #personal-label
+		display inline-block
+		margin-left 5px
+		padding-top 9px
 
 	.filters
 		form

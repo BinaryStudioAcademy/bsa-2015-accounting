@@ -6,7 +6,7 @@
 			|{{currencyCtrl.exchangeRate}} UAH for 1 USD
 		form.expense-form(name="expenseForm", ng-controller="ExpenseFormController as formCtrl",
 		ng-submit="expenseForm.$valid && formCtrl.createExpense(categoryModel, subcategoryModel)", novalidate)
-			input.form-control(type='text', name='Name', placeholder='Expense', ng-model="formCtrl.expense.name", required)
+			input.form-control(type="text", name='Name', placeholder='Expense', ng-model="formCtrl.expense.name", typeahead="expense.name for expense in expCtr.allExpenses | filter:$viewValue | limitTo:8", required)
 			input.form-control(type='date', name='Date', placeholder='Date', ng-model="formCtrl.date", required)
 			select(name='Category', ng-model="categoryModel", ng-change="formCtrl.getSubcategories(categoryModel)",
 			ng-options="category.name for category in formCtrl.categories", required)
@@ -18,6 +18,9 @@
 			select.form-control(name='Currency', ng-model="formCtrl.expense.currency", required)
 				option USD
 				option UAH
+			div#personal-container
+				input(type='checkbox', name='Personal', ng-model="formCtrl.expense.personal")
+				span#personal-label Personal budget
 			textarea.form-control(placeholder='Description', ng-model="formCtrl.expense.description", required)
 			.money-left
 				b Marketing budget:

@@ -23,6 +23,7 @@ function getExpenses(req, res) {
 	}
 
   Expense.find(filter)
+    .where(actionUtil.parseCriteria(req))
     .sort(actionUtil.parseSort(req))
 	.then(function(expenses) {
 		var users = User.find().then(function(users) {
