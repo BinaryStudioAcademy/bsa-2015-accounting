@@ -1,5 +1,6 @@
 var swal = require('sweetalert');
 var _ = require('lodash');
+var objectId = require('../../../config/objectId');
 
 module.exports = function(app) {
 	app.controller('BudgetsController', BudgetsController);
@@ -83,6 +84,25 @@ module.exports = function(app) {
 			});
 		};
 
+		vm.subcategoriesAutocomplete = function(category, subcategory) {
+			if (subcategory.id) {
+				return [];
+			}
+			return _.difference(_.pluck(_.find(vm.categoriesList, {name: category.name}).subcategories, "name"),
+			_.pluck(category.subcategories, "name"));
+		};
+
+		vm.categoriesAutocomplete = function(category) {
+			if (category.id) {
+				return [];
+			}
+			var fullList = [];
+			vm.budgets.forEach(function(budget) {
+				fullList.push(budget.category.name);
+			});
+			return _.difference(_.pluck(vm.categoriesList, "name"), fullList);
+		};
+
 		vm.createNewBudget = function() {
 			vm.years.unshift(vm.years[0] + 1);
 			vm.year = String(vm.years[0]);
@@ -117,12 +137,22 @@ module.exports = function(app) {
 			}
 			var flag = false;
 			if (subcategory && data !== subcategory.name) {
-				flag = _.find(category.subcategories, {name: data});
+				if (subcategory.id) {
+					flag = _.find(_.find(vm.categoriesList, {id: category.id}).subcategories, {name: data});
+				}
+				else {
+					flag = _.find(category.subcategories, {name: data});
+				}
 			}
 			else if (data !== category.name) {
-				flag = _.find(vm.budgets, function(budget) {
-					return budget.category.name == data;
-				});
+				if (category.id) {
+					flag = _.find(vm.categoriesList, {name: data});
+				}
+				else {
+					flag = _.find(vm.budgets, function(budget) {
+						return budget.category.name == data;
+					});
+				}
 			}
 			if (flag) {
 				return "There already is " + data;
@@ -151,17 +181,7 @@ module.exports = function(app) {
 
 		vm.deleteSubcategory = function(budget, subcategory) {
 			if (subcategory.id) {
-				var subcategories = [];
-				budget.category.subcategories.forEach(function(subcat) {
-					if (subcat.id) {
-						subcategories.push({
-							id: subcat.id,
-							budget: subcat.budget
-						});
-					}
-				});
-				_.find(subcategories, {id: subcategory.id}).deletedBy = vm.user.id;
-				BudgetsService.editBudget(budget.id, {subcategories: subcategories}).then(function () {
+				BudgetsService.editBudget(budget.id, {delSubcategory: {id: subcategory.id}}).then(function () {
 					return vm.updateYear();
 				});
 			}
@@ -172,52 +192,51 @@ module.exports = function(app) {
 
 		vm.sendData = function(budget, subcategory) {
 			if (subcategory) {
-				var fullCategoryList = _.find(vm.categoriesList, {id: budget.category.id});
 				if (!subcategory.id) {
-					subcategory.id = vm.getRandomId();
-					fullCategoryList.subcategories.push({
-						id: subcategory.id,
-						name: subcategory.name
-					});
-				}
-				_.find(fullCategoryList.subcategories, {id: subcategory.id}).name = subcategory.name;
-				var categoriesPromise = CategoriesService.editCategory(budget.category.id, {subcategories: fullCategoryList.subcategories});
-				var subcategories = [];
-				budget.category.subcategories.forEach(function(subcat) {
-					if (subcat.id) {
-						subcategories.push({
-							id: subcat.id,
-							budget: subcat.budget
+					var existing = _.find(_.find(vm.categoriesList, {id: budget.category.id}).subcategories, {name: subcategory.name});
+					if (existing) {
+						return BudgetsService.editBudget(budget.id, {addSubcategory: {id: existing.id, budget: subcategory.budget}}).then(function() {
+							return vm.updateYear();
 						});
 					}
-				});
-				var budgetsPromise = BudgetsService.editBudget(budget.id, {subcategories: subcategories});
+					else {
+						subcategory.id = objectId();
+						var budgetsPromise = BudgetsService.editBudget(budget.id, {addSubcategory: {id: subcategory.id, budget: subcategory.budget}});
+						var categoriesPromise = CategoriesService.editCategory(budget.category.id, {addSubcategory: {id: subcategory.id, name: subcategory.name}});
+					}
+				}
+				else {
+					var budgetsPromise = BudgetsService.editBudget(budget.id, {setSubBudget: {id: subcategory.id, budget: subcategory.budget}});
+					var categoriesPromise = CategoriesService.editCategory(budget.category.id, {setSubName: {id: subcategory.id, name: subcategory.name}});
+				}
 				return $q.all([categoriesPromise, budgetsPromise]).then(function () {
 					return vm.updateYear();
 				});
 			}
 			else {
-				if (budget.category.id) {
-					var categoriesPromise = CategoriesService.editCategory(budget.category.id, {name: budget.category.name});
-					var budgetsPromise = BudgetsService.editBudget(budget.id, {category: {id: budget.category.id, budget: budget.category.budget}});
-
+				if (!budget.category.id) {
+					var existing = _.find(vm.categoriesList, {name: budget.category.name});
+					if (existing) {
+						BudgetsService.createBudget({year: vm.year, category: { id: existing.id, budget: budget.category.budget}}).then(function() {
+							return vm.updateYear();
+						});
+					}
+					else {
+						CategoriesService.createCategory({name: budget.category.name}).then(function(category) {
+							BudgetsService.createBudget({year: vm.year, category: { id: category.id, budget: budget.category.budget}}).then(function() {
+								return vm.updateYear();
+							});
+						});
+					}
+				}
+				else {
+					var categoriesPromise = CategoriesService.editCategory(budget.category.id, {setName: {name: budget.category.name}});
+					var budgetsPromise = BudgetsService.editBudget(budget.id, {setBudget: {budget: budget.category.budget}});
 					return $q.all([categoriesPromise, budgetsPromise]).then(function () {
 						return vm.updateYear();
 					});
 				}
-				else {
-					CategoriesService.createCategory({name: budget.category.name}).then(function(category) {
-						BudgetsService.createBudget({year: vm.year, category: { id: category.id, budget: budget.category.budget}}).then(function() {
-							return vm.updateYear();
-						});
-					});
-				}
 			}
 		};
-
-		vm.getRandomId = function() {
-			return String(Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 9999999);
-		};
-
 	}
 };
