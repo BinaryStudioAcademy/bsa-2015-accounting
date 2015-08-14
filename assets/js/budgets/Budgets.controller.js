@@ -87,13 +87,13 @@ module.exports = function(app) {
 		};
 
 		vm.subcategoriesAutocomplete = function(category, subcategory) {
-			if (subcategory && !subcategory.id) {
-				return _.difference(_.pluck(_.find(vm.categoriesList, {name: category.name}).subcategories, "name"),
-				_.pluck(_.filter(category.subcategories, function(subcat) {
-					return !subcat.deletedBy;
-				}), "name"));
+			if (subcategory.id) {
+				return [];
 			}
-			return [];
+			return _.difference(_.pluck(_.find(vm.categoriesList, {name: category.name}).subcategories, "name"),
+			_.pluck(_.filter(category.subcategories, function(subcat) {
+				return !subcat.deletedBy;
+			}), "name"));
 		};
 
 		vm.categoriesAutocomplete = function(category) {
@@ -231,7 +231,6 @@ module.exports = function(app) {
 						return BudgetsService.editBudget(budget.id, {subcategories: subcategories});
 					}
 					subcategory.id = objectId();
-					console.log(subcategory.id);
 					fullSubategoriesList.push({
 						id: subcategory.id,
 						name: subcategory.name
