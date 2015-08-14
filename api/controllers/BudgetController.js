@@ -13,6 +13,12 @@ module.exports = {
 	create: createBudget
 };
 
+// function getBudgets(req, res) {
+// 	Budget.find({deletedBy: {$exists: false}}).populateAll().exec(function(err, budgets) {
+// 		return res.send(budgets);
+// 	});
+// }
+
 function getBudgets(req, res) {
 	Budget.find({deletedBy: {$exists: false}})
 	.where( actionUtil.parseCriteria(req) )

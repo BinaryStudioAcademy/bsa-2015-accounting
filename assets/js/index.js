@@ -5,7 +5,6 @@ require('angular-google-chart');
 require('ng-sanitize');
 require('ng-csv');
 
-
 var app = angular.module('accounting', [
   require('angular-resource'),
   require('angular-route'),
@@ -14,7 +13,6 @@ var app = angular.module('accounting', [
   "googlechart",
   'ngSanitize', 
   'ngCsv'
-
 ]);
 
 require('./budgets/index.js')(app);
@@ -25,4 +23,3 @@ require('./currency/index.js')(app);
 require('./charts/index.js')(app);
 require('./shared/index.js')(app);
 require('./route.js')(app);
-
