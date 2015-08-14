@@ -59,18 +59,20 @@ module.exports = function(app) {
 					var distributed = 0;
 
 					budget.category.subcategories.forEach(function(subcategory) {
-						var subExpenses = _.filter(vm.expenses, function(expense) {
-							return expense.subcategory.id == subcategory.id;
-						});
-						var subUsed = 0;
+						if (!subcategory.deletedBy) {
+							var subExpenses = _.filter(vm.expenses, function(expense) {
+								return expense.subcategory.id == subcategory.id;
+							});
+							var subUsed = 0;
 
-						subExpenses.forEach(function(subExpense) {
-							subUsed += subExpense.price;
-						});
+							subExpenses.forEach(function(subExpense) {
+								subUsed += subExpense.price;
+							});
 
-						catUsed += subUsed;
-						distributed += subcategory.budget;
-						subcategory.used = subUsed;
+							catUsed += subUsed;
+							distributed += subcategory.budget;
+							subcategory.used = subUsed;
+						}
 					});
 
 					budget.category.used = catUsed;
@@ -81,6 +83,27 @@ module.exports = function(app) {
 					vm.annualUndistributed += budget.category.undistributed;
 				});
 			});
+		};
+
+		vm.subcategoriesAutocomplete = function(category, subcategory) {
+			if (subcategory && !subcategory.id) {
+				return _.difference(_.pluck(_.find(vm.categoriesList, {name: category.name}).subcategories, "name"),
+				_.pluck(_.filter(category.subcategories, function(subcat) {
+					return !subcat.deletedBy;
+				}), "name"));
+			}
+			return [];
+		};
+
+		vm.categoriesAutocomplete = function(category) {
+			if (category.id) {
+				return [];
+			}
+			var fullList = [];
+			vm.budgets.forEach(function(budget) {
+				fullList.push(budget.category.name);
+			});
+			return _.difference(_.pluck(vm.categoriesList, "name"), fullList);
 		};
 
 		vm.createNewBudget = function() {
@@ -117,12 +140,28 @@ module.exports = function(app) {
 			}
 			var flag = false;
 			if (subcategory && data !== subcategory.name) {
-				flag = _.find(category.subcategories, {name: data});
+				if (subcategory.id) {
+					var forbiddenList = _.find(vm.categoriesList, {id: category.id}).subcategories;
+					flag = _.find(forbiddenList, {name: data});
+				}
+				else {
+					var forbiddenList = _.filter(category.subcategories, function(subcat) {
+						return !subcat.deletedBy;
+					});
+					flag = _.find(forbiddenList, {name: data});
+				}
 			}
 			else if (data !== category.name) {
-				flag = _.find(vm.budgets, function(budget) {
-					return budget.category.name == data;
-				});
+				if (category.id) {
+					flag = _.find(vm.categoriesList, function(cat) {
+						return cat.name == data;
+					});
+				}
+				else {
+					flag = _.find(vm.budgets, function(budget) {
+						return budget.category.name == data;
+					});
+				}
 			}
 			if (flag) {
 				return "There already is " + data;
@@ -154,10 +193,11 @@ module.exports = function(app) {
 				var subcategories = [];
 				budget.category.subcategories.forEach(function(subcat) {
 					if (subcat.id) {
-						subcategories.push({
-							id: subcat.id,
-							budget: subcat.budget
-						});
+						var sub = {id: subcat.id, budget: subcat.budget};
+						if (subcat.deletedBy) {
+							sub.deletedBy = subcat.deletedBy;
+						}
+						subcategories.push(sub);
 					}
 				});
 				_.find(subcategories, {id: subcategory.id}).deletedBy = vm.user.id;
@@ -172,23 +212,39 @@ module.exports = function(app) {
 
 		vm.sendData = function(budget, subcategory) {
 			if (subcategory) {
-				var fullCategoryList = _.find(vm.categoriesList, {id: budget.category.id});
+				var fullSubategoriesList = _.find(vm.categoriesList, {id: budget.category.id}).subcategories;
 				if (!subcategory.id) {
+					var existing = _.find(fullSubategoriesList, {name: subcategory.name});
+					if (existing) {
+						subcategory.id = existing.id;
+						var subcategories = [];
+						budget.category.subcategories.forEach(function(subcat) {
+							if (subcat.id) {
+								var sub = {id: subcat.id, budget: subcat.budget};
+								if (subcat.deletedBy) {
+									sub.deletedBy = subcat.deletedBy;
+								}
+								subcategories.push(sub);
+							}
+						});
+						return BudgetsService.editBudget(budget.id, {subcategories: subcategories});
+					}
 					subcategory.id = vm.getRandomId();
-					fullCategoryList.subcategories.push({
+					fullSubategoriesList.push({
 						id: subcategory.id,
 						name: subcategory.name
 					});
 				}
-				_.find(fullCategoryList.subcategories, {id: subcategory.id}).name = subcategory.name;
-				var categoriesPromise = CategoriesService.editCategory(budget.category.id, {subcategories: fullCategoryList.subcategories});
+				_.find(fullSubategoriesList, {id: subcategory.id}).name = subcategory.name;
+				var categoriesPromise = CategoriesService.editCategory(budget.category.id, {subcategories: fullSubategoriesList});
 				var subcategories = [];
 				budget.category.subcategories.forEach(function(subcat) {
 					if (subcat.id) {
-						subcategories.push({
-							id: subcat.id,
-							budget: subcat.budget
-						});
+						var sub = {id: subcat.id, budget: subcat.budget};
+						if (subcat.deletedBy) {
+							sub.deletedBy = subcat.deletedBy;
+						}
+						subcategories.push(sub);
 					}
 				});
 				var budgetsPromise = BudgetsService.editBudget(budget.id, {subcategories: subcategories});
@@ -206,11 +262,19 @@ module.exports = function(app) {
 					});
 				}
 				else {
-					CategoriesService.createCategory({name: budget.category.name}).then(function(category) {
-						BudgetsService.createBudget({year: vm.year, category: { id: category.id, budget: budget.category.budget}}).then(function() {
+					var existing = _.find(vm.categoriesList, {name: budget.category.name});
+					if (existing) {
+						BudgetsService.createBudget({year: vm.year, category: { id: existing.id, budget: budget.category.budget}}).then(function() {
 							return vm.updateYear();
 						});
-					});
+					}
+					else {
+						CategoriesService.createCategory({name: budget.category.name}).then(function(category) {
+							BudgetsService.createBudget({year: vm.year, category: { id: category.id, budget: budget.category.budget}}).then(function() {
+								return vm.updateYear();
+							});
+						});
+					}
 				}
 			}
 		};
@@ -218,6 +282,5 @@ module.exports = function(app) {
 		vm.getRandomId = function() {
 			return String(Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 9999999);
 		};
-
 	}
 };
