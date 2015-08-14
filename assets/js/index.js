@@ -2,6 +2,9 @@ var angular = require('angular');
 
 require('angular-xeditable');
 require('angular-google-chart');
+require('ng-sanitize');
+require('ng-csv');
+
 
 var app = angular.module('accounting', [
   require('angular-resource'),
@@ -9,6 +12,8 @@ var app = angular.module('accounting', [
   require('angular-ui-bootstrap'),
   'xeditable',
   "googlechart",
+  'ngSanitize', 
+  'ngCsv'
 
 ]);
 

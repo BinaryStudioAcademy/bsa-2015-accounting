@@ -19,6 +19,7 @@ module.exports = function(app) {
       // Setting id's
       vm.expense.categoryId = categoryModel.id;
       vm.expense.subcategoryId = subcategoryModel.id;
+      vm.expense.creatorId = "62345";
       // Convert time to timestamp
       vm.expense.time = Math.round(new Date(vm.date).getTime() / 1000);
 
@@ -26,9 +27,12 @@ module.exports = function(app) {
       ExpensesService.createExpense(vm.expense).then(function() {
         vm.expense.time = new Date(vm.expense.time * 1000).toDateString();
         delete vm.expense['categoryId'];
-        vm.expense.categoryId = {};
-        vm.expense.categoryId.name = categoryModel.name;
-        vm.expense.subcategoryName = subcategoryModel.name;
+        vm.expense.category = {};
+        vm.expense.category.name = categoryModel.name;
+        vm.expense.subcategory = {};
+        vm.expense.subcategory.name = subcategoryModel.name;
+        vm.expense.creator = {};
+        vm.expense.creator.name = "LoL";
 
         $rootScope.$emit('new-expense', vm.expense);
         vm.expense = {};

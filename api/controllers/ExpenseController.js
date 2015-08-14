@@ -5,7 +5,6 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
-
 var actionUtil = require('sails/lib/hooks/blueprints/actionUtil'),
 		_ = require('lodash');
 
@@ -24,6 +23,7 @@ function getExpenses(req, res) {
 	}
 
 	Expense.find(filter)
+	.sort(actionUtil.parseSort(req))
 	.then(function(expenses) {
 		var users = User.find().then(function(users) {
 			return users;
