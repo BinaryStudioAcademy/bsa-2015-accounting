@@ -1,5 +1,6 @@
 var swal = require('sweetalert');
 var _ = require('lodash');
+var objectId = require('../../../config/objectId');
 
 module.exports = function(app) {
 	app.controller('BudgetsController', BudgetsController);
@@ -229,7 +230,8 @@ module.exports = function(app) {
 						});
 						return BudgetsService.editBudget(budget.id, {subcategories: subcategories});
 					}
-					subcategory.id = vm.getRandomId();
+					subcategory.id = objectId();
+					console.log(subcategory.id);
 					fullSubategoriesList.push({
 						id: subcategory.id,
 						name: subcategory.name
@@ -277,10 +279,6 @@ module.exports = function(app) {
 					}
 				}
 			}
-		};
-
-		vm.getRandomId = function() {
-			return String(Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 9999999);
 		};
 	}
 };
