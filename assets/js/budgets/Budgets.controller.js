@@ -48,6 +48,8 @@ module.exports = function(app) {
 				vm.budgets = data[1] || [];
 				vm.expenses = data[2] || [];
 
+			console.log(budgetsPromise);
+			console.log(vm.budgets);
 				//vm.user = data[3] || {id: "unknown id", name: "unknown name"};
 				//console.log(vm.user);
 

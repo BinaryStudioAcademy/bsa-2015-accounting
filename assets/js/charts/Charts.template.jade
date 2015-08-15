@@ -15,6 +15,9 @@
 					input.form-control(type='date', placeholder='Date' )
 				li
 					label Category
+					select.form-control(name='Category', ng-model="categoryModel", ng-change="chartCtrl.getSubcategories(categoryModel)",
+					ng-options="category.name for category in chartCtrl.categories", required)
+						option(value="") Category
 
 			button.chart-butSum.btn.btn-info Dispay
 	div.chartsBlock

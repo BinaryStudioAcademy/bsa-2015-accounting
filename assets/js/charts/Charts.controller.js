@@ -22,6 +22,9 @@ module.exports = function(app) {
 		function getBudgetsByYear(year) {
 			$q.all([ChartsService.getBudgetsByYear(year), ExpensesService.getAllExpenses(year)]).then(function(results) {
 				var budgets = results[0];
+				
+				console.log(budgets);
+				
 				var expenses = results[1];
 				var names = _.pluck(budgets, 'category.name');
 				var planned = _.pluck(budgets, 'category.budget');
@@ -36,12 +39,33 @@ module.exports = function(app) {
 					}, 0);
 					spended.push(total);
 				});
-				console.log(names);
-				console.log(budgets.category);
 				
 				barChart(names, planned, spended);
 				pieChart(names, planned);
 			});
+		}
+		//--------------------------------------------
+/*		vm.updateYear = function() {
+			var budgetsPromise = BudgetsService.getBudgets(vm.year);
+		}*/
+		vm.categories = [];
+		vm.getSubcategories = getSubcategories;
+
+
+		getCategories();
+
+		function getCategories() {
+				var budgetsPromise = ChartsService.getBudgetsByYear(2006);
+				console.log(budgetsPromise);
+			ExpensesService.getCategories().then(function(data) {
+				data.forEach(function(category) {
+					vm.categories.push(category);
+				});
+			});
+		}
+		//-------------------------------------------
+		function getSubcategories(categoryModel) {
+			console.log(categoryModel);
 		}
 
 		function barChart(names, planned, spended) {
