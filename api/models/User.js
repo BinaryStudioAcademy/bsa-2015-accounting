@@ -18,7 +18,15 @@ module.exports = {
 		},
 		role: {
 			type: 'string',
-			defaultsTo: 'manager'
+			defaultsTo: 'user'
+		},
+		permissions: {
+			type: 'json',
+			defaultsTo: {}
+		},
+		budgets: {
+			type: 'array',
+			defaultsTo: []
 		},
 		toJSON: function() {
 			var obj = this.toObject();
