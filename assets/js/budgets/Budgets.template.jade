@@ -56,7 +56,7 @@
 
 
 
-			tr.hide-list(ng-repeat='subcategory in budget.category.subcategories | filter: {deletedBy: "!"}' ng-hide="!budCtrl.hiddenList[$parent.$index]")
+			tr.hide-list(ng-repeat='subcategory in budget.category.subcategories' ng-hide="!budCtrl.hiddenList[$parent.$index]")
 				td
 					form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible',	shown='inserted == subcategory' onaftersave="budCtrl.sendData(budget, subcategory)")
 						button.btn.btn-xs.btn-primary(type='submit', ng-disabled='rowform.$waiting')

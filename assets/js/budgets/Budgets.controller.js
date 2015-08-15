@@ -60,20 +60,18 @@ module.exports = function(app) {
 					var distributed = 0;
 
 					budget.category.subcategories.forEach(function(subcategory) {
-						if (!subcategory.deletedBy) {
-							var subExpenses = _.filter(vm.expenses, function(expense) {
-								return expense.subcategory.id == subcategory.id;
-							});
-							var subUsed = 0;
+						var subExpenses = _.filter(vm.expenses, function(expense) {
+							return expense.subcategory.id == subcategory.id;
+						});
+						var subUsed = 0;
 
-							subExpenses.forEach(function(subExpense) {
-								subUsed += subExpense.price;
-							});
+						subExpenses.forEach(function(subExpense) {
+							subUsed += subExpense.price;
+						});
 
-							catUsed += subUsed;
-							distributed += subcategory.budget;
-							subcategory.used = subUsed;
-						}
+						catUsed += subUsed;
+						distributed += subcategory.budget;
+						subcategory.used = subUsed;
 					});
 
 					budget.category.used = catUsed;
@@ -91,9 +89,7 @@ module.exports = function(app) {
 				return [];
 			}
 			return _.difference(_.pluck(_.find(vm.categoriesList, {name: category.name}).subcategories, "name"),
-			_.pluck(_.filter(category.subcategories, function(subcat) {
-				return !subcat.deletedBy;
-			}), "name"));
+			_.pluck(category.subcategories, "name"));
 		};
 
 		vm.categoriesAutocomplete = function(category) {
@@ -142,21 +138,15 @@ module.exports = function(app) {
 			var flag = false;
 			if (subcategory && data !== subcategory.name) {
 				if (subcategory.id) {
-					var forbiddenList = _.find(vm.categoriesList, {id: category.id}).subcategories;
-					flag = _.find(forbiddenList, {name: data});
+					flag = _.find(_.find(vm.categoriesList, {id: category.id}).subcategories, {name: data});
 				}
 				else {
-					var forbiddenList = _.filter(category.subcategories, function(subcat) {
-						return !subcat.deletedBy;
-					});
-					flag = _.find(forbiddenList, {name: data});
+					flag = _.find(category.subcategories, {name: data});
 				}
 			}
 			else if (data !== category.name) {
 				if (category.id) {
-					flag = _.find(vm.categoriesList, function(cat) {
-						return cat.name == data;
-					});
+					flag = _.find(vm.categoriesList, {name: data});
 				}
 				else {
 					flag = _.find(vm.budgets, function(budget) {
@@ -191,18 +181,7 @@ module.exports = function(app) {
 
 		vm.deleteSubcategory = function(budget, subcategory) {
 			if (subcategory.id) {
-				var subcategories = [];
-				budget.category.subcategories.forEach(function(subcat) {
-					if (subcat.id) {
-						var sub = {id: subcat.id, budget: subcat.budget};
-						if (subcat.deletedBy) {
-							sub.deletedBy = subcat.deletedBy;
-						}
-						subcategories.push(sub);
-					}
-				});
-				_.find(subcategories, {id: subcategory.id}).deletedBy = vm.user.id;
-				BudgetsService.editBudget(budget.id, {subcategories: subcategories}).then(function () {
+				BudgetsService.editBudget(budget.id, {delSubcategory: {id: subcategory.id}}).then(function () {
 					return vm.updateYear();
 				});
 			}
@@ -213,56 +192,29 @@ module.exports = function(app) {
 
 		vm.sendData = function(budget, subcategory) {
 			if (subcategory) {
-				var fullSubategoriesList = _.find(vm.categoriesList, {id: budget.category.id}).subcategories;
 				if (!subcategory.id) {
-					var existing = _.find(fullSubategoriesList, {name: subcategory.name});
+					var existing = _.find(_.find(vm.categoriesList, {id: budget.category.id}).subcategories, {name: subcategory.name});
 					if (existing) {
-						subcategory.id = existing.id;
-						var subcategories = [];
-						budget.category.subcategories.forEach(function(subcat) {
-							if (subcat.id) {
-								var sub = {id: subcat.id, budget: subcat.budget};
-								if (subcat.deletedBy) {
-									sub.deletedBy = subcat.deletedBy;
-								}
-								subcategories.push(sub);
-							}
+						return BudgetsService.editBudget(budget.id, {addSubcategory: {id: existing.id, budget: subcategory.budget}}).then(function() {
+							return vm.updateYear();
 						});
-						return BudgetsService.editBudget(budget.id, {subcategories: subcategories});
 					}
-					subcategory.id = objectId();
-					fullSubategoriesList.push({
-						id: subcategory.id,
-						name: subcategory.name
-					});
+					else {
+						subcategory.id = objectId();
+						var budgetsPromise = BudgetsService.editBudget(budget.id, {addSubcategory: {id: subcategory.id, budget: subcategory.budget}});
+						var categoriesPromise = CategoriesService.editCategory(budget.category.id, {addSubcategory: {id: subcategory.id, name: subcategory.name}});
+					}
 				}
-				_.find(fullSubategoriesList, {id: subcategory.id}).name = subcategory.name;
-				var categoriesPromise = CategoriesService.editCategory(budget.category.id, {subcategories: fullSubategoriesList});
-				var subcategories = [];
-				budget.category.subcategories.forEach(function(subcat) {
-					if (subcat.id) {
-						var sub = {id: subcat.id, budget: subcat.budget};
-						if (subcat.deletedBy) {
-							sub.deletedBy = subcat.deletedBy;
-						}
-						subcategories.push(sub);
-					}
-				});
-				var budgetsPromise = BudgetsService.editBudget(budget.id, {subcategories: subcategories});
+				else {
+					var budgetsPromise = BudgetsService.editBudget(budget.id, {setSubBudget: {id: subcategory.id, budget: subcategory.budget}});
+					var categoriesPromise = CategoriesService.editCategory(budget.category.id, {setSubName: {id: subcategory.id, name: subcategory.name}});
+				}
 				return $q.all([categoriesPromise, budgetsPromise]).then(function () {
 					return vm.updateYear();
 				});
 			}
 			else {
-				if (budget.category.id) {
-					var categoriesPromise = CategoriesService.editCategory(budget.category.id, {name: budget.category.name});
-					var budgetsPromise = BudgetsService.editBudget(budget.id, {category: {id: budget.category.id, budget: budget.category.budget}});
-
-					return $q.all([categoriesPromise, budgetsPromise]).then(function () {
-						return vm.updateYear();
-					});
-				}
-				else {
+				if (!budget.category.id) {
 					var existing = _.find(vm.categoriesList, {name: budget.category.name});
 					if (existing) {
 						BudgetsService.createBudget({year: vm.year, category: { id: existing.id, budget: budget.category.budget}}).then(function() {
@@ -276,6 +228,13 @@ module.exports = function(app) {
 							});
 						});
 					}
+				}
+				else {
+					var categoriesPromise = CategoriesService.editCategory(budget.category.id, {setName: {name: budget.category.name}});
+					var budgetsPromise = BudgetsService.editBudget(budget.id, {setBudget: {budget: budget.category.budget}});
+					return $q.all([categoriesPromise, budgetsPromise]).then(function () {
+						return vm.updateYear();
+					});
 				}
 			}
 		};
