@@ -142,7 +142,6 @@ module.exports = function(app) {
 
     function checkField(field) {
       if(typeof field == "undefined") return "Fill in that field";
-
     }
 
     // Filter combo boxes

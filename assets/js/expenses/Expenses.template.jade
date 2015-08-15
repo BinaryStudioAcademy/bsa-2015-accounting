@@ -21,7 +21,7 @@
 			div#personal-container
 				input(type='checkbox', name='Personal', ng-model="formCtrl.expense.personal")
 				span#personal-label Personal budget
-			textarea.form-control(placeholder='Description', ng-model="formCtrl.expense.description", required)
+			textarea.form-control(placeholder='Description', ng-model="formCtrl.expense.description")
 			.money-left
 				b Marketing budget:
 				span.green $10000
@@ -92,7 +92,7 @@
 							i.fa.fa-chevron-down(ng-click="expCtr.toggleCustom($index)" ng-hide="!expCtr.hiddenList[$index]")
 						td(colspan='7')
 							| {{date | date:"dd.MM.yyyy"}}
-					tr(ng-repeat="expense in filteredData" ng-hide="!expCtr.hiddenList[$parent.$index]" )
+					tr(ng-repeat="expense in filteredData" ng-hide="!expCtr.hiddenList[$parent.$index]")
 						td(style='white-space: nowrap')
 							// form
 							form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', onaftersave="expCtr.editExpense(expense.id)", shown='inserted == expense')
