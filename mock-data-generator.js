@@ -14,6 +14,9 @@ var events = ['Conference', 'Party', 'Businnes trip', 'Camping', 'Media event', 
 var charges = ['water', 'drinks', 'chips', 'pastery', 'fruits', 'vegetables', 'cheese', 'popcorn', 'transport', 'ice cream', 'smoothie', 'cakes', 'ballones', 'hats', 
 'costumes', 'capes', 'bowler', 'snacks', 'cookies', 'ham', 'tickets'];
 
+var salt = bcrypt.genSaltSync(10, function(err, salt) {return salt});
+var hash = bcrypt.hashSync('111111', salt, function(err, hash) {return hash});
+
 var db = {};
 var subcategories = [];
 
@@ -42,6 +45,7 @@ Factory.define('Expense')
 	.attr('price', function() {return casual.integer(3000, 10000);})
 	.attr('currency', function() {return casual.random_element(['USD', 'UAH']);})
 	.attr('description', function() {return casual.description;})
+	.attr('personal', function() {return false;})
 	.attr('name', function() {return casual.random_element(events) + ' #' + casual.integer(1, 9) + ': ' + casual.random_element(charges);});
 
 Factory.define('Currency')
@@ -54,16 +58,8 @@ Factory.define('User')
 	.sequence('_id', function() {return String(casual.integer(0, 100000));})
 	.sequence('login', function() {return casual.email})
 	.attr('name', function() {return casual.name})
-	.attr('role', function() {return casual.random_element(['manager', 'admin']);})
 	.attr('createdAt', function() {return new Date().toISOString();})
 	.attr('updatedAt', function() {return new Date().toISOString();});
-
-_.times(50, function() {
-	var salt = bcrypt.genSaltSync(10, function(err, salt) {return salt});
-	var hash = bcrypt.hashSync('111111', salt, function(err, hash) {return hash});
-	var user = Factory.build('User', {password: hash});
-	db.user.push(user);
-});
 
 _.times(1000, function() {
 	var sub = Factory.build('Subcategory');
@@ -79,7 +75,11 @@ _.times(categories.length, function(n) {
 	subs.map(function(s, i) {
 		return s.name = names[n] + '-sub-' + i;
 	});
-	var category = Factory.build('Category', {name: names[n], subcategories: subs, managers: managers});
+	var category = Factory.build('Category', {name: names[n], subcategories: subs});
+	var categoryId = category._id;
+	var user = Factory.build('User', {password: hash, role: 'user', budgets: [{id: categoryId, budget: casual.integer(3, 7) * 100}], permissions: {}});
+	user.permissions[categoryId] = {read: true, post: true, admin: true};
+	db.user.push(user);
 	db.category.push(category);
 
 	_.times(years, function(n) {
@@ -98,7 +98,7 @@ _.times(categories.length, function(n) {
 
 _.times(years, function(n) {
 	var year = startYear + n;
-	_.times(5, function(nn) {
+	_.times(6, function(nn) {
 		db.category.forEach(function(category) {
 			category.subcategories.forEach(function(sub) {
 				var date = casual.date(format = 'MM/DD') + '/' + year;
@@ -115,14 +115,25 @@ _.times(years, function(n) {
 				if (nn === 4) {
 					var expense = Factory.build('Expense', {deletedBy: _.sample(db.user, 1)[0]._id, time: expTime, creatorId: String(_.sample(db.user, 1)[0]._id), categoryId: category._id, subcategoryId: sub.id});
 					db.expense.push(expense);
-				} else {
+				} else if (nn === 5) {
 					var expense = Factory.build('Expense', {time: expTime, creatorId: String(_.sample(db.user, 1)[0]._id), categoryId: category._id, subcategoryId: sub.id});
+					expense.personal = true;
+					db.expense.push(expense);
+				}
+				else {
+					var expense = Factory.build('Expense', {time: expTime, creatorId: String(_.sample(db.user, 1)[0]._id), categoryId: category._id, subcategoryId: sub.id});
+					if (expense.currency === 'UAH') {
+						expense.price *= 20;
+					}
 					db.expense.push(expense);
 				}
 			});
 		});
 	});
 });
+
+var owner = {_id: 'a', login: 'admin@admin', role: 'global admin', permissions: {}, budgets: [], 'createdAt': new Date().toISOString(), 'updatedAt': new Date().toISOString(), password: hash};
+db.user.push(owner);
 
 var url = 'mongodb://localhost:27017/portal-accounting';
 

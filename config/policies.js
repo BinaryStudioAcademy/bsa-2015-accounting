@@ -26,16 +26,38 @@ module.exports.policies = {
   *                                                                          *
   ***************************************************************************/
 
-  '*': true
-
-  /*'*': 'isAuthenticated',*/
-  //'CurrencyController': {
-  //  '*': 'isAuthenticated'
-  //},
-
-  //'UserController': {
-  //  '*': 'isAuthenticated'
-  //}
+  '*': false,
+  'AuthController': {
+    '*': true
+  },
+  'YearsController': {
+    '*': 'isAuthenticated'
+  },
+  'CurrencyController': {
+    '*': 'isAuthenticated'
+  },
+  'BudgetController': {
+    'findOne': ['isAuthenticated', 'hasRightBudget'],
+    'destroy': ['isAuthenticated', 'hasRightBudget'],
+    'edit': ['isAuthenticated', 'hasRightBudget'],
+    'create': ['isAuthenticated', 'hasRightBudget'],
+    'find': 'isAuthenticated'
+  },
+  'CategoryController': {
+    'findOne': ['isAuthenticated', 'hasRightCategory'],
+    'destroy': ['isAuthenticated', 'hasRightCategory'],
+    'edit': ['isAuthenticated', 'hasRightCategory'],
+    'create': ['isAuthenticated', 'hasRightCategory'],
+    'find': 'isAuthenticated'
+  },
+  'ExpenseController': {
+    '*': ['isAuthenticated', 'hasRightExpense'],
+    'find': 'isAuthenticated'
+  },
+  'UserController': {
+   '*': ['isAuthenticated', 'isAdmin'],
+   'find': ['isAuthenticated', 'isThatUser']
+  }
 
   /***************************************************************************
   *                                                                          *

@@ -32,6 +32,8 @@ passport.use(new LocalStrategy({
           var returnUser = {
             email: user.email,
             createdAt: user.createdAt,
+            role: user.role,
+            permissions: user.permissions,
             id: user.id
           };
           return done(null, returnUser, {
