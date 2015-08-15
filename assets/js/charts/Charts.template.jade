@@ -7,31 +7,6 @@
 					select.form-control(ng-change="chartCtrl.getBudgetsByYear()", ng-model="chartCtrl.year")
 						option(ng-repeat="year in chartCtrl.years") {{year}}
 				li
-					label Period
-					select.form-control
-						option(selected='selected') Period
-						optgroup(label='Month')
-							option January
-							option February
-							option March
-							option April
-							option May
-							option June
-							option July
-							option August
-							option September
-							option Oktober
-							option November
-							option Desember
-				li
-					label Quarter
-					select.form-control
-						optgroup(label='Quarter')
-							option 1 quarter(january-march)
-							option 2 quarter(april-june)
-							option 3 quarter(july-september)
-							option 4 quarter(october-december)
-				li
 					label Or range of dates 
 					br
 					label from
@@ -39,51 +14,9 @@
 					label to
 					input.form-control(type='date', placeholder='Date' )
 				li
-					label Categories
-					select#category.form-control
-						option(selected='selected') Category
-						optgroup(label='HR')
-							option Office
-							option Parties
-							option Salary
-							option Course
-						optgroup(label='Marketing')
-							option subcategory
-							option subcategory
-							option subcategory
-							option subcategory
-						optgroup(label='Accounting')
-							option Tax
-							option sallary
-							option subcategory
-							option subcategory
-		.chart-rightBlock
-			h4 Amount data by categories
-			select.form-control(multiple='multiple')
-				optgroup(label='HR')
-					option(value='1') Office
-					option(value='2') Parties
-					option(value='3') Salary
-					option(value='4') Course
-				optgroup(label='Marketing')
-					option(value='5') subcategory
-					option(value='6') subcategory
-					option(value='7') subcategory
-					option(value='8') subcategory
-				optgroup(label='Accounting')
-					option(value='9') Tax
-					option(value='10') sallary
-					option(value='11') subcategory
-					option(value='12') subcategory
-			button.chart-butSum.btn.btn-info Sum
-			//- .chart-radiPeriodr
-			//- 	p Display by:
-			//- 	label Month
-			//- 	input(type='radio')
-			//- 	label Quarter
-			//- 	input(type='radio')
-			//- 	label Year
-			//- 	input(type='radio')
+					label Category
+
+			button.chart-butSum.btn.btn-info Dispay
 	div.chartsBlock
 		#barChart
 		br

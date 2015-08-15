@@ -19,24 +19,25 @@ module.exports = function(app) {
 
 			getBudgetsByYear(vm.year);
 		});
-
 		function getBudgetsByYear(year) {
 			$q.all([ChartsService.getBudgetsByYear(year), ExpensesService.getAllExpenses(year)]).then(function(results) {
 				var budgets = results[0];
 				var expenses = results[1];
-				var names = _.pluck(budgets, 'categoryId.name');
-				var planned = _.pluck(budgets, 'budget');
+				var names = _.pluck(budgets, 'category.name');
+				var planned = _.pluck(budgets, 'category.budget');
 				var spended = [];
 
 				names.forEach(function(name) {
 					var expensesByName = _.filter(expenses, function(expense) {
-						return expense.categoryId.name === name;
+						return expense.category.name === name;
 					});
 					var total = _.reduce(expensesByName, function(total, exp) {
 						return total + exp.price;
 					}, 0);
 					spended.push(total);
 				});
+				console.log(names);
+				console.log(budgets.category);
 				
 				barChart(names, planned, spended);
 				pieChart(names, planned);

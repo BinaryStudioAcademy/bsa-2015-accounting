@@ -19,7 +19,7 @@ module.exports = function(app) {
     }
 
     function getCategory(categoryId) {
-      return $resource("/category/:id", { id: "@id" }).get({ id: categoryId }).$promise;
+      return $resource("/category/:id", { id: "@id" }).query().$promise;
     }
   }
 };
