@@ -6,6 +6,21 @@
  */
 
 module.exports = {
-	
+	find: getCurrency
 };
 
+function getCurrency(req, res) {
+	var year = req.param('year');
+	var filter = {deletedBy: {$exists: false}};
+	if (year) {
+		var start = Date.parse('01/01/' + year + ' 00:00:00') / 1000;
+		var end = Date.parse('12/31/' + year + ' 23:59:59') / 1000;
+		filter = {deletedBy: {$exists: false}, time: {$gte: start, $lte: end }};
+	}
+
+	Currency.find(filter).exec(function found(err, currencies) {
+		console.log(filter);
+		if (err) return res.serverError(err);
+		res.ok(currencies);
+	});
+}

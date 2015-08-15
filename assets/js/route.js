@@ -20,6 +20,11 @@ module.exports = function(app) {
         controller: 'ChartsController',
         controllerAs:'chartCtrl'
       }).
+      when('/administration', {
+        templateUrl: '/templates/Administration.html',
+        controller: 'AdministrationController',
+        controllerAs:'admCtrl'
+      }).
       otherwise({
         redirectTo: '/expenses'
       });
