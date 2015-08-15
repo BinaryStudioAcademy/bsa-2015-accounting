@@ -8,8 +8,8 @@ module.exports = function(app) {
       getPersonalExpenses: getPersonalExpenses
     };
 
-    function getPersonalExpenses() {
-      return $resource("/expense", { sort: "time desc", where: {personal: true} }).query().$promise;
+    function getPersonalExpenses(creatorId) {
+      return $resource("/expense", { sort: "time desc", where: {personal: true, creatorId: creatorId} }).query().$promise;
     }
   }
 };

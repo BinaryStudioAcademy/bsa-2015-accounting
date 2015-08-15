@@ -14,12 +14,12 @@
 						| Category
 					th
 						| Left  
-						#currency-group.btn-group(ng-click="personalCtrl.changeCurrency('left', personalCtrl.currencyLeftModel)")
+						#currency-group.btn-group(ng-click="personalCtrl.changeCurrency('left')")
 							label.btn.btn-primary(ng-model="personalCtrl.currencyLeftModel", btn-radio="'UAH'") UAH
 							label.btn.btn-primary(ng-model="personalCtrl.currencyLeftModel", btn-radio="'USD'") USD
 					th
 						| Spent  
-						#currency-group.btn-group(ng-click="personalCtrl.changeCurrency('spent', personalCtrl.currencySpentModel)")
+						#currency-group.btn-group(ng-click="personalCtrl.changeCurrency('spent')")
 							label.btn.btn-primary(ng-model="personalCtrl.currencySpentModel", btn-radio="'UAH'") UAH
 							label.btn.btn-primary(ng-model="personalCtrl.currencySpentModel", btn-radio="'USD'") USD
 			tbody
@@ -37,11 +37,10 @@
 				col.table-carrency
 				col.table-category
 				col.table-sub
-				col.table-addBy
 				col.table-description
 			thead
 				tr
-					th#outcome-header(colspan="8")
+					th#outcome-header(colspan="7")
 						| Personal expenses
 				tr
 					th
@@ -57,8 +56,6 @@
 					th
 						| Subcategory
 					th
-						| Added by
-					th
 						i.fa.fa-info-circle
 		#tbody-container
 			table#table-container.table-hover.fixed
@@ -69,14 +66,13 @@
 					col.table-carrency
 					col.table-category
 					col.table-sub
-					col.table-addBy
 					col.table-description
 				tbody(ng-repeat="date in personalCtrl.dates")
 					tr
 						td
 							i.fa.fa-chevron-right(ng-click="personalCtrl.toggleCustom($index)" ng-show="!personalCtrl.hiddenList[$index]")
 							i.fa.fa-chevron-down(ng-click="personalCtrl.toggleCustom($index)" ng-hide="!personalCtrl.hiddenList[$index]")
-						td(colspan='7')
+						td(colspan='6')
 							| {{date | date:"dd.MM.yyyy"}}
 					tr(ng-repeat="expense in personalCtrl.getExpensesByDate(date)" ng-hide="!personalCtrl.hiddenList[$parent.$index]")
 						td(style='white-space: nowrap')
@@ -105,8 +101,6 @@
 						td
 							span(editable-select='expense.subcategory.id', e-name='subcategory.name', e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "subcategoryId")', onbeforesave="personalCtrl.checkField($data)", e-ng-options='subcategory.id as subcategory.name for subcategory in personalCtrl.subcategories', e-required="")
 								| {{ personalCtrl.getField(expense.subcategory.id, "subcategory") || expense.subcategory.name }}
-						td
-							span(e-name='creator', e-form='rowform') {{ expense.creator.name }}
 						td.infoTd
 							.btn-group(dropdown='')
 								button.btn(type='button', dropdown-toggle='')
@@ -115,7 +109,7 @@
 				tbody#load-more(ng-show="personalCtrl.isLoadMore()")
 					tr
 						td
-						td(colspan='7')
+						td(colspan='6')
 							a(ng-click="personalCtrl.loadExpenses()")
 								| load more expenses 
 								i.fa.fa-plus

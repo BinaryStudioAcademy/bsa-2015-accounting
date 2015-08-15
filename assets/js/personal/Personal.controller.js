@@ -15,6 +15,7 @@ module.exports = function(app) {
   function PersonalController(PersonalService, CategoriesService, ExpensesService, UsersService, CurrencyService, $filter) {
     var vm = this;
 
+    vm.currentUser = {};
     vm.allExpenses = [];
     vm.expenses = [];
     vm.dates = [];
@@ -39,10 +40,14 @@ module.exports = function(app) {
     getPersonalExpenses();
 
     function getPersonalExpenses() {
-      PersonalService.getPersonalExpenses().then(function(data) {
-        vm.allExpenses = data;
-        convertDates(vm.allExpenses);
-        loadExpenses();
+      UsersService.getCurrentUser().then(function(user) {
+        vm.currentUser = user;
+        getCategories();
+        PersonalService.getPersonalExpenses(vm.currentUser.id).then(function(data) {
+          vm.allExpenses = data;
+          convertDates(vm.allExpenses);
+          loadExpenses();
+        });
       });
     }
 
@@ -127,10 +132,9 @@ module.exports = function(app) {
     }
 
     function editExpense(id) {
-      ExpensesService.editExpense(id, expense);
-
-      vm.budgets = [];
-      getUsersBudgets();
+      ExpensesService.editExpense(id, expense).then(function() {
+        updateBudgets(expense.categoryId);
+      });
     }
 
     function getField(fieldId, fieldName) {
@@ -152,8 +156,6 @@ module.exports = function(app) {
     vm.categories = [];
     vm.subcategories = [];
     vm.getSubcategories = getSubcategories;
-
-    getCategories();
 
     function getCategories() {
       CategoriesService.getCategories().then(function(data) {
@@ -185,14 +187,12 @@ module.exports = function(app) {
     function getUsersBudgets() {
       CurrencyService.getExchangeRate().then(function(exchangeRate) {
         vm.exchangeRate = exchangeRate[0].rate;
-        UsersService.getCurrentUser().then(function(user) {
-          user.budgets.forEach(function(item) {
-            var category = $filter('filter')(vm.categories, {id: item.categoryId});
-            item.categoryId = category[0].name;
-            item.left = calculateLeftBudget(category[0], item.budget, vm.exchangeRate);
-            item.spent = calculateSpentBudget(category[0], vm.exchangeRate);
-            vm.budgets.push(item);
-          });
+        vm.currentUser.budgets.forEach(function(item) {
+          var category = $filter('filter')(vm.categories, {id: item.categoryId});
+          item.categoryId = category[0].name;
+          item.left = calculateLeftBudget(category[0], item.budget, vm.exchangeRate);
+          item.spent = calculateSpentBudget(category[0], vm.exchangeRate);
+          vm.budgets.push(item);
         });
       });
     }
@@ -223,16 +223,28 @@ module.exports = function(app) {
     vm.currencyLeftModel = "UAH";
     vm.currencySpentModel = "UAH";
 
-    function changeCurrency(moneyType, currency) {
+    function changeCurrency(moneyType) {
       for(var budget in vm.budgets) {
         if(moneyType == "left") {
-          if(currency == "USD") {
+          if(vm.currencyLeftModel == "USD") {
             vm.budgets[budget].left /= vm.exchangeRate;
           } else vm.budgets[budget].left *= vm.exchangeRate;
         } else {
-          if(currency == "USD") {
+          if(vm.currencySpentModel == "USD") {
             vm.budgets[budget].spent /= vm.exchangeRate;
           } else vm.budgets[budget].spent *= vm.exchangeRate;
+        }
+      }
+    }
+
+    function updateBudgets(catId) {
+      var category = $filter('filter')(vm.categories, {id: catId});
+      var budg = $filter('filter')(vm.currentUser.budgets, {categoryId: category[0].name});
+      for(var item in vm.budgets) {
+        if(vm.budgets[item].categoryId == category[0].name) {
+          vm.budgets[item].left = calculateLeftBudget(category[0], budg[0].budget, vm.exchangeRate);
+          vm.budgets[item].spent = calculateSpentBudget(category[0], vm.exchangeRate);
+          break;
         }
       }
     }
