@@ -15,17 +15,27 @@ module.exports = {
 };
 
 function getBudgets(req, res) {
-	Budget.find({deletedBy: {$exists: false}})
+	var filter = {deletedBy: {$exists: false}};
+	Budget.find(filter)
 	.where( actionUtil.parseCriteria(req) )
 	.then(function(budgets) {
-		var users = User.find().then(function(users) {
+		var users = User.find(filter).then(function(users) {
 			return users;
 		});
-		var categories = Category.find().then(function(categories) {
+		var categories = Category.find(filter).then(function(categories) {
 			return categories;
 		});
-		return [budgets, users, categories];
-	}).spread(function(budgets, users, categories) {
+		var year = actionUtil.parseCriteria(req).year
+		if (year) {
+			var start = Date.parse('01/01/' + year + ' 00:00:00') / 1000;
+			var end = Date.parse('12/31/' + year + ' 23:59:59') / 1000;
+			filter = {deletedBy: {$exists: false}, time: {$gte: start, $lte: end }};
+		}
+		var expenses = Expense.find(filter).then(function(categories) {
+			return categories;
+		});
+		return [budgets, users, categories, expenses];
+	}).spread(function(budgets, users, categories, expenses) {
 		budgets.forEach(function(budget) {
 			var category = _.find(categories, {id: budget.category.id});
 			budget.category.name = category.name;
@@ -47,6 +57,23 @@ function getBudgets(req, res) {
 				name: user.name
 			};
 			delete budget.creatorId;
+
+			var catUsed = 0;
+			var distributed = 0;
+			budget.category.subcategories.forEach(function(subcategory) {
+				var subExpenses = _.filter(expenses, function(expense) {
+					return expense.subcategoryId == subcategory.id;
+				});
+				var subUsed = 0;
+				subExpenses.forEach(function(subExpense) {
+					subUsed += subExpense.price;
+				});
+				catUsed += subUsed;
+				distributed += subcategory.budget;
+				subcategory.used = subUsed;
+			});
+			budget.category.used = catUsed;
+			budget.category.undistributed = budget.category.budget - distributed;
 		});
 		return res.send(budgets);
 	}).fail(function(err) {

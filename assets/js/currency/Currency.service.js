@@ -5,11 +5,16 @@ module.exports = function(app) {
 
   function CurrencyService($resource) {
     return {
-      getExchangeRate: getExchangeRate
+      getExchangeRate: getExchangeRate,
+      getExchangeRates: getExchangeRates
     };
 
     function getExchangeRate() {
       return $resource("/currency").query({sort: "time desc", limit: 1}).$promise;
+    }
+
+    function getExchangeRates(year) {
+      return $resource("/currency", { where: {"year": year}}).query().$promise;
     }
   }
 };

@@ -8,9 +8,9 @@ module.exports = function(app) {
 		editableOptions.theme = 'bs3';
 	});
 
-	BudgetsController.$inject = ['BudgetsService', 'ExpensesService', 'CategoriesService', 'YearsService', 'UsersService', '$q'];
+	BudgetsController.$inject = ['BudgetsService', 'ExpensesService', 'CategoriesService', 'YearsService', 'CurrencyService', '$q'];
 
-	function BudgetsController(BudgetsService, ExpensesService, CategoriesService, YearsService, UsersService, $q) {
+	function BudgetsController(BudgetsService, ExpensesService, CategoriesService, YearsService, CurrencyService, $q) {
 		var vm = this;
 
 		//togglig lists
@@ -19,15 +19,10 @@ module.exports = function(app) {
 			vm.hiddenList[index] = !vm.hiddenList[index];
 		};
 
-		vm.years = [];
-		vm.budgets = [];
-		vm.expenses = [];
-		vm.categoriesList = [];
-
-		vm.user = {
-			id: "unknown id",
-			name: "unknown name"
-		};
+		//vm.years = [];
+		//vm.budgets = [];
+		//vm.expenses = [];
+		//vm.categoriesList = [];
 
 		YearsService.getYears().then(function(years) {
 			vm.years = years.sort(function(a, b){return b - a});
@@ -39,46 +34,20 @@ module.exports = function(app) {
 		vm.updateYear = function() {
 			var categoriesPromise = CategoriesService.getCategories();
 			var budgetsPromise = BudgetsService.getBudgets(vm.year);
-			var expensesPromise = ExpensesService.getAllExpenses(vm.year);
+			var currencyPromise = CurrencyService.getExchangeRates(vm.year);
 
-			//var userPromise = UsersService.getCurrentUser();
-
-			return $q.all([categoriesPromise, budgetsPromise, expensesPromise]).then(function (data) {
+			return $q.all([categoriesPromise, budgetsPromise, currencyPromise]).then(function (data) {
 				vm.categoriesList = data[0] || [];
 				vm.budgets = data[1] || [];
-				vm.expenses = data[2] || [];
-
-			console.log(budgetsPromise);
-			console.log(vm.budgets);
-				//vm.user = data[3] || {id: "unknown id", name: "unknown name"};
-				//console.log(vm.user);
+				vm.currency = data[2] || [];
+				//console.log(vm.currency);
+				//console.log(vm.currency.length);
 
 				vm.annualBudget = 0;
 				vm.annualUsed = 0;
 				vm.annualUndistributed = 0;
 
 				vm.budgets.forEach(function(budget) {
-					var catUsed = 0;
-					var distributed = 0;
-
-					budget.category.subcategories.forEach(function(subcategory) {
-						var subExpenses = _.filter(vm.expenses, function(expense) {
-							return expense.subcategory.id == subcategory.id;
-						});
-						var subUsed = 0;
-
-						subExpenses.forEach(function(subExpense) {
-							subUsed += subExpense.price;
-						});
-
-						catUsed += subUsed;
-						distributed += subcategory.budget;
-						subcategory.used = subUsed;
-					});
-
-					budget.category.used = catUsed;
-					budget.category.undistributed = budget.category.budget - distributed;
-
 					vm.annualBudget += budget.category.budget;
 					vm.annualUsed += budget.category.used;
 					vm.annualUndistributed += budget.category.undistributed;
@@ -171,25 +140,45 @@ module.exports = function(app) {
 		};
 
 		vm.deleteBudget = function(budget) {
-			if (budget.id) {
-				BudgetsService.deleteBudget(budget.id).then(function () {
-					return vm.updateYear();
-				});
-			}
-			else {
-				vm.budgets.splice(vm.budgets.indexOf(budget), 1);
-			}
+			swal({
+				title: "Are you sure?",
+				text: "You're about to delete " + budget.category.name,
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Yes, delete it!",
+				closeOnConfirm: true
+			}, function() {
+				if (budget.id) {
+					BudgetsService.deleteBudget(budget.id).then(function () {
+						return vm.updateYear();
+					});
+				}
+				else {
+					vm.budgets.splice(vm.budgets.indexOf(budget), 1);
+				}
+			});
 		};
 
 		vm.deleteSubcategory = function(budget, subcategory) {
-			if (subcategory.id) {
-				BudgetsService.editBudget(budget.id, {delSubcategory: {id: subcategory.id}}).then(function () {
-					return vm.updateYear();
-				});
-			}
-			else {
-				budget.category.subcategories.splice(budget.category.subcategories.indexOf(subcategory), 1);
-			}
+			swal({
+				title: "Are you sure?",
+				text: "You're about to delete " + subcategory.name,
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Yes, delete it!",
+				closeOnConfirm: true
+			}, function() {
+				if (subcategory.id) {
+					BudgetsService.editBudget(budget.id, {delSubcategory: {id: subcategory.id}}).then(function () {
+						return vm.updateYear();
+					});
+				}
+				else {
+					budget.category.subcategories.splice(budget.category.subcategories.indexOf(subcategory), 1);
+				}
+			});
 		};
 
 		vm.sendData = function(budget, subcategory) {
