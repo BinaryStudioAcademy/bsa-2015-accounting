@@ -7,8 +7,10 @@ module.exports = {
 };
 
 function find(req, res) {
-	var permissions = _.pluck(_.filter(req.user.permissions, {read: true}), 'id');
-	var filter = req.user.role === 'global admin' ? {} : {_id: {$in: permissions}};
+	var permissions = _.pluck(_.filter(req.user.permissions, function(per) {
+		return per.level >= 1;
+	}), 'id');
+	var filter = req.user.admin ? {} : {_id: {$in: permissions}};
 	Category.find(filter).exec(function(err, categories) {
 		if (err) return res.serverError(err);
 

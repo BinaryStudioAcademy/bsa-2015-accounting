@@ -6,10 +6,10 @@ module.exports = function(req, res, next) {
 	if (permissions) {
 		switch (req.method) {
 			case 'GET':
-				var permission = permissions.read;
+				var permission = permissions.level >= 1;
 				break;
 			case 'PUT':
-				var permission = permissions.admin;
+				var permission = permissions.level >= 3;
 				break;
 			case 'POST':
 				var permission = false;
@@ -17,7 +17,7 @@ module.exports = function(req, res, next) {
 		}
 	}
 
-	if (req.user.role === 'global admin' || permission) {
+	if (req.user.admin || permission) {
 		next();
 	} else {
 		return res.forbidden("You don't hane permission to do this");

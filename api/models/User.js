@@ -16,9 +16,9 @@ module.exports = {
 			type: 'string',
 			defaultsTo: 'anonymous'
 		},
-		role: {
-			type: 'string',
-			defaultsTo: 'user'
+		admin: {
+			type: 'boolean',
+			defaultsTo: 'false'
 		},
 		permissions: {
 			type: 'array',

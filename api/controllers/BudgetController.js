@@ -8,9 +8,11 @@ module.exports = {
 };
 
 function getBudgets(req, res) {
-	var permissions = _.pluck(_.filter(req.user.permissions, {read: true}), 'id');
+	var permissions = _.pluck(_.filter(req.user.permissions, function(per) {
+		return per.level >= 1;
+	}), 'id');
 	var filter = {deletedBy: {$exists: false}}
-	var budgetFilter = req.user.role === 'global admin' ? filter : _.assign(filter, {'category.id': {$in: permissions}});
+	var budgetFilter = req.user.admin ? filter : _.assign(filter, {'category.id': {$in: permissions}});
 
 	Budget.find(budgetFilter)
 	.where( actionUtil.parseCriteria(req) )
