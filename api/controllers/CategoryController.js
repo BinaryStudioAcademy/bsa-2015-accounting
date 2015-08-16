@@ -1,16 +1,22 @@
-/**
- * CategoryController
- *
- * @description :: Server-side logic for managing categories
- * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
- */
-
-var actionUtil = require('sails/lib/hooks/blueprints/actionUtil'),
-    _ = require('lodash');
+var actionUtil = require('sails/lib/hooks/blueprints/actionUtil');
+var _ = require('lodash');
 
 module.exports = {
-	update: updateCategory
+	update: updateCategory,
+	find: find
 };
+
+function find(req, res) {
+	var permissions = _.pluck(_.filter(req.user.permissions, function(per) {
+		return per.level >= 1;
+	}), 'id');
+	var filter = req.user.admin ? {} : {_id: {$in: permissions}};
+	Category.find(filter).exec(function(err, categories) {
+		if (err) return res.serverError(err);
+
+		res.ok(categories);
+	});
+}
 
 function updateCategory(req, res) {
 	var pk = actionUtil.requirePk(req);

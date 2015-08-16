@@ -32,12 +32,10 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  '/': {
-    view: 'homepage'
-  },
+  'get /': 'HomepageController',
 
   'get /login': {
-       view: 'login'
+    view: 'login'
   },
 
   'post /login': 'AuthController.login',
@@ -51,7 +49,7 @@ module.exports.routes = {
   'get /years': 'YearsController',
   'get /expenses_by_year/:year': 'ExpenseController.find',
 
-  'get /currency_by_date/:year/:month/:day': 'CurrencyController.find',
+  'get /currency_by_year/:year': 'CurrencyController.find',
 
   'get /user/current': 'UserController.getCurrentUser'
 

@@ -16,13 +16,13 @@ module.exports = {
 			type: 'string',
 			defaultsTo: 'anonymous'
 		},
-		role: {
-			type: 'string',
-			defaultsTo: 'user'
+		admin: {
+			type: 'boolean',
+			defaultsTo: false
 		},
 		permissions: {
-			type: 'json',
-			defaultsTo: {}
+			type: 'array',
+			defaultsTo: []
 		},
 		budgets: {
 			type: 'array',

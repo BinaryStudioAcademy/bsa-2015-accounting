@@ -8,9 +8,9 @@ module.exports = function(app) {
 		editableOptions.theme = 'bs3';
 	});
 
-	BudgetsController.$inject = ['BudgetsService', 'ExpensesService', 'CategoriesService', 'YearsService', 'CurrencyService', '$q'];
+	BudgetsController.$inject = ['BudgetsService', 'CategoriesService', 'YearsService', '$q'];
 
-	function BudgetsController(BudgetsService, ExpensesService, CategoriesService, YearsService, CurrencyService, $q) {
+	function BudgetsController(BudgetsService, CategoriesService, YearsService, $q) {
 		var vm = this;
 
 		//togglig lists
@@ -34,12 +34,10 @@ module.exports = function(app) {
 		vm.updateYear = function() {
 			var categoriesPromise = CategoriesService.getCategories();
 			var budgetsPromise = BudgetsService.getBudgets(vm.year);
-			var currencyPromise = CurrencyService.getExchangeRates(vm.year);
 
-			return $q.all([categoriesPromise, budgetsPromise, currencyPromise]).then(function (data) {
+			return $q.all([categoriesPromise, budgetsPromise]).then(function (data) {
 				vm.categoriesList = data[0] || [];
 				vm.budgets = data[1] || [];
-				vm.currency = data[2] || [];
 
 				vm.annualBudget = 0;
 				vm.annualUsed = 0;

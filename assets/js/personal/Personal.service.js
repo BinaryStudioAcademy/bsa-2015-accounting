@@ -9,7 +9,7 @@ module.exports = function(app) {
     };
 
     function getPersonalExpenses(creatorId) {
-      return $resource("/expense", { sort: "time desc", where: {personal: true, creatorId: creatorId} }).query().$promise;
+      return $resource("/expense?creator=" + creatorId, { sort: "time desc", where: {personal: true}}).query().$promise;
     }
   }
 };

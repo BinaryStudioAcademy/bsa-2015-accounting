@@ -2,11 +2,12 @@ extends ./layout
 
 
 block body
-	h1
-		Login
-
-	form(method="POST" action="/login")
-		input(type="email" name="login")
-		input(type="password" name="password")
-		input(type="submit" value="submit")
-
+	#login-page
+		.container
+			.wrapper
+				form.form-signin(action='/login', method='POST')
+					h3.form-signin-heading Welcome Back! Please Sign In
+					br
+					input.form-control(type='email', name='login', placeholder='Username', required='', autofocus='')
+					input.form-control(type='password', name='password', placeholder='Password', required='')
+					button.btn.btn-lg.btn-primary.btn-block(name='submit', value='submit', type='Submit') Login
