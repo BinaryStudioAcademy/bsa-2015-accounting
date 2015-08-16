@@ -39,10 +39,9 @@
 		table(ng-hide='chartCtrl.viewTable') 
 			thead
 				tr
-					th Category
-					th Subcategory
-					th Expenses
-					th Total
+					th(ng-repeat='years in chartCtrl.years')
+						|{{years}}
+
 			tbody
 				tr(ng-repeat='category in chartCtrl.tableData')
 					td(colspan ='{{ category.length }}') 

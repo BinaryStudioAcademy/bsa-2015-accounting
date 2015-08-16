@@ -17,6 +17,7 @@ module.exports = function(app) {
 		vm.categories = [];
 		vm.displayCategory = displayCategory;
 		getCategories();
+
 // unique element of array
 	function unique(arr) {
 		var obj = {};
@@ -93,6 +94,7 @@ module.exports = function(app) {
 			vm.year = String(vm.years[0]);
 			getBudgetsByYear(vm.year);
 			getCategories(vm.year);
+
 		});
 
 		function getBudgetsByYear(year) {
@@ -155,10 +157,6 @@ module.exports = function(app) {
 			var subcategorysName =_.pluck(filteredExpensesByCategory, 'subcategory.name');
 			var uniqueSubcategoryNames = unique(subcategorysName);
 
-			console.log(filteredExpensesByCategory);
-/*			filteredExpensesByCategory.forEach(function(currency){
-				console.log(currency);
-			})*/
 
 			uniqueSubcategoryNames.forEach(function(name) {
 				var expensesBySubcategory = _.filter(filteredExpensesByCategory, function(expense) {
@@ -166,7 +164,6 @@ module.exports = function(app) {
 				});
 
 				var totalSubExpenses = _.reduce(expensesBySubcategory, function(totalSubExpenses, exp) {
-					console.log(exp.currency);
 					if(exp.currency =='USD'){
 					 return totalSubExpenses + exp.price * kurs;;
 					}
@@ -174,7 +171,6 @@ module.exports = function(app) {
 
 				}, 0);
 					spendedByPeriod.push(totalSubExpenses);
-					console.log(totalSubExpenses);
 			});
 
 				barChart(uniqueSubcategoryNames, planned, spendedByPeriod, titleText ,vm.budgetVisible);
@@ -305,6 +301,7 @@ module.exports = function(app) {
 		function handleForm() {
 			getBudgetsByYear(vm.year);
 			//getCategories(vm.year)
+			console.log(vm.years);
 		}
 	}
 };
