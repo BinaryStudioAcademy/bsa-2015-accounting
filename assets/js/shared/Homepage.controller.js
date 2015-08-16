@@ -1,18 +1,17 @@
 module.exports = function(app) {
   app.controller('HomepageController', HomepageController);
 
-  HomepageController.$inject = ['UsersService', 'CurrencyService'];
+  HomepageController.$inject = ['$rootScope', 'UsersService', 'CurrencyService'];
 
-  function HomepageController(UsersService, CurrencyService) {
-    var vm = this;
-    vm.currentUser = {};
+  function HomepageController($rootScope, UsersService, CurrencyService) {
+    $rootScope.currentUser = {};
     UsersService.getCurrentUser().then(function(user) {
-      vm.currentUser = user;
+      $rootScope.currentUser = user;
     });
 
-    vm.exchangeRate = 0;
+    $rootScope.exchangeRate = 0;
     CurrencyService.getExchangeRate().then(function(rate) {
-      vm.exchangeRate = rate[0].rate;
+      $rootScope.exchangeRate = rate[0].rate;
     });
   }
 };

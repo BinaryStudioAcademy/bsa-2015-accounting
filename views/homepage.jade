@@ -2,13 +2,13 @@ extends ./layout
 
 
 block body
-  #menu-view(ng-controller='HomepageController as homeCtrl')
+  #menu-view(ng-controller='HomepageController')
     header
       i#menu-btn.fa.fa-bars
       #page-name Accounting
       #user-info
         img#user-logo(src='http://lorempixel.com/40/40/cats/4/', alt='user logo')
-        span &nbsp;{{homeCtrl.currentUser.name}}
+        span &nbsp;{{currentUser.name}}
     nav
       ul.nav.nav-tabs.tabs-left
         li
