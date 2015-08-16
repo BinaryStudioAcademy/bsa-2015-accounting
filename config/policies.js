@@ -19,16 +19,19 @@
 
 module.exports.policies = {
 
-	/***************************************************************************
-	*                                                                          *
-	* Default policy for all controllers and actions (`true` allows public     *
-	* access)                                                                  *
-	*                                                                          *
-	***************************************************************************/
+  /***************************************************************************
+  *                                                                          *
+  * Default policy for all controllers and actions (`true` allows public     *
+  * access)                                                                  *
+  *                                                                          *
+  ***************************************************************************/
 
   '*': false,
   'AuthController': {
     '*': true
+  },
+  'HomepageController': {
+    '*': 'isAuthenticated'
   },
   'YearsController': {
     '*': 'isAuthenticated'
@@ -56,8 +59,9 @@ module.exports.policies = {
   },
   'UserController': {
    '*': ['isAuthenticated', 'isAdmin'],
-   'find': ['isAuthenticated', 'isThatUser'],
-   'update': 'isAuthenticated'
+   'findOne': ['isAuthenticated', 'isThatUser'],
+   'update': 'isAuthenticated',
+   'getCurrentUser': ['isAuthenticated']
   }
 
   /***************************************************************************
