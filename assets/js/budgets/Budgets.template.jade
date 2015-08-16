@@ -42,7 +42,7 @@
 						button.btn.btn-xs.btn-primary(ng-click='rowform.$show()') edit
 						button.btn.btn-xs.btn-danger(ng-click='budCtrl.deleteBudget(budget)') del
 				th
-					span(editable-text='budget.category.name' name='name' e-form='rowform' onbeforesave='budCtrl.checkName($data, budget)') {{budget.category.name || 'Unnamed category'}}
+					span(editable-text='budget.category.name' name='name' e-form='rowform' onbeforesave='budCtrl.checkName($data, budget.category)' e-typeahead='category for category in budCtrl.categoriesAutocomplete(budget.category)') {{budget.category.name || 'Unnamed category'}}
 				th
 					b(editable-number='budget.category.budget' name='budget' e-form='rowform' onbeforesave='budCtrl.checkBudget($data)') {{budget.category.budget || '0' | currency}}
 					br
@@ -67,7 +67,7 @@
 						button.btn.btn-xs.btn-primary(ng-click='rowform.$show()') edit
 						button.btn.btn-xs.btn-danger(ng-click='budCtrl.deleteSubcategory(budget, subcategory)') del
 				td
-					span(editable-text='subcategory.name', e-name='subcategory.name', e-form='rowform' onbeforesave='budCtrl.checkName($data, budget.category, subcategory)')
+					span(editable-text='subcategory.name', e-name='subcategory.name', e-form='rowform' onbeforesave='budCtrl.checkName($data, budget.category, subcategory)' e-typeahead='subcategory for subcategory in budCtrl.subcategoriesAutocomplete(budget.category, subcategory)')
 						|{{subcategory.name || 'Unnamed subcategory' }}
 				td
 					span(editable-number='subcategory.budget', e-name='subcategory.budget', e-form='rowform' onbeforesave='budCtrl.checkBudget($data)')

@@ -1,5 +1,6 @@
 var swal = require('sweetalert');
 var _ = require('lodash');
+var objectId = require('../../../config/objectId');
 
 module.exports = function(app) {
 	app.controller('BudgetsController', BudgetsController);
@@ -7,9 +8,9 @@ module.exports = function(app) {
 		editableOptions.theme = 'bs3';
 	});
 
-	BudgetsController.$inject = ['BudgetsService', 'ExpensesService', 'CategoriesService', 'YearsService', 'UsersService', '$q'];
+	BudgetsController.$inject = ['BudgetsService', 'ExpensesService', 'CategoriesService', 'YearsService', 'CurrencyService', '$q'];
 
-	function BudgetsController(BudgetsService, ExpensesService, CategoriesService, YearsService, UsersService, $q) {
+	function BudgetsController(BudgetsService, ExpensesService, CategoriesService, YearsService, CurrencyService, $q) {
 		var vm = this;
 
 		//togglig lists
@@ -18,15 +19,10 @@ module.exports = function(app) {
 			vm.hiddenList[index] = !vm.hiddenList[index];
 		};
 
-		vm.years = [];
-		vm.budgets = [];
-		vm.expenses = [];
-		vm.categoriesList = [];
-
-		vm.user = {
-			id: "unknown id",
-			name: "unknown name"
-		};
+		//vm.years = [];
+		//vm.budgets = [];
+		//vm.expenses = [];
+		//vm.categoriesList = [];
 
 		YearsService.getYears().then(function(years) {
 			vm.years = years.sort(function(a, b){return b - a});
@@ -38,49 +34,44 @@ module.exports = function(app) {
 		vm.updateYear = function() {
 			var categoriesPromise = CategoriesService.getCategories();
 			var budgetsPromise = BudgetsService.getBudgets(vm.year);
-			var expensesPromise = ExpensesService.getAllExpenses(vm.year);
+			var currencyPromise = CurrencyService.getExchangeRates(vm.year);
 
-			//var userPromise = UsersService.getCurrentUser();
-
-			return $q.all([categoriesPromise, budgetsPromise, expensesPromise]).then(function (data) {
+			return $q.all([categoriesPromise, budgetsPromise, currencyPromise]).then(function (data) {
 				vm.categoriesList = data[0] || [];
 				vm.budgets = data[1] || [];
-				vm.expenses = data[2] || [];
-
-				//vm.user = data[3] || {id: "unknown id", name: "unknown name"};
-				//console.log(vm.user);
+				vm.currency = data[2] || [];
+				//console.log(vm.currency);
+				//console.log(vm.currency.length);
 
 				vm.annualBudget = 0;
 				vm.annualUsed = 0;
 				vm.annualUndistributed = 0;
 
 				vm.budgets.forEach(function(budget) {
-					var catUsed = 0;
-					var distributed = 0;
-
-					budget.category.subcategories.forEach(function(subcategory) {
-						var subExpenses = _.filter(vm.expenses, function(expense) {
-							return expense.subcategory.id == subcategory.id;
-						});
-						var subUsed = 0;
-
-						subExpenses.forEach(function(subExpense) {
-							subUsed += subExpense.price;
-						});
-
-						catUsed += subUsed;
-						distributed += subcategory.budget;
-						subcategory.used = subUsed;
-					});
-
-					budget.category.used = catUsed;
-					budget.category.undistributed = budget.category.budget - distributed;
-
 					vm.annualBudget += budget.category.budget;
 					vm.annualUsed += budget.category.used;
 					vm.annualUndistributed += budget.category.undistributed;
 				});
 			});
+		};
+
+		vm.subcategoriesAutocomplete = function(category, subcategory) {
+			if (subcategory.id) {
+				return [];
+			}
+			return _.difference(_.pluck(_.find(vm.categoriesList, {name: category.name}).subcategories, "name"),
+			_.pluck(category.subcategories, "name"));
+		};
+
+		vm.categoriesAutocomplete = function(category) {
+			if (category.id) {
+				return [];
+			}
+			var fullList = [];
+			vm.budgets.forEach(function(budget) {
+				fullList.push(budget.category.name);
+			});
+			return _.difference(_.pluck(vm.categoriesList, "name"), fullList);
 		};
 
 		vm.createNewBudget = function() {
@@ -117,12 +108,22 @@ module.exports = function(app) {
 			}
 			var flag = false;
 			if (subcategory && data !== subcategory.name) {
-				flag = _.find(category.subcategories, {name: data});
+				if (subcategory.id) {
+					flag = _.find(_.find(vm.categoriesList, {id: category.id}).subcategories, {name: data});
+				}
+				else {
+					flag = _.find(category.subcategories, {name: data});
+				}
 			}
 			else if (data !== category.name) {
-				flag = _.find(vm.budgets, function(budget) {
-					return budget.category.name == data;
-				});
+				if (category.id) {
+					flag = _.find(vm.categoriesList, {name: data});
+				}
+				else {
+					flag = _.find(vm.budgets, function(budget) {
+						return budget.category.name == data;
+					});
+				}
 			}
 			if (flag) {
 				return "There already is " + data;
@@ -139,85 +140,94 @@ module.exports = function(app) {
 		};
 
 		vm.deleteBudget = function(budget) {
-			if (budget.id) {
-				BudgetsService.deleteBudget(budget.id).then(function () {
-					return vm.updateYear();
-				});
-			}
-			else {
-				vm.budgets.splice(vm.budgets.indexOf(budget), 1);
-			}
+			swal({
+				title: "Are you sure?",
+				text: "You're about to delete " + budget.category.name,
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Yes, delete it!",
+				closeOnConfirm: true
+			}, function() {
+				if (budget.id) {
+					BudgetsService.deleteBudget(budget.id).then(function () {
+						return vm.updateYear();
+					});
+				}
+				else {
+					vm.budgets.splice(vm.budgets.indexOf(budget), 1);
+				}
+			});
 		};
 
 		vm.deleteSubcategory = function(budget, subcategory) {
-			if (subcategory.id) {
-				var subcategories = [];
-				budget.category.subcategories.forEach(function(subcat) {
-					if (subcat.id) {
-						subcategories.push({
-							id: subcat.id,
-							budget: subcat.budget
-						});
-					}
-				});
-				_.find(subcategories, {id: subcategory.id}).deletedBy = vm.user.id;
-				BudgetsService.editBudget(budget.id, {subcategories: subcategories}).then(function () {
-					return vm.updateYear();
-				});
-			}
-			else {
-				budget.category.subcategories.splice(budget.category.subcategories.indexOf(subcategory), 1);
-			}
+			swal({
+				title: "Are you sure?",
+				text: "You're about to delete " + subcategory.name,
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Yes, delete it!",
+				closeOnConfirm: true
+			}, function() {
+				if (subcategory.id) {
+					BudgetsService.editBudget(budget.id, {delSubcategory: {id: subcategory.id}}).then(function () {
+						return vm.updateYear();
+					});
+				}
+				else {
+					budget.category.subcategories.splice(budget.category.subcategories.indexOf(subcategory), 1);
+				}
+			});
 		};
 
 		vm.sendData = function(budget, subcategory) {
 			if (subcategory) {
-				var fullCategoryList = _.find(vm.categoriesList, {id: budget.category.id});
 				if (!subcategory.id) {
-					subcategory.id = vm.getRandomId();
-					fullCategoryList.subcategories.push({
-						id: subcategory.id,
-						name: subcategory.name
-					});
-				}
-				_.find(fullCategoryList.subcategories, {id: subcategory.id}).name = subcategory.name;
-				var categoriesPromise = CategoriesService.editCategory(budget.category.id, {subcategories: fullCategoryList.subcategories});
-				var subcategories = [];
-				budget.category.subcategories.forEach(function(subcat) {
-					if (subcat.id) {
-						subcategories.push({
-							id: subcat.id,
-							budget: subcat.budget
+					var existing = _.find(_.find(vm.categoriesList, {id: budget.category.id}).subcategories, {name: subcategory.name});
+					if (existing) {
+						return BudgetsService.editBudget(budget.id, {addSubcategory: {id: existing.id, budget: subcategory.budget}}).then(function() {
+							return vm.updateYear();
 						});
 					}
-				});
-				var budgetsPromise = BudgetsService.editBudget(budget.id, {subcategories: subcategories});
+					else {
+						subcategory.id = objectId();
+						var budgetsPromise = BudgetsService.editBudget(budget.id, {addSubcategory: {id: subcategory.id, budget: subcategory.budget}});
+						var categoriesPromise = CategoriesService.editCategory(budget.category.id, {addSubcategory: {id: subcategory.id, name: subcategory.name}});
+					}
+				}
+				else {
+					var budgetsPromise = BudgetsService.editBudget(budget.id, {setSubBudget: {id: subcategory.id, budget: subcategory.budget}});
+					var categoriesPromise = CategoriesService.editCategory(budget.category.id, {setSubName: {id: subcategory.id, name: subcategory.name}});
+				}
 				return $q.all([categoriesPromise, budgetsPromise]).then(function () {
 					return vm.updateYear();
 				});
 			}
 			else {
-				if (budget.category.id) {
-					var categoriesPromise = CategoriesService.editCategory(budget.category.id, {name: budget.category.name});
-					var budgetsPromise = BudgetsService.editBudget(budget.id, {category: {id: budget.category.id, budget: budget.category.budget}});
-
+				if (!budget.category.id) {
+					var existing = _.find(vm.categoriesList, {name: budget.category.name});
+					if (existing) {
+						BudgetsService.createBudget({year: vm.year, category: { id: existing.id, budget: budget.category.budget}}).then(function() {
+							return vm.updateYear();
+						});
+					}
+					else {
+						CategoriesService.createCategory({name: budget.category.name}).then(function(category) {
+							BudgetsService.createBudget({year: vm.year, category: { id: category.id, budget: budget.category.budget}}).then(function() {
+								return vm.updateYear();
+							});
+						});
+					}
+				}
+				else {
+					var categoriesPromise = CategoriesService.editCategory(budget.category.id, {setName: {name: budget.category.name}});
+					var budgetsPromise = BudgetsService.editBudget(budget.id, {setBudget: {budget: budget.category.budget}});
 					return $q.all([categoriesPromise, budgetsPromise]).then(function () {
 						return vm.updateYear();
 					});
 				}
-				else {
-					CategoriesService.createCategory({name: budget.category.name}).then(function(category) {
-						BudgetsService.createBudget({year: vm.year, category: { id: category.id, budget: budget.category.budget}}).then(function() {
-							return vm.updateYear();
-						});
-					});
-				}
 			}
 		};
-
-		vm.getRandomId = function() {
-			return String(Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 9999999);
-		};
-
 	}
 };

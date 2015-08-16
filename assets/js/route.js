@@ -25,6 +25,11 @@ module.exports = function(app) {
         controller: 'PersonalController',
         controllerAs:'personalCtrl'
       }).
+      when('/administration', {
+        templateUrl: '/templates/Administration.html',
+        controller: 'AdministrationController',
+        controllerAs:'admCtrl'
+      }).
       otherwise({
         redirectTo: '/expenses'
       });

@@ -40,6 +40,10 @@ module.exports = {
 		},
 		description: {
 			type: 'string'
+		},
+		personal: {
+			type: 'boolean',
+			defaultsTo: false
 		}
 	}
 };

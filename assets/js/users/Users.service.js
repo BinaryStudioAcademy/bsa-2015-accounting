@@ -21,7 +21,7 @@ module.exports = function(app) {
      * @returns users array
      */
     function getUsers() {
-      return getRequest().query();
+      return getRequest().query().$promise;
     }
 
     function getCurrentUser() {

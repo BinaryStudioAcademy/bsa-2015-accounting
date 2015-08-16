@@ -24,10 +24,10 @@ module.exports = {
 			type: 'array',
 			defaultsTo: []
 		},
-		managers: {
-			type: 'array',
-			defaultsTo: []
-		}
+		// managers: {
+		// 	type: 'array',
+		// 	defaultsTo: []
+		// }
 	}
 };
 
