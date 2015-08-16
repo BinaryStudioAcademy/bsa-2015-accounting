@@ -1,6 +1,6 @@
 #expenses-view
-	#rightBlock
-		.exchange(ng-controller="CurrencyController as currencyCtrl")
+	#rightBlock(ng-controller="CurrencyController as currencyCtrl")
+		.exchange
 			b Today currency exchange rate
 			br
 			|{{currencyCtrl.exchangeRate}} UAH for 1 USD
@@ -8,29 +8,29 @@
 		ng-submit="expenseForm.$valid && formCtrl.createExpense(categoryModel, subcategoryModel)", novalidate)
 			input.form-control(type="text", name='Name', placeholder='Expense', ng-model="formCtrl.expense.name", typeahead="expense.name for expense in expCtr.allExpenses | filter:$viewValue | limitTo:8", required)
 			input.form-control(type='date', name='Date', placeholder='Date', ng-model="formCtrl.date", required)
-			select(name='Category', ng-model="categoryModel", ng-change="formCtrl.getSubcategories(categoryModel)",
+			select(name='Category', ng-model="categoryModel", ng-change="formCtrl.getSubcategories(categoryModel, currencyCtrl.exchangeRate)",
 			ng-options="category.name for category in formCtrl.categories", required)
 				option(value="") Category
 			select(name='Subcategory', ng-model="subcategoryModel",
-			ng-options="subcategory.name for subcategory in formCtrl.subcategories", required)
+			ng-options="subcategory.name for subcategory in formCtrl.subcategories", ng-change="formCtrl.setLeftSubcategoryBudget(currencyCtrl.exchangeRate, categoryModel, subcategoryModel)", required)
 				option(value="") Subcategory
 			input.form-control(type='number', name='Cost', placeholder='Cost', ng-model="formCtrl.expense.price", required)
 			select.form-control(name='Currency', ng-model="formCtrl.expense.currency", required)
 				option USD
 				option UAH
-			div#personal-container
-				input(type='checkbox', name='Personal', ng-model="formCtrl.expense.personal")
+			#personal-container
+				input(type='checkbox', name='Personal', ng-model="formCtrl.expense.personal", ng-click="formCtrl.setPersonalLeftBudget(currencyCtrl.exchangeRate, expCtr.allExpenses, categoryModel)")
 				span#personal-label Personal budget
 			textarea.form-control(placeholder='Description', ng-model="formCtrl.expense.description")
-			.money-left
-				b Marketing budget:
-				span.green $10000
-				|  left
-				br
-				b Parties budget:
-				span.green $3000
-				|  left
-			button.btnAdd(type="submit") Add expense
+			.money-left(ng-show="subcategoryModel")
+				#form-category-left
+					b {{categoryModel.name}} budget left:
+					span.green  {{formCtrl.leftBudget | currency:""}} UAH
+				#form-subcategory-left(ng-hide="formCtrl.expense.personal")
+					br
+					b {{subcategoryModel.name}} budget left:&nbsp;
+					span.green {{formCtrl.leftSubcategoryBudget | currency:""}} UAH
+			button.btnAdd.btn.btn-primary(type="submit") Add expense
 	#leftBlock
 		.filters
 			form
@@ -40,6 +40,8 @@
 				select(name='subcategory', ng-model="subcategoryModelFilter", ng-options="subcategory.name for subcategory in expCtr.subcategories")
 					option(value="") Subcategory
 				input(type='text', name='author', placeholder='Author', ng-model="authorModelFilter")
+				a.btn.btn-success Export to Excel
+					i.fa.fa-file-excel-o.fa-1g
 				input(type='date', name='startDate', placeholder='Date', ng-model="startDateFilter")
 				input(type='date', name='endDate', placeholder='Date', ng-model="endDateFilter")
 
@@ -99,11 +101,11 @@
 
 								button.btn-xs.btn.btn-primary(type='submit', ng-disabled='rowform.$waiting')
 									| save
-								button.btn-xs.btn.btn-default(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
+								button#delete-button.btn-xs.btn.btn-default(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
 									| cancel
 							.buttons(ng-show='!rowform.$visible')
 								button.btn-xs.btn.btn-primary.edit-button(ng-click='rowform.$show()') edit
-								button.btn-xs.btn.btn-danger(ng-click="expCtr.deleteExpense(expense.id, expense.name)") delete
+								button#delete-button.btn-xs.btn.btn-danger(ng-click="expCtr.deleteExpense(expense.id, expense.name)") delete
 						td
 							span(editable-text='expense.name', e-name='name', e-form='rowform', onaftersave='expCtr.editExpenseObject($data, "name")', onbeforesave="expCtr.checkField($data)", e-required="")
 								| {{ expense.name  || 'empty' }}
@@ -126,5 +128,11 @@
 								button.btn(type='button', dropdown-toggle='')
 									i.fa.fa-info
 								span.dropdown-menu.dropdown-menu-right(role='menu', aria-labelledby='split-button') {{ expense.description }}
-		button.load-more(ng-click="expCtr.loadExpenses()", ng-show="expCtr.isLoadMore()") Load more
+				tbody(ng-show="expCtr.isLoadMore()")
+					tr
+						td
+						td(colspan='7')
+							a(ng-click="expCtr.loadExpenses()")
+								| load more expenses&nbsp;
+								i.fa.fa-plus
 

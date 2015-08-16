@@ -27,6 +27,7 @@ module.exports = function(app) {
     loadAllExpenses();
 
     vm.hiddenList = [];
+    vm.hiddenList[0] = true;
     function toggleCustom(index) {
       vm.hiddenList[index] = !vm.hiddenList[index];
     }
