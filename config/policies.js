@@ -39,14 +39,14 @@ module.exports.policies = {
   'BudgetController': {
     'findOne': ['isAuthenticated', 'hasRightBudget'],
     'destroy': ['isAuthenticated', 'hasRightBudget'],
-    'edit': ['isAuthenticated', 'hasRightBudget'],
+    'update': ['isAuthenticated', 'hasRightBudget'],
     'create': ['isAuthenticated', 'hasRightBudget'],
     'find': 'isAuthenticated'
   },
   'CategoryController': {
     'findOne': ['isAuthenticated', 'hasRightCategory'],
     'destroy': ['isAuthenticated', 'hasRightCategory'],
-    'edit': ['isAuthenticated', 'hasRightCategory'],
+    'update': ['isAuthenticated', 'hasRightCategory'],
     'create': ['isAuthenticated', 'hasRightCategory'],
     'find': 'isAuthenticated'
   },
@@ -56,7 +56,8 @@ module.exports.policies = {
   },
   'UserController': {
    '*': ['isAuthenticated', 'isAdmin'],
-   'find': ['isAuthenticated', 'isThatUser']
+   'find': ['isAuthenticated', 'isThatUser'],
+   'update': 'isAuthenticated'
   }
 
   /***************************************************************************
