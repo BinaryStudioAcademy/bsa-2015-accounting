@@ -2,24 +2,26 @@ extends ./layout
 
 
 block body
-	#menu-view
-		header
-			i#menu-btn.fa.fa-bars
-			#page-name Accounting
-			#user-info
-				img#user-logo(src='http://lorempixel.com/40/40/cats/4/', alt='user logo')
-				span#user-name John Connor
-		nav
-			ul.nav.nav-tabs.tabs-left
-				li
-					a(href='#/expenses', data-toggle='tab') Expenses
-				li
-					a(href='#/planning', data-toggle='tab') Planning
-				li
-					a(href='#/charts', data-toggle='tab') Charts
-				li
-					a(href='#/administration', data-toggle='tab') Administration
-		main
-			.tab-content
-				#expenses.tab-pane.active
-					div(ng-view)
+  #menu-view(ng-controller='HomepageController')
+    header
+      i#menu-btn.fa.fa-bars
+      #page-name Accounting
+      #user-info
+        img#user-logo(src='http://lorempixel.com/40/40/cats/4/', alt='user logo')
+        span &nbsp;{{currentUser.name}}
+    nav
+      ul.nav.nav-tabs.tabs-left
+        li
+          a(href='#/expenses', data-toggle='tab') Expenses
+        li
+          a(href='#/planning', data-toggle='tab') Planning
+        li
+          a(href='#/charts', data-toggle='tab') Charts
+        li
+          a(href='#/personal', data-toggle='tab') Personal
+        li
+          a(href='#/administration', data-toggle='tab') Administration
+    main
+      .tab-content
+        #expenses.tab-pane.active
+          div(ng-view)

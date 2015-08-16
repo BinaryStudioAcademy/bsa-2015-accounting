@@ -21,7 +21,7 @@ module.exports = {
 		},
 		creatorId: {
 			type: 'string',
-			required: true
+      required: true
 		},
 		price: {
 			type: 'float',
@@ -31,6 +31,9 @@ module.exports = {
 			type: 'string',
 			required: true
 		},
+    personal: {
+      type: 'boolean'
+    },
 		name: {
 			type: 'string',
 			required: true

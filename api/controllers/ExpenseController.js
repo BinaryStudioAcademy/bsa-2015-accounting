@@ -22,7 +22,9 @@ function getExpenses(req, res) {
 		filter = {deletedBy: {$exists: false}, time: {$gte: start, $lte: end }};
 	}
 
-	Expense.find(filter)
+  Expense.find(filter)
+    .where(actionUtil.parseCriteria(req))
+    .sort(actionUtil.parseSort(req))
 	.then(function(expenses) {
 		var users = User.find().then(function(users) {
 			return users;
@@ -54,7 +56,7 @@ function getExpenses(req, res) {
 		return res.send(expenses);
 	}).fail(function(err) {
 		return res.send(err);
-	}) 
+	})
 }
 
 function createExpense(req, res) {
