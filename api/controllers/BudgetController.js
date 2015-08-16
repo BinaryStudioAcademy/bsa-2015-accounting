@@ -8,9 +8,11 @@ module.exports = {
 };
 
 function getBudgets(req, res) {
-	var permissions = _.pluck(_.filter(req.user.permissions, {read: true}), 'id');
+	var permissions = _.pluck(_.filter(req.user.permissions, function(per) {
+		return per.level >= 1;
+	}), 'id');
 	var filter = {deletedBy: {$exists: false}}
-	var budgetFilter = req.user.role === 'global admin' ? filter : _.assign(filter, {'category.id': {$in: permissions}});
+	var budgetFilter = req.user.admin ? filter : _.assign(filter, {'category.id': {$in: permissions}});
 
 	Budget.find(budgetFilter)
 	.where( actionUtil.parseCriteria(req) )
@@ -57,31 +59,30 @@ function getBudgets(req, res) {
 			};
 			delete budget.creatorId;
 
-			var catUsed = 0;
+			budget.category.used = 0;
 			var distributed = 0;
 			budget.category.subcategories.forEach(function(subcategory) {
 				var subExpenses = _.filter(expenses, function(expense) {
-					return expense.subcategoryId == subcategory.id;
+					var expDate = new Date(expense.time * 1000);
+					return (expense.subcategoryId == subcategory.id && expDate.getFullYear() == budget.year);
 				});
-				var subUsed = 0;
+				subcategory.used = 0;
 				subExpenses.forEach(function(subExpense) {
 					if (subExpense.currency !== "USD") {
-						var expDate = new Date(subExpense.time * 1000);
+						var subexpDate = new Date(subExpense.time * 1000);
 						var rate = _.find(currencies, function(currency) {
 							var currDate = new Date(currency.time * 1000);
-							return ((currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
+							return ((currDate.getFullYear() === subexpDate.getFullYear()) && (currDate.getMonth() === subexpDate.getMonth()) && (currDate.getDate() === subexpDate.getDate()));
 						}).rate;
-						subUsed += (subExpense.price / rate);
+						subcategory.used += (subExpense.price / rate);
 					}
 					else {
-						subUsed += subExpense.price;
+						subcategory.used += subExpense.price;
 					}
 				});
-				catUsed += subUsed;
+				budget.category.used += subcategory.used;
 				distributed += subcategory.budget;
-				subcategory.used = subUsed;
 			});
-			budget.category.used = catUsed;
 			budget.category.undistributed = budget.category.budget - distributed;
 		});
 		return res.send(budgets);

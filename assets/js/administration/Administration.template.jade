@@ -1,9 +1,8 @@
 #administration-view
 	div.controls
-		input.form-control(type='text' placeholder='search user')
+		input.form-control(type='text' placeholder='search user' ng-model='admCtrl.filter.name')
 		b Category: 
-		select.form-control(ng-model='admCtrl.category' required='required' ng-change='admCtrl.updateCategory()')
-			option(ng-repeat='category in admCtrl.categories' value='{{category.name}}') {{category.name}}
+		select.form-control(ng-model='admCtrl.category' ng-change='admCtrl.updateCategory()' ng-options='category.name for category in admCtrl.categories')
 		b Currency: 
 		select.form-control(ng-model='admCtrl.currency' ng-change='admCtrl.updateCurrency()')
 			option(value='UAH') UAH
@@ -13,37 +12,28 @@
 			tr
 				th(colspan='2')
 					b User
-				th(colspan='3')
-					b Permissions
+				th(rowspan='2')
+					b Rights
 				th(colspan='2')
 					b Personal budget
 			tr
 				th
 					b Name
 				th
-					b Role
-				th
-					b Read
-				th
-					b Post
-				th
-					b Admin
+					b Global admin
 				th
 					b Left
 				th
 					b Used
 		tbody
-			tr(ng-repeat='user in admCtrl.users')
+			tr(ng-repeat='user in admCtrl.users | filter:admCtrl.filter')
 				td {{user.name}}
 				td
-					a(href="#" editable-select="user.role" e-ng-options="role for role in admCtrl.roles") {{user.role}}
+					a(href="#" editable-checkbox="user.admin" e-title="Global admin?" ng-class="{bad: !user.admin}") {{user.admin && "YES" || "NO" }}
 				td
-					input(type='checkbox')
-				td
-					input(type='checkbox')
-				td
-					input(type='checkbox')
-				td 800.00 
+					a(href="#" editable-range="admCtrl.getPermission(user).level" e-step="1" e-min="0" e-max="3" ng-show="!user.admin" ng-class="{bad: admCtrl.getPermission(user).level == 0}") {{admCtrl.permits[admCtrl.getPermission(user).level].text}}
+					span(ng-show="user.admin") ADMIN
+				td(ng-class="{bad: admCtrl.getBudget(user).budget - admCtrl.getBudget(user).used < 0}") {{admCtrl.getBudget(user).budget - admCtrl.getBudget(user).used | currency:(admCtrl.currency + " ")}} 
 					a(href='' ng-click="admCtrl.addPersonalBudget(user)")
 						i.fa.fa-plus
-				td 200.00
+				td {{user.permissions[admCtrl.category.id].used/admCtrl.rate.rate | currency:(admCtrl.currency + " ")}}
