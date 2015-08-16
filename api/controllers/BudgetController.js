@@ -34,8 +34,11 @@ function getBudgets(req, res) {
 		var expenses = Expense.find(filter).then(function(categories) {
 			return categories;
 		});
-		return [budgets, users, categories, expenses];
-	}).spread(function(budgets, users, categories, expenses) {
+		var currencies = Currency.find(filter).then(function(currencies) {
+			return currencies;
+		});
+		return [budgets, users, categories, expenses, currencies];
+	}).spread(function(budgets, users, categories, expenses, currencies) {
 		budgets.forEach(function(budget) {
 			var category = _.find(categories, {id: budget.category.id});
 			budget.category.name = category.name;
@@ -66,7 +69,17 @@ function getBudgets(req, res) {
 				});
 				var subUsed = 0;
 				subExpenses.forEach(function(subExpense) {
-					subUsed += subExpense.price;
+					if (subExpense.currency !== "USD") {
+						var expDate = new Date(subExpense.time * 1000);
+						var rate = _.find(currencies, function(currency) {
+							var currDate = new Date(currency.time * 1000);
+							return ((currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
+						}).rate;
+						subUsed += (subExpense.price / rate);
+					}
+					else {
+						subUsed += subExpense.price;
+					}
 				});
 				catUsed += subUsed;
 				distributed += subcategory.budget;

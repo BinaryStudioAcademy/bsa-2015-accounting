@@ -1,23 +1,27 @@
 #administration-view
-	input(type='text' placeholder='filter users')
+	div.controls
+		input.form-control(type='text' placeholder='search user')
+		b Category: 
+		select.form-control(ng-model='admCtrl.category' required='required' ng-change='admCtrl.updateCategory()')
+			option(ng-repeat='category in admCtrl.categories' value='{{category.name}}') {{category.name}}
+		b Currency: 
+		select.form-control(ng-model='admCtrl.currency' ng-change='admCtrl.updateCurrency()')
+			option(value='UAH') UAH
+			option(value='USD') USD
 	table.table-hover
 		thead
 			tr
 				th(colspan='2')
 					b User
-				th(colspan='4')
-					b Permissions
-				th(rowspan='2')
-					b Role
 				th(colspan='3')
+					b Permissions
+				th(colspan='2')
 					b Personal budget
 			tr
 				th
-					b Login
-				th
 					b Name
 				th
-					b Category
+					b Role
 				th
 					b Read
 				th
@@ -28,28 +32,18 @@
 					b Left
 				th
 					b Used
-				th
-					b Currency
 		tbody
 			tr(ng-repeat='user in admCtrl.users')
-				td {{user.login}}
 				td {{user.name}}
 				td
-					select
-						option(ng-repeat='category in admCtrl.categories' value='{{category.name}}') {{category.name}}
+					a(href="#" editable-select="user.role" e-ng-options="role for role in admCtrl.roles") {{user.role}}
 				td
 					input(type='checkbox')
 				td
 					input(type='checkbox')
 				td
 					input(type='checkbox')
-				td
-					select
-						option(value='manager') manager
-						option(value='owner') owner
-				td 800.00
+				td 800.00 
+					a(href='' ng-click="admCtrl.addPersonalBudget(user)")
+						i.fa.fa-plus
 				td 200.00
-				td
-					select
-						option(value='UAH') UAH
-						option(value='USD') USD

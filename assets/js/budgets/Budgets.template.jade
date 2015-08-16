@@ -29,7 +29,7 @@
 		tbody(ng-repeat='budget in budCtrl.budgets')
 			tr
 				th(class="review" )
-					form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', shown='inserted == budget.category' onaftersave="budCtrl.sendData(budget)")
+					form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', shown='false' onaftersave="budCtrl.sendData(budget)")
 						i.fa.fa-chevron-right(ng-click="budCtrl.toggleCustom($index)" ng-show="!budCtrl.hiddenList[$index]")
 						i.fa.fa-chevron-down(ng-click="budCtrl.toggleCustom($index)" ng-hide="!budCtrl.hiddenList[$index]")
 						button.btn.btn-xs.btn-primary(type='submit', ng-disabled='rowform.$waiting')
@@ -58,7 +58,7 @@
 
 			tr.hide-list(ng-repeat='subcategory in budget.category.subcategories' ng-hide="!budCtrl.hiddenList[$parent.$index]")
 				td
-					form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible',	shown='inserted == subcategory' onaftersave="budCtrl.sendData(budget, subcategory)")
+					form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible',	shown='false' onaftersave="budCtrl.sendData(budget, subcategory)")
 						button.btn.btn-xs.btn-primary(type='submit', ng-disabled='rowform.$waiting')
 							| save
 						button.btn.btn-xs.btn-default(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')

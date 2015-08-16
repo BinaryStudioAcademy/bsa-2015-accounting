@@ -59,7 +59,7 @@ function getExpenses(req, res) {
 
 function createExpense(req, res) {
 	var data = actionUtil.parseValues(req);
-	data.creatorId = req.session.passport.user || "unknown id";;
+	data.creatorId = req.session.passport.user || "unknown id";
 	Expense.create(data).exec(function created (err, newInstance) {
 		if (err) return res.negotiate(err);
 		res.created(newInstance);
