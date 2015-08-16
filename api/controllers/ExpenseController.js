@@ -15,16 +15,20 @@ module.exports = {
 
 function getExpenses(req, res) {
 	var year = req.param('year');
-	var filter = {deletedBy: {$exists: false}};
+	var permissions = _.pluck(_.filter(req.user.permissions, {read: true}), 'id');
+	var filter = {deletedBy: {$exists: false}}
+	var expenseFilter = req.user.role === 'global admin' ? filter : _.assign(filter, {'categoryId': {$in: permissions}}); 
+
 	if (year) {
 		var start = Date.parse('01/01/' + year + ' 00:00:00') / 1000;
 		var end = Date.parse('12/31/' + year + ' 23:59:59') / 1000;
 		filter = {deletedBy: {$exists: false}, time: {$gte: start, $lte: end }};
 	}
 
-  Expense.find(filter)
-    .where(actionUtil.parseCriteria(req))
-    .sort(actionUtil.parseSort(req))
+	Expense.find(expenseFilter)
+	.where(actionUtil.parseCriteria(req))
+	.sort(actionUtil.parseSort(req))
+	Expense.find(expenseFilter)
 	.then(function(expenses) {
 		var users = User.find().then(function(users) {
 			return users;
