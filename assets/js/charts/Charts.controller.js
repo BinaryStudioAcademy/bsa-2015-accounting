@@ -3,26 +3,28 @@ _ = require('lodash');
 module.exports = function(app) {
 	app.controller('ChartsController', ChartsController);
 
-	ChartsController.$inject = ['ChartsService', 'YearsService', 'ExpensesService', '$q'];
+	ChartsController.$inject = ['ChartsService', 'YearsService', 'ExpensesService', '$q', '$rootScope'];
 
-	function ChartsController(ChartsService, YearsService, ExpensesService, $q) {
+	function ChartsController(ChartsService, YearsService, ExpensesService, $q, $rootScope) {
 		var vm = this;
 		loadAllExpenses();
 		vm.years = [];
 		vm.year = 0;
-
+		vm.budgetVisible=false;
 		vm.handleForm = handleForm;
 		vm.displaySubcategory = displaySubcategory;
-
+		vm.categories = [];
+		vm.displayCategory = displayCategory;
+		getCategories();
 // unique element of array
 	function unique(arr) {
 		var obj = {};
-	
+
 		for (var i = 0; i < arr.length; i++) {
 			var str = arr[i];
 			obj[str] = true;
 		}
-	
+
 		return Object.keys(obj);
 	}
 
@@ -51,7 +53,7 @@ module.exports = function(app) {
 			});
 		}
 
-	function dateRange(items, startDate, endDate) {
+		function dateRange(items, startDate, endDate) {
 				var filteredResult = [];
 
 				function parseDateFromFilter(strDate) {
@@ -83,12 +85,8 @@ module.exports = function(app) {
 
 				return filteredResult;
 
-			}
+				}
 
-	vm.budgets = []
-
-
-//------------
 		YearsService.getYears().then(function(years) {
 			vm.years = years.sort(function(a, b){return b - a});
 			vm.year = String(vm.years[0]);
@@ -99,35 +97,19 @@ module.exports = function(app) {
 		function getBudgetsByYear(year) {
 			$q.all([ChartsService.getBudgetsByYear(year), ExpensesService.getAllExpenses(year)]).then(function(results) {
 
-				vm.budgets = results[0];
+				var budgets = results[0];
 				var expenses = results[1];
-				var names = _.pluck(vm.budgets, 'category.name');
-				var planned = _.pluck(vm.budgets, 'category.budget');
-				var spended = [];
+				var names = _.pluck(budgets, 'category.name');
+				var planned = _.pluck(budgets, 'category.budget');
+				var spended = _.pluck(budgets, 'category.used')
+				vm.year = year;
+				var titleText = 'Category budget by ' + vm.year ;
 
-				var titleText = 'Category budget';
-
-				names.forEach(function(name) {
-					var expensesByName = _.filter(expenses, function(expense) {
-						return expense.category.name === name;
-					});
-					
-					var total = _.reduce(expensesByName, function(total, exp) {
-						return total + exp.price;
-					}, 0);
-					spended.push(total);
-				});
-
-				barChart(names, planned, spended, titleText);
+				barChart(names, planned, spended, titleText, vm.budgetVisible);
 				pieChart(names, planned, titleText);
 			});
+
 		}
-
-		vm.categories = [];
-		vm.displayCategory = displayCategory;
-		vm.categoryModel =[];
-
-		getCategories();
 
 		function getCategories(year) {
 
@@ -138,59 +120,69 @@ module.exports = function(app) {
 				});
 				vm.categories = categoryList;
 			});
-			console.log('test:' + vm.categoryModel);
 		}
 
 		function displayCategory(categoryModel) {
-			var names = [];
-			var spended =[];
-			var planned =[];
-			vm.categoryModel = categoryModel
-			var titleText = 'Subcategory budget'
-			vm.categoryModel.subcategories.forEach(function(subcategory) {
-				names.push(subcategory.name);
-				spended.push(subcategory.used);
-				planned.push(subcategory.budget);
+
+			var names = _.pluck(categoryModel.subcategories, 'name');
+			var spended =_.pluck(categoryModel.subcategories, 'used');
+			var planned =_.pluck(categoryModel.subcategories, 'budget');
+
+			var titleText = 'Subcategory '+ categoryModel.name +' budget by ' + vm.year
+			barChart(names, planned, spended, titleText, vm.budgetVisible);
+			pieChart(names, planned, titleText);
+		}
+
+		function displaySubcategory(selectedCategory){
+			var kurs = $rootScope.exchangeRate;
+
+			var y = vm.startDate.getFullYear();
+			var m = vm.startDate.getMonth();
+			var d = vm.startDate.getDay()
+			var ey = vm.endDate.getFullYear();
+			var em = vm.endDate.getMonth();
+			var ed = vm.endDate.getDay()
+			var spendedByPeriod = [];
+			var titleText = 'Spended' + selectedCategory.name + ' by period ' + y + '.' +  m + '.' + d + ' - ' + ey + '.' +  em + '.' + ed
+			var planned =0;
+			vm.budgetVisible = true
+			var filteredExpense = dateRange(vm.allExpenses, vm.startDate, vm.endDate);
+			var filteredExpensesByCategory = _.filter(filteredExpense, function(expense) {
+					return expense.category.name === selectedCategory.name;
 			});
 
-					barChart(names, planned, spended, titleText);
-					pieChart(names, planned, titleText);
-			}
+			var subcategorysName =_.pluck(filteredExpensesByCategory, 'subcategory.name');
+			var uniqueSubcategoryNames = unique(subcategorysName);
 
-			function displaySubcategory(){
-				var spendedByPeriod = [];
-				
-				var filteredExpense = dateRange(vm.allExpenses, vm.startDate, vm.endDate);
-				var filteredExpensesByCategory = _.filter(filteredExpense, function(expense) {
-					return expense.category.name === vm.categoryModel.name;
+			console.log(filteredExpensesByCategory);
+/*			filteredExpensesByCategory.forEach(function(currency){
+				console.log(currency);
+			})*/
+
+			uniqueSubcategoryNames.forEach(function(name) {
+				var expensesBySubcategory = _.filter(filteredExpensesByCategory, function(expense) {
+					return expense.subcategory.name === name;
 				});
-	
-				var subcategorysName =_.pluck(filteredExpensesByCategory, 'subcategory.name');
-				var uniqueSubcategoryNames = unique(subcategorysName);
-				console.log(uniqueSubcategoryNames);
-	
-	
-				uniqueSubcategoryNames.forEach(function(name) {
-					var expensesBySubcategory = _.filter(filteredExpensesByCategory, function(expense) {
-						return expense.subcategory.name === name;
-					});
-					var totalSubExpenses = _.reduce(expensesBySubcategory, function(totalSubExpenses, exp) {
-						return totalSubExpenses + exp.price;
-					}, 0);
+
+				var totalSubExpenses = _.reduce(expensesBySubcategory, function(totalSubExpenses, exp) {
+					console.log(exp.currency);
+					if(exp.currency =='USD'){
+					 return totalSubExpenses + exp.price * kurs;;
+					}
+					return totalSubExpenses + exp.price;
+
+				}, 0);
 					spendedByPeriod.push(totalSubExpenses);
-				});
-	
-	
+					console.log(totalSubExpenses);
+			});
 
-				console.log(spendedByPeriod);
-
+				barChart(uniqueSubcategoryNames, planned, spendedByPeriod, titleText ,vm.budgetVisible);
+				pieChart(uniqueSubcategoryNames, spendedByPeriod, titleText);
 
 			}
 
 
-
-
-		function barChart(names, planned, spended, titleTxt) {
+		function barChart(names, planned, spended, titleTxt, budgetVisible) {
 			$('#barChart').highcharts({
 				colors: ["#7cb5ec", "#f7a35c", "#90ee7e", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
 				chart: {
@@ -242,12 +234,14 @@ module.exports = function(app) {
 				series: [ {
 					name: 'Expenses',
 					data: spended,
-					visible: false
+					visible: budgetVisible,
+					colorByPoint: budgetVisible
 				},
 				{
 					name: 'Budget',
 					data: planned,
-					colorByPoint: true
+					visible: !budgetVisible,
+					colorByPoint: !budgetVisible
 				} ]
 			});
 
@@ -308,7 +302,6 @@ module.exports = function(app) {
 		function handleForm() {
 			getBudgetsByYear(vm.year);
 			//getCategories(vm.year)
-
 		}
 	}
 };

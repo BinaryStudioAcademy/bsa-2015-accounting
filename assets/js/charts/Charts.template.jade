@@ -1,26 +1,36 @@
 #chart-view
-	form.chart-Topcontainer(ng-submit="chartCtrl.handleForm()")
-		.chart-leftBlock
-			ul.chart-filterList
-				li
-					label Year
-					select.form-control(ng-change="chartCtrl.getBudgetsByYear()", ng-model="chartCtrl.year")
-						option(ng-repeat="year in chartCtrl.years") {{year}}
-				li
-					label Or range of dates 
-					br
-					label from
-					input.form-control(type='date', placeholder='Date', ng-model="startDate", ng-change="chartCtrl.startDateFilter(startDate)")
-					label to
-					input.form-control(type='date', placeholder='Date', ng-model="endDate", ng-change="chartCtrl.endDateFilter(endDate)")
-				li
-					label Category
-					select.form-control(name='Category', ng-model="categoryModel", ng-change="chartCtrl.displayCategory(categoryModel)",
-					ng-options="category.name for category in chartCtrl.categories")
-						option(value="") All category
+	.chart-Topcontainer
+		form.chart-leftBlock(ng-submit="chartCtrl.handleForm()")
 
-			button.chart-butSum.btn.btn-info(ng-click='chartCtrl.displaySubcategory()') Dispay by year
-			
+				ul.chart-filterList
+					li
+						label Year
+						select.form-control(ng-change="chartCtrl.getBudgetsByYear()", ng-model="chartCtrl.year")
+							option(ng-repeat="year in chartCtrl.years") {{year}}
+					li
+						label Category
+						select.form-control(name='Category', ng-model="categoryModel1", ng-change="chartCtrl.displayCategory(categoryModel1)",
+						ng-options="category.name for category in chartCtrl.categories")
+							option(value="") All category
+				button.chart-butSum.btn.btn-info Dispay by year
+	
+		form
+			.chart-rightBlock
+				ul.chart-filterList
+					li
+						label Range of dates 
+						br
+						label from
+						input.form-control(type='date', placeholder='Date', ng-model="startDate", ng-change="chartCtrl.startDateFilter(startDate)" required)
+						label to
+						input.form-control(type='date', placeholder='Date', ng-model="endDate", ng-change="chartCtrl.endDateFilter(endDate)" required)
+					li
+						label Category
+						select.form-control(name='Category', ng-model="categoryModel", ng-submit="chartCtrl.displayCategory(categoryModel)",
+						ng-options="category.name for category in chartCtrl.categories" required)
+							option(value="") All category
+				button.chart-butSum.btn.btn-info(ng-click='chartCtrl.displaySubcategory(categoryModel)') Dispay by period
+	
 	div.chartsBlock
 		#barChart
 		br
