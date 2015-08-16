@@ -134,6 +134,7 @@ module.exports = function(app) {
       var selected;
       if(fieldName == "category") {
         selected = $filter('filter')(vm.categories, {id: fieldId});
+        if(selected.length != 0)
         return selected[0].name;
       } else if(fieldName == "subcategory") {
         selected = $filter('filter')(vm.subcategories, {id: fieldId});
