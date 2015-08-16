@@ -10,16 +10,17 @@
 					label Or range of dates 
 					br
 					label from
-					input.form-control(type='date', placeholder='Date')
+					input.form-control(type='date', placeholder='Date', ng-model="startDate", ng-change="chartCtrl.startDateFilter(startDate)")
 					label to
-					input.form-control(type='date', placeholder='Date' )
+					input.form-control(type='date', placeholder='Date', ng-model="endDate", ng-change="chartCtrl.endDateFilter(endDate)")
 				li
 					label Category
-					select.form-control(name='Category', ng-model="categoryModel", ng-change="chartCtrl.getSubcategories(categoryModel)",
-					ng-options="category.name for category in chartCtrl.categories", required)
-						option(value="") Category
+					select.form-control(name='Category', ng-model="categoryModel", ng-change="chartCtrl.displayCategory(categoryModel)",
+					ng-options="category.name for category in chartCtrl.categories")
+						option(value="") All category
 
-			button.chart-butSum.btn.btn-info Dispay
+			button.chart-butSum.btn.btn-info(ng-click='chartCtrl.displaySubcategory()') Dispay by year
+			
 	div.chartsBlock
 		#barChart
 		br

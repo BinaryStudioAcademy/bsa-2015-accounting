@@ -7,7 +7,6 @@ module.exports = function(app) {
     return {
       getExpenses: getExpenses,
       getAllExpenses: getAllExpenses,
-      getExpensesByFilter: getExpensesByFilter,
       createExpense: createExpense,
       editExpense: editExpense,
       deleteExpense: deleteExpense,
@@ -28,18 +27,6 @@ module.exports = function(app) {
 
     function getAllExpenses(year) {
       return $resource("/expenses_by_year/" + year).query().$promise;
-    }
-
-    function getExpensesByFilter(filters) {
-      var filter = {};
-
-      for(var field in filters) {
-        if(filters.hasOwnProperty(field)) {
-            filter[field] = { "contains": filters[field] };
-        }
-      }
-
-      return $resource("/expense/:id", { id: "@id", where: filter, sort: "time desc" }).query().$promise;
     }
 
     /**

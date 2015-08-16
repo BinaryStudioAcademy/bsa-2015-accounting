@@ -40,8 +40,6 @@ module.exports = function(app) {
 				vm.categoriesList = data[0] || [];
 				vm.budgets = data[1] || [];
 				vm.currency = data[2] || [];
-				//console.log(vm.currency);
-				//console.log(vm.currency.length);
 
 				vm.annualBudget = 0;
 				vm.annualUsed = 0;
