@@ -8,33 +8,30 @@ module.exports = function(app) {
 		editableOptions.theme = 'bs3';
 	});
 
-	AdministrationController.$inject = ['UsersService', 'CategoriesService', '$q'];
+	AdministrationController.$inject = ['UsersService', 'CategoriesService', 'CurrencyService', '$q'];
 
-	function AdministrationController(UsersService, CategoriesService, $q) {
+	function AdministrationController(UsersService, CategoriesService, CurrencyService, $q) {
 		var vm = this;
 
-		vm.roles = ['manager', 'global admin'];
+		vm.roles = ['user', 'global admin'];
 
 		var usersPromise = UsersService.getUsers();
 		var categoriesPromise = CategoriesService.getCategories();
+		var ratePromise = CurrencyService.getExchangeRate();
 
-		$q.all([usersPromise, categoriesPromise]).then(function(data) {
+		$q.all([usersPromise, categoriesPromise, ratePromise]).then(function(data) {
 			vm.users = data[0] || [];
 			vm.categories = data[1] || [];
+			vm.rate = data[2] || 1;
+			console.log(vm.rate);
 
-			vm.currency = ['UAH', 'USD'];
+			vm.currency = 'UAH';
 			vm.category = vm.categories[0];
-
-			vm.users.forEach(function(user) {
-				if (user.role === "admin") {
-					user.role = "global admin"
-				}
-			});
 		});
 
 		vm.addPersonalBudget = function(user) {
 			swal({
-				title: "Add personal budget for " + user.name + " to use in " + vm.category,
+				title: "Add personal budget for " + user.name + " to use in " + vm.category.name,
 				//text: "This action is irrevertable",
 				type: "input",
 				showCancelButton: true,
@@ -53,11 +50,17 @@ module.exports = function(app) {
 		}
 
 		vm.updateCategory = function() {
-			console.log(vm.category);
+			console.log(vm.category.id);
+			console.log(vm.users[0]);
+			console.log(vm.users[0].permissions);
+			console.log(vm.users[0].permissions["7830100"]);
+			console.log(vm.users[0].permissions["7830100"]["read"]);
 		}
 
 		vm.updateCurrency = function() {
-			console.log(vm.category);
+			if (true) {
+
+			}
 		}
 
 	}

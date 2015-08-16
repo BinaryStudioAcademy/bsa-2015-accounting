@@ -1,9 +1,8 @@
 #administration-view
 	div.controls
-		input.form-control(type='text' placeholder='search user')
+		input.form-control(type='text' placeholder='search user' ng-model='admCtrl.filter.name')
 		b Category: 
-		select.form-control(ng-model='admCtrl.category' required='required' ng-change='admCtrl.updateCategory()')
-			option(ng-repeat='category in admCtrl.categories' value='{{category.name}}') {{category.name}}
+		select.form-control(ng-model='admCtrl.category' ng-change='admCtrl.updateCategory()' ng-options='category.name for category in admCtrl.categories')
 		b Currency: 
 		select.form-control(ng-model='admCtrl.currency' ng-change='admCtrl.updateCurrency()')
 			option(value='UAH') UAH
@@ -33,17 +32,17 @@
 				th
 					b Used
 		tbody
-			tr(ng-repeat='user in admCtrl.users')
+			tr(ng-repeat='user in admCtrl.users | filter:admCtrl.filter')
 				td {{user.name}}
 				td
 					a(href="#" editable-select="user.role" e-ng-options="role for role in admCtrl.roles") {{user.role}}
 				td
-					input(type='checkbox')
+					input(type='checkbox' ng-model='user.permissions[admCtrl.category.id]["read"]' ng-hide='user.role === "global admin"')
 				td
-					input(type='checkbox')
+					input(type='checkbox' ng-model='user.permissions[admCtrl.category.id]["post"]' ng-hide='user.role === "global admin"')
 				td
-					input(type='checkbox')
-				td 800.00 
+					input(type='checkbox' ng-model='user.permissions[admCtrl.category.id]["admin"]' ng-hide='user.role === "global admin"')
+				td {{user.budgets[0].budget - user.permissions[admCtrl.category.id].used | currency:(admCtrl.currency + " ")}} 
 					a(href='' ng-click="admCtrl.addPersonalBudget(user)")
 						i.fa.fa-plus
-				td 200.00
+				td {{user.permissions[admCtrl.category.id].used/admCtrl.rate.rate | currency:(admCtrl.currency + " ")}}

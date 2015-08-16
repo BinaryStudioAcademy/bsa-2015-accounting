@@ -19,52 +19,52 @@
 
 module.exports.policies = {
 
-  /***************************************************************************
-  *                                                                          *
-  * Default policy for all controllers and actions (`true` allows public     *
-  * access)                                                                  *
-  *                                                                          *
-  ***************************************************************************/
+	/***************************************************************************
+	*                                                                          *
+	* Default policy for all controllers and actions (`true` allows public     *
+	* access)                                                                  *
+	*                                                                          *
+	***************************************************************************/
+	'*': true
+	//'*': false,
+	//'AuthController': {
+	//  '*': true
+	//},
+	//'YearsController': {
+	//  '*': 'isAuthenticated'
+	//},
+	//'CurrencyController': {
+	//  '*': 'isAuthenticated'
+	//},
+	//'BudgetController': {
+	//  'findOne': ['isAuthenticated', 'hasRightBudget'],
+	//  'destroy': ['isAuthenticated', 'hasRightBudget'],
+	//  'edit': ['isAuthenticated', 'hasRightBudget'],
+	//  'create': ['isAuthenticated', 'hasRightBudget'],
+	//  'find': 'isAuthenticated'
+	//},
+	//'CategoryController': {
+	//  'findOne': ['isAuthenticated', 'hasRightCategory'],
+	//  'destroy': ['isAuthenticated', 'hasRightCategory'],
+	//  'edit': ['isAuthenticated', 'hasRightCategory'],
+	//  'create': ['isAuthenticated', 'hasRightCategory'],
+	//  'find': 'isAuthenticated'
+	//},
+	//'ExpenseController': {
+	//  '*': ['isAuthenticated', 'hasRightExpense'],
+	//  'find': 'isAuthenticated'
+	//},
+	//'UserController': {
+	// '*': ['isAuthenticated', 'isAdmin'],
+	// 'find': ['isAuthenticated', 'isThatUser']
+	//}
 
-  '*': false,
-  'AuthController': {
-    '*': true
-  },
-  'YearsController': {
-    '*': 'isAuthenticated'
-  },
-  'CurrencyController': {
-    '*': 'isAuthenticated'
-  },
-  'BudgetController': {
-    'findOne': ['isAuthenticated', 'hasRightBudget'],
-    'destroy': ['isAuthenticated', 'hasRightBudget'],
-    'edit': ['isAuthenticated', 'hasRightBudget'],
-    'create': ['isAuthenticated', 'hasRightBudget'],
-    'find': 'isAuthenticated'
-  },
-  'CategoryController': {
-    'findOne': ['isAuthenticated', 'hasRightCategory'],
-    'destroy': ['isAuthenticated', 'hasRightCategory'],
-    'edit': ['isAuthenticated', 'hasRightCategory'],
-    'create': ['isAuthenticated', 'hasRightCategory'],
-    'find': 'isAuthenticated'
-  },
-  'ExpenseController': {
-    '*': ['isAuthenticated', 'hasRightExpense'],
-    'find': 'isAuthenticated'
-  },
-  'UserController': {
-   '*': ['isAuthenticated', 'isAdmin'],
-   'find': ['isAuthenticated', 'isThatUser']
-  }
-
-  /***************************************************************************
-  *                                                                          *
-  * Here's an example of mapping some policies to run before a controller    *
-  * and its actions                                                          *
-  *                                                                          *
-  ***************************************************************************/
+	/***************************************************************************
+	*                                                                          *
+	* Here's an example of mapping some policies to run before a controller    *
+	* and its actions                                                          *
+	*                                                                          *
+	***************************************************************************/
 	// RabbitController: {
 
 		// Apply the `false` policy as the default for all of RabbitController's actions
