@@ -59,7 +59,7 @@ module.exports.policies = {
   },
   'UserController': {
    '*': ['isAuthenticated', 'isAdmin'],
-   'find': ['isAuthenticated', 'isThatUser'],
+   'findOne': ['isAuthenticated', 'isThatUser'],
    'update': 'isAuthenticated',
    'getCurrentUser': ['isAuthenticated']
   }
