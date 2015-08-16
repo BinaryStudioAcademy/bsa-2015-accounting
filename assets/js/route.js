@@ -8,27 +8,32 @@ module.exports = function(app) {
       when('/expenses', {
         templateUrl: '/templates/Expenses.html',
         controller: 'ExpensesController',
-        controllerAs:"expCtr"
+        controllerAs:"expCtr",
+        activetab: 'expenses'
       }).
       when('/planning', {
         templateUrl: '/templates/Budgets.html',
         controller: 'BudgetsController',
-        controllerAs: 'budCtrl'
+        controllerAs: 'budCtrl',
+        activetab: 'planning'
       }).
       when('/charts', {
         templateUrl: '/templates/Charts.html',
         controller: 'ChartsController',
-        controllerAs:'chartCtrl'
+        controllerAs:'chartCtrl',
+        activetab: 'charts'
       }).
       when('/personal', {
         templateUrl: '/templates/Personal.html',
         controller: 'PersonalController',
-        controllerAs:'personalCtrl'
+        controllerAs:'personalCtrl',
+        activetab: 'personal'
       }).
       when('/administration', {
         templateUrl: '/templates/Administration.html',
         controller: 'AdministrationController',
-        controllerAs:'admCtrl'
+        controllerAs:'admCtrl',
+        activetab: 'administration'
       }).
       otherwise({
         redirectTo: '/expenses'

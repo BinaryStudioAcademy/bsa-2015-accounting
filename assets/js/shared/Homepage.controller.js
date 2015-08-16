@@ -1,10 +1,11 @@
 module.exports = function(app) {
   app.controller('HomepageController', HomepageController);
 
-  HomepageController.$inject = ['$rootScope', 'UsersService', 'CurrencyService'];
+  HomepageController.$inject = ['$rootScope', 'UsersService', 'CurrencyService', '$route'];
 
-  function HomepageController($rootScope, UsersService, CurrencyService) {
+  function HomepageController($rootScope, UsersService, CurrencyService, $route) {
     $rootScope.currentUser = {};
+    $rootScope.$route = $route;
     UsersService.getCurrentUser().then(function(user) {
       $rootScope.currentUser = user;
     });
