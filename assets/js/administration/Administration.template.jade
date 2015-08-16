@@ -37,11 +37,11 @@
 				td
 					a(href="#" editable-select="user.role" e-ng-options="role for role in admCtrl.roles") {{user.role}}
 				td
-					input(type='checkbox' ng-model='user.permissions[admCtrl.category.id]["read"]' ng-hide='user.role === "global admin"')
+					input(type='checkbox' ng-model='_.find(user.permissions, {id: vm.category.id}).read' ng-hide='user.role === "global admin"')
 				td
-					input(type='checkbox' ng-model='user.permissions[admCtrl.category.id]["post"]' ng-hide='user.role === "global admin"')
+					input(type='checkbox' ng-model='_.find(user.permissions, {id: vm.category.id}).post' ng-hide='user.role === "global admin"')
 				td
-					input(type='checkbox' ng-model='user.permissions[admCtrl.category.id]["admin"]' ng-hide='user.role === "global admin"')
+					input(type='checkbox' ng-model='_.find(user.permissions, {id: vm.category.id}).admin' ng-hide='user.role === "global admin"')
 				td {{user.budgets[0].budget - user.permissions[admCtrl.category.id].used | currency:(admCtrl.currency + " ")}} 
 					a(href='' ng-click="admCtrl.addPersonalBudget(user)")
 						i.fa.fa-plus

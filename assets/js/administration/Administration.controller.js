@@ -1,5 +1,5 @@
 //var swal = require('sweetalert');
-//var _ = require('lodash');
+var _ = require('lodash');
 //var objectId = require('../../../config/objectId');
 
 module.exports = function(app) {
@@ -22,8 +22,8 @@ module.exports = function(app) {
 		$q.all([usersPromise, categoriesPromise, ratePromise]).then(function(data) {
 			vm.users = data[0] || [];
 			vm.categories = data[1] || [];
-			vm.rate = data[2] || 1;
-			console.log(vm.rate);
+			//vm.rate = data[2] || 1;
+			//console.log(vm.rate);
 
 			vm.currency = 'UAH';
 			vm.category = vm.categories[0];
@@ -54,6 +54,7 @@ module.exports = function(app) {
 		}
 
 		vm.updateCurrency = function() {
+			console.log(_.find(vm.users[0].permissions, {id: vm.category.id}).read);
 		}
 
 	}
