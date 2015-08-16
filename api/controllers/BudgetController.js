@@ -1,12 +1,5 @@
-/**
- * BudgetController
- *
- * @description :: Server-side logic for managing budgets
- * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
- */
-
-var actionUtil = require('sails/lib/hooks/blueprints/actionUtil'),
-    _ = require('lodash');
+var actionUtil = require('sails/lib/hooks/blueprints/actionUtil');
+var _ = require('lodash');
 
 module.exports = {
 	find: getBudgets,
@@ -15,14 +8,17 @@ module.exports = {
 };
 
 function getBudgets(req, res) {
-	var filter = {deletedBy: {$exists: false}};
-	Budget.find(filter)
+	var permissions = _.pluck(_.filter(req.user.permissions, {read: true}), 'id');
+	var filter = {deletedBy: {$exists: false}}
+	var budgetFilter = req.user.role === 'global admin' ? filter : _.assign(filter, {'category.id': {$in: permissions}});
+
+	Budget.find(budgetFilter)
 	.where( actionUtil.parseCriteria(req) )
 	.then(function(budgets) {
 		var users = User.find(filter).then(function(users) {
 			return users;
 		});
-		var categories = Category.find(filter).then(function(categories) {
+		var categories = Category.find().then(function(categories) {
 			return categories;
 		});
 		var year = actionUtil.parseCriteria(req).year
