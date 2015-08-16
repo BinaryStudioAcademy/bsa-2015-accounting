@@ -77,7 +77,7 @@ _.times(categories.length, function(n) {
 	});
 	var category = Factory.build('Category', {name: names[n], subcategories: subs});
 	var categoryId = category._id;
-	var user = Factory.build('User', {password: hash, admin: false, budgets: [{id: categoryId, budget: casual.integer(3, 7) * 100}], permissions: [{id: categoryId, level: casual.integer(1, 3)}]});
+	var user = Factory.build('User', {password: hash, admin: false, budgets: [{id: categoryId, budget: casual.integer(100, 150) * 1000}], permissions: [{id: categoryId, level: casual.integer(1, 3)}]});
 	db.user.push(user);
 	db.category.push(category);
 
@@ -117,7 +117,7 @@ _.times(years, function(n) {
 				} else if (nn === 5) {
 					var expense = Factory.build('Expense', {time: expTime, creatorId: String(_.sample(db.user, 1)[0]._id), categoryId: category._id, subcategoryId: sub.id});
 					expense.personal = true;
-					expense.price = casual.integer(300, 700)
+					expense.price = casual.integer(300, 700);
 					db.expense.push(expense);
 				}
 				else {
