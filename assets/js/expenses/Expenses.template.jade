@@ -1,9 +1,9 @@
 #expenses-view
-	#rightBlock(ng-controller="CurrencyController as currencyCtrl")
+	#rightBlock
 		.exchange
 			b Today currency exchange rate
 			br
-			|{{currencyCtrl.exchangeRate}} UAH for 1 USD
+			|{{exchangeRate}} UAH for 1 USD
 		form.expense-form(name="expenseForm", ng-controller="ExpenseFormController as formCtrl",
 		ng-submit="expenseForm.$valid && formCtrl.createExpense(categoryModel, subcategoryModel)", novalidate)
 			input.form-control(type="text", name='Name', placeholder='Expense', ng-model="formCtrl.expense.name", typeahead="expense.name for expense in expCtr.allExpenses | filter:$viewValue | limitTo:8", required)

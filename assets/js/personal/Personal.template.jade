@@ -1,5 +1,5 @@
 #personal-view
-	.alert.alert-warning(ng-show="personalCtrl.budgets.length == 0")
+	.alert.alert-warning(ng-show="currentUser.budgets.length == 0")
 		i.fa.fa-exclamation-triangle.fa-2x
 		h2 &nbsp;You do not have personal budget
 	#main(ng-hide="personalCtrl.budgets.length == 0")
