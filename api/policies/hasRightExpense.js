@@ -4,7 +4,9 @@ module.exports = function(req, res, next) {
 		if (!expense)  return res.notFound();
 
 		var id = expense.categoryId;
-		var permissions = req.user.permissions[id];
+		var permissions = req.user.permissions.filter(function(per) {
+			return per.id === id;
+		})[0];
 		if (permissions) {
 			var permission = permissions.admin;
 		}

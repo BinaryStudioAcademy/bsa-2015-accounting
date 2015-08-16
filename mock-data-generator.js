@@ -77,8 +77,7 @@ _.times(categories.length, function(n) {
 	});
 	var category = Factory.build('Category', {name: names[n], subcategories: subs});
 	var categoryId = category._id;
-	var user = Factory.build('User', {password: hash, role: 'user', budgets: [{id: categoryId, budget: casual.integer(3, 7) * 100}], permissions: {}});
-	user.permissions[categoryId] = {read: true, post: true, admin: true};
+	var user = Factory.build('User', {password: hash, role: 'user', budgets: [{id: categoryId, budget: casual.integer(3, 7) * 100}], permissions: [{id: categoryId, read: true, post: true, admin: true}]});
 	db.user.push(user);
 	db.category.push(category);
 
@@ -118,6 +117,7 @@ _.times(years, function(n) {
 				} else if (nn === 5) {
 					var expense = Factory.build('Expense', {time: expTime, creatorId: String(_.sample(db.user, 1)[0]._id), categoryId: category._id, subcategoryId: sub.id});
 					expense.personal = true;
+					expense.price = casual.integer(300, 700)
 					db.expense.push(expense);
 				}
 				else {
@@ -132,7 +132,7 @@ _.times(years, function(n) {
 	});
 });
 
-var owner = {_id: 'a', login: 'admin@admin', role: 'global admin', permissions: {}, budgets: [], 'createdAt': new Date().toISOString(), 'updatedAt': new Date().toISOString(), password: hash};
+var owner = {_id: 'a', login: 'admin@admin', role: 'global admin', permissions: [], budgets: [], 'createdAt': new Date().toISOString(), 'updatedAt': new Date().toISOString(), password: hash};
 db.user.push(owner);
 
 var url = 'mongodb://localhost:27017/portal-accounting';
