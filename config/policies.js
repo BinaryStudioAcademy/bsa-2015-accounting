@@ -30,6 +30,9 @@ module.exports.policies = {
   'AuthController': {
     '*': true
   },
+  'HomepageController': {
+    '*': 'isAuthenticated'
+  },
   'YearsController': {
     '*': 'isAuthenticated'
   },
