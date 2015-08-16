@@ -7,6 +7,7 @@ module.exports = function(app) {
 
 	function ChartsController(ChartsService, YearsService, ExpensesService, $q, $rootScope) {
 		var vm = this;
+		console.log($rootScope.exchangeRate);
 		loadAllExpenses();
 		vm.years = [];
 		vm.year = 0;
@@ -143,7 +144,7 @@ module.exports = function(app) {
 			var em = vm.endDate.getMonth();
 			var ed = vm.endDate.getDay()
 			var spendedByPeriod = [];
-			var titleText = 'Spended' + selectedCategory.name + ' by period ' + y + '.' +  m + '.' + d + ' - ' + ey + '.' +  em + '.' + ed
+			var titleText = 'Spended ' + selectedCategory.name + ' by period ' + y + '.' +  m + '.' + d + ' - ' + ey + '.' +  em + '.' + ed
 			var planned =0;
 			vm.budgetVisible = true
 			var filteredExpense = dateRange(vm.allExpenses, vm.startDate, vm.endDate);
@@ -259,7 +260,9 @@ module.exports = function(app) {
 		}
 
 		function pieChart(names, planned, titleTxt) {
+
 			var data = [];
+
 			_.times(names.length, function(i) {
 				data.push({name: names[i], y: planned[i]})
 			});

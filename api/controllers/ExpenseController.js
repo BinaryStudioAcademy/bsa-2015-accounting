@@ -22,8 +22,9 @@ function getExpenses(req, res) {
 		filter = {deletedBy: {$exists: false}, time: {$gte: start, $lte: end }};
 	}
 
-	Expense.find(filter)
-	.sort(actionUtil.parseSort(req))
+  Expense.find(filter)
+    .where(actionUtil.parseCriteria(req))
+    .sort(actionUtil.parseSort(req))
 	.then(function(expenses) {
 		var users = User.find().then(function(users) {
 			return users;

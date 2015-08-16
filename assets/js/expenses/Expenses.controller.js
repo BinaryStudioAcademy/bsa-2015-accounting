@@ -1,17 +1,13 @@
 var swal = require('sweetalert');
 
 module.exports = function(app) {
+
 	app.controller('ExpensesController', ExpensesController);
 
-
-	ExpensesController.$inject = ['ExpensesService', '$rootScope', 'CategoriesService', '$filter', '$scope'];
-
+	ExpensesController.$inject = ['ExpensesService', '$rootScope', 'CategoriesService', '$filter','$scope'];
 
 	function ExpensesController(ExpensesService, $rootScope, CategoriesService, $filter, $scope) {
 		var vm = this;
-//grt exel
-
-
 
 		vm.loadAllExpenses = loadAllExpenses;
 		vm.loadExpenses = loadExpenses;
@@ -21,8 +17,6 @@ module.exports = function(app) {
 		vm.getExpensesByDate = getExpensesByDate;
 		vm.toggleCustom = toggleCustom;
 		vm.pageTitleEquals = pageTitleEquals;
-		
-		vm.pushList = pushList;
 
 		var MAX_LOAD = 10;
 		var startExpensesLimit = 0;
@@ -31,57 +25,55 @@ module.exports = function(app) {
 		vm.allExpenses = [];
 		vm.expenses = [];
 		vm.dates = [];
-		vm.hiddenList = [];
-		
+
 		loadAllExpenses();
-
-	
-//table
-		vm.pageTitle = [];
-		vm.turnPush = false
-		function pushList(bool){
-			return vm.turnPush = bool
-		}
-
-
-		function pageTitleEquals(filteredExpenses) {
-			console.log(vm.turnPush);
-			if(vm.turnPush){
-				$scope.$watch('filteredExpenses', function() {
-					console.log(filteredExpenses);
-					console.log(vm.pageTitle.length);
-					vm.pageTitle.push(filteredExpenses[0]);
-					vm.turnPush = false
-				});
-			}else{
+		//table
 				vm.pageTitle = [];
-				$scope.$watch('filteredExpenses', function() {
-					console.log(filteredExpenses);
-					console.log(vm.pageTitle.length);
-					vm.pageTitle.push(filteredExpenses[0]);
-				});
-			}
-		}
+				vm.turnPush = false
+				function pushList(bool){
+					return vm.turnPush = bool
+				}
 
-		vm.exportData = function () {
-				console.log(vm.pageTitle.length);
-			var mystyle = {
-					sheetid: 'My Big Table Sheet',
-					headers: true,
-					columns: [
-						{columnid:'time'},
-						{columnid:'name'},
-						{columnid:'price'},
-						{columnid:'currency'},
-						{columnid:'categoryName'},
-						{columnid:'subcategoryName'},
-						{columnid:'authorName'},
-						{columnid:'description'},
-					]
-			};
-			alasql('SELECT time, name, price, currency, categoryName, subcategoryName, authorName, description  INTO XLSX("Expen.xlsx",?) FROM ?',[mystyle,vm.pageTitle]);
-		};
 
+				function pageTitleEquals(filteredExpenses) {
+					console.log(vm.turnPush);
+					if(vm.turnPush){
+						$scope.$watch('filteredExpenses', function() {
+							console.log(filteredExpenses);
+							console.log(vm.pageTitle.length);
+							vm.pageTitle.push(filteredExpenses[0]);
+							vm.turnPush = false
+						});
+					}else{
+						vm.pageTitle = [];
+						$scope.$watch('filteredExpenses', function() {
+							console.log(filteredExpenses);
+							console.log(vm.pageTitle.length);
+							vm.pageTitle.push(filteredExpenses[0]);
+						});
+					}
+				}
+
+				vm.exportData = function () {
+						console.log(vm.pageTitle.length);
+					var mystyle = {
+							sheetid: 'My Big Table Sheet',
+							headers: true,
+							columns: [
+								{columnid:'time'},
+								{columnid:'name'},
+								{columnid:'price'},
+								{columnid:'currency'},
+								{columnid:'categoryName'},
+								{columnid:'subcategoryName'},
+								{columnid:'authorName'},
+								{columnid:'description'},
+							]
+					};
+					alasql('SELECT time, name, price, currency, categoryName, subcategoryName, authorName, description  INTO XLSX("Expen.xlsx",?) FROM ?',[mystyle,vm.pageTitle]);
+				};
+		vm.hiddenList = [];
+		vm.hiddenList[0] = true;
 		function toggleCustom(index) {
 			vm.hiddenList[index] = !vm.hiddenList[index];
 		}
@@ -91,8 +83,7 @@ module.exports = function(app) {
 				vm.allExpenses = data;
 				convertDates(vm.allExpenses);
 				loadExpenses();
-			 });
-
+			});
 		}
 
 		function convertDates(array) {
@@ -111,11 +102,10 @@ module.exports = function(app) {
 			}
 		}
 
-		function loadExpenses(add) {
+		function loadExpenses() {
 			// Check for length
 			isLoadMore();
-			vm.addFalse = add;
-			console.log(vm.addFalse);
+
 			for(var i = startExpensesLimit; i < expensesLimit; i++) {
 				// Push dates
 				if(vm.dates.indexOf(String(vm.allExpenses[i].time)) < 0) vm.dates.push(String(vm.allExpenses[i].time));
@@ -126,6 +116,7 @@ module.exports = function(app) {
 				vm.expenses[i].subcategoryName = vm.allExpenses[i].subcategory.name;
 				vm.expenses[i].authorName = vm.allExpenses[i].creator.name;
 			}
+
 			startExpensesLimit += MAX_LOAD;
 			expensesLimit += MAX_LOAD;
 		}
@@ -198,7 +189,6 @@ module.exports = function(app) {
 
 		function checkField(field) {
 			if(typeof field == "undefined") return "Fill in that field";
-
 		}
 
 		// Filter combo boxes

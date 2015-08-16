@@ -14,7 +14,7 @@
 							option(value="") All category
 				button.chart-butSum.btn.btn-info Dispay by year
 	
-		form
+		form.bottomForm
 			.chart-rightBlock
 				ul.chart-filterList
 					li
@@ -35,25 +35,24 @@
 		#barChart
 		br
 		#pieChart
-		//- div(google-chart, chart="chartCtrl.pieChart", style="width: 100%; height: 400px")
-		//- button.togTable.btn.btn-info(ng-click='chartCtrl.toggleTable()') Toggle table
-		//- table(ng-hide='chartCtrl.viewTable') 
-		//- 	thead
-		//- 		tr
-		//- 			th Category
-		//- 			th Subcategory
-		//- 			th Expenses
-		//- 			th Total
-		//- 	tbody
-		//- 		tr(ng-repeat='category in chartCtrl.tableData')
-		//- 			td(colspan ='{{ category.length }}') 
-		//- 				| {{ category.name }}
-		//- 			td
-		//- 				table.innerTable
-		//- 					tr(ng-repeat='subcategory in category.subcategories')
-		//- 						td {{ subcategory }}
-		//- 			td
-		//- 				table.innerTable
-		//- 					tr(ng-repeat='expens in category.expenses')
-		//- 						td {{ expens }}
-		//- 			td(colspan ='{category.length}') {{ category.total }}
+		button.togTable.btn.btn-info(ng-click='chartCtrl.toggleTable()') Toggle table
+		table(ng-hide='chartCtrl.viewTable') 
+			thead
+				tr
+					th Category
+					th Subcategory
+					th Expenses
+					th Total
+			tbody
+				tr(ng-repeat='category in chartCtrl.tableData')
+					td(colspan ='{{ category.length }}') 
+						| {{ category.name }}
+					td
+						table.innerTable
+							tr(ng-repeat='subcategory in category.subcategories')
+								td {{ subcategory }}
+					td
+						table.innerTable
+							tr(ng-repeat='expens in category.expenses')
+								td {{ expens }}
+					td(colspan ='{category.length}') {{ category.total }}
