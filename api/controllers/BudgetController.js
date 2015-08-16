@@ -1,12 +1,5 @@
-/**
- * BudgetController
- *
- * @description :: Server-side logic for managing budgets
- * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
- */
-
-var actionUtil = require('sails/lib/hooks/blueprints/actionUtil'),
-    _ = require('lodash');
+var actionUtil = require('sails/lib/hooks/blueprints/actionUtil');
+var _ = require('lodash');
 
 module.exports = {
 	find: getBudgets,
@@ -15,14 +8,17 @@ module.exports = {
 };
 
 function getBudgets(req, res) {
-	var filter = {deletedBy: {$exists: false}};
-	Budget.find(filter)
+	var permissions = _.pluck(_.filter(req.user.permissions, {read: true}), 'id');
+	var filter = {deletedBy: {$exists: false}}
+	var budgetFilter = req.user.role === 'global admin' ? filter : _.assign(filter, {'category.id': {$in: permissions}});
+
+	Budget.find(budgetFilter)
 	.where( actionUtil.parseCriteria(req) )
 	.then(function(budgets) {
 		var users = User.find(filter).then(function(users) {
 			return users;
 		});
-		var categories = Category.find(filter).then(function(categories) {
+		var categories = Category.find().then(function(categories) {
 			return categories;
 		});
 		var year = actionUtil.parseCriteria(req).year
@@ -34,8 +30,11 @@ function getBudgets(req, res) {
 		var expenses = Expense.find(filter).then(function(categories) {
 			return categories;
 		});
-		return [budgets, users, categories, expenses];
-	}).spread(function(budgets, users, categories, expenses) {
+		var currencies = Currency.find(filter).then(function(currencies) {
+			return currencies;
+		});
+		return [budgets, users, categories, expenses, currencies];
+	}).spread(function(budgets, users, categories, expenses, currencies) {
 		budgets.forEach(function(budget) {
 			var category = _.find(categories, {id: budget.category.id});
 			budget.category.name = category.name;
@@ -66,7 +65,17 @@ function getBudgets(req, res) {
 				});
 				var subUsed = 0;
 				subExpenses.forEach(function(subExpense) {
-					subUsed += subExpense.price;
+					if (subExpense.currency !== "USD") {
+						var expDate = new Date(subExpense.time * 1000);
+						var rate = _.find(currencies, function(currency) {
+							var currDate = new Date(currency.time * 1000);
+							return ((currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
+						}).rate;
+						subUsed += (subExpense.price / rate);
+					}
+					else {
+						subUsed += subExpense.price;
+					}
 				});
 				catUsed += subUsed;
 				distributed += subcategory.budget;

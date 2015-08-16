@@ -21,8 +21,8 @@ module.exports = {
 			defaultsTo: 'user'
 		},
 		permissions: {
-			type: 'json',
-			defaultsTo: {}
+			type: 'array',
+			defaultsTo: []
 		},
 		budgets: {
 			type: 'array',
