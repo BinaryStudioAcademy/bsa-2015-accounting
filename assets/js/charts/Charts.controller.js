@@ -7,9 +7,10 @@ module.exports = function(app) {
 
 	function ChartsController(BudgetsService, YearsService, ExpensesService, $q, $rootScope) {
 		var vm = this;
+		vm.kurs = $rootScope.exchangeRate;
+		vm.currencyChangeModel = 'UAH';
 		loadAllExpenses();
-		getCategories();
-		vm.years = [];
+
 		vm.categories = [];
 		vm.year = 0;
 		vm.budgetVisible=false;
@@ -20,7 +21,14 @@ module.exports = function(app) {
 		vm.endDateFilter =endDateFilter;
 
 //date filter 
+		function mathRound(n){
 
+			if (vm.currencyChangeModel === 'UAH') {
+				var uahValue = n * vm.kurs;
+				return Math.round(uahValue)
+			}else
+				return Math.round(n)
+		}
 
 		function startDateFilter(startDate){
 			 vm.startDate = startDate;
@@ -81,8 +89,7 @@ module.exports = function(app) {
 			vm.years = years.sort(function(a, b){return b - a});
 			vm.year = String(vm.years[0]);
 			getBudgets(vm.year);
-			getCategories(vm.year);
-
+			changeCurrency()
 		});
 
 
@@ -113,17 +120,28 @@ module.exports = function(app) {
 				vm.uniqueName = _.uniq(vm.categoryNames);
 		}
 
+		vm.categories = [];
+		vm.years = [];
+		vm.changeCurrency = changeCurrency;
 
+		vm.budget = [];
+		
+		function changeCurrency(){
+		}
+		
 		function getBudgets(year) {
 			$q.all([BudgetsService.getBudgets(year), ExpensesService.getAllExpenses(year)]).then(function(results) {
 
 				var budgets = results[0];
+				var names = _.pluck(budgets, 'category.name');
+				var planned =_.map( _.pluck(budgets, 'category.budget'), mathRound);
+				var spended = _.map(_.pluck(budgets, 'category.used'), mathRound);
 				var expenses = results[1];
 				var names = _.pluck(budgets, 'category.name');
-				var planned = _.pluck(budgets, 'category.budget');
-				var spended = _.pluck(budgets, 'category.used')
-				vm.year = year;
 				var titleText = 'Categorys budget by ' + vm.year ;
+
+				vm.categories = _.pluck(budgets,'category')
+				vm.year = year;
 
 				barChart(names, planned, spended, titleText, vm.budgetVisible);
 				pieChart(names, planned, titleText);
@@ -131,30 +149,40 @@ module.exports = function(app) {
 
 		}
 
-		function getCategories(year) {
-
-			BudgetsService.getBudgets(year).then(function(data) {
-				var categoryList= [];
-				data.forEach(function(budgets) {
-					categoryList.push(budgets.category);
-				});
-				vm.categories = categoryList;
-			});
-		}
 
 		function displayCategory(categoryModel) {
 
 			var names = _.pluck(categoryModel.subcategories, 'name');
-			var spended =_.pluck(categoryModel.subcategories, 'used');
-			var planned =_.pluck(categoryModel.subcategories, 'budget');
+			var spended =_.map(_.pluck(categoryModel.subcategories, 'used'), mathRound);
+			var planned =_.map(_.pluck(categoryModel.subcategories, 'budget'), mathRound);
 
 			var titleText = 'Subcategory '+ categoryModel.name +' budget by ' + vm.year
 			barChart(names, planned, spended, titleText, vm.budgetVisible);
 			pieChart(names, planned, titleText);
 		}
 
+		vm.changeSubcategoryCurrency = changeSubcategoryCurrency;
+		vm.expensesBySubcategory = [];
+
+		function changeSubcategoryCurrency (){
+
+			return totalSubExpenses = _.reduce(vm.expensesBySubcategory, function(totalSubExpenses, exp) {
+				if(vm.currencyChangeModel == 'UAH'){
+					if(exp.currency =='USD'){
+						return totalSubExpenses + exp.price * vm.kurs;
+					}
+					return totalSubExpenses + exp.price;
+				}else{
+					if(exp.currency =='USD'){
+												return totalSubExpenses + exp.price
+					}
+					return (totalSubExpenses + exp.price)/vm.kurs;
+				}
+
+			}, 0);
+		}
+
 		function displaySubcategory(selectedCategory){
-			var kurs = $rootScope.exchangeRate;
 
 			var y = vm.startDate.getFullYear();
 			var m = vm.startDate.getMonth();
@@ -176,23 +204,17 @@ module.exports = function(app) {
 
 
 			uniqueSubcategoryNames.forEach(function(name) {
-				var expensesBySubcategory = _.filter(filteredExpensesByCategory, function(expense) {
+				vm.expensesBySubcategory = _.filter(filteredExpensesByCategory, function(expense) {
 					return expense.subcategory.name === name;
 				});
 
-				var totalSubExpenses = _.reduce(expensesBySubcategory, function(totalSubExpenses, exp) {
-					if(exp.currency =='USD'){
-					 return totalSubExpenses + exp.price * kurs;;
-					}
-					return totalSubExpenses + exp.price;
-
-				}, 0);
-					spendedByPeriod.push(totalSubExpenses);
+				changeSubcategoryCurrency ()
+					console.log(totalSubExpenses);
+					spendedByPeriod.push(Math.round(totalSubExpenses));
 			});
 
 				barChart(uniqueSubcategoryNames, planned, spendedByPeriod, titleText ,vm.budgetVisible);
 				pieChart(uniqueSubcategoryNames, spendedByPeriod, titleText);
-
 			}
 
 
@@ -214,7 +236,7 @@ module.exports = function(app) {
 				yAxis: {
 					min: 0,
 					title: {
-						text: 'Costs, $',
+						text: 'Costs: '+ vm.currencyChangeModel,
 						align: 'high'
 					},
 					labels: {

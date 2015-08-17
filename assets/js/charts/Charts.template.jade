@@ -1,11 +1,15 @@
 #chart-view
 	.chart-Topcontainer
+		#currency-group.btn-group(ng-click="chartCtrl.changeCurrency()")
+			label.btn.btn-primary(ng-model="chartCtrl.currencyChangeModel", btn-radio="'UAH'") UAH
+			label.btn.btn-primary(ng-model="chartCtrl.currencyChangeModel", btn-radio="'USD'") USD
+		
 		form.chart-leftBlock(ng-submit="chartCtrl.handleForm()")
 
 				ul.chart-filterList
 					li
 						label Year
-						select.form-control(ng-change="chartCtrl.getBudgetsByYear()", ng-model="chartCtrl.year")
+						select.form-control(ng-model="chartCtrl.year")
 							option(ng-repeat="year in chartCtrl.years") {{year}}
 					li
 						label Category
