@@ -178,6 +178,7 @@ module.exports = function(app) {
 		};
 
 		vm.getPermission = function(user, category) {
+			console.log(category);
 			var permission = _.find(user.permissions, {id: category.id});
 			if (!permission) {
 				user.permissions.push({id: category.id, level: 0});
