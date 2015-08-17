@@ -77,7 +77,7 @@ _.times(categories.length, function(n) {
 	});
 	var category = Factory.build('Category', {name: names[n], subcategories: subs});
 	var categoryId = category._id;
-	var user = Factory.build('User', {password: hash, admin: false, budgets: [{id: categoryId, budget: casual.integer(3, 7) * 100}], permissions: [{id: categoryId, level: casual.integer(0, 3)}]});
+	var user = Factory.build('User', {password: hash, admin: false, budgets: [{id: categoryId, budget: casual.integer(3, 7) * 100}], permissions: [{id: categoryId, level: casual.integer(1, 3)}]});
 	db.user.push(user);
 	db.category.push(category);
 
@@ -132,7 +132,7 @@ _.times(years, function(n) {
 	});
 });
 
-var owner = {_id: 'a', login: 'admin@admin', admin: true, permissions: [], budgets: [], 'createdAt': new Date().toISOString(), 'updatedAt': new Date().toISOString(), password: hash};
+var owner = {_id: 'a', login: 'admin@admin', name: 'Admin', admin: true, permissions: [], budgets: [], 'createdAt': new Date().toISOString(), 'updatedAt': new Date().toISOString(), password: hash};
 db.user.push(owner);
 
 var url = 'mongodb://localhost:27017/portal-accounting';

@@ -15,8 +15,11 @@ module.exports = {
 
 function getExpenses(req, res) {
 	var year = req.param('year');
-	var permissions = _.pluck(_.filter(req.user.permissions, {read: true}), 'id');
+	var permissions = _.pluck(_.filter(req.user.permissions, function(per) {
+		return per.level >= 1;
+	}), 'id');
 	var filter = {deletedBy: {$exists: false}}
+	var expenseFilter = req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}}); 
 	if (year) {
 		var start = Date.parse('01/01/' + year + ' 00:00:00') / 1000;
 		var end = Date.parse('12/31/' + year + ' 23:59:59') / 1000;
