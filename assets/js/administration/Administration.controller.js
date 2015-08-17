@@ -14,7 +14,7 @@ module.exports = function(app) {
 
 		//vm.roles = ['user', 'global admin'];
 		vm.permits = [
-			{level: 0, text: "---no rights---"},
+			{level: 0, text: "no rights"},
 			{level: 1, text: "READ"},
 			{level: 2, text: "POST"},
 			{level: 3, text: "ADMIN"}
@@ -35,7 +35,6 @@ module.exports = function(app) {
 		vm.addPersonalBudget = function(user) {
 			swal({
 				title: "Add personal budget for " + user.name + " to use in " + vm.category.name,
-				//text: "This action is irrevertable",
 				type: "input",
 				showCancelButton: true,
 				closeOnConfirm: false,
@@ -49,13 +48,10 @@ module.exports = function(app) {
 					return false;
 				}
 				swal("Nice!", inputValue + " " + vm.currency + " added", "success");
-				vm.getBudget(user).budget += Number(inputValue * vm.rate);
+				vm.getUserCategory(user).budget += Number(inputValue * vm.rate);
+				vm.getUserCategory(user).left += Number(inputValue * vm.rate);
 				UsersService.editUser(user.id, {addPersonalBudget: {id: vm.category.id, budget: Number(inputValue * vm.rate)}});
 			});
-		}
-
-		vm.updateCategory = function() {
-			
 		}
 
 		vm.updateRole = function(user) {
@@ -63,8 +59,7 @@ module.exports = function(app) {
 		}
 
 		vm.updateRights = function(user) {
-			console.log(user.id, {setPermissionLevel: {id: vm.category.id, level: vm.getPermission(user).level}});
-			UsersService.editUser(user.id, {setPermissionLevel: {id: vm.category.id, level: vm.getPermission(user).level}});
+			UsersService.editUser(user.id, {setPermissionLevel: {id: vm.category.id, level: vm.getUserCategory(user).level}});
 		}
 
 		vm.updateCurrency = function() {
@@ -76,24 +71,13 @@ module.exports = function(app) {
 			}
 		}
 
-		vm.getPermission = function(user) {
-			var permission = _.find(user.permissions, {id: vm.category.id});
-			if (!permission) {
-				user.permissions.push({id: vm.category.id, level: 0});
-				return vm.getPermission(user);
+		vm.getUserCategory = function(user) {
+			var result = _.find(user.categories, {id: vm.category.id});
+			if (!result) {
+				user.categories.push({id: vm.category.id, budget: 0, level: 0, used: 0});
+				return vm.getUserCategory(user);
 			}
-			return permission;
+			return result;
 		}
-
-		vm.getBudget = function(user) {
-			var budget = _.find(user.budgets, {id: vm.category.id});
-			if (!budget) {
-				user.budgets.push({id: vm.category.id, budget: 0, used: 0});
-				return vm.getBudget(user);
-			}
-			return budget;
-		}
-
-
 	}
 };

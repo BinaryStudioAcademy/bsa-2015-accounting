@@ -33,11 +33,12 @@
 				tr(ng-repeat='user in admCtrl.users | filter:admCtrl.filter' ng-class="{'this-is-me': currentUser.id == user.id}")
 					td {{user.name}}
 					td
-						a(href="#" editable-checkbox="user.admin" e-title="Global admin?" ng-class="{bad: !user.admin}" ng-show="currentUser.admin" onaftersave="admCtrl.updateRole(user)") {{user.admin && "YES" || "NO" }}
-						span(ng-show="!currentUser.admin" ng-class="{bad: !user.admin}") {{user.admin && "YES" || "NO" }}
+						a(href="#" editable-checkbox="user.admin" e-title="Global admin?" ng-show="currentUser.admin" onaftersave="admCtrl.updateRole(user)") {{user.admin && "YES" || "NO" }}
+						span(ng-show="!currentUser.admin") {{user.admin && "YES" || "NO" }}
 					td
-						a(href="#" editable-range="admCtrl.getPermission(user).level" e-step="1" e-min="0" e-max="3" ng-class="{bad: admCtrl.getPermission(user).level == 0}" onaftersave="admCtrl.updateRights(user)") {{admCtrl.permits[admCtrl.getPermission(user).level].text}}
-					td(ng-class="{bad: admCtrl.getBudget(user).budget - admCtrl.getBudget(user).used < 0}") {{admCtrl.getBudget(user).budget/admCtrl.rate - admCtrl	.getBudget(user).used/admCtrl.rate | currency:(admCtrl.currency + " ")}} 
-						a(href='' ng-click="admCtrl.addPersonalBudget(user)" ng-show="admCtrl.getPermission(user).level > 1")
+						a(href="#" editable-select="admCtrl.getUserCategory(user).level" ng-class="{bad: admCtrl.getUserCategory(user).level == 0}" ng-hide="user.admin" onaftersave="admCtrl.updateRights(user)" e-ng-options="permit.level as permit.text for permit in admCtrl.permits") {{admCtrl.permits[admCtrl.getUserCategory(user).level].text}}
+						span(ng-show="user.admin") ADMIN
+					td(ng-class="{bad: admCtrl.getUserCategory(user).left < 0}") {{admCtrl.getUserCategory(user).left/admCtrl.rate || 0 | currency:(admCtrl.currency + " ")}} 
+						a(href='' ng-click="admCtrl.addPersonalBudget(user)" ng-show="admCtrl.getUserCategory(user).level > 1")
 							i.fa.fa-plus
-					td {{admCtrl.getBudget(user).used/admCtrl.rate | currency:(admCtrl.currency + " ")}}
+					td {{admCtrl.getUserCategory(user).used/admCtrl.rate | currency:(admCtrl.currency + " ")}}
