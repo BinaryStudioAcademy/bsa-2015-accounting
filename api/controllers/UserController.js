@@ -5,6 +5,7 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
+var actionUtil = require('sails/lib/hooks/blueprints/actionUtil');
 var _ = require('lodash');
 
 module.exports = {
