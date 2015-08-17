@@ -5,8 +5,8 @@ module.exports = function(req, res, next) {
 			if (!category)  return res.notFound();
 
 			var id = req.body.categoryId;
-			var permissions = req.user.permissions.filter(function(per) {
-				return per.id === id;
+			var permissions = req.user.categories.filter(function(per) {
+				return per.id === id &&  per.level >= 0;
 			})[0];
 			if (permissions) {
 				var permission = permissions.level >= 2;
@@ -23,8 +23,8 @@ module.exports = function(req, res, next) {
 			if (!expense)  return res.notFound();
 
 			var id = expense.categoryId;
-			var permissions = req.user.permissions.filter(function(per) {
-				return per.id === id;
+			var permissions = req.user.categories.filter(function(per) {
+				return per.id === id &&  per.level >= 0;
 			})[0];
 			if (permissions) {
 				var permission = permissions >= 2;

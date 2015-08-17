@@ -8,7 +8,7 @@ module.exports = {
 };
 
 function getBudgets(req, res) {
-	var permissions = _.pluck(_.filter(req.user.permissions, function(per) {
+	var permissions = _.pluck(_.filter(req.user.categories, function(per) {
 		return per.level >= 1;
 	}), 'id');
 	var filter = {deletedBy: {$exists: false}}
