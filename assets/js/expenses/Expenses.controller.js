@@ -3,9 +3,9 @@ var swal = require('sweetalert');
 module.exports = function(app) {
   app.controller('ExpensesController', ExpensesController);
 
-  ExpensesController.$inject = ['ExpensesService', '$rootScope', 'CategoriesService', '$filter'];
+  ExpensesController.$inject = ['ExpensesService', '$rootScope', 'CategoriesService', '$filter', '$scope'];
 
-  function ExpensesController(ExpensesService, $rootScope, CategoriesService, $filter) {
+  function ExpensesController(ExpensesService, $rootScope, CategoriesService, $filter, $scope) {
     var vm = this;
 
     vm.loadAllExpenses = loadAllExpenses;
@@ -84,6 +84,48 @@ module.exports = function(app) {
       });
       return expenses;
     }
+
+    // Excel table
+    vm.pageTitleEquals = pageTitleEquals;
+    vm.pushList = pushList;
+
+    vm.pageTitle = [];
+    vm.turnPush = false;
+    function pushList(bool) {
+      return vm.turnPush = bool;
+    }
+
+    function pageTitleEquals(filteredExpenses) {
+      if(vm.turnPush) {
+        $scope.$watch('filteredExpenses', function() {
+          vm.pageTitle = filteredExpenses;
+          vm.turnPush = false
+        });
+      } else {
+        vm.pageTitle = [];
+        $scope.$watch('filteredExpenses', function() {
+          vm.pageTitle.push(filteredExpenses[0]);
+        });
+      }
+    }
+
+    vm.exportData = function () {
+      var mystyle = {
+        sheetid: 'My Big Table Sheet',
+        headers: true,
+        columns: [
+          {columnid:'time'},
+          {columnid:'name'},
+          {columnid:'price'},
+          {columnid:'currency'},
+          {columnid:'categoryName'},
+          {columnid:'subcategoryName'},
+          {columnid:'authorName'},
+          {columnid:'description'}
+        ]
+      };
+      alasql('SELECT time, name, price, currency, categoryName, subcategoryName, authorName, description  INTO XLSX("Expen.xlsx",?) FROM ?',[mystyle,vm.pageTitle]);
+    };
 
     // On new expense
     $rootScope.$on('new-expense', function(event, args) {

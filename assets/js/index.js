@@ -2,13 +2,17 @@ var angular = require('angular');
 
 require('angular-xeditable');
 require('angular-google-chart');
+require('angular-sanitize');
+require('ng-csv');
 
 var app = angular.module('accounting', [
   require('angular-resource'),
   require('angular-route'),
   require('angular-ui-bootstrap'),
   'xeditable',
-  "googlechart"
+  "googlechart",
+  'ngSanitize',
+  'ngCsv'
 ]);
 
 require('./budgets/index.js')(app);

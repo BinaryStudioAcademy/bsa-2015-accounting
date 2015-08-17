@@ -7,15 +7,15 @@ module.exports = function(app) {
     'PersonalService',
     'CategoriesService',
     'ExpensesService',
-    'UsersService',
-    'CurrencyService',
-    '$filter'
+    '$filter',
+    '$rootScope',
+    '$q'
   ];
 
-  function PersonalController(PersonalService, CategoriesService, ExpensesService, UsersService, CurrencyService, $filter) {
+  function PersonalController(PersonalService, CategoriesService, ExpensesService, $filter, $rootScope, $q) {
     var vm = this;
 
-    vm.currentUser = {};
+    vm.currentUser = $rootScope.currentUser;
     vm.allExpenses = [];
     vm.expenses = [];
     vm.dates = [];
@@ -40,14 +40,18 @@ module.exports = function(app) {
     getPersonalExpenses();
 
     function getPersonalExpenses() {
-      UsersService.getCurrentUser().then(function(user) {
-        vm.currentUser = user;
-        getCategories();
-        PersonalService.getPersonalExpenses(vm.currentUser.id).then(function(data) {
-          vm.allExpenses = data;
+      var personalExpensesPromise = PersonalService.getPersonalExpenses(vm.currentUser.id);
+      var categoriesPromise = CategoriesService.getCategories();
+
+      $q.all([personalExpensesPromise, categoriesPromise]).then(function(data) {
+        vm.allExpenses = data[0];
+        vm.categories = data[1];
+
+        if(vm.allExpenses.length != 0 && vm.categories.length != 0) {
           convertDates(vm.allExpenses);
           loadExpenses();
-        });
+          getUsersBudgets();
+        }
       });
     }
 
@@ -132,9 +136,7 @@ module.exports = function(app) {
     }
 
     function editExpense(id) {
-      ExpensesService.editExpense(id, expense).then(function() {
-        updateBudgets(expense.categoryId);
-      });
+      ExpensesService.editExpense(id, expense);
     }
 
     function getField(fieldId, fieldName) {
@@ -157,15 +159,6 @@ module.exports = function(app) {
     vm.subcategories = [];
     vm.getSubcategories = getSubcategories;
 
-    function getCategories() {
-      CategoriesService.getCategories().then(function(data) {
-        data.forEach(function (category) {
-          vm.categories.push(category);
-        });
-        getUsersBudgets();
-      });
-    }
-
     function getSubcategories(categoryModel) {
       if(categoryModel != null) {
         for(var category in vm.categories) {
@@ -182,41 +175,16 @@ module.exports = function(app) {
 
     // Income data
     vm.budgets = [];
-    vm.exchangeRate = 0;
+    vm.exchangeRate = $rootScope.exchangeRate;
 
     function getUsersBudgets() {
-      CurrencyService.getExchangeRate().then(function(exchangeRate) {
-        vm.exchangeRate = exchangeRate[0].rate;
-        vm.currentUser.budgets.forEach(function(item) {
-          var category = $filter('filter')(vm.categories, {id: item.categoryId});
-          item.categoryId = category[0].name;
-          item.left = calculateLeftBudget(category[0], item.budget, vm.exchangeRate);
-          item.spent = calculateSpentBudget(category[0], vm.exchangeRate);
-          vm.budgets.push(item);
-        });
+      vm.currentUser.budgets.forEach(function(item) {
+        var category = $filter('filter')(vm.categories, {id: item.id});
+        item.categoryId = category[0].name;
+        item.left = item.used;
+        item.spent = item.budget - item.used;
+        vm.budgets.push(item);
       });
-    }
-
-    function calculateLeftBudget(category, budget, exchangeRate) {
-      var expenses = $filter('filter')(vm.allExpenses, {category: {id: category.id}});
-      var sum = 0;
-      expenses.forEach(function(expense) {
-        if(expense.currency == "USD") {
-          sum += expense.price * exchangeRate;
-        } else sum += expense.price;
-      });
-      return budget - sum;
-    }
-
-    function calculateSpentBudget(category, exchangeRate) {
-      var expenses = $filter('filter')(vm.allExpenses, {category: {id: category.id}});
-      var sum = 0;
-      expenses.forEach(function(expense) {
-        if(expense.currency == "USD") {
-          sum += expense.price * exchangeRate;
-        } else sum += expense.price;
-      });
-      return sum;
     }
 
     vm.changeCurrency = changeCurrency;
@@ -233,18 +201,6 @@ module.exports = function(app) {
           if(vm.currencySpentModel == "USD") {
             vm.budgets[budget].spent /= vm.exchangeRate;
           } else vm.budgets[budget].spent *= vm.exchangeRate;
-        }
-      }
-    }
-
-    function updateBudgets(catId) {
-      var category = $filter('filter')(vm.categories, {id: catId});
-      var budg = $filter('filter')(vm.currentUser.budgets, {categoryId: category[0].name});
-      for(var item in vm.budgets) {
-        if(vm.budgets[item].categoryId == category[0].name) {
-          vm.budgets[item].left = calculateLeftBudget(category[0], budg[0].budget, vm.exchangeRate);
-          vm.budgets[item].spent = calculateSpentBudget(category[0], vm.exchangeRate);
-          break;
         }
       }
     }
