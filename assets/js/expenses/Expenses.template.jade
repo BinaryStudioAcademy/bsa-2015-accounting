@@ -41,11 +41,10 @@
 				select(name='subcategory', ng-model="subcategoryModelFilter", ng-options="subcategory.name for subcategory in expCtr.subcategories")
 					option(value="") Subcategory
 				input(type='text', name='author', placeholder='Author', ng-model="authorModelFilter")
-				a.btn.btn-success Export to Excel
+				a.btn.btn-success(ng-click='expCtr.exportData(filteredData)') Export to Excel
 					i.fa.fa-file-excel-o.fa-1g
 				input(type='date', name='startDate', placeholder='Date', ng-model="startDateFilter")
 				input(type='date', name='endDate', placeholder='Date', ng-model="endDateFilter")
-		button(ng-click='expCtr.exportData(filteredData)') Export Exel
 		table.table-hover.fixed
 			colgroup
 				col.table-edit
@@ -96,7 +95,7 @@
 						td(colspan='7')
 							| {{date | date:"dd.MM.yyyy"}}
 
-					tr(ng-repeat="expense in filteredData" ng-hide="!expCtr.hiddenList[$parent.$index]")
+					tr(ng-repeat="expense in filteredData" ng-init='expCtr.pageTitleEquals(filteredData)' ng-hide="!expCtr.hiddenList[$parent.$index]")
 
 						td(style='white-space: nowrap')
 							// form
@@ -136,6 +135,6 @@
 					tr
 						td
 						td(colspan='7')
-							a(ng-click="expCtr.loadExpenses()")
+							a(ng-click="expCtr.loadExpenses(); expCtr.pushList(true)")
 								| load more expenses&nbsp;
 								i.fa.fa-plus

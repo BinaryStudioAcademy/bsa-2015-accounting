@@ -3,44 +3,32 @@ _ = require('lodash');
 module.exports = function(app) {
 	app.controller('ChartsController', ChartsController);
 
-	ChartsController.$inject = ['ChartsService', 'YearsService', 'ExpensesService', '$q', '$rootScope'];
+	ChartsController.$inject = ['BudgetsService', 'YearsService', 'ExpensesService', '$q', '$rootScope'];
 
-	function ChartsController(ChartsService, YearsService, ExpensesService, $q, $rootScope) {
+	function ChartsController(BudgetsService, YearsService, ExpensesService, $q, $rootScope) {
 		var vm = this;
-		console.log($rootScope.exchangeRate);
 		loadAllExpenses();
+		getCategories();
 		vm.years = [];
+		vm.categories = [];
 		vm.year = 0;
 		vm.budgetVisible=false;
 		vm.handleForm = handleForm;
 		vm.displaySubcategory = displaySubcategory;
-		vm.categories = [];
 		vm.displayCategory = displayCategory;
-		getCategories();
-
-// unique element of array
-	function unique(arr) {
-		var obj = {};
-
-		for (var i = 0; i < arr.length; i++) {
-			var str = arr[i];
-			obj[str] = true;
-		}
-
-		return Object.keys(obj);
-	}
-
-//date filter 
 		vm.startDateFilter = startDateFilter;
 		vm.endDateFilter =endDateFilter;
+
+//date filter 
+
 
 		function startDateFilter(startDate){
 			 vm.startDate = startDate;
 		}
+
 		function endDateFilter(endDate){
 			vm.endDate = endDate;
 		}
-
 
 		function loadAllExpenses() {
 			ExpensesService.getExpenses().then(function(data) {
@@ -56,49 +44,78 @@ module.exports = function(app) {
 		}
 
 		function dateRange(items, startDate, endDate) {
-				var filteredResult = [];
+			var filteredResult = [];
 
-				function parseDateFromFilter(strDate) {
-					return new Date(strDate);
-				}
+			function parseDateFromFilter(strDate) {
+				return new Date(strDate);
+			}
 
-				// Parse the UTC time data from JSON source
-				function parseDateFromUtc(utcStr) {
-					return new Date(utcStr);
-				}
+			// Parse the UTC time data from JSON source
+			function parseDateFromUtc(utcStr) {
+				return new Date(utcStr);
+			}
 
-				// Defaults
-				var parsedStartDate = startDate ? parseDateFromFilter(startDate) : new Date(1900, 1, 1);
-				var parsedEndDate = endDate ? parseDateFromFilter(endDate) : new Date();
+			// Defaults
+			var parsedStartDate = startDate ? parseDateFromFilter(startDate) : new Date(1900, 1, 1);
+			var parsedEndDate = endDate ? parseDateFromFilter(endDate) : new Date();
 
-				// Take action if the filter elements are filled
-				if (startDate || endDate) {
-					items.forEach(function(item) {
+			// Take action if the filter elements are filled
+			if (startDate || endDate) {
+				items.forEach(function(item) {
 
-						if (parseDateFromUtc(item.time) >= parsedStartDate && parseDateFromUtc(item.time) <= parsedEndDate) {
-							filteredResult.push(item);
+					if (parseDateFromUtc(item.time) >= parsedStartDate && parseDateFromUtc(item.time) <= parsedEndDate) {
+						filteredResult.push(item);
 
-						}
-					});
+					}
+				});
 
-				} else {
-					return items; // By default, show the regular table data
-				}
+			} else {
+				return items; // By default, show the regular table data
+			}
 
-				return filteredResult;
+			return filteredResult;
 
-				}
+		}
 
 		YearsService.getYears().then(function(years) {
 			vm.years = years.sort(function(a, b){return b - a});
 			vm.year = String(vm.years[0]);
-			getBudgetsByYear(vm.year);
+			getBudgets(vm.year);
 			getCategories(vm.year);
 
 		});
 
-		function getBudgetsByYear(year) {
-			$q.all([ChartsService.getBudgetsByYear(year), ExpensesService.getAllExpenses(year)]).then(function(results) {
+
+		BudgetsService.getBudgets().then(function(data){
+			vm.allBudgets = data;
+			getAllBudgets();
+		});
+
+		vm.getSumBudget = function (name, year){
+		
+				var filterSum = _.filter(vm.allBudgets , function(budget) {
+					return (budget.category.name === name && budget.year === year);
+				});
+					return filterSum[0].category.budget;
+			}
+
+		vm.getSumExpenses = function (name, year){
+
+			var filterSum = _.filter(vm.allBudgets , function(budget) {
+				return (budget.category.name === name && budget.year === year);
+			});
+			
+			return filterSum[0].category.used;
+			}
+
+		function getAllBudgets() {
+				vm.categoryNames = _.pluck(vm.allBudgets , 'category.name');
+				vm.uniqueName = _.uniq(vm.categoryNames);
+		}
+
+
+		function getBudgets(year) {
+			$q.all([BudgetsService.getBudgets(year), ExpensesService.getAllExpenses(year)]).then(function(results) {
 
 				var budgets = results[0];
 				var expenses = results[1];
@@ -116,7 +133,7 @@ module.exports = function(app) {
 
 		function getCategories(year) {
 
-			ChartsService.getBudgetsByYear(year).then(function(data) {
+			BudgetsService.getBudgets(year).then(function(data) {
 				var categoryList= [];
 				data.forEach(function(budgets) {
 					categoryList.push(budgets.category);
@@ -155,7 +172,7 @@ module.exports = function(app) {
 			});
 
 			var subcategorysName =_.pluck(filteredExpensesByCategory, 'subcategory.name');
-			var uniqueSubcategoryNames = unique(subcategorysName);
+			var uniqueSubcategoryNames = _.uniq(subcategorysName);
 
 
 			uniqueSubcategoryNames.forEach(function(name) {
@@ -275,7 +292,7 @@ module.exports = function(app) {
 					text: titleTxt
 				},
 				tooltip: {
-					pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+					pointFormat: '{series.name}: <b>{point.y}</b>'
 				},
 				plotOptions: {
 					pie: {
@@ -299,9 +316,7 @@ module.exports = function(app) {
 		}
 
 		function handleForm() {
-			getBudgetsByYear(vm.year);
-			//getCategories(vm.year)
-			console.log(vm.years);
+			getBudgets(vm.year);
 		}
 	}
 };

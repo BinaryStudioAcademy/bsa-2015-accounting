@@ -35,23 +35,30 @@
 		#barChart
 		br
 		#pieChart
-		button.togTable.btn.btn-info(ng-click='chartCtrl.toggleTable()') Toggle table
+		h3 Budgets
 		table(ng-hide='chartCtrl.viewTable') 
 			thead
 				tr
-					th(ng-repeat='years in chartCtrl.years')
-						|{{years}}
-
+					th 
+					th(ng-repeat='year in chartCtrl.years')
+						b {{year}}
 			tbody
-				tr(ng-repeat='category in chartCtrl.tableData')
-					td(colspan ='{{ category.length }}') 
-						| {{ category.name }}
-					td
-						table.innerTable
-							tr(ng-repeat='subcategory in category.subcategories')
-								td {{ subcategory }}
-					td
-						table.innerTable
-							tr(ng-repeat='expens in category.expenses')
-								td {{ expens }}
-					td(colspan ='{category.length}') {{ category.total }}
+				tr(ng-repeat='name in chartCtrl.uniqueName')
+					th
+						b {{ name }}
+					td(ng-repeat='year in chartCtrl.years')
+						| {{chartCtrl.getSumBudget(name, year) | currency}}
+		
+		h3 Expenses
+		table(ng-hide='chartCtrl.viewTable') 
+			thead
+				tr
+					th 
+					th(ng-repeat='year in chartCtrl.years')
+						b {{year}}
+			tbody
+				tr(ng-repeat='name in chartCtrl.uniqueName')
+					th
+						b {{ name }}
+					td(ng-repeat='year in chartCtrl.years')
+						| {{chartCtrl.getSumExpenses(name, year) | currency}}
