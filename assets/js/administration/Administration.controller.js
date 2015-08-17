@@ -7,9 +7,9 @@ module.exports = function(app) {
 		editableOptions.theme = 'bs3';
 	});
 
-	AdministrationController.$inject = ['UsersService', 'CategoriesService', 'CurrencyService', '$q'];
+	AdministrationController.$inject = ['UsersService', 'CategoriesService', 'CurrencyService', '$q', '$rootScope'];
 
-	function AdministrationController(UsersService, CategoriesService, CurrencyService, $q) {
+	function AdministrationController(UsersService, CategoriesService, CurrencyService, $q, $rootScope) {
 		var vm = this;
 
 		//vm.roles = ['user', 'global admin'];
@@ -22,15 +22,13 @@ module.exports = function(app) {
 
 		var usersPromise = UsersService.getUsers();
 		var categoriesPromise = CategoriesService.getCategories();
-		var ratePromise = CurrencyService.getExchangeRate();
 
-		$q.all([usersPromise, categoriesPromise, ratePromise]).then(function(data) {
+		$q.all([usersPromise, categoriesPromise]).then(function(data) {
 			vm.users = data[0] || [];
 			vm.categories = data[1] || [];
-			//vm.rate = data[2] || 1;
-			//console.log(vm.rate);
 
 			vm.currency = 'UAH';
+			vm.rate = 1;
 			vm.category = vm.categories[0];
 		});
 
@@ -51,15 +49,31 @@ module.exports = function(app) {
 					return false;
 				}
 				swal("Nice!", inputValue + " " + vm.currency + " added", "success");
+				vm.getBudget(user).budget += Number(inputValue * vm.rate);
+				UsersService.editUser(user.id, {addPersonalBudget: {id: vm.category.id, budget: Number(inputValue * vm.rate)}});
 			});
 		}
 
 		vm.updateCategory = function() {
-			//console.log(vm.category.id);
+			
+		}
+
+		vm.updateRole = function(user) {
+			UsersService.editUser(user.id, {setAdminStatus: user.admin});
+		}
+
+		vm.updateRights = function(user) {
+			console.log(user.id, {setPermissionLevel: {id: vm.category.id, level: vm.getPermission(user).level}});
+			UsersService.editUser(user.id, {setPermissionLevel: {id: vm.category.id, level: vm.getPermission(user).level}});
 		}
 
 		vm.updateCurrency = function() {
-			//console.log(_.find(vm.users[0].permissions, {id: vm.category.id}).read);
+			if (vm.currency == 'USD') {
+				vm.rate = $rootScope.exchangeRate;
+			}
+			else {
+				vm.rate = 1;
+			}
 		}
 
 		vm.getPermission = function(user) {
@@ -74,7 +88,7 @@ module.exports = function(app) {
 		vm.getBudget = function(user) {
 			var budget = _.find(user.budgets, {id: vm.category.id});
 			if (!budget) {
-				user.budgets.push({id: vm.category.id, budget: "not a penny"});
+				user.budgets.push({id: vm.category.id, budget: 0, used: 0});
 				return vm.getBudget(user);
 			}
 			return budget;

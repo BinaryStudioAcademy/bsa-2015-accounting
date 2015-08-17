@@ -13,15 +13,15 @@ block body
     nav
       ul.nav.nav-tabs.tabs-left
         li
-          a(href='#/expenses', ng-class="{active: $route.current.activetab == 'expenses'}", data-toggle='tab') Expenses
+          a(href='#/expenses', ng-class="{'active-tab':$route.current.activetab == 'expenses'}", data-toggle='tab') Expenses
         li
-          a(href='#/planning', ng-class="{active: $route.current.activetab == 'planning'}", data-toggle='tab') Planning
+          a(href='#/planning', ng-class="{'active-tab':$route.current.activetab == 'planning'}", data-toggle='tab') Planning
         li
-          a(href='#/charts', ng-class="{active: $route.current.activetab == 'charts'}", data-toggle='tab') Charts
+          a(href='#/charts', ng-class="{'active-tab':$route.current.activetab == 'charts'}", data-toggle='tab') Charts
         li
-          a(href='#/personal', ng-class="{active: $route.current.activetab == 'personal'}", data-toggle='tab') Personal
+          a(href='#/personal', ng-class="{'active-tab':$route.current.activetab == 'personal'}", data-toggle='tab') Personal
         li
-          a(href='#/administration', ng-class="{active: $route.current.activetab == 'administration'}", data-toggle='tab') Administration
+          a(href='#/administration', ng-class="{'active-tab':$route.current.activetab == 'administration'}", data-toggle='tab') Administration
     main
       .tab-content
         #expenses.tab-pane.active
