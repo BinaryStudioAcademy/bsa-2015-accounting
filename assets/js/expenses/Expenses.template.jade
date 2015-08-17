@@ -1,26 +1,25 @@
 #expenses-view
-
-	#rightBlock(ng-controller="CurrencyController as currencyCtrl")
+	#rightBlock
 		.exchange
 			b Today currency exchange rate
 			br
-			|{{currencyCtrl.exchangeRate}} UAH for 1 USD
-		form.expense-form(editable-form='', name="expenseForm", ng-controller="ExpenseFormController as formCtrl",
+			|{{exchangeRate}} UAH for 1 USD
+		form.expense-form(name="expenseForm", ng-controller="ExpenseFormController as formCtrl",
 		ng-submit="expenseForm.$valid && formCtrl.createExpense(categoryModel, subcategoryModel)", novalidate)
 			input.form-control(type="text", name='Name', placeholder='Expense', ng-model="formCtrl.expense.name", typeahead="expense.name for expense in expCtr.allExpenses | filter:$viewValue | limitTo:8", required)
 			input.form-control(type='date', name='Date', placeholder='Date', ng-model="formCtrl.date", required)
-			select(name='Category', ng-model="categoryModel", ng-change="formCtrl.getSubcategories(categoryModel, currencyCtrl.exchangeRate)",
+			select(name='Category', ng-model="categoryModel", ng-change="formCtrl.getSubcategories(categoryModel)",
 			ng-options="category.name for category in formCtrl.categories", required)
 				option(value="") Category
 			select(name='Subcategory', ng-model="subcategoryModel",
-			ng-options="subcategory.name for subcategory in formCtrl.subcategories", ng-change="formCtrl.setLeftSubcategoryBudget(currencyCtrl.exchangeRate, categoryModel, subcategoryModel)", required)
+			ng-options="subcategory.name for subcategory in formCtrl.subcategories", ng-change="formCtrl.setLeftSubcategoryBudget(categoryModel, subcategoryModel)", required)
 				option(value="") Subcategory
 			input.form-control(type='number', name='Cost', placeholder='Cost', ng-model="formCtrl.expense.price", required)
 			select.form-control(name='Currency', ng-model="formCtrl.expense.currency", required)
 				option USD
 				option UAH
 			#personal-container
-				input(type='checkbox', name='Personal', ng-model="formCtrl.expense.personal", ng-click="formCtrl.setPersonalLeftBudget(currencyCtrl.exchangeRate, expCtr.allExpenses, categoryModel)")
+				input(type='checkbox', name='Personal', ng-model="formCtrl.expense.personal", ng-click="formCtrl.setPersonalLeftBudget(categoryModel)")
 				span#personal-label Personal budget
 			textarea.form-control(placeholder='Description', ng-model="formCtrl.expense.description")
 			.money-left(ng-show="subcategoryModel")

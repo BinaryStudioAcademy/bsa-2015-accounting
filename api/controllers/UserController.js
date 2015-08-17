@@ -5,6 +5,8 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
+var _ = require('lodash');
+
 module.exports = {
   find: getUsers,
   update: updateUser,
@@ -13,7 +15,38 @@ module.exports = {
 
 function getCurrentUser(req, res) {
   if(!req.isAuthenticated()) return res.forbidden();
-  return res.json(req.user);
+
+  req.user.max_level = _.max(req.user.permissions, function(pr) {
+    return pr.level;
+  }).level;
+
+  Currency.find().then(function(currencies) {
+    var expenses = Expense.find({deletedBy: {$exists: false}, personal: true}).then(function(categories) {
+      return categories;
+    });
+    return [expenses, currencies];
+  }).spread(function(expenses, currencies) {
+    req.user.budgets.forEach(function(budget) {
+      var personalExpenses = _.filter(expenses, function(expense) {
+        return (expense.creatorId == req.user.id && expense.categoryId == budget.id);
+      });
+      budget.used = 0;
+      personalExpenses.forEach(function(expense) {
+        if (expense.currency !== "UAH") {
+          var expDate = new Date(expense.time * 1000);
+          var rate = _.find(currencies, function(currency) {
+            var currDate = new Date(currency.time * 1000);
+            return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
+          }).rate;
+          budget.used += (expense.price * rate);
+        }
+        else {
+          budget.used += expense.price;
+        }
+      });
+    });
+    return res.json(req.user);
+  });
 }
 
 function getUsers(req, res) {

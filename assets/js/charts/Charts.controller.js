@@ -123,7 +123,7 @@ module.exports = function(app) {
 				var planned = _.pluck(budgets, 'category.budget');
 				var spended = _.pluck(budgets, 'category.used')
 				vm.year = year;
-				var titleText = 'Category budget by ' + vm.year ;
+				var titleText = 'Categorys budget by ' + vm.year ;
 
 				barChart(names, planned, spended, titleText, vm.budgetVisible);
 				pieChart(names, planned, titleText);

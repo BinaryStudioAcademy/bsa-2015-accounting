@@ -3,6 +3,7 @@ var angular = require('angular');
 require('angular-xeditable');
 require('angular-google-chart');
 require('ng-sanitize');
+require('angular-sanitize');
 require('ng-csv');
 
 var app = angular.module('accounting', [
