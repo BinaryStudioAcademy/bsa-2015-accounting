@@ -51,6 +51,7 @@ module.exports = function(app) {
 
 		vm.updateCategory = function() {
 			console.log(vm.category.id);
+			console.log(_.find(vm.users[0].permissions, {id: vm.category.id}).read);
 		}
 
 		vm.updateCurrency = function() {
