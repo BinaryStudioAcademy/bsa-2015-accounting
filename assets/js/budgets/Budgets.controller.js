@@ -177,6 +177,15 @@ module.exports = function(app) {
 			});
 		};
 
+		vm.getPermission = function(user, category) {
+			var permission = _.find(user.permissions, {id: category.id});
+			if (!permission) {
+				user.permissions.push({id: category.id, level: 0});
+				return vm.getPermission(user);
+			}
+			return permission;
+		}
+
 		vm.sendData = function(budget, subcategory) {
 			if (subcategory) {
 				if (!subcategory.id) {

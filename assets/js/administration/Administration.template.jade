@@ -1,39 +1,43 @@
 #administration-view
-	div.controls
-		input.form-control(type='text' placeholder='search user' ng-model='admCtrl.filter.name')
-		b Category: 
-		select.form-control(ng-model='admCtrl.category' ng-change='admCtrl.updateCategory()' ng-options='category.name for category in admCtrl.categories')
-		b Currency: 
-		select.form-control(ng-model='admCtrl.currency' ng-change='admCtrl.updateCurrency()')
-			option(value='UAH') UAH
-			option(value='USD') USD
-	table.table-hover
-		thead
-			tr
-				th(colspan='2')
-					b User
-				th(rowspan='2')
-					b Rights
-				th(colspan='2')
-					b Personal budget
-			tr
-				th
-					b Name
-				th
-					b Global admin
-				th
-					b Left
-				th
-					b Used
-		tbody
-			tr(ng-repeat='user in admCtrl.users | filter:admCtrl.filter')
-				td {{user.name}}
-				td
-					a(href="#" editable-checkbox="user.admin" e-title="Global admin?" ng-class="{bad: !user.admin}") {{user.admin && "YES" || "NO" }}
-				td
-					a(href="#" editable-range="admCtrl.getPermission(user).level" e-step="1" e-min="0" e-max="3" ng-show="!user.admin" ng-class="{bad: admCtrl.getPermission(user).level == 0}") {{admCtrl.permits[admCtrl.getPermission(user).level].text}}
-					span(ng-show="user.admin") ADMIN
-				td(ng-class="{bad: admCtrl.getBudget(user).budget - admCtrl.getBudget(user).used < 0}") {{admCtrl.getBudget(user).budget - admCtrl.getBudget(user).used | currency:(admCtrl.currency + " ")}} 
-					a(href='' ng-click="admCtrl.addPersonalBudget(user)")
-						i.fa.fa-plus
-				td {{user.permissions[admCtrl.category.id].used/admCtrl.rate.rate | currency:(admCtrl.currency + " ")}}
+	.alert.alert-warning(ng-show="currentUser.max_level < 3")
+		i.fa.fa-exclamation-triangle.fa-2x
+		h2 &nbsp;You don't have administration rights
+	div(ng-hide="currentUser.max_level < 3")
+		div.controls
+			input.form-control(type='text' placeholder='search user' ng-model='admCtrl.filter.name')
+			b Category: 
+			select.form-control(ng-model='admCtrl.category' ng-change='admCtrl.updateCategory()' ng-options='category.name for category in admCtrl	.categories')
+			b Currency: 
+			select.form-control(ng-model='admCtrl.currency' ng-change='admCtrl.updateCurrency()')
+				option(value='UAH') UAH
+				option(value='USD') USD
+		table.table-hover
+			thead
+				tr
+					th(colspan='2')
+						b User
+					th(rowspan='2')
+						b Rights
+					th(colspan='2')
+						b Personal budget
+				tr
+					th
+						b Name
+					th
+						b Global admin
+					th
+						b Left
+					th
+						b Used
+			tbody
+				tr(ng-repeat='user in admCtrl.users | filter:admCtrl.filter' ng-class="{'this-is-me': currentUser.id == user.id}")
+					td {{user.name}}
+					td
+						a(href="#" editable-checkbox="user.admin" e-title="Global admin?" ng-class="{bad: !user.admin}" ng-show="currentUser.admin" onaftersave="admCtrl.updateRole(user)") {{user.admin && "YES" || "NO" }}
+						span(ng-show="!currentUser.admin" ng-class="{bad: !user.admin}") {{user.admin && "YES" || "NO" }}
+					td
+						a(href="#" editable-range="admCtrl.getPermission(user).level" e-step="1" e-min="0" e-max="3" ng-class="{bad: admCtrl.getPermission(user).level == 0}" onaftersave="admCtrl.updateRights(user)") {{admCtrl.permits[admCtrl.getPermission(user).level].text}}
+					td(ng-class="{bad: admCtrl.getBudget(user).budget - admCtrl.getBudget(user).used < 0}") {{admCtrl.getBudget(user).budget/admCtrl.rate - admCtrl	.getBudget(user).used/admCtrl.rate | currency:(admCtrl.currency + " ")}} 
+						a(href='' ng-click="admCtrl.addPersonalBudget(user)" ng-show="admCtrl.getPermission(user).level > 1")
+							i.fa.fa-plus
+					td {{admCtrl.getBudget(user).used/admCtrl.rate | currency:(admCtrl.currency + " ")}}

@@ -1,5 +1,5 @@
 #budgets-view
-	button.btn.btn-primary#new-budget(type='button' ng-click="budCtrl.createNewBudget()") create new budget {{budCtrl.years[0] + 1}}
+	button.btn.btn-primary#new-budget(type='button' ng-click="budCtrl.createNewBudget()" ng-show="currentUser.admin") create new budget {{budCtrl.years[0] + 1}}
 	table.table-hover
 		col(width='150')
 		col(width='250')
@@ -28,7 +28,7 @@
 
 		tbody(ng-repeat='budget in budCtrl.budgets')
 			tr
-				th(class="review" )
+				th(class="review")
 					form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', shown='false' onaftersave="budCtrl.sendData(budget)")
 						i.fa.fa-chevron-right(ng-click="budCtrl.toggleCustom($index)" ng-show="!budCtrl.hiddenList[$index]")
 						i.fa.fa-chevron-down(ng-click="budCtrl.toggleCustom($index)" ng-hide="!budCtrl.hiddenList[$index]")
@@ -39,8 +39,8 @@
 					.buttons(ng-show='!rowform.$visible')
 						i.fa.fa-chevron-right(ng-click="budCtrl.toggleCustom($index)" ng-show="!budCtrl.hiddenList[$index]")
 						i.fa.fa-chevron-down(ng-click="budCtrl.toggleCustom($index)" ng-hide="!budCtrl.hiddenList[$index]")
-						button.btn.btn-xs.btn-primary(ng-click='rowform.$show()') edit
-						button.btn.btn-xs.btn-danger(ng-click='budCtrl.deleteBudget(budget)') del
+						button.btn.btn-xs.btn-primary(ng-click='rowform.$show()' ng-show="budCtrl.getPermission(currentUser, budget.category).level > 2 || currentUser.admin") edit
+						button.btn.btn-xs.btn-danger(ng-click='budCtrl.deleteBudget(budget)' ng-show="budCtrl.getPermission(currentUser, budget.category).level > 2 || currentUser.admin") del
 				th
 					span(editable-text='budget.category.name' name='name' e-form='rowform' onbeforesave='budCtrl.checkName($data, budget.category)' e-typeahead='category for category in budCtrl.categoriesAutocomplete(budget.category)') {{budget.category.name || 'Unnamed category'}}
 				th
@@ -64,8 +64,8 @@
 						button.btn.btn-xs.btn-default(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
 							| cancel
 					.buttons(ng-show='!rowform.$visible')
-						button.btn.btn-xs.btn-primary(ng-click='rowform.$show()') edit
-						button.btn.btn-xs.btn-danger(ng-click='budCtrl.deleteSubcategory(budget, subcategory)') del
+						button.btn.btn-xs.btn-primary(ng-click='rowform.$show()' ng-show="budCtrl.getPermission(currentUser, budget.category).level > 2 || currentUser.admin") edit
+						button.btn.btn-xs.btn-danger(ng-click='budCtrl.deleteSubcategory(budget, subcategory)' ng-show="budCtrl.getPermission(currentUser, budget.category).level > 2 || currentUser.admin") del
 				td
 					span(editable-text='subcategory.name', e-name='subcategory.name', e-form='rowform' onbeforesave='budCtrl.checkName($data, budget.category, subcategory)' e-typeahead='subcategory for subcategory in budCtrl.subcategoriesAutocomplete(budget.category, subcategory)')
 						|{{subcategory.name || 'Unnamed subcategory' }}
@@ -79,13 +79,13 @@
 					| left
 				
 			tr(ng-hide="!budCtrl.hiddenList[$index]")
-				td(colspan='4')
+				td(colspan='4' ng-show="budCtrl.getPermission(currentUser, budget.category).level > 2 || currentUser.admin")
 					a(ng-click="budCtrl.addSubcategory(budget.category)")
 						| new subcategory in {{budget.category.name}} 
 						i.fa.fa-plus 
 		tbody
 			tr
-				td(colspan='4')
+				td(colspan='4' ng-show="currentUser.admin")
 					a(ng-click="budCtrl.addBudget()")
 						| new category in year {{budCtrl.year}} 
 						i.fa.fa-plus
