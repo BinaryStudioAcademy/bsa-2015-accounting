@@ -16,9 +16,9 @@ module.exports = {
 function getCurrentUser(req, res) {
   if(!req.isAuthenticated()) return res.forbidden();
 
-  req.user.max_level = _.max(req.user.permissions, function(pr) {
-    return pr.level;
-  }).level;
+  // req.user.max_level = _.max(req.user.categories, function(pr) {
+  //   return pr.level;
+  // }).level;
 
   Currency.find().then(function(currencies) {
     var expenses = Expense.find({deletedBy: {$exists: false}, personal: true}).then(function(categories) {
@@ -61,11 +61,11 @@ function getUsers(req, res) {
       return [users, expenses, currencies];
     }).spread(function(users, expenses, currencies) {
       users.forEach(function(user) {
-        user.budgets.forEach(function(budget) {
+        user.categories.forEach(function(category) {
           var personalExpenses = _.filter(expenses, function(expense) {
-            return (expense.creatorId == user.id && expense.categoryId == budget.id);
+            return (expense.creatorId == user.id && expense.categoryId == category.id);
           });
-          budget.used = 0;
+          category.used = 0;
           personalExpenses.forEach(function(expense) {
             if (expense.currency !== "UAH") {
               var expDate = new Date(expense.time * 1000);
@@ -73,10 +73,10 @@ function getUsers(req, res) {
                 var currDate = new Date(currency.time * 1000);
                 return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
               }).rate;
-              budget.used += (expense.price * rate);
+              category.used += (expense.price * rate);
             }
             else {
-              budget.used += expense.price;
+              category.used += expense.price;
             }
           });
         });
@@ -98,34 +98,34 @@ function updateUser(req, res) {
     if (err) return res.serverError(err);
     if (!user) return res.notFound();
 
-    if (values.setAdminStatus === true || values.setAdminStatus === false) {
-      user.admin = values.setAdminStatus;
-    }
+    // if (values.setAdminStatus === true || values.setAdminStatus === false) {
+    //   user.admin = values.setAdminStatus;
+    // }
 
-    if (values.setPermissionLevel) {
-      var cat = _.find(user.permissions, {id: values.setPermissionLevel.id});
-      if (cat) {
-        cat.level = values.setPermissionLevel.level;
-      }
-      else {
-        user.permissions.push(values.setPermissionLevel);
-      }
-    }
+    // if (values.setPermissionLevel) {
+    //   var cat = _.find(user.categories, {id: values.setPermissionLevel.id});
+    //   if (cat) {
+    //     cat.level = values.setPermissionLevel.level;
+    //   }
+    //   else {
+    //     user.categories.push(values.setPermissionLevel);
+    //   }
+    // }
 
-    if (values.addPersonalBudget) {
-      var bud = _.find(user.budgets, {id: values.addPersonalBudget.id});
-      if (bud) {
-        bud.budget += values.addPersonalBudget.budget;
-      }
-      else {
-        user.budgets.push(values.addPersonalBudget);
-      }
-    }
+    // if (values.addPersonalBudget) {
+    //   var bud = _.find(user.budgets, {id: values.addPersonalBudget.id});
+    //   if (bud) {
+    //     bud.budget += values.addPersonalBudget.budget;
+    //   }
+    //   else {
+    //     user.budgets.push(values.addPersonalBudget);
+    //   }
+    // }
 
 
-    if (values.setName) {
-      user.name = values.setName;
-    }
+    // if (values.setName) {
+    //   user.name = values.setName;
+    // }
 
     user.save(function (err) {
       if (err) return res.serverError(err);

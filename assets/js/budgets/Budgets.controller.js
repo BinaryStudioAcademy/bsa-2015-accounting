@@ -178,9 +178,9 @@ module.exports = function(app) {
 		};
 
 		vm.getPermission = function(user, category) {
-			var permission = _.find(user.permissions, {id: category.id});
+			var permission = _.find(user.categories, {id: category.id});
 			if (!permission) {
-				user.permissions.push({id: category.id, level: 0});
+				user.categories.push({id: category.id, level: 0});
 				return vm.getPermission(user);
 			}
 			return permission;
