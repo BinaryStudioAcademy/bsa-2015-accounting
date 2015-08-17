@@ -12,21 +12,15 @@
 			tr
 				th(colspan='2')
 					b User
-				th(colspan='3')
-					b Permissions
+				th(rowspan='2')
+					b Rights
 				th(colspan='2')
 					b Personal budget
 			tr
 				th
 					b Name
 				th
-					b Role
-				th
-					b Read
-				th
-					b Post
-				th
-					b Admin
+					b Global admin
 				th
 					b Left
 				th
@@ -35,14 +29,11 @@
 			tr(ng-repeat='user in admCtrl.users | filter:admCtrl.filter')
 				td {{user.name}}
 				td
-					a(href="#" editable-select="user.role" e-ng-options="role for role in admCtrl.roles") {{user.role}}
+					a(href="#" editable-checkbox="user.admin" e-title="Global admin?" ng-class="{bad: !user.admin}") {{user.admin && "YES" || "NO" }}
 				td
-					input(type='checkbox' ng-model='_.find(user.permissions, {id: vm.category.id}).read' ng-hide='user.role === "global admin"')
-				td
-					input(type='checkbox' ng-model='_.find(user.permissions, {id: vm.category.id}).post' ng-hide='user.role === "global admin"')
-				td
-					input(type='checkbox' ng-model='_.find(user.permissions, {id: vm.category.id}).admin' ng-hide='user.role === "global admin"')
-				td {{user.budgets[0].budget - user.permissions[admCtrl.category.id].used | currency:(admCtrl.currency + " ")}} 
+					a(href="#" editable-range="admCtrl.getPermission(user).level" e-step="1" e-min="0" e-max="3" ng-show="!user.admin" ng-class="{bad: admCtrl.getPermission(user).level == 0}") {{admCtrl.permits[admCtrl.getPermission(user).level].text}}
+					span(ng-show="user.admin") ADMIN
+				td(ng-class="{bad: admCtrl.getBudget(user).budget - admCtrl.getBudget(user).used < 0}") {{admCtrl.getBudget(user).budget - admCtrl.getBudget(user).used | currency:(admCtrl.currency + " ")}} 
 					a(href='' ng-click="admCtrl.addPersonalBudget(user)")
 						i.fa.fa-plus
 				td {{user.permissions[admCtrl.category.id].used/admCtrl.rate.rate | currency:(admCtrl.currency + " ")}}

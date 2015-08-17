@@ -1,6 +1,5 @@
 //var swal = require('sweetalert');
 var _ = require('lodash');
-//var objectId = require('../../../config/objectId');
 
 module.exports = function(app) {
 	app.controller('AdministrationController', AdministrationController);
@@ -13,7 +12,13 @@ module.exports = function(app) {
 	function AdministrationController(UsersService, CategoriesService, CurrencyService, $q) {
 		var vm = this;
 
-		vm.roles = ['user', 'global admin'];
+		//vm.roles = ['user', 'global admin'];
+		vm.permits = [
+			{level: 0, text: "---no rights---"},
+			{level: 1, text: "READ"},
+			{level: 2, text: "POST"},
+			{level: 3, text: "ADMIN"}
+		];
 
 		var usersPromise = UsersService.getUsers();
 		var categoriesPromise = CategoriesService.getCategories();
@@ -50,13 +55,31 @@ module.exports = function(app) {
 		}
 
 		vm.updateCategory = function() {
-			console.log(vm.category.id);
-			console.log(_.find(vm.users[0].permissions, {id: vm.category.id}).read);
+			//console.log(vm.category.id);
 		}
 
 		vm.updateCurrency = function() {
-			console.log(_.find(vm.users[0].permissions, {id: vm.category.id}).read);
+			//console.log(_.find(vm.users[0].permissions, {id: vm.category.id}).read);
 		}
+
+		vm.getPermission = function(user) {
+			var permission = _.find(user.permissions, {id: vm.category.id});
+			if (!permission) {
+				user.permissions.push({id: vm.category.id, level: 0});
+				return vm.getPermission(user);
+			}
+			return permission;
+		}
+
+		vm.getBudget = function(user) {
+			var budget = _.find(user.budgets, {id: vm.category.id});
+			if (!budget) {
+				user.budgets.push({id: vm.category.id, budget: "not a penny"});
+				return vm.getBudget(user);
+			}
+			return budget;
+		}
+
 
 	}
 };

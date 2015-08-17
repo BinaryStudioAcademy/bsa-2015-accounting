@@ -7,6 +7,7 @@
 
 module.exports = {
 	find: getUsers,
+	update: updateUser,
 	getCurrentUser: getCurrentUser
 };
 
@@ -51,4 +52,51 @@ function getUsers(req, res) {
 	}).fail(function(err) {
 		return res.send(err);
 	}) 
+}
+
+function updateUser(req, res) {
+	var pk = actionUtil.requirePk(req);
+	var values = actionUtil.parseValues(req);
+
+	var idParamExplicitlyIncluded = ((req.body && req.body.id) || req.query.id);
+	if (!idParamExplicitlyIncluded) delete values.id;
+
+	User.findOne(pk).exec(function (err, user) {
+		if (err) return res.serverError(err);
+		if (!user) return res.notFound();
+
+		if (values.setAdminStatus === true || values.setAdminStatus === false) {
+			user.admin = values.setAdminStatus;
+		}
+
+		if (values.setPermissionLevel) {
+			var cat = _.find(user.permissions, {id: values.setPermissionLevel.id});
+			if (cat) {
+				cat.level = values.setPermissionLevel.level;
+			}
+			else {
+				user.permissions.push(values.setPermissionLevel);
+			}
+		}
+
+		if (values.addPersonalBudget) {
+			var bud = _.find(user.budgets, {id: values.addPersonalBudget.id});
+			if (bud) {
+				bud.budget += values.addPersonalBudget.budget;
+			}
+			else {
+				user.budgets.push(values.addPersonalBudget);
+			}
+		}
+
+
+		if (values.setName) {
+			user.name = values.setName;
+		}
+
+		user.save(function (err) {
+			if (err) return res.serverError(err);
+		});
+		res.ok(user);
+	});
 }

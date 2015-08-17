@@ -8,8 +8,7 @@ module.exports = {
 
 function find(req, res) {
 	var permissions = _.pluck(_.filter(req.user.permissions, {read: true}), 'id');
-	var filter = req.user.role === 'global admin' ? {} : {_id: {$in: permissions}};
-	Category.find(filter).exec(function(err, categories) {
+	Category.find().exec(function(err, categories) {
 		if (err) return res.serverError(err);
 
 		res.ok(categories);
