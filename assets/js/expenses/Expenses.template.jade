@@ -14,8 +14,8 @@
 			select(name='Subcategory', ng-model="subcategoryModel",
 			ng-options="subcategory.name for subcategory in formCtrl.subcategories", ng-change="formCtrl.setLeftSubcategoryBudget(categoryModel, subcategoryModel)", required)
 				option(value="") Subcategory
-			input.form-control(type='number', name='Cost', placeholder='Cost', ng-model="formCtrl.expense.price", required)
-			select.form-control(name='Currency', ng-model="formCtrl.expense.currency", required)
+			input.form-control(type='number', min="0", name='Cost', placeholder='Cost', ng-model="formCtrl.expense.price", required)
+			select.form-control(name='Currency', ng-model="formCtrl.expense.currency", ng-change="formCtrl.changeCurrency(categoryModel, subcategoryModel)", required)
 				option USD
 				option UAH
 			#personal-container
@@ -25,11 +25,11 @@
 			.money-left(ng-show="subcategoryModel")
 				#form-category-left
 					b {{categoryModel.name}} budget left:
-					span.green  {{formCtrl.leftBudget | currency:""}} UAH
+					span.green  {{formCtrl.leftBudget - formCtrl.expense.price | currency:""}} {{formCtrl.expense.currency}}
 				#form-subcategory-left(ng-hide="formCtrl.expense.personal")
 					br
 					b {{subcategoryModel.name}} budget left:&nbsp;
-					span.green {{formCtrl.leftSubcategoryBudget | currency:""}} UAH
+					span.green {{formCtrl.leftSubcategoryBudget - formCtrl.expense.price | currency:""}} {{formCtrl.expense.currency}}
 			button.btnAdd.btn.btn-primary(type="submit") Add expense
 	#leftBlock
 		.filters
@@ -39,8 +39,9 @@
 					option(value="") Category
 				select(name='subcategory', ng-model="subcategoryModelFilter", ng-options="subcategory.name for subcategory in expCtr.subcategories")
 					option(value="") Subcategory
-				input(type='text', name='author', placeholder='Author', ng-model="authorModelFilter")
-				a.btn.btn-success(ng-click='expCtr.exportData(filteredData)') Export to Excel
+				input(type="text", name='author', placeholder='Author', ng-model="authorModelFilter", typeahead="expense.creator.name for expense in expCtr.allExpenses | filter:$viewValue | limitTo:8")
+				//input(type='text', name='author', placeholder='Author', ng-model="authorModelFilter")
+				a#excel-button.btn.btn-success(ng-click='expCtr.exportData(filteredData)') Export to Excel
 					i.fa.fa-file-excel-o.fa-1g
 				input(type='date', name='startDate', placeholder='Date', ng-model="startDateFilter")
 				input(type='date', name='endDate', placeholder='Date', ng-model="endDateFilter")
@@ -65,10 +66,16 @@
 						| Subcategory
 					th
 						| Name
+					th 
+						span(ng-click="sortType = 'price'; sortReverse = !sortReverse; expCtr.sort(sortType, sortReverse)") Amount &nbsp;
+							span.fa.fa-caret-down(ng-show="sortType == 'price' && !sortReverse")
+							span.fa.fa-caret-up(ng-show="sortType == 'price' && sortReverse")
+							span.fa.fa-sort(ng-hide="sortType == 'price'")
 					th
-						| Amount
-					th
-						|  $ / &#8372;
+						span(ng-click="sortType = 'currency'; sortReverse = !sortReverse; expCtr.sort(sortType, sortReverse)") $ / &#8372; &nbsp;
+							span.fa.fa-caret-down(ng-show="sortType == 'currency' && !sortReverse")
+							span.fa.fa-caret-up(ng-show="sortType == 'currency' && sortReverse")
+							span.fa.fa-sort(ng-hide="sortType == 'currency'")
 					th
 						| Added by
 					th
@@ -84,18 +91,18 @@
 					col.table-sub
 					col.table-addBy
 					col.table-description
-				tbody(ng-repeat="date in expCtr.dates", ng-hide="!(filteredData = (expCtr.getExpensesByDate(date) " +
-				"| filter: {name: nameModelFilter, categoryName: categoryModelFilter.name, " +
-				"subcategoryName: subcategoryModelFilter.name, authorName: authorModelFilter} " +
+				tbody(ng-repeat="date in expCtr.dates | limitTo: expCtr.expensesLimit", ng-hide="!(filteredData = (expCtr.getExpensesByDate(date) " +
+				"| filter: {name: nameModelFilter, category: {name: categoryModelFilter.name}, " +
+				"subcategory: {name: subcategoryModelFilter.name}, creator: {name: authorModelFilter}} " +
 				"| dateRange:startDateFilter:endDateFilter)).length")
 					tr.date-hilight
 						td
 							i.fa.fa-chevron-right(ng-click="expCtr.toggleCustom($index)" ng-show="!expCtr.hiddenList[$index]")
 							i.fa.fa-chevron-down(ng-click="expCtr.toggleCustom($index)" ng-hide="!expCtr.hiddenList[$index]")
 						td(colspan='7')
+
 							| {{ date }}
 					tr(ng-repeat="expense in filteredData", ng-init='expCtr.pageTitleEquals(filteredData)', ng-hide="expCtr.hiddenList[$parent.$index]")
-
 						td
 							| {{ expense.time }}
 						td

@@ -10,7 +10,7 @@ module.exports = function(app) {
     };
 
     function getExchangeRate() {
-      return $resource("/currency").query({sort: "time desc", limit: 1}).$promise;
+      return $resource("/currency").query({limit: 1}).$promise;
     }
 
     function getExchangeRates(year) {
