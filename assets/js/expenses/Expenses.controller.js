@@ -16,9 +16,8 @@ module.exports = function(app) {
     vm.getExpensesByDate = getExpensesByDate;
     vm.toggleCustom = toggleCustom;
 
-    var MAX_LOAD = 10;
-    var startExpensesLimit = 0;
-    var expensesLimit = MAX_LOAD;
+    var MAX_LOAD = 20;
+    vm.expensesLimit = MAX_LOAD;
 
     vm.allExpenses = [];
     vm.expenses = [];
@@ -43,14 +42,14 @@ module.exports = function(app) {
     function convertDates(array) {
       array.forEach(function(item) {
         item.time = new Date(item.time * 1000).toDateString();
+        if(vm.dates.indexOf(String(item.time)) < 0) vm.dates.push(String(item.time));
       });
     }
 
     function isLoadMore() {
       if(typeof vm.allExpenses != "undefined") {
         if(vm.allExpenses.length <= MAX_LOAD && vm.allExpenses.length != 0) {
-          startExpensesLimit = 0;
-          expensesLimit = vm.allExpenses.length;
+          vm.expensesLimit = vm.allExpenses.length;
           return false;
         } else return true;
       }
@@ -59,25 +58,12 @@ module.exports = function(app) {
     function loadExpenses() {
       // Check for length
       isLoadMore();
-
-      for(var i = startExpensesLimit; i < expensesLimit; i++) {
-        // Push dates
-        if(vm.dates.indexOf(String(vm.allExpenses[i].time)) < 0) vm.dates.push(String(vm.allExpenses[i].time));
-
-        // Add expense to the common array
-        vm.expenses[i] = vm.allExpenses[i];
-        vm.expenses[i].categoryName = vm.allExpenses[i].category.name;
-        vm.expenses[i].subcategoryName = vm.allExpenses[i].subcategory.name;
-        vm.expenses[i].authorName = vm.allExpenses[i].creator.name;
-      }
-
-      startExpensesLimit += MAX_LOAD;
-      expensesLimit += MAX_LOAD;
+      vm.expensesLimit += MAX_LOAD;
     }
 
     function getExpensesByDate(date) {
       var expenses = [];
-      vm.expenses.forEach(function(expense) {
+      vm.allExpenses.forEach(function(expense) {
         if(date == expense.time) {
           expenses.push(expense);
         }
@@ -197,9 +183,7 @@ module.exports = function(app) {
 
     function getCategories() {
       CategoriesService.getCategories().then(function(data) {
-        data.forEach(function (category) {
-          vm.categories.push(category);
-        });
+        vm.categories = data;
       });
     }
 
@@ -215,6 +199,16 @@ module.exports = function(app) {
           }
         }
       }
+    }
+
+    vm.sort = sort;
+    var orderBy = $filter('orderBy');
+    function sort(predicate, reverse) {
+      vm.allExpenses = orderBy(vm.allExpenses, predicate, reverse);
+      vm.dates = [];
+      vm.allExpenses.forEach(function(item) {
+        if(vm.dates.indexOf(String(item.time)) < 0) vm.dates.push(String(item.time));
+      });
     }
   }
 };

@@ -182,7 +182,7 @@ module.exports = function(app) {
     vm.exchangeRate = $rootScope.exchangeRate;
 
     function getUsersBudgets() {
-      vm.currentUser.budgets.forEach(function(item) {
+      vm.currentUser.categories.forEach(function(item) {
         var category = $filter('filter')(vm.categories, {id: item.id});
         item.categoryId = category[0].name;
         item.spent = item.used;
@@ -228,7 +228,8 @@ module.exports = function(app) {
     }
 
     vm.newMoney = {
-      money: 0
+      money: 0,
+      currency: vm.currency[0]
     };
 
     vm.addMoney = addMoney;
@@ -248,20 +249,15 @@ module.exports = function(app) {
             closeOnConfirm: false
           },
           function() {
-            var budg = $filter('filter')($rootScope.currentUser.budgets, {id: vm.newMoney.category});
             var newBudget = 0;
             if(vm.newMoney.currency == "USD") {
-              newBudget = vm.newMoney.money / $rootScope.exchangeRate;
+              newBudget = vm.newMoney.money * $rootScope.exchangeRate;
             } else newBudget = vm.newMoney.money;
 
-            if(budg[0]) {
-              budg[0].budget += newBudget;
-              UsersService.editUser($rootScope.currentUser.id,
-                {addPersonalBudget: {id: vm.newMoney.category, budget: newBudget}});
-            } else {
-              UsersService.editUser($rootScope.currentUser.id,
-                {addPersonalBudget: {id: vm.newMoney.category, budget: newBudget}});
-            }
+            UsersService.editUser($rootScope.currentUser.id,
+              {addPersonalBudget: {id: vm.newMoney.category, budget: newBudget}});
+
+            updateBudgetTable(category[0].name, "left", newBudget);
 
             swal("Ok!", "You added " + vm.newMoney.money + " "
               + vm.newMoney.currency + " to your personal " + category[0].name + " budget", "success");
@@ -276,5 +272,24 @@ module.exports = function(app) {
     function editNewMoneyObject(data, field) {
       vm.newMoney[field] = data;
     }
+
+    function updateBudgetTable(categoryName, moneyType, newAmount) {
+      if(moneyType == "left") {
+        vm.budgets.forEach(function(item) {
+          if(item.categoryId == categoryName) {
+            item.left += newAmount;
+          }
+        })
+      } else {
+        vm.budgets.forEach(function(item) {
+          if(item.categoryId == categoryName) {
+            item.spent += newAmount;
+          }
+        })
+      }
+    }
+
+    // Income money table
+    vm.isCollapsedMoneyTable = true;
   }
 };

@@ -1,5 +1,5 @@
 #personal-view
-	.alert.alert-warning(ng-show="currentUser.budgets.length == 0")
+	.alert.alert-warning(ng-show="currentUser.categories.length == 0")
 		i.fa.fa-exclamation-triangle.fa-2x
 		h2 &nbsp;You do not have personal budget
 	#money-form(ng-show="currentUser.max_level > 1 || currentUser.admin")
@@ -24,7 +24,29 @@
 		button.btn.btn-primary(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true)', ng-show='!moneyForm.$visible')
 			| Add money&nbsp;
 			i.fa.fa-plus
+	button.btn.btn-warning(ng-click="personalCtrl.isCollapsedMoneyTable = !personalCtrl.isCollapsedMoneyTable") {{personalCtrl.moneyButtonText}} income money&nbsp;
+		i.fa.fa-money
 	#main(ng-hide="personalCtrl.budgets.length == 0")
+		table#income-money-table.table-hover.fixed(collapse="personalCtrl.isCollapsedMoneyTable")
+			colgroup
+				col
+				col
+				col
+				col
+			thead
+				tr
+					th#income-money-header(colspan="4")
+						| Income money
+				tr
+					th.header-text
+						| Date
+					th.header-text
+						| Category  
+					th.header-text
+						| Amount
+					th.header-text
+						| Added by
+			tbody
 		table#income-table.table-hover.fixed
 			colgroup
 				col.table-category
