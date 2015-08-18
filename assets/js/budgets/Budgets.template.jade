@@ -19,12 +19,14 @@
 					b {{budCtrl.annualBudget | currency}}
 					br
 					span(ng-class="{'status-good': budCtrl.annualUndistributed > 0, 'status-bad': budCtrl.annualUndistributed < 0}") {{budCtrl.annualUndistributed | currency}} 
-					| undistributed
+					spam(ng-show="budCtrl.annualUndistributed >= 0") undistributed
+					spam(ng-show="budCtrl.annualUndistributed < 0") over distributed
 				td
 					b {{budCtrl.annualUsed | currency}}
 					br
-					span(ng-class="{'status-good': (budCtrl.annualBudget - budCtrl.annualUsed > 0), 'status-bad': (budCtrl.annualBudget - budCtrl.annualUsed < 0)}") {{budCtrl.annualBudget - budCtrl.annualUsed | currency}} 
-					| left
+					span(ng-class="{'status-good': budCtrl.annualBudget - budCtrl.annualUsed > 0, 'status-bad': budCtrl.annualBudget - budCtrl.annualUsed < 0}") {{budCtrl.annualBudget - budCtrl.annualUsed | currency}} 
+					span(ng-show="budCtrl.annualBudget - budCtrl.annualUsed >= 0") left
+					span(ng-show="budCtrl.annualBudget - budCtrl.annualUsed < 0") overused
 
 		tbody(ng-repeat='budget in budCtrl.budgets')
 			tr
@@ -47,12 +49,14 @@
 					b(editable-number='budget.category.budget' name='budget' e-form='rowform' onbeforesave='budCtrl.checkBudget($data)') {{budget.category.budget || '0' | currency}}
 					br
 					span(ng-class="{'status-good': (budget.category.undistributed > 0), 'status-bad': (budget.category.undistributed < 0)}") {{budget.category.undistributed | currency}} 
-					| undistributed
+					spam(ng-show="budget.category.undistributed >= 0") undistributed
+					spam(ng-show="budget.category.undistributed < 0") over distributed
 				th 
 					b {{budget.category.used | currency}}
 					br
-					span(ng-class="{'status-good': (budget.category.budget - budget.category.used > 0), 'status-bad': (budget.category.budget - budget.category.used < 0)}") {{budget.category.budget - budget.category.used | currency}} 
-					| left
+					span(ng-class="{'status-good': budget.category.budget - budget.category.used > 0, 'status-bad': budget.category.budget - budget.category.used < 0}") {{budget.category.budget - budget.category.used | currency}} 
+					span(ng-show="budget.category.budget - budget.category.used >= 0") left
+					span(ng-show="budget.category.budget - budget.category.used < 0") overused
 
 
 
@@ -75,8 +79,9 @@
 				td 
 					b {{subcategory.used | currency}} 
 					br
-					span(ng-class="{'status-good': (subcategory.budget - subcategory.used > 0), 'status-bad': (subcategory.budget - subcategory.used < 0)}") {{subcategory.budget - subcategory.used | currency}} 
-					| left
+					span(ng-class="{'status-good': subcategory.budget - subcategory.used > 0, 'status-bad': (subcategory.budget - subcategory.used < 0)}") {{subcategory.budget - subcategory.used | currency}} 
+					span(ng-show="subcategory.budget - subcategory.used >= 0") left
+					span(ng-show="subcategory.budget - subcategory.used < 0") overused
 				
 			tr(ng-hide="!budCtrl.hiddenList[$index]")
 				td(colspan='4' ng-show="budCtrl.getUserCategory(currentUser, budget.category).level > 2 || currentUser.admin")
