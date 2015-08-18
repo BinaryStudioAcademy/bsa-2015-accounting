@@ -63,10 +63,10 @@
 					th
 						| Expense
 					th
-						span(ng-click="sortType = 'price'; sortReverse = !sortReverse; expCtr.sort(sortType, sortReverse)") Cost&nbsp;
-							span.fa.fa-caret-down(ng-show="sortType == 'price' && !sortReverse")
-							span.fa.fa-caret-up(ng-show="sortType == 'price' && sortReverse")
-							span.fa.fa-sort(ng-hide="sortType == 'price'")
+						span(ng-click="sortType = 'currencySort'; sortReverse = !sortReverse; expCtr.sort(sortType, sortReverse)") Cost&nbsp;
+							span.fa.fa-caret-down(ng-show="sortType == 'currencySort' && !sortReverse")
+							span.fa.fa-caret-up(ng-show="sortType == 'currencySort' && sortReverse")
+							span.fa.fa-sort(ng-hide="sortType == 'currencySort'")
 					th
 						span(ng-click="sortType = 'currency'; sortReverse = !sortReverse; expCtr.sort(sortType, sortReverse)") $ / &#8372;&nbsp;
 							span.fa.fa-caret-down(ng-show="sortType == 'currency' && !sortReverse")

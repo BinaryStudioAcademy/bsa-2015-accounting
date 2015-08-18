@@ -116,7 +116,7 @@ module.exports = function(app) {
     // On new expense
     $rootScope.$on('new-expense', function(event, args) {
       if(vm.dates.indexOf(String(args.time)) < 0) vm.dates.unshift(String(args.time));
-      vm.expenses.push(args);
+      vm.allExpenses.push(args);
     });
 
     function deleteExpense(id, name) {
@@ -204,6 +204,12 @@ module.exports = function(app) {
     vm.sort = sort;
     var orderBy = $filter('orderBy');
     function sort(predicate, reverse) {
+      // Converting to USD
+      vm.allExpenses.forEach(function(expense) {
+        if(expense.currency == "UAH") {
+          expense.currencySort = expense.price / $rootScope.exchangeRate;
+        } else expense.currencySort = expense.price;
+      });
       vm.allExpenses = orderBy(vm.allExpenses, predicate, reverse);
       vm.dates = [];
       vm.allExpenses.forEach(function(item) {
