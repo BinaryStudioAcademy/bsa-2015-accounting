@@ -1,6 +1,6 @@
 module.exports = function(req, res, next) {
 	if (req.method === 'POST') {
-		Category.findOne({_id: req.body.categoryId}).exec(function(err, category) {
+		Category.findOne({id: req.body.categoryId}).exec(function(err, category) {
 			if (err) return res.serverError(err);
 			if (!category)  return res.notFound();
 
@@ -18,7 +18,7 @@ module.exports = function(req, res, next) {
 			}
 		});
 	} else {
-		Expense.findOne({_id: req.param('id')}).exec(function(err, expense) {
+		Expense.findOne({id: req.param('id')}).exec(function(err, expense) {
 			if (err) return res.serverError(err);
 			if (!expense)  return res.notFound();
 

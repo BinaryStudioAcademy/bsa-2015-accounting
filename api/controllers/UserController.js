@@ -119,6 +119,7 @@ function updateUser(req, res) {
 		if (values.addPersonalBudget) {
 			var cat = _.find(user.categories, {id: values.addPersonalBudget.id});
 			if (cat) {
+				if (!cat.budget) {cat.budget = 0};
 				cat.budget += values.addPersonalBudget.budget;
 			}
 			else {

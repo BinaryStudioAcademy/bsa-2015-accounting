@@ -50,7 +50,7 @@ module.exports = function(app) {
           method: "PUT"
         }
       });
-      return data.update({ id: userId }, newUsers);
+      return data.update({ id: userId }, newUsers).$promise;
     }
 
     /**
