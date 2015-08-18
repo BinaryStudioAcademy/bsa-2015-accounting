@@ -15,9 +15,9 @@ module.exports = function(app) {
 		//vm.roles = ['user', 'global admin'];
 		vm.permits = [
 			{level: 0, text: "no rights"},
-			{level: 1, text: "READ"},
-			{level: 2, text: "POST"},
-			{level: 3, text: "ADMIN"}
+			{level: 1, text: "Read only"},
+			{level: 2, text: "Add expenses"},
+			{level: 3, text: "Category admin"}
 		];
 
 		var usersPromise = UsersService.getUsers();
@@ -32,38 +32,49 @@ module.exports = function(app) {
 			vm.category = vm.categories[0];
 		});
 
-		vm.addPersonalBudget = function(user) {
+		vm.editPersonalBudget = function(user, add) {
+			var title = "Add " + vm.category.name + " personal money for " + user.name;
+			var action = " added";
+			if (!add) {
+				title = "Take back " + vm.category.name + " personal money from " + user.name;
+				action = " taken";
+			}
 			swal({
-				title: "Add personal budget for " + user.name + " to use in " + vm.category.name,
+				title: title,
 				type: "input",
 				showCancelButton: true,
 				closeOnConfirm: false,
 				animation: "slide-from-top",
 				inputType: "number",
-				inputPlaceholder: "Money amount to add in " + vm.currency
+				inputPlaceholder: "Money amount in " + vm.currency
 			}, function(inputValue) {
 				if (inputValue === false) return false;
 				if (inputValue === "" || isNaN(inputValue) || inputValue < 0) {
 					swal.showInputError("You need to enter positive value");
 					return false;
 				}
-				swal("Nice!", inputValue + " " + vm.currency + " added", "success");
-				if (vm.getUserCategory(user).budget) {
-					vm.getUserCategory(user).left += Number(inputValue * vm.rate);
+				if (!add && inputValue > vm.getUserCategory(user).left/vm.rate) {
+					swal.showInputError("You can't take back more than there is left");
+					return false;
 				}
-				else {
-					user.categories.push({id: vm.category.id, left: Number(inputValue * vm.rate)});
-				}
-				UsersService.editUser(user.id, {addPersonalBudget: {id: vm.category.id, budget: Number(inputValue * vm.rate)}});
+				if (!add) {inputValue = -inputValue};
+				UsersService.editUser(user.id, {addPersonalBudget: {id: vm.category.id, budget: Number(inputValue * vm.rate)}}).then(function(res) {
+					vm.updateUsers();
+					swal("Ok!", Math.abs(inputValue) + " " + vm.currency + action, "success");
+				});
 			});
 		}
 
 		vm.updateRole = function(user) {
-			UsersService.editUser(user.id, {setAdminStatus: user.admin});
+			UsersService.editUser(user.id, {setAdminStatus: user.admin}).then(function() {
+				vm.updateUsers();
+			});
 		}
 
 		vm.updateRights = function(user) {
-			UsersService.editUser(user.id, {setPermissionLevel: {id: vm.category.id, level: vm.getUserCategory(user).level}});
+			UsersService.editUser(user.id, {setPermissionLevel: {id: vm.category.id, level: vm.getUserCategory(user).level}}).then(function() {
+				vm.updateUsers();
+			});
 		}
 
 		vm.updateCurrency = function() {
@@ -75,10 +86,18 @@ module.exports = function(app) {
 			}
 		}
 
+		vm.updateUsers = function() {
+			UsersService.getUsers().then(function(users) {
+				vm.users = users || [];
+			});
+		}
+
 		vm.getUserCategory = function(user) {
 			var result = _.find(user.categories, {id: vm.category.id});
 			if (!result) {
-				user.categories.push({id: vm.category.id, budget: 0, level: 0, used: 0});
+				var level = 0;
+				if (user.admin) { level = 3; }
+				user.categories.push({id: vm.category.id, budget: 0, level: level, used: 0});
 				return vm.getUserCategory(user);
 			}
 			return result;
