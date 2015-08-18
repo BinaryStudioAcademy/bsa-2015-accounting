@@ -2,8 +2,8 @@
 	.alert.alert-warning(ng-show="currentUser.categories.length == 0")
 		i.fa.fa-exclamation-triangle.fa-2x
 		h2 &nbsp;You do not have personal budget
-	#money-form(ng-show="currentUser.max_level > 1 || currentUser.admin")
-		form(editable-form='', name='moneyForm', onaftersave='personalCtrl.addMoney(); personalCtrl.showTitle(false)', ng-show='personalCtrl.isShowTitle')
+	#money-form(ng-show="currentUser.max_level > 1 || currentUser.admin", ng-init="showAddButton = true")
+		form(editable-form='', name='moneyForm', onaftersave='personalCtrl.processMoney(showAddButton); personalCtrl.showTitle(false)', ng-show='personalCtrl.isShowTitle')
 			div
 				span.title Amount: 
 				span(editable-number='personalCtrl.newMoney.money', e-name='amount', e-form='moneyForm', onbeforesave="personalCtrl.checkField($data)", onaftersave='personalCtrl.editNewMoneyObject($data, "money")', e-required='') {{ personalCtrl.newMoney.money }}
@@ -17,14 +17,19 @@
 					| {{ personalCtrl.newMoney.category }}
 			#button-group
 				span(ng-show='moneyForm.$visible')
-					button#add-button.btn.btn-primary(type='submit', ng-disabled='moneyForm.$waiting')
+					button.action-button.btn.btn-primary(type='submit', ng-disabled='moneyForm.$waiting', ng-show="showAddButton")
 						| Add
+					button.action-button.btn.btn-danger(type='submit', ng-disabled='moneyForm.$waiting', ng-show="!showAddButton")
+						| Take
 					button#cancel-button.btn.btn-default(type='button', ng-disabled='moneyForm.$waiting', ng-click='moneyForm.$cancel(); personalCtrl.showTitle(false)')
 						| Cancel
-		button.btn.btn-primary(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true)', ng-show='!moneyForm.$visible')
+		button#add-button.btn.btn-primary(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = true', ng-show='!moneyForm.$visible')
 			| Add money&nbsp;
 			i.fa.fa-plus
-	button.btn.btn-warning(ng-click="personalCtrl.isCollapsedMoneyTable = !personalCtrl.isCollapsedMoneyTable") {{personalCtrl.moneyButtonText}} income money&nbsp;
+		button.btn.btn-danger(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = false', ng-show='!moneyForm.$visible')
+			| Take money&nbsp;
+			i.fa.fa-minus
+	button.btn.btn-warning(ng-click="personalCtrl.isCollapsedMoneyTable = !personalCtrl.isCollapsedMoneyTable; personalCtrl.changeMoneyText()") {{personalCtrl.moneyButtonText}} income money&nbsp;
 		i.fa.fa-money
 	#main(ng-hide="personalCtrl.budgets.length == 0")
 		table#income-money-table.table-hover.fixed(collapse="personalCtrl.isCollapsedMoneyTable")

@@ -232,20 +232,28 @@ module.exports = function(app) {
       currency: vm.currency[0]
     };
 
-    vm.addMoney = addMoney;
-    function addMoney() {
+    vm.processMoney = processMoney;
+    function processMoney(add) {
       var category = $filter('filter')(vm.categories, {id: vm.newMoney.category});
       // Check permissions
       if($rootScope.getPermission(vm.newMoney.category.id) > 1 || $rootScope.currentUser.admin) {
+        var addTakeWord = "add";
+        var toFromWord = "to";
+        var addedTookWord = "added";
+        if(!add) {
+          addTakeWord = "take";
+          toFromWord = "from";
+          addedTookWord = "took";
+        }
         // Ok
         swal({
             title: "Are you sure?",
-            text: "Are you sure want to add " + vm.newMoney.money + " "
-            + vm.newMoney.currency + " to your personal " + category[0].name + " budget?",
+            text: "Are you sure want to " + addTakeWord + " " + vm.newMoney.money + " "
+            + vm.newMoney.currency + " " + toFromWord + " your personal " + category[0].name + " budget?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Yes, add it!",
+            confirmButtonText: "Yes, " + addTakeWord + " it!",
             closeOnConfirm: false
           },
           function() {
@@ -254,13 +262,15 @@ module.exports = function(app) {
               newBudget = vm.newMoney.money * $rootScope.exchangeRate;
             } else newBudget = vm.newMoney.money;
 
+            if(!add) newBudget = -newBudget;
+
             UsersService.editUser($rootScope.currentUser.id,
               {addPersonalBudget: {id: vm.newMoney.category, budget: newBudget}});
 
             updateBudgetTable(category[0].name, "left", newBudget);
 
-            swal("Ok!", "You added " + vm.newMoney.money + " "
-              + vm.newMoney.currency + " to your personal " + category[0].name + " budget", "success");
+            swal("Ok!", "You " + addedTookWord + " " + vm.newMoney.money + " "
+              + vm.newMoney.currency + " " + toFromWord + " your personal " + category[0].name + " budget", "success");
           });
       } else {
         // No permissions
@@ -291,5 +301,10 @@ module.exports = function(app) {
 
     // Income money table
     vm.isCollapsedMoneyTable = true;
+    vm.changeMoneyText = changeMoneyText;
+    vm.moneyButtonText = "Show";
+    function changeMoneyText() {
+      vm.moneyButtonText = vm.moneyButtonText == "Show" ? "Hide" : "Show";
+    }
   }
 };
