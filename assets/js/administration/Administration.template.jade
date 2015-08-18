@@ -39,6 +39,6 @@
 						a(href="#" editable-select="admCtrl.getUserCategory(user).level" ng-class="{bad: admCtrl.getUserCategory(user).level == 0}" ng-hide="user.admin" onaftersave="admCtrl.updateRights(user)" e-ng-options="permit.level as permit.text for permit in admCtrl.permits") {{admCtrl.permits[admCtrl.getUserCategory(user).level].text}}
 						span(ng-show="user.admin") ADMIN
 					td(ng-class="{bad: admCtrl.getUserCategory(user).left < 0}") {{admCtrl.getUserCategory(user).left/admCtrl.rate || 0 | currency:(admCtrl.currency + " ")}} 
-						a(href='' ng-click="admCtrl.addPersonalBudget(user)" ng-show="admCtrl.getUserCategory(user).level > 1")
+						a(href='' ng-click="admCtrl.addPersonalBudget(user)" ng-show="admCtrl.getUserCategory(user).level > 1 || user.admin")
 							i.fa.fa-plus
 					td {{admCtrl.getUserCategory(user).used/admCtrl.rate | currency:(admCtrl.currency + " ")}}

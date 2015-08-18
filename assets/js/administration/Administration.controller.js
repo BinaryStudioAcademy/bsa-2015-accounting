@@ -48,8 +48,12 @@ module.exports = function(app) {
 					return false;
 				}
 				swal("Nice!", inputValue + " " + vm.currency + " added", "success");
-				vm.getUserCategory(user).budget += Number(inputValue * vm.rate);
-				vm.getUserCategory(user).left += Number(inputValue * vm.rate);
+				if (vm.getUserCategory(user).budget) {
+					vm.getUserCategory(user).left += Number(inputValue * vm.rate);
+				}
+				else {
+					user.categories.push({id: vm.category.id, left: Number(inputValue * vm.rate)});
+				}
 				UsersService.editUser(user.id, {addPersonalBudget: {id: vm.category.id, budget: Number(inputValue * vm.rate)}});
 			});
 		}

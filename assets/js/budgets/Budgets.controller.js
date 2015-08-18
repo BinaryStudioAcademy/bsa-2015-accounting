@@ -196,7 +196,7 @@ module.exports = function(app) {
 						});
 					}
 					else {
-						subcategory.id = objectId();
+						subcategory.id = objectId.ObjectId();
 						var budgetsPromise = BudgetsService.editBudget(budget.id, {addSubcategory: {id: subcategory.id, budget: subcategory.budget}});
 						var categoriesPromise = CategoriesService.editCategory(budget.category.id, {addSubcategory: {id: subcategory.id, name: subcategory.name}});
 					}
