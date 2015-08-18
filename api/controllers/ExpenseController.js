@@ -16,7 +16,7 @@ module.exports = {
 function getExpenses(req, res) {
 	var year = req.param('year');
   var userId = req.param('creator');
-	var permissions = _.pluck(_.filter(req.user.permissions, function(per) {
+	var permissions = _.pluck(_.filter(req.user.categories, function(per) {
 		return per.level >= 1;
 	}), 'id');
 	var filter = {deletedBy: {$exists: false}}

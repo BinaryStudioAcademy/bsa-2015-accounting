@@ -33,7 +33,6 @@ module.exports = function(app) {
 				vm.pageTitle = [];
 				vm.turnPush = false
 				function pushList(bool){
-
 					return vm.turnPush = bool
 
 				}
@@ -73,7 +72,6 @@ module.exports = function(app) {
 
 
 		vm.hiddenList = [];
-		vm.hiddenList[0] = true;
 		function toggleCustom(index) {
 			vm.hiddenList[index] = !vm.hiddenList[index];
 		}
@@ -123,6 +121,7 @@ module.exports = function(app) {
 
 		function getExpensesByDate(date) {
 			var expenses = [];
+
 			vm.expenses.forEach(function(expense) {
 				if(date == expense.time) {
 					expenses.push(expense);

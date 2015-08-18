@@ -78,7 +78,7 @@ _.times(categories.length, function(n) {
 	var category = Factory.build('Category', {name: names[n], subcategories: subs});
 	var categoryId = category._id;
 	_.times(5, function() {
-		var user = Factory.build('User', {password: hash, admin: false, budgets: [{id: categoryId, budget: casual.integer(29, 33) * 1000}], permissions: [{id: categoryId, level: casual.integer(1, 3)}]});
+		var user = Factory.build('User', {password: hash, admin: false, categories: [{id: categoryId, budget: casual.integer(29, 33) * 1000, level: casual.integer(1, 3)}]});
 		db.user.push(user);
 	});	
 	db.category.push(category);
@@ -114,16 +114,16 @@ _.times(years, function(n) {
 					db.currency.push(currency);
 				}
 				if (nn === 4) {
-					var expense = Factory.build('Expense', {deletedBy: _.sample(db.user, 1)[0]._id, time: expTime, creatorId: String(_.sample(db.user, 1)[0]._id), categoryId: category._id, subcategoryId: sub.id});
+					var expense = Factory.build('Expense', {deletedBy: _.sample(db.user)._id, time: expTime, creatorId: String(_.sample(db.user)._id), categoryId: category._id, subcategoryId: sub.id});
 					db.expense.push(expense);
 				} else if (nn === 5) {
-					var expense = Factory.build('Expense', {time: expTime, creatorId: String(_.sample(db.user, 1)[0]._id), categoryId: category._id, subcategoryId: sub.id});
+					var expense = Factory.build('Expense', {time: expTime, creatorId: String(_.sample(db.user)._id), categoryId: category._id, subcategoryId: sub.id});
 					expense.personal = true;
 					expense.price = casual.integer(300, 700);
 					db.expense.push(expense);
 				}
 				else {
-					var expense = Factory.build('Expense', {time: expTime, creatorId: String(_.sample(db.user, 1)[0]._id), categoryId: category._id, subcategoryId: sub.id});
+					var expense = Factory.build('Expense', {time: expTime, creatorId: String(_.sample(db.user)._id), categoryId: category._id, subcategoryId: sub.id});
 					if (expense.currency === 'UAH') {
 						expense.price *= 20;
 					}
@@ -134,7 +134,7 @@ _.times(years, function(n) {
 	});
 });
 
-var owner = {_id: 'a', login: 'admin@admin', name: 'Admin', admin: true, permissions: [], budgets: [], 'createdAt': new Date().toISOString(), 'updatedAt': new Date().toISOString(), password: hash};
+var owner = {_id: 'a', login: 'admin@admin.admin', name: 'Admin', admin: true, categories: [], 'createdAt': new Date().toISOString(), 'updatedAt': new Date().toISOString(), password: hash};
 db.user.push(owner);
 
 var url = 'mongodb://localhost:27017/portal-accounting';

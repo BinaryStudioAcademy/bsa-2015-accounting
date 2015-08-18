@@ -177,14 +177,13 @@ module.exports = function(app) {
 			});
 		};
 
-		vm.getPermission = function(user, category) {
-			console.log(category);
-			var permission = _.find(user.permissions, {id: category.id});
-			if (!permission) {
-				user.permissions.push({id: category.id, level: 0});
-				return vm.getPermission(user);
+		vm.getUserCategory = function(user, category) {
+			var result = _.find(user.categories, {id: category.id});
+			if (!result) {
+				user.categories.push({id: category.id, level: 0});
+				return vm.getUserCategory(user, category);
 			}
-			return permission;
+			return result;
 		}
 
 		vm.sendData = function(budget, subcategory) {
@@ -197,7 +196,7 @@ module.exports = function(app) {
 						});
 					}
 					else {
-						subcategory.id = objectId();
+						subcategory.id = objectId.ObjectId();
 						var budgetsPromise = BudgetsService.editBudget(budget.id, {addSubcategory: {id: subcategory.id, budget: subcategory.budget}});
 						var categoriesPromise = CategoriesService.editCategory(budget.category.id, {addSubcategory: {id: subcategory.id, name: subcategory.name}});
 					}

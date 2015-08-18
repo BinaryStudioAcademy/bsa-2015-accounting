@@ -6,13 +6,13 @@ module.exports = function(req, res, next) {
 			return res.forbidden("You don't hane permission to do this");
 		}
 	} else {
-		Budget.findOne({_id: req.param('id')}).exec(function(err, budget) {
+		Budget.findOne({id: req.param('id')}).exec(function(err, budget) {
 			if (err) return res.serverError(err);
-			if (!budget)  return res.notFound();
+			if (!budget) return res.notFound();
 
 			var id = budget.category.id;
-			var permissions = req.user.permissions.filter(function(per) {
-				return per.id === id;
+			var permissions = req.user.categories.filter(function(per) {
+				return per.id === id && per.level >= 0;
 			})[0];
 			if (permissions) {
 				switch (req.method) {
@@ -27,7 +27,7 @@ module.exports = function(req, res, next) {
 			if (req.user.admin || permission) {
 				next();
 			} else {
-				return res.forbidden("You don't hane permission to do this");
+				return res.forbidden("You don't have permission to do this");
 			}
 		});
 	}

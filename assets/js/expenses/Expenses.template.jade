@@ -44,42 +44,43 @@
 					i.fa.fa-file-excel-o.fa-1g
 				input(type='date', name='startDate', placeholder='Date', ng-model="startDateFilter")
 				input(type='date', name='endDate', placeholder='Date', ng-model="endDateFilter")
+
 		table.table-hover.fixed
 			colgroup
-				col.table-edit
+				col.table-date
+				col.table-category
 				col.table-expense
 				col.table-cost
 				col.table-carrency
-				col.table-category
 				col.table-sub
 				col.table-addBy
-				col.table-description-head
+				col.table-description-header
 			thead
 				tr
 					th
-						| Edit
-					th
-						| Expense
-					th
-						| Cost
-					th
-						| $ / &#8372;
+						| Date
 					th
 						| Category
 					th
 						| Subcategory
 					th
+						| Name
+					th
+						| Amount
+					th
+						|  $ / &#8372;
+					th
 						| Added by
 					th
-						i.fa.fa-info-circle
+						i.fa.fa-cog
 		#main
-			table#tableExpense.table-hover.fixed
+			table.table-hover.fixed
 				colgroup
-					col.table-edit
+					col.table-date
+					col.table-category
 					col.table-expense
 					col.table-cost
 					col.table-carrency
-					col.table-category
 					col.table-sub
 					col.table-addBy
 					col.table-description
@@ -87,26 +88,22 @@
 				"| filter: {name: nameModelFilter, categoryName: categoryModelFilter.name, " +
 				"subcategoryName: subcategoryModelFilter.name, authorName: authorModelFilter} " +
 				"| dateRange:startDateFilter:endDateFilter)).length")
-					tr
+					tr.date-hilight
 						td
 							i.fa.fa-chevron-right(ng-click="expCtr.toggleCustom($index)" ng-show="!expCtr.hiddenList[$index]")
 							i.fa.fa-chevron-down(ng-click="expCtr.toggleCustom($index)" ng-hide="!expCtr.hiddenList[$index]")
 						td(colspan='7')
-							| {{date | date:"dd.MM.yyyy"}}
+							| {{ date }}
+					tr(ng-repeat="expense in filteredData", ng-init='expCtr.pageTitleEquals(filteredData)', ng-hide="expCtr.hiddenList[$parent.$index]")
 
-					tr(ng-repeat="expense in filteredData" ng-init='expCtr.pageTitleEquals(filteredData)' ng-hide="!expCtr.hiddenList[$parent.$index]")
-
-						td(style='white-space: nowrap')
-							// form
-							form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', onaftersave="expCtr.editExpense(expense.id)", shown='inserted == expense')
-
-								button.btn-xs.btn.btn-primary(type='submit', ng-disabled='rowform.$waiting')
-									| save
-								button#delete-button.btn-xs.btn.btn-default(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
-									| cancel
-							.buttons(ng-show='!rowform.$visible')
-								button.btn-xs.btn.btn-primary.edit-button(ng-click='rowform.$show()') edit
-								button#delete-button.btn-xs.btn.btn-danger(ng-click="expCtr.deleteExpense(expense.id, expense.name)") delete
+						td
+							| {{ expense.time }}
+						td
+							span(editable-select='expense.category.id', e-name='category.name', onshow="expCtr.getSubcategories($data)", e-form='rowform', onaftersave='expCtr.editExpenseObject($data, "categoryId")', e-ng-options='category.id as category.name for category in expCtr.categories' e-ng-change="expCtr.getSubcategories($data)", e-required="")
+								| {{ expCtr.getField(expense.category.id, "category") || 'empty' }}
+						td
+							span(editable-select='expense.subcategory.id', e-name='subcategory.name', e-form='rowform', onaftersave='expCtr.editExpenseObject($data, "subcategoryId")', onbeforesave="expCtr.checkField($data)", e-ng-options='subcategory.id as subcategory.name for subcategory in expCtr.subcategories', e-required="")
+								| {{ expCtr.getField(expense.subcategory.id, "subcategory") || expense.subcategory.name }}
 						td
 							span(editable-text='expense.name', e-name='name', e-form='rowform', onaftersave='expCtr.editExpenseObject($data, "name")', onbeforesave="expCtr.checkField($data)", e-required="")
 								| {{ expense.name  || 'empty' }}
@@ -117,19 +114,18 @@
 							span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in expCtr.currency', onaftersave='expCtr.editExpenseObject($data, "currency")' e-required="")
 								| {{ expense.currency }}
 						td
-							span(editable-select='expense.category.id', e-name='category.name', onshow="expCtr.getSubcategories($data)", e-form='rowform', onaftersave='expCtr.editExpenseObject($data, "categoryId")', e-ng-options='category.id as category.name for category in expCtr.categories' e-ng-change="expCtr.getSubcategories($data)", e-required="")
-								| {{ expCtr.getField(expense.category.id, "category") || 'empty' }}
-						td
-							span(editable-select='expense.subcategory.id', e-name='subcategory.name', e-form='rowform', onaftersave='expCtr.editExpenseObject($data, "subcategoryId")', onbeforesave="expCtr.checkField($data)", e-ng-options='subcategory.id as subcategory.name for subcategory in expCtr.subcategories', e-required="")
-								| {{ expCtr.getField(expense.subcategory.id, "subcategory") || expense.subcategory.name }}
-						td
 							span(e-name='creator', e-form='rowform') {{ expense.creator.name }}
-						td.infoTd
-							.btn-group(dropdown='')
-								button.btn(type='button', dropdown-toggle='')
-									i.fa.fa-info
-								span.dropdown-menu.dropdown-menu-right(role='menu', aria-labelledby='split-button') {{ expense.description }}
+						td
+							form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', onaftersave="expCtr.editExpense(expense.id)", shown='inserted == expense')
 
+								button.btn-xs.btn.btn-success.fa.fa-check(type='submit', ng-disabled='rowform.$waiting')
+								button#delete-button.btn-xs.btn.btn-warning.fa.fa-ban(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
+							.buttons(ng-show='!rowform.$visible')
+								button.btn-xs.btn.btn-primary.edit-button.fa.fa-pencil(ng-click='rowform.$show()')
+								button.btn-xs.btn.btn-danger.fa.fa-trash-o(ng-click="expCtr.deleteExpense(expense.id, expense.name)")
+							.btn-group(dropdown='')
+								button.btn.fa.fa-info(ng-show='!rowform.$visible' type='button', dropdown-toggle='')
+								span.dropdown-menu.dropdown-menu-right(editable-text='expense.description', e-name='description' onbeforesave="expCtr.checkField($data)" e-form='rowform' role='menu', aria-labelledby='split-button' onaftersave='expCtr.editExpenseObject($data, "description")') {{ expense.description }}
 				tbody(ng-show="expCtr.isLoadMore()")
 					tr
 						td
