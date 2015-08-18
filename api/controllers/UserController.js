@@ -4,8 +4,8 @@
  * @description :: Server-side logic for managing users
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
-
-var _ = require('lodash');
+var actionUtil = require('sails/lib/hooks/blueprints/actionUtil'),
+  _ = require('lodash');
 
 module.exports = {
   find: getUsers,

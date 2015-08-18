@@ -2,6 +2,28 @@
 	.alert.alert-warning(ng-show="currentUser.budgets.length == 0")
 		i.fa.fa-exclamation-triangle.fa-2x
 		h2 &nbsp;You do not have personal budget
+	#money-form(ng-show="currentUser.max_level > 1 || currentUser.admin")
+		form(editable-form='', name='moneyForm', onaftersave='personalCtrl.addMoney(); personalCtrl.showTitle(false)', ng-show='personalCtrl.isShowTitle')
+			div
+				span.title Amount: 
+				span(editable-number='personalCtrl.newMoney.money', e-name='amount', e-form='moneyForm', onbeforesave="personalCtrl.checkField($data)", onaftersave='personalCtrl.editNewMoneyObject($data, "money")', e-required='') {{ personalCtrl.newMoney.money }}
+			div
+				span.title Currency: 
+				span(editable-select='personalCtrl.newMoney.currency', e-name='currency', e-form='moneyForm', e-ng-options='currency for currency in personalCtrl.currency', onbeforesave="personalCtrl.checkField($data)", onaftersave='personalCtrl.editNewMoneyObject($data, "currency")', e-required='')
+					| {{ personalCtrl.newMoney.currency }}
+			div
+				span.title Category: 
+				span(editable-select='personalCtrl.newMoney.category', e-name='category', e-form='moneyForm', onshow='loadGroups()', e-ng-options='category.id as category.name for category in personalCtrl.categories', onbeforesave="personalCtrl.checkField($data)", onaftersave='personalCtrl.editNewMoneyObject($data, "category")', e-required='')
+					| {{ personalCtrl.newMoney.category }}
+			#button-group
+				span(ng-show='moneyForm.$visible')
+					button#add-button.btn.btn-primary(type='submit', ng-disabled='moneyForm.$waiting')
+						| Add
+					button#cancel-button.btn.btn-default(type='button', ng-disabled='moneyForm.$waiting', ng-click='moneyForm.$cancel(); personalCtrl.showTitle(false)')
+						| Cancel
+		button.btn.btn-primary(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true)', ng-show='!moneyForm.$visible')
+			| Add money&nbsp;
+			i.fa.fa-plus
 	#main(ng-hide="personalCtrl.budgets.length == 0")
 		table#income-table.table-hover.fixed
 			colgroup

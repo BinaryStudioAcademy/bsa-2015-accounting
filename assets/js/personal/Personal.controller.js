@@ -7,12 +7,13 @@ module.exports = function(app) {
     'PersonalService',
     'CategoriesService',
     'ExpensesService',
+    'UsersService',
     '$filter',
     '$rootScope',
     '$q'
   ];
 
-  function PersonalController(PersonalService, CategoriesService, ExpensesService, $filter, $rootScope, $q) {
+  function PersonalController(PersonalService, CategoriesService, ExpensesService, UsersService, $filter, $rootScope, $q) {
     var vm = this;
 
     vm.currentUser = $rootScope.currentUser;
@@ -152,6 +153,9 @@ module.exports = function(app) {
 
     function checkField(field) {
       if(typeof field == "undefined") return "Fill in that field";
+      else if(typeof field == "number") {
+        if(field < 1) return "Amount should be more than zero";
+      }
     }
 
     // Filter combo boxes
@@ -181,8 +185,8 @@ module.exports = function(app) {
       vm.currentUser.budgets.forEach(function(item) {
         var category = $filter('filter')(vm.categories, {id: item.id});
         item.categoryId = category[0].name;
-        item.left = item.used;
-        item.spent = item.budget - item.used;
+        item.spent = item.used;
+        item.left = item.budget - item.used;
         vm.budgets.push(item);
       });
     }
@@ -190,19 +194,87 @@ module.exports = function(app) {
     vm.changeCurrency = changeCurrency;
     vm.currencyLeftModel = "UAH";
     vm.currencySpentModel = "UAH";
+    var currencyExchangeLeftFlag = true;
+    var currencyExchangeSpentFlag = true;
 
     function changeCurrency(moneyType) {
-      for(var budget in vm.budgets) {
+      vm.budgets.forEach(function(item) {
         if(moneyType == "left") {
-          if(vm.currencyLeftModel == "USD") {
-            vm.budgets[budget].left /= vm.exchangeRate;
-          } else vm.budgets[budget].left *= vm.exchangeRate;
+          if(vm.currencyLeftModel == "USD" && currencyExchangeLeftFlag) {
+            item.left /= vm.exchangeRate;
+            currencyExchangeLeftFlag = false;
+          } else if(vm.currencyLeftModel == "UAH" && !currencyExchangeLeftFlag) {
+            item.left *= vm.exchangeRate;
+            currencyExchangeLeftFlag = true;
+          }
         } else {
-          if(vm.currencySpentModel == "USD") {
-            vm.budgets[budget].spent /= vm.exchangeRate;
-          } else vm.budgets[budget].spent *= vm.exchangeRate;
+          if(vm.currencySpentModel == "USD" && currencyExchangeSpentFlag) {
+            item.spent /= vm.exchangeRate;
+            currencyExchangeSpentFlag = false;
+          } else if(vm.currencySpentModel == "UAH" && !currencyExchangeSpentFlag) {
+            item.spent *= vm.exchangeRate;
+            currencyExchangeSpentFlag = true;
+          }
         }
+      });
+    }
+
+    // Money form
+    vm.isShowTitle = false;
+
+    vm.showTitle = showTitle;
+    function showTitle(isShow) {
+      vm.isShowTitle = isShow;
+    }
+
+    vm.newMoney = {
+      money: 0
+    };
+
+    vm.addMoney = addMoney;
+    function addMoney() {
+      var category = $filter('filter')(vm.categories, {id: vm.newMoney.category});
+      // Check permissions
+      if($rootScope.getPermission(vm.newMoney.category.id) > 1 || $rootScope.currentUser.admin) {
+        // Ok
+        swal({
+            title: "Are you sure?",
+            text: "Are you sure want to add " + vm.newMoney.money + " "
+            + vm.newMoney.currency + " to your personal " + category[0].name + " budget?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, add it!",
+            closeOnConfirm: false
+          },
+          function() {
+            var budg = $filter('filter')($rootScope.currentUser.budgets, {id: vm.newMoney.category});
+            var newBudget = 0;
+            if(vm.newMoney.currency == "USD") {
+              newBudget = vm.newMoney.money / $rootScope.exchangeRate;
+            } else newBudget = vm.newMoney.money;
+
+            if(budg[0]) {
+              budg[0].budget += newBudget;
+              UsersService.editUser($rootScope.currentUser.id,
+                {addPersonalBudget: {id: vm.newMoney.category, budget: newBudget}});
+            } else {
+              UsersService.editUser($rootScope.currentUser.id,
+                {addPersonalBudget: {id: vm.newMoney.category, budget: newBudget}});
+            }
+
+            swal("Ok!", "You added " + vm.newMoney.money + " "
+              + vm.newMoney.currency + " to your personal " + category[0].name + " budget", "success");
+          });
+      } else {
+        // No permissions
+        swal("Cancelled", "You have no permissions to add money to the " + category[0].name + " category", "error");
       }
+    }
+
+    vm.editNewMoneyObject = editNewMoneyObject;
+    function editNewMoneyObject(data, field) {
+      vm.newMoney[field] = data;
     }
   }
 };

@@ -5,6 +5,8 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
+var actionUtil = require('sails/lib/hooks/blueprints/actionUtil');
+
 module.exports = {
 	find: getCurrency
 };
@@ -19,7 +21,9 @@ if (year) {
 		filter = {deletedBy: {$exists: false}, time: {$gte: start, $lte: end }};
 	}
 
-	Currency.find(filter).exec(function found(err, currencies) {
+	Currency.find(filter)
+    .limit(actionUtil.parseLimit(req))
+    .exec(function found(err, currencies) {
 		if (err) return res.serverError(err);
 		res.ok(currencies);
 	});

@@ -1,9 +1,9 @@
 module.exports = function(app) {
   app.controller('HomepageController', HomepageController);
 
-  HomepageController.$inject = ['$rootScope', 'UsersService', 'CurrencyService', '$route'];
+  HomepageController.$inject = ['$rootScope', 'UsersService', 'CurrencyService', '$route', '$filter'];
 
-  function HomepageController($rootScope, UsersService, CurrencyService, $route) {
+  function HomepageController($rootScope, UsersService, CurrencyService, $route, $filter) {
     $rootScope.currentUser = {};
     $rootScope.$route = $route;
     UsersService.getCurrentUser().then(function(user) {
@@ -14,5 +14,11 @@ module.exports = function(app) {
     CurrencyService.getExchangeRate().then(function(rate) {
       $rootScope.exchangeRate = rate[0].rate;
     });
+
+    $rootScope.getPermission = function(categoryId) {
+      var permission = $filter('filter')($rootScope.currentUser.permissions, {id: categoryId});
+      if(permission[0]) return permission[0].level;
+      else return 0;
+    }
   }
 };
