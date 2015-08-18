@@ -177,14 +177,13 @@ module.exports = function(app) {
 			});
 		};
 
-		vm.getPermission = function(user, category) {
-			console.log(category);
-			var permission = _.find(user.permissions, {id: category.id});
-			if (!permission) {
-				user.permissions.push({id: category.id, level: 0});
-				return vm.getPermission(user);
+		vm.getUserCategory = function(user, category) {
+			var result = _.find(user.categories, {id: category.id});
+			if (!result) {
+				user.categories.push({id: category.id, level: 0});
+				return vm.getUserCategory(user, category);
 			}
-			return permission;
+			return result;
 		}
 
 		vm.sendData = function(budget, subcategory) {

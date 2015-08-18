@@ -20,11 +20,11 @@ module.exports = {
 			type: 'boolean',
 			defaultsTo: false
 		},
-		permissions: {
-			type: 'array',
-			defaultsTo: []
-		},
-		budgets: {
+		// permissions: {
+		// 	type: 'array',
+		// 	defaultsTo: []
+		// },
+		categories: {
 			type: 'array',
 			defaultsTo: []
 		},
