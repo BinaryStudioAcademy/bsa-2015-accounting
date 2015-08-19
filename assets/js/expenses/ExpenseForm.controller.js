@@ -38,7 +38,7 @@ module.exports = function(app) {
 
       // Posting
       ExpensesService.createExpense(vm.expense).then(function() {
-        vm.expense.time = new Date(vm.expense.time * 1000).toDateString();
+        vm.expense.time = new Date(vm.expense.time * 1000);
         delete vm.expense['categoryId'];
         vm.expense.category = {};
         vm.expense.category.name = categoryModel.name;
