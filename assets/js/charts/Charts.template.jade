@@ -51,3 +51,17 @@
 						b {{ name }}
 					td(ng-repeat='year in chartCtrl.years')
 						| {{chartCtrl.getSumBudget(name, year) | currency}}
+		
+		//- h3 Expenses
+		//- table(ng-hide='chartCtrl.viewTable') 
+		//- 	thead
+		//- 		tr
+		//- 			th 
+		//- 			th(ng-repeat='year in chartCtrl.years')
+		//- 				b {{year}}
+		//- 	tbody
+		//- 		tr(ng-repeat='name in chartCtrl.uniqueName')
+		//- 			th
+		//- 				b {{ name }}
+		//- 			td(ng-repeat='year in chartCtrl.years')
+		//- 				| {{chartCtrl.getSumExpenses(name, year) | currency}}

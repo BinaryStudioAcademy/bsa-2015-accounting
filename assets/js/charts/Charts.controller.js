@@ -108,14 +108,14 @@ module.exports = function(app) {
 					return filterSum[0].category.budget;
 			}
 
-		vm.getSumExpenses = function (name, year){
+/*		vm.getSumExpenses = function (name, year){
 
 			var filterSum = _.filter(vm.allBudgets , function(budget) {
 				return (budget.category.name === name && budget.year === year);
 			});
 
 			return filterSum[0].category.used;
-			}
+			}*/
 
 		function getAllBudgets() {
 				vm.categoryNames = _.pluck(vm.allBudgets , 'category.name');
@@ -143,7 +143,7 @@ module.exports = function(app) {
 				var names = _.pluck(vm.budgets, 'category.name');
 				var planned =_.map( _.pluck(vm.budgets, 'category.budget'), mathRound);
 				var spended = _.map(_.pluck(vm.budgets, 'category.used'), mathRound);
-				var titleText = 'Categorys budget by ' + vm.year ;
+				var titleText = 'Categories budget by ' + vm.year ;
 				barChart(names, planned, spended, titleText, vm.budgetVisible);
 				pieChart(names, planned, titleText);
 		}
