@@ -91,7 +91,6 @@ module.exports = function(app) {
 		}
 
 		function pageTitleEquals(filteredExpenses) {
-			console.log(filteredExpenses);
 			if(vm.turnPush) {
 				$scope.$watch('filteredExpenses', function() {
 					vm.pageTitle = filteredExpenses;

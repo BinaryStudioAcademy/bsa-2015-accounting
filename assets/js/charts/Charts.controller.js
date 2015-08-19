@@ -14,7 +14,6 @@ module.exports = function(app) {
 		vm.categories = [];
 		vm.year = 0;
 		vm.budgetVisible=false;
-		vm.handleForm = handleForm;
 		vm.displaySubcategory = displaySubcategory;
 		vm.displayCategory = displayCategory;
 		vm.startDateFilter = startDateFilter;
@@ -78,18 +77,18 @@ module.exports = function(app) {
 				});
 
 			} else {
-				return items; // By default, show the regular table data
+				return items;
 			}
 
 			return filteredResult;
 
 		}
-
+		vm.getBudgets = getBudgets;
 		YearsService.getYears().then(function(years) {
 			vm.years = years.sort(function(a, b){return b - a});
 			vm.year = String(vm.years[0]);
-			getBudgets(vm.year);
-			changeCurrency()
+			vm.getBudgets();
+			changeCurrency();
 		});
 
 
@@ -126,39 +125,42 @@ module.exports = function(app) {
 
 		vm.budget = [];
 		
-		function changeCurrency(){
-		}
+		function changeCurrency(){}
 		
-		function getBudgets(year) {
-			$q.all([BudgetsService.getBudgets(year), ExpensesService.getAllExpenses(year)]).then(function(results) {
+		function getBudgets() {
+			BudgetsService.getBudgets(vm.year).then(function(results) {
+				vm.budgets = results;
+				vm.categories = _.pluck(vm.budgets,'category');
+				 displayAllCategory ()
+			});
+		}
 
-				var budgets = results[0];
-				var names = _.pluck(budgets, 'category.name');
-				var planned =_.map( _.pluck(budgets, 'category.budget'), mathRound);
-				var spended = _.map(_.pluck(budgets, 'category.used'), mathRound);
-				var expenses = results[1];
-				var names = _.pluck(budgets, 'category.name');
+		function displayAllCategory () {
+
+				var names = _.pluck(vm.budgets, 'category.name');
+				var planned =_.map( _.pluck(vm.budgets, 'category.budget'), mathRound);
+				var spended = _.map(_.pluck(vm.budgets, 'category.used'), mathRound);
 				var titleText = 'Categorys budget by ' + vm.year ;
-
-				vm.categories = _.pluck(budgets,'category')
-				vm.year = year;
-
 				barChart(names, planned, spended, titleText, vm.budgetVisible);
 				pieChart(names, planned, titleText);
-			});
-
 		}
-
-
+		vm.categoryModel = [];
 		function displayCategory(categoryModel) {
 
-			var names = _.pluck(categoryModel.subcategories, 'name');
-			var spended =_.map(_.pluck(categoryModel.subcategories, 'used'), mathRound);
-			var planned =_.map(_.pluck(categoryModel.subcategories, 'budget'), mathRound);
+			vm.categoryModel =categoryModel
+			if(vm.categoryModel === null){
+					displayAllCategory ()
+			}else{
+				console.log(vm.categoryModel);
+				var names = _.pluck(vm.categoryModel.subcategories, 'name');
+				var spended =_.map(_.pluck(vm.categoryModel.subcategories, 'used'), mathRound);
+				var planned =_.map(_.pluck(vm.categoryModel.subcategories, 'budget'), mathRound);
 
-			var titleText = 'Subcategory '+ categoryModel.name +' budget by ' + vm.year
-			barChart(names, planned, spended, titleText, vm.budgetVisible);
-			pieChart(names, planned, titleText);
+				var titleText = 'Subcategory '+ vm.categoryModel.name +' budget by ' + vm.year
+				barChart(names, planned, spended, titleText, vm.budgetVisible);
+				pieChart(names, planned, titleText);
+			}
+
 		}
 
 		vm.changeSubcategoryCurrency = changeSubcategoryCurrency;
@@ -181,9 +183,9 @@ module.exports = function(app) {
 
 			}, 0);
 		}
-
+vm.selectedCategory = [];
 		function displaySubcategory(selectedCategory){
-
+			vm.selectedCategory =selectedCategory
 			var y = vm.startDate.getFullYear();
 			var m = vm.startDate.getMonth();
 			var d = vm.startDate.getDay()
@@ -191,12 +193,12 @@ module.exports = function(app) {
 			var em = vm.endDate.getMonth();
 			var ed = vm.endDate.getDay()
 			var spendedByPeriod = [];
-			var titleText = 'Spended ' + selectedCategory.name + ' by period ' + y + '.' +  m + '.' + d + ' - ' + ey + '.' +  em + '.' + ed
+			var titleText = 'Spended ' + vm.selectedCategory.name + ' by period ' + y + '.' +  m + '.' + d + ' - ' + ey + '.' +  em + '.' + ed
 			var planned =0;
 			vm.budgetVisible = true
 			var filteredExpense = dateRange(vm.allExpenses, vm.startDate, vm.endDate);
 			var filteredExpensesByCategory = _.filter(filteredExpense, function(expense) {
-					return expense.category.name === selectedCategory.name;
+					return expense.category.name === vm.selectedCategory.name;
 			});
 
 			var subcategorysName =_.pluck(filteredExpensesByCategory, 'subcategory.name');
@@ -337,8 +339,20 @@ module.exports = function(app) {
 			});
 		}
 
-		function handleForm() {
-			getBudgets(vm.year);
+		vm.toggleBoolean =true
+		vm.toggleForm = toggleForm;
+		function toggleForm(bool) {
+			vm.toggleBoolean = bool
+		}
+
+		vm.updateView = updateView
+		function updateView(){
+			console.log(vm.toggleBoolean);
+			if (vm.toggleBoolean){
+				displayCategory(vm.categoryModel);
+			}else{
+				displaySubcategory(vm.selectedCategory);
+			}
 		}
 	}
 };
