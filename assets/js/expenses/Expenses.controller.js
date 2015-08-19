@@ -57,7 +57,7 @@ module.exports = function(app) {
 
     function isLoadMore() {
       if(typeof vm.allExpenses != "undefined") {
-        if(vm.allExpenses.length <= MAX_LOAD && vm.allExpenses.length != 0) {
+        if(vm.allExpenses.length <= MAX_LOAD || vm.allExpenses.length == 0) {
           vm.expensesLimit = vm.allExpenses.length;
           return false;
         } else return true;
@@ -209,20 +209,19 @@ module.exports = function(app) {
       }
     }
 
+    // Sort
     vm.sort = sort;
     var orderBy = $filter('orderBy');
+    vm.sortedExpenses = [];
     function sort(predicate, reverse) {
       // Converting to USD
-      vm.allExpenses.forEach(function(expense) {
+      vm.sortedExpenses = vm.allExpenses;
+      vm.sortedExpenses.forEach(function(expense) {
         if(expense.currency == "UAH") {
           expense.currencySort = expense.price / $rootScope.exchangeRate;
         } else expense.currencySort = expense.price;
       });
-      vm.allExpenses = orderBy(vm.allExpenses, predicate, reverse);
-      vm.dates = [];
-      vm.allExpenses.forEach(function(item) {
-        if(vm.dates.indexOf(String(item.time)) < 0) vm.dates.push(item.time);
-      });
+      vm.sortedExpenses = orderBy(vm.sortedExpenses, predicate, reverse);
     }
 
     // Permissions

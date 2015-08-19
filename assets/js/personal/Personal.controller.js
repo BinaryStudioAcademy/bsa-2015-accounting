@@ -72,7 +72,7 @@ module.exports = function(app) {
 
     function isLoadMore() {
       if(typeof vm.allExpenses != "undefined") {
-        if(vm.allExpenses.length <= MAX_LOAD || vm.allExpenses.length != 0) {
+        if(vm.allExpenses.length <= MAX_LOAD || vm.allExpenses.length == 0) {
           vm.expensesLimit = vm.allExpenses.length;
           return false;
         } else return true;

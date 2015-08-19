@@ -94,7 +94,7 @@
 				col.table-description-header
 			thead
 				tr
-					th#outcome-header(colspan="9")
+					th#outcome-header(colspan="8")
 						| Personal expenses
 				tr
 					th
@@ -119,8 +119,6 @@
 							span.fa.fa-caret-up(ng-show="sortType == 'currency' && sortReverse")
 							span.fa.fa-sort(ng-hide="sortType == 'currency'")
 					th
-						| Added by
-					th
 						i.fa.fa-cog
 		#table-container
 			table.table-hover.fixed
@@ -131,7 +129,6 @@
 						col.table-cost
 						col.table-carrency
 						col.table-sub
-						col.table-addBy
 						col.table-description
 					tbody(ng-repeat="date in personalCtrl.dates | limitTo: personalCtrl.expensesLimit", ng-hide="!(filteredData = (personalCtrl.getExpensesByDate(date) " +
 					"| filter: {name: nameModelFilter, category: {name: categoryModelFilter.name}, " +
@@ -163,8 +160,6 @@
 								span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in personalCtrl.currency', onaftersave='personalCtrl.editExpenseObject($data, "currency")' e-required="")
 									| {{ expense.currency }}
 							td
-								span(e-name='creator', e-form='rowform') {{ expense.creator.name }}
-							td
 								form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', onaftersave="personalCtrl.editExpense(expense.id)", shown='inserted == expense')
 
 									button.btn-xs.btn.btn-success.fa.fa-check(type='submit', ng-disabled='rowform.$waiting')
@@ -178,7 +173,7 @@
 					tbody(ng-show="personalCtrl.isLoadMore()")
 						tr
 							td
-							td(colspan='7')
+							td(colspan='6')
 								a(ng-click="personalCtrl.loadExpenses(); personalCtrl.pushList(true)")
 									| load more expenses&nbsp;
 									i.fa.fa-plus
