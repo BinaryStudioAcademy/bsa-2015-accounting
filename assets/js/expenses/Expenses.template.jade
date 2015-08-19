@@ -48,7 +48,8 @@
 
 		table.table-hover.fixed
 			colgroup
-				col.table-date
+				col.table-toggle
+				col.table-date-header
 				col.table-category
 				col.table-expense
 				col.table-cost
@@ -59,7 +60,10 @@
 			thead
 				tr
 					th
-						| Date
+						button.fa.fa-list(ng-click='expCtr.toggleAllExpenses()' ng-show='expCtr.check')
+						button.fa.fa-th(ng-click='expCtr.toggleAllExpenses()' ng-hide='expCtr.check')
+					th
+						| Time
 					th
 						| Category
 					th
@@ -97,14 +101,14 @@
 				"| dateRange:startDateFilter:endDateFilter)).length")
 					tr.date-hilight
 						td
-							i.fa.fa-chevron-right(ng-click="expCtr.toggleCustom($index)" ng-show="!expCtr.hiddenList[$index]")
-							i.fa.fa-chevron-down(ng-click="expCtr.toggleCustom($index)" ng-hide="!expCtr.hiddenList[$index]")
+							i.fa.fa-chevron-right(ng-click="expCtr.toggleCustom($index)" ng-hide="!expCtr.hiddenList[$index]" )
+							i.fa.fa-chevron-down(ng-click="expCtr.toggleCustom($index)" ng-show="!expCtr.hiddenList[$index]")
 						td(colspan='7')
 
-							| {{ date }}
-					tr(ng-repeat="expense in filteredData", ng-init='expCtr.pageTitleEquals(filteredData)', ng-hide="expCtr.hiddenList[$parent.$index]")
+							| {{ date | date:'MMM-dd-yyyy' }}
+					tr(ng-repeat="expense in filteredData", ng-init='expCtr.pageTitleEquals(filteredData)', ng-hide="expCtr.hiddenList[$parent.$index]" )
 						td
-							| {{ expense.time }}
+							| {{ expense.time | date:'HH:mm' }}
 						td
 							span(editable-select='expense.category.id', e-name='category.name', onshow="expCtr.getSubcategories($data)", e-form='rowform', onaftersave='expCtr.editExpenseObject($data, "categoryId")', e-ng-options='category.id as category.name for category in expCtr.categories' e-ng-change="expCtr.getSubcategories($data)", e-required="")
 								| {{ expCtr.getField(expense.category.id, "category") || 'empty' }}

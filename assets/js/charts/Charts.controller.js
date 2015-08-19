@@ -244,7 +244,7 @@ module.exports = function(app) {
 					}
 				},
 				tooltip: {
-					valueSuffix: '$'
+					valueSuffix: ' '+ vm.currencyChangeModel
 				},
 				plotOptions: {
 					bar: {
@@ -314,7 +314,7 @@ module.exports = function(app) {
 					text: titleTxt
 				},
 				tooltip: {
-					pointFormat: '{series.name}: <b>{point.y}</b>'
+					pointFormat: '{series.name}: <b>{point.y}</b>' + ' '+ vm.currencyChangeModel
 				},
 				plotOptions: {
 					pie: {
