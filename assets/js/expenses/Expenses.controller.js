@@ -1,6 +1,7 @@
 var swal = require('sweetalert');
 
 module.exports = function(app) {
+
   app.controller('ExpensesController', ExpensesController);
 
   ExpensesController.$inject = ['ExpensesService', '$rootScope', 'CategoriesService', '$filter', '$scope'];

@@ -1,22 +1,21 @@
 #chart-view
 	.chart-Topcontainer
-		#currency-group.btn-group(ng-click="chartCtrl.changeCurrency()")
+		#currency-group.btn-group(ng-click="chartCtrl.changeCurrency(); chartCtrl.updateView()")
 			label.btn.btn-primary(ng-model="chartCtrl.currencyChangeModel", btn-radio="'UAH'") UAH
 			label.btn.btn-primary(ng-model="chartCtrl.currencyChangeModel", btn-radio="'USD'") USD
 		
-		form.chart-leftBlock(ng-submit="chartCtrl.handleForm()")
+		form.chart-leftBlock(ng-submit="chartCtrl.handleForm();")
 
 				ul.chart-filterList
 					li
 						label Year
-						select.form-control(ng-model="chartCtrl.year")
+						select.form-control(ng-model="chartCtrl.year" ng-change ='chartCtrl.getBudgets()')
 							option(ng-repeat="year in chartCtrl.years") {{year}}
 					li
 						label Category
-						select.form-control(name='Category', ng-model="categoryModel1", ng-change="chartCtrl.displayCategory(categoryModel1)",
-						ng-options="category.name for category in chartCtrl.categories")
+						select.form-control(name='Category', ng-model="categoryModel1", ng-options="category.name for category in chartCtrl.categories")
 							option(value="") All category
-				button.chart-butSum.btn.btn-info Dispay by year
+				button.chart-butSum.btn.btn-info(ng-click='chartCtrl.toggleForm(true); chartCtrl.displayCategory(categoryModel1)') Dispay by year
 	
 		form.bottomForm
 			.chart-rightBlock
@@ -32,8 +31,8 @@
 						label Category
 						select.form-control(name='Category', ng-model="categoryModel", ng-submit="chartCtrl.displayCategory(categoryModel)",
 						ng-options="category.name for category in chartCtrl.categories" required)
-							option(value="") All category
-				button.chart-butSum.btn.btn-info(ng-click='chartCtrl.displaySubcategory(categoryModel)') Dispay by period
+							option(value="") Select Category
+				button.chart-butSum.btn.btn-info(ng-click=' chartCtrl.toggleForm(false); chartCtrl.displaySubcategory(categoryModel)') Dispay by period
 	
 	div.chartsBlock
 		#barChart
