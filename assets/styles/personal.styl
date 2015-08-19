@@ -1,38 +1,8 @@
 #personal-view
-  margin-top 50px
-  h2
-  	display inline
-  	
-	// Table styles
-	#tbody-container
-		overflow auto
-		height 250px
-		width 95%
-	#table-container
-		width 100%
-		i, a
-			cursor pointer
-		#delete-button
-			margin-left 10px
-	table
-		width 95%
-		margin-left 0px
-		th
-			font-weight 600
-	.table-edit,
-	.table-expense,
-	.table-cost,
-	.table-carrency,
-	.table-category,
-	.table-sub,
-	.table-addBy,
-	.table-budget,
-	.table-left
-		width 100px
-	.table-description
-		width 70px
-	select
-		height 36px
+	margin-top 50px
+	h2
+		display inline
+		
 	#income-header
 		background lightgreen
 		font-weight 700
@@ -59,4 +29,101 @@
 			color #fff !important
 			background-color #286090 !important
 			border-color #204d74 !important
+			
+	#income-money-table
+		margin-bottom 5px
+	#income-money-header
+		background goldenrod
+		font-weight 700
+			
+	.alert
+		margin-bottom 10px !important
+	
+	// New money form
+	#money-form
+		display inline-block
+		margin-bottom 5px
+		margin-right 5px
+		div
+			padding 5px
+		.title
+			display inline-block
+			font-weight bold
+			min-width 80px
+		.editable
+			display inline-block
+			padding-top 5px
+			vertical-align top
+		select 
+			width 196px
+		#button-group
+			padding 0 !important
+			margin-bottom 5px
+			.action-button
+				width 60%
+			#cancel-button
+				width 38%
+				margin-left 5px
+		#add-button
+			margin-right 5px
 		
+	table
+		width 100%
+		td, th
+			text-align center
+			border 1px solid #ddd
+			padding 3px
+			vertical-align middle
+			font-size 14px
+
+		th
+			background #f2f2f2
+			font-weight 700
+			span
+				cursor pointer
+	#table-container
+		.btn
+			margin-left: 4px;
+	button
+		&:last-child
+			margin-right 0
+	i, a
+		cursor pointer
+	select
+		padding 10px
+		border-radius 5px
+	.dropdown-menu
+		padding 10px
+	#table-container
+		overflow auto
+		height 420px
+	
+	.table-date,
+	.table-expense,
+	.table-cost,
+	.table-carrency,
+	.table-category,
+	.table-sub,
+	.table-addBy
+		width 100px
+	.table-description
+		width 86px
+	.table-description-header
+		width 100px
+	.table-date-header
+		width 70px
+	.table-toggle
+		width 30px
+	select
+		height 36px
+	.fa-info
+		padding 0 8px
+	.buttons, .form-inline
+		display inline-block
+	.date-hilight
+		font-weight bold
+		background #EAE9FF
+	.fa-th, .fa-list 
+		border none 
+		padding 4px
+		border-radius 3px;

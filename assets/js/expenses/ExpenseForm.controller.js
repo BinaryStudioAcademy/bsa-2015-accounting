@@ -10,6 +10,8 @@ module.exports = function(app) {
 
     // Create new expense
     vm.expense = {};
+    vm.expense.currency = "UAH";
+
     vm.date = new Date();
     vm.createExpense = createExpense;
 
@@ -88,33 +90,55 @@ module.exports = function(app) {
     vm.leftSubcategoryBudget = 0;
     vm.setPersonalLeftBudget = setPersonalLeftBudget;
 
-    function setPersonalLeftBudget(categoryModel) {
-      var budg = $filter('filter')(vm.currentUser.budgets, {id: categoryModel.id});
-      if(budg.length != 0 && vm.expense.personal) {
-        vm.leftBudget = budg[0].used;
+    function setPersonalLeftBudget(categoryModel, subcategoryModel) {
+      var budg;
+      if(categoryModel) {
+        budg = $filter('filter')($rootScope.currentUser.categories, {id: categoryModel.id});
+      }
+      if(budg && vm.expense.personal) {
+        if(vm.expense.currency == "UAH") {
+          vm.leftBudget = budg[0].budget - budg[0].used;
+        } else {
+          vm.leftBudget = (budg[0].budget - budg[0].used) / vm.exchangeRate;
+        }
       } else {
         setLeftBudget(categoryModel);
+        setLeftSubcategoryBudget(categoryModel, subcategoryModel);
       }
     }
 
     vm.setLeftBudget = setLeftBudget;
-
     function setLeftBudget(categoryModel) {
-      if(!vm.expense.personal) {
+      if(!vm.expense.personal && categoryModel) {
         var budget = $filter('filter')(vm.budgets, {category: {id: categoryModel.id}});
-        vm.leftBudget = budget[0].category.used / vm.exchangeRate;
+        if(vm.expense.currency == "UAH") {
+          vm.leftBudget = (budget[0].category.budget - budget[0].category.used) * vm.exchangeRate;
+        } else {
+          vm.leftBudget = budget[0].category.budget - budget[0].category.used;
+        }
       } else vm.leftBudget = 0;
     }
 
     vm.setLeftSubcategoryBudget = setLeftSubcategoryBudget;
-
     function setLeftSubcategoryBudget(categoryModel, subcategoryModel) {
       if(!vm.expense.personal && subcategoryModel) {
         var budget = $filter('filter')(vm.budgets, {category: {id: categoryModel.id}});
         var subcategory = $filter('filter')(budget[0].category.subcategories, {id: subcategoryModel.id});
-        if(subcategory.length != 0) vm.leftSubcategoryBudget = subcategory[0].used / vm.exchangeRate;
+        if(subcategory.length != 0) {
+          if(vm.expense.currency == "UAH") {
+            vm.leftSubcategoryBudget = (subcategory[0].budget - subcategory[0].used) * vm.exchangeRate;
+          } else {
+            vm.leftSubcategoryBudget = subcategory[0].budget - subcategory[0].used;
+          }
+        }
         else vm.leftSubcategoryBudget = 0;
       } else vm.leftSubcategoryBudget = 0;
+    }
+
+    vm.changeCurrency = changeCurrency;
+    function changeCurrency(categoryModel, subcategoryModel) {
+      setPersonalLeftBudget(categoryModel);
+      setLeftSubcategoryBudget(categoryModel, subcategoryModel);
     }
   }
 };

@@ -1,111 +1,67 @@
 #chart-view
 	.chart-Topcontainer
-		.chart-leftBlock
-			ul.chart-filterList
-				li
-					label Year
-					select.form-control(ng-change="chartCtrl.getBudgetsByYear()", ng-model="chartCtrl.selectedYear")
-						option(ng-repeat="year in chartCtrl.years") {{year}}
-				li
-					label Period
-					select.form-control
-						option(selected='selected') Period
-						optgroup(label='Month')
-							option January
-							option February
-							option March
-							option April
-							option May
-							option June
-							option July
-							option August
-							option September
-							option Oktober
-							option November
-							option Desember
-				li
-					label Quarter
-					select.form-control
-						optgroup(label='Quarter')
-							option 1 quarter(january-march)
-							option 2 quarter(april-june)
-							option 3 quarter(july-september)
-							option 4 quarter(october-december)
-				li
-					label Or range of dates 
-					br
-					label from
-					input.form-control(type='date', placeholder='Date')
-					label to
-					input.form-control(type='date', placeholder='Date' )
-				li
-					label Categories
-					select#category.form-control
-						option(selected='selected') Category
-						optgroup(label='HR')
-							option Office
-							option Parties
-							option Salary
-							option Course
-						optgroup(label='Marketing')
-							option subcategory
-							option subcategory
-							option subcategory
-							option subcategory
-						optgroup(label='Accounting')
-							option Tax
-							option sallary
-							option subcategory
-							option subcategory
-		.chart-rightBlock
-			h4 Amount data by categories
-			select.form-control(multiple='multiple')
-				optgroup(label='HR')
-					option(value='1') Office
-					option(value='2') Parties
-					option(value='3') Salary
-					option(value='4') Course
-				optgroup(label='Marketing')
-					option(value='5') subcategory
-					option(value='6') subcategory
-					option(value='7') subcategory
-					option(value='8') subcategory
-				optgroup(label='Accounting')
-					option(value='9') Tax
-					option(value='10') sallary
-					option(value='11') subcategory
-					option(value='12') subcategory
-			button.chart-butSum.btn.btn-info Sum
-			//- .chart-radiPeriodr
-			//- 	p Display by:
-			//- 	label Month
-			//- 	input(type='radio')
-			//- 	label Quarter
-			//- 	input(type='radio')
-			//- 	label Year
-			//- 	input(type='radio')
+		#currency-group.btn-group(ng-click="chartCtrl.changeCurrency(); chartCtrl.updateView()")
+			label.btn.btn-primary(ng-model="chartCtrl.currencyChangeModel", btn-radio="'UAH'") UAH
+			label.btn.btn-primary(ng-model="chartCtrl.currencyChangeModel", btn-radio="'USD'") USD
+		
+		form.chart-leftBlock(ng-submit="chartCtrl.handleForm();")
+
+				ul.chart-filterList
+					li
+						label Year
+						select.form-control(ng-model="chartCtrl.year" ng-change ='chartCtrl.getBudgets()')
+							option(ng-repeat="year in chartCtrl.years") {{year}}
+					li
+						label Category
+						select.form-control(name='Category', ng-model="categoryModel1", ng-options="category.name for category in chartCtrl.categories")
+							option(value="") All category
+				button.chart-butSum.btn.btn-info(ng-click='chartCtrl.toggleForm(true); chartCtrl.displayCategory(categoryModel1)') Dispay by year
+	
+		form.bottomForm
+			.chart-rightBlock
+				ul.chart-filterList
+					li
+						label Range of dates 
+						br
+						label from
+						input.form-control(type='date', placeholder='Date', ng-model="startDate", ng-change="chartCtrl.startDateFilter(startDate)" required)
+						label to
+						input.form-control(type='date', placeholder='Date', ng-model="endDate", ng-change="chartCtrl.endDateFilter(endDate)" required)
+					li
+						label Category
+						select.form-control(name='Category', ng-model="categoryModel", ng-submit="chartCtrl.displayCategory(categoryModel)",
+						ng-options="category.name for category in chartCtrl.categories" required)
+							option(value="") Select Category
+				button.chart-butSum.btn.btn-info(ng-click=' chartCtrl.toggleForm(false); chartCtrl.displaySubcategory(categoryModel)') Dispay by period
+	
 	div.chartsBlock
-		div(google-chart, chart="chartCtrl.barChart")
+		#barChart
 		br
-		div(google-chart, chart="chartCtrl.pieChart", style="width: 100%; height: 400px")
-		button.togTable.btn.btn-info(ng-click='chartCtrl.toggleTable()') Toggle table
+		#pieChart
+		h3 Budgets
 		table(ng-hide='chartCtrl.viewTable') 
 			thead
 				tr
-					th Category
-					th Subcategory
-					th Expenses
-					th Total
+					th 
+					th(ng-repeat='year in chartCtrl.years')
+						b {{year}}
 			tbody
-				tr(ng-repeat='category in chartCtrl.tableData')
-					td(colspan ='{{ category.length }}') 
-						| {{ category.name }}
-					td
-						table.innerTable
-							tr(ng-repeat='subcategory in category.subcategories')
-								td {{ subcategory }}
-					td
-						table.innerTable
-							tr(ng-repeat='expens in category.expenses')
-								td {{ expens }}
-					td(colspan ='{category.length}') {{ category.total }}
+				tr(ng-repeat='name in chartCtrl.uniqueName')
+					th
+						b {{ name }}
+					td(ng-repeat='year in chartCtrl.years')
+						| {{chartCtrl.getSumBudget(name, year) | currency}}
+		
+		//- h3 Expenses
+		//- table(ng-hide='chartCtrl.viewTable') 
+		//- 	thead
+		//- 		tr
+		//- 			th 
+		//- 			th(ng-repeat='year in chartCtrl.years')
+		//- 				b {{year}}
+		//- 	tbody
+		//- 		tr(ng-repeat='name in chartCtrl.uniqueName')
+		//- 			th
+		//- 				b {{ name }}
+		//- 			td(ng-repeat='year in chartCtrl.years')
+		//- 				| {{chartCtrl.getSumExpenses(name, year) | currency}}

@@ -25,4 +25,3 @@ require('./charts/index.js')(app);
 require('./personal/index.js')(app);
 require('./shared/index.js')(app);
 require('./route.js')(app);
-

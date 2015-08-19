@@ -1,0 +1,51 @@
+#user-view
+	#creteForm
+		label Name:
+		input.form-control(type='text', ng-model='userCtrl.newName')
+		br
+		label Surname:
+		input.form-control(type='text', ng-model='userCtrl.newSurname')
+		br
+		label Category:
+		input.form-control(type='text', ng-model='userCtrl.newCategory')
+		br
+		button.btn.btn-success(ng-click='userCtrl.save()') Save
+
+	#usersTable
+		div
+			label Search:
+			input.form-control(type='search', ng-model='search', placeholder='Search name')
+		table(cellpadding='0', border='0', cellspacing='0')
+			tr#heading
+				th Check to delete
+				th Name
+				th Last name
+				th Category
+				th Visitor
+				th Manager
+				th Admin
+				th Access to sign in
+				th Remove
+			tr.color2(ng-repeat='student in userCtrl.students | filter:search | filter:new_search')
+				td
+					input(type='checkbox', ng-model='student.selected')
+
+				td
+					| {{student.Name}} 
+				td 
+					|{{student.Surname}}
+				td
+					| {{student.Category}}
+				td
+					input(type='checkbox')
+				td
+					input(type='checkbox')
+				td
+					input(type='checkbox')
+				td
+					input(type='checkbox')
+				td
+					button.btn-xs.btn.btn-danger(ng-click='userCtrl.remove($index)') x 
+
+		div
+			button.btn.btn-danger(ng-click='userCtrl.remove($index)') Remove
