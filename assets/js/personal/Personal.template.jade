@@ -31,7 +31,7 @@
 			i.fa.fa-minus
 	button.btn.btn-warning(ng-click="personalCtrl.isCollapsedMoneyTable = !personalCtrl.isCollapsedMoneyTable; personalCtrl.changeMoneyText()") {{personalCtrl.moneyButtonText}} income money&nbsp;
 		i.fa.fa-money
-	#main(ng-hide="personalCtrl.budgets.length == 0")
+	#main(ng-hide="currentUser.categories.length == 0")
 		table#income-money-table.table-hover.fixed(collapse="personalCtrl.isCollapsedMoneyTable")
 			colgroup
 				col

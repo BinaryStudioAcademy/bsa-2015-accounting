@@ -20,7 +20,6 @@ module.exports = function(app) {
     vm.expensesLimit = MAX_LOAD;
 
     vm.allExpenses = [];
-    vm.expenses = [];
     vm.dates = [];
 
     loadAllExpenses();
@@ -124,7 +123,7 @@ module.exports = function(app) {
 
     // On new expense
     $rootScope.$on('new-expense', function(event, args) {
-      if(vm.dates.indexOf(String(args.time)) < 0) vm.dates.unshift(String(args.time));
+      if(vm.dates.indexOf(String(args.time)) < 0) vm.dates.unshift(args.time);
       vm.allExpenses.push(args);
     });
 
@@ -140,9 +139,8 @@ module.exports = function(app) {
         },
         function() {
           ExpensesService.deleteExpense(id).then(function() {
-            for(var i = 0; i < vm.expenses.length; i++) {
-              if(vm.expenses[i].id === id) {
-                vm.expenses.splice(i, 1);
+            for(var i = 0; i < vm.allExpenses.length; i++) {
+              if(vm.allExpenses[i].id === id) {
                 vm.allExpenses.splice(i, 1);
                 break;
               }
@@ -224,6 +222,15 @@ module.exports = function(app) {
       vm.allExpenses.forEach(function(item) {
         if(vm.dates.indexOf(String(item.time)) < 0) vm.dates.push(item.time);
       });
+    }
+
+    // Permissions
+    vm.isUserExpense = isUserExpense;
+    function isUserExpense(userId, categoryId) {
+      if(userId == $rootScope.currentUser.id && $rootScope.getPermission(categoryId) > 1
+        || $rootScope.currentUser.admin) {
+        return true;
+      } else return false;
     }
   }
 };

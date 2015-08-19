@@ -18,7 +18,6 @@ module.exports = function(app) {
 
     vm.currentUser = $rootScope.currentUser;
     vm.allExpenses = [];
-    vm.expenses = [];
     vm.dates = [];
 
     vm.getExpensesByDate = getExpensesByDate;
@@ -59,8 +58,8 @@ module.exports = function(app) {
         if(vm.allExpenses.length != 0 && vm.categories.length != 0) {
           convertDates(vm.allExpenses);
           loadExpenses();
-          getUsersBudgets();
         }
+        getUsersBudgets();
       });
     }
 
@@ -73,7 +72,7 @@ module.exports = function(app) {
 
     function isLoadMore() {
       if(typeof vm.allExpenses != "undefined") {
-        if(vm.allExpenses.length <= MAX_LOAD && vm.allExpenses.length != 0) {
+        if(vm.allExpenses.length <= MAX_LOAD || vm.allExpenses.length != 0) {
           vm.expensesLimit = vm.allExpenses.length;
           return false;
         } else return true;
@@ -108,9 +107,8 @@ module.exports = function(app) {
         },
         function() {
           ExpensesService.deleteExpense(id).then(function() {
-            for(var i = 0; i < vm.expenses.length; i++) {
-              if(vm.expenses[i].id === id) {
-                vm.expenses.splice(i, 1);
+            for(var i = 0; i < vm.allExpenses.length; i++) {
+              if(vm.allExpenses[i].id === id) {
                 vm.allExpenses.splice(i, 1);
                 break;
               }
@@ -177,13 +175,15 @@ module.exports = function(app) {
     vm.exchangeRate = $rootScope.exchangeRate;
 
     function getUsersBudgets() {
-      vm.currentUser.categories.forEach(function(item) {
-        var category = $filter('filter')(vm.categories, {id: item.id});
-        item.categoryId = category[0].name;
-        item.spent = item.used;
-        item.left = item.budget - item.used;
-        vm.budgets.push(item);
-      });
+      if(vm.currentUser.categories) {
+        vm.currentUser.categories.forEach(function(item) {
+          var category = $filter('filter')(vm.categories, {id: item.id});
+          item.categoryId = category[0].name;
+          item.spent = item.used;
+          item.left = item.budget - item.used;
+          vm.budgets.push(item);
+        });
+      }
     }
 
     vm.changeCurrency = changeCurrency;
