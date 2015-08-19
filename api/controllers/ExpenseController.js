@@ -15,7 +15,7 @@ module.exports = {
 
 function getExpenses(req, res) {
 	var year = req.param('year');
-  var userId = req.param('creator');
+	var userId = req.param('creator');
 	var permissions = _.pluck(_.filter(req.user.categories, function(per) {
 		return per.level >= 1;
 	}), 'id');
@@ -70,6 +70,11 @@ function createExpense(req, res) {
 	data.creatorId = req.session.passport.user || "unknown id";
 	Expense.create(data).exec(function created (err, newInstance) {
 		if (err) return res.negotiate(err);
-		res.created(newInstance);
+		var log = {who: req.user.id, action: 'created', type: 'expense', target: newInstance.id, time: Number((new Date().getTime() / 1000).toFixed())};
+		History.create(log).exec(function(err, log) {
+			if (err) return res.negotiate(err);
+
+			res.created(newInstance);
+		});
 	});
 }

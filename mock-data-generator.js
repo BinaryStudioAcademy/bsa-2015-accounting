@@ -25,6 +25,7 @@ db.budget = [];
 db.expense = [];
 db.user = [];
 db.currency = [];
+db.history = [];
 
 Factory.define('Subcategory')
 	.sequence('id', function() {return String(casual.integer(0, 10000000));});

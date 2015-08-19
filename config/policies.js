@@ -62,6 +62,9 @@ module.exports.policies = {
    'findOne': ['isAuthenticated', 'isThatUser'],
    'update': 'isAuthenticated',
    'getCurrentUser': ['isAuthenticated']
+  },
+  'HistoryController': {
+    '*': ['isAuthenticated', 'isGlobalAdmin']
   }
 
   /***************************************************************************

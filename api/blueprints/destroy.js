@@ -45,6 +45,8 @@ module.exports = function updateOneRecord (req, res) {
 
 		if (err) return res.serverError(err);
 		if (!matchingRecord) return res.notFound();
+		var log = {who: req.user.id, action: 'removed', type: req.path.split('/')[1], 
+			target: matchingRecord.id, time: Number((new Date().getTime() / 1000).toFixed())};
 
 		Model.update(pk, values).exec(function updated(err, records) {
 
@@ -84,7 +86,11 @@ module.exports = function updateOneRecord (req, res) {
 			Q.exec(function foundAgain(err, populatedRecord) {
 				if (err) return res.serverError(err);
 				if (!populatedRecord) return res.serverError('Could not find record after updating!');
-				res.ok(populatedRecord);
+				History.create(log).exec(function(err, log) {
+					if (err) return res.negotiate(err);
+
+					res.ok(populatedRecord);
+				});
 			}); // </foundAgain>
 		});// </updated>
 	}); // </found>

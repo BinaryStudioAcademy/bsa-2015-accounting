@@ -1,0 +1,16 @@
+#history-view
+	select.select-type(name='Type', ng-model="hstCtrl.type", ng-change='hstCtrl.getEvents(hstCtrl.type)')
+		option(ng-repeat='type in hstCtrl.types', value='{{type}}') {{type}}
+	table
+		thead
+			tr
+				th User
+				th Action
+				th Name
+				th Date
+		tbody(ng-repeat='event in hstCtrl.events | orderBy: "-time"')
+			tr
+				td {{event.who}}
+				td {{event.action}}
+				td {{event.target}}
+				td {{event.time | date:'HH:mm dd.MM.yyyy'}}
