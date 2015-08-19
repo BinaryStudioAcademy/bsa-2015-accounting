@@ -5,21 +5,13 @@ module.exports = function(app) {
 
   function ChartsService($resource) {
     return {
-      getBudgets: getBudgets,
+      //getBudgets: getBudgets,
       getBudgetsByYear: getBudgetsByYear,
-      getCategory: getCategory
+      getCategories: getCategories
     };
 
-    function getBudgets() {
-      return $resource("/budget/:id", { id: "@id" }).query().$promise;
-    }
-
-    function getBudgetsByYear(year) {
-      return $resource("/budget/:id", { id: "@id", where: {"year": year} }).query().$promise;
-    }
-
-    function getCategory(categoryId) {
-      return $resource("/category/:id", { id: "@id" }).get({ id: categoryId }).$promise;
+    function getCategories() {
+      return $resource("/category/:id", { id: "@id" }).query().$promise;
     }
   }
 };

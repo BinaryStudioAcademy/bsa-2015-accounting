@@ -61,7 +61,7 @@ function getExpenses(req, res) {
 		return res.send(expenses);
 	}).fail(function(err) {
 		return res.send(err);
-	})
+	});
 }
 
 function createExpense(req, res) {
