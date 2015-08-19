@@ -102,7 +102,7 @@ function updateUser(req, res) {
 		if (err) return res.serverError(err);
 		if (!user) return res.notFound();
 
-		if (values.setAdminStatus === true || values.setAdminStatus === false) {
+		if ((values.setAdminStatus === true || values.setAdminStatus === false) && req.user.admin) {
 			user.admin = values.setAdminStatus;
 		}
 
@@ -127,9 +127,9 @@ function updateUser(req, res) {
 			}
 		}
 
-		if (values.setName) {
-			user.name = values.setName;
-		}
+		//if (values.setName) {
+		//	user.name = values.setName;
+		//}
 
 		user.save(function (err) {
 			if (err) return res.serverError(err);

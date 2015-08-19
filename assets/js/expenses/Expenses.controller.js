@@ -104,23 +104,15 @@ module.exports = function(app) {
       }
     }
 
-    vm.exportData = function () {
-      var mystyle = {
-        sheetid: 'My Big Table Sheet',
-        headers: true,
-        columns: [
-          {columnid:'time'},
-          {columnid:'name'},
-          {columnid:'price'},
-          {columnid:'currency'},
-          {columnid:'categoryName'},
-          {columnid:'subcategoryName'},
-          {columnid:'authorName'},
-          {columnid:'description'}
-        ]
-      };
-      alasql('SELECT time, name, price, currency, categoryName, subcategoryName, authorName, description  INTO XLSX("Expen.xlsx",?) FROM ?',[mystyle,vm.pageTitle]);
-    };
+			var mystyle = {
+				sheetid: 'Expenses',
+				headers: true
+			};
+
+		vm.exportData = function () {
+			alasql('SELECT time, name, price, currency, category->name, subcategory->name, creator->name, description  INTO XLSX("Expen.xlsx",?) FROM ?',[mystyle,vm.pageTitle]);
+		};
+
 
     // On new expense
     $rootScope.$on('new-expense', function(event, args) {
