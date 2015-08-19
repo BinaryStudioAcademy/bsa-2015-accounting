@@ -14,10 +14,13 @@ module.exports = function(app) {
 		vm.categories = [];
 		vm.year = 0;
 		vm.budgetVisible=false;
+		vm.toggleBoolean =true
 		vm.displaySubcategory = displaySubcategory;
 		vm.displayCategory = displayCategory;
 		vm.startDateFilter = startDateFilter;
 		vm.endDateFilter =endDateFilter;
+		vm.toggleForm = toggleForm;
+		vm.updateView = updateView
 
 //date filter 
 		function mathRound(n){
@@ -146,16 +149,14 @@ module.exports = function(app) {
 		}
 		vm.categoryModel = [];
 		function displayCategory(categoryModel) {
-
 			vm.categoryModel =categoryModel
+
 			if(vm.categoryModel === null){
 					displayAllCategory ()
 			}else{
-				console.log(vm.categoryModel);
 				var names = _.pluck(vm.categoryModel.subcategories, 'name');
 				var spended =_.map(_.pluck(vm.categoryModel.subcategories, 'used'), mathRound);
 				var planned =_.map(_.pluck(vm.categoryModel.subcategories, 'budget'), mathRound);
-
 				var titleText = 'Subcategory '+ vm.categoryModel.name +' budget by ' + vm.year
 				barChart(names, planned, spended, titleText, vm.budgetVisible);
 				pieChart(names, planned, titleText);
@@ -218,7 +219,6 @@ vm.selectedCategory = [];
 				barChart(uniqueSubcategoryNames, planned, spendedByPeriod, titleText ,vm.budgetVisible);
 				pieChart(uniqueSubcategoryNames, spendedByPeriod, titleText);
 			}
-
 
 		function barChart(names, planned, spended, titleTxt, budgetVisible) {
 			$('#barChart').highcharts({
@@ -339,16 +339,16 @@ vm.selectedCategory = [];
 			});
 		}
 
-		vm.toggleBoolean =true
-		vm.toggleForm = toggleForm;
+
+
 		function toggleForm(bool) {
 			vm.toggleBoolean = bool
 		}
 
-		vm.updateView = updateView
 		function updateView(){
-			console.log(vm.toggleBoolean);
+			
 			if (vm.toggleBoolean){
+				vm.getBudgets();
 				displayCategory(vm.categoryModel);
 			}else{
 				displaySubcategory(vm.selectedCategory);

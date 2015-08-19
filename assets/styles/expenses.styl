@@ -5,9 +5,8 @@
 		right 10px
 		width 21%
 	#leftBlock
-		width 71%
+		width 74%
 		float left
-		margin-left 3%
 		height
 
 	.btnAdd
@@ -18,6 +17,7 @@
 		border none
 		width 100%
 		border-radius 3px
+		margin 0 !important
 	.exchange
 		text-align center
 		color #222222
@@ -26,7 +26,7 @@
 		width 100%
 		border solid 1px #ddd
 		padding 10px
-		margin-bottom 10px
+		margin-bottom 5px
 	.expense-form input, .expense-form select, .expense-form textarea
 		padding-left 10px
 		font-size 1em
@@ -94,6 +94,8 @@
 			border solid 1px #ddd
 			padding 10px
 			height 100px
+			text-align center
+			margin-bottom 5px
 
 		button
 			padding 9px 30px
@@ -128,13 +130,15 @@
 		td, th
 			text-align center
 			border 1px solid #ddd
-			padding 5px
+			padding 3px
 			vertical-align middle
 			font-size 14px
 
 		th
 			background #f2f2f2
-			font-weight normal
+			font-weight 700
+			span
+				cursor pointer
 	button
 		&:last-child
 			margin-right 0
@@ -146,11 +150,8 @@
 	.dropdown-menu
 		padding 10px
 	#main
-		overflow-y scroll
-		height 550px
-	table
-		&.fixed
-			table-layout fixed
+		overflow auto
+		height 420px
 	
 	.table-date,
 	.table-expense,
@@ -171,7 +172,7 @@
 	select
 		height 36px
 	.btn
-		margin-left: 8px;
+		margin-left: 4px;
 	.fa-info
 		padding 0 8px
 	.buttons, .form-inline
@@ -183,3 +184,8 @@
 		border none 
 		padding 4px
 		border-radius 3px;
+		
+	.money-left
+		margin-bottom 10px
+	#form-subcategory-left
+		display inline-flex

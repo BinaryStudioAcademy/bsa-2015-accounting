@@ -90,8 +90,11 @@ module.exports = function(app) {
     vm.leftSubcategoryBudget = 0;
     vm.setPersonalLeftBudget = setPersonalLeftBudget;
 
-    function setPersonalLeftBudget(categoryModel) {
-      var budg = $filter('filter')(vm.currentUser.categories, {id: categoryModel.id});
+    function setPersonalLeftBudget(categoryModel, subcategoryModel) {
+      var budg;
+      if(categoryModel) {
+        budg = $filter('filter')($rootScope.currentUser.categories, {id: categoryModel.id});
+      }
       if(budg && vm.expense.personal) {
         if(vm.expense.currency == "UAH") {
           vm.leftBudget = budg[0].budget - budg[0].used;
@@ -100,12 +103,13 @@ module.exports = function(app) {
         }
       } else {
         setLeftBudget(categoryModel);
+        setLeftSubcategoryBudget(categoryModel, subcategoryModel);
       }
     }
 
     vm.setLeftBudget = setLeftBudget;
     function setLeftBudget(categoryModel) {
-      if(!vm.expense.personal) {
+      if(!vm.expense.personal && categoryModel) {
         var budget = $filter('filter')(vm.budgets, {category: {id: categoryModel.id}});
         if(vm.expense.currency == "UAH") {
           vm.leftBudget = (budget[0].category.budget - budget[0].category.used) * vm.exchangeRate;
