@@ -19,7 +19,7 @@
 				option USD
 				option UAH
 			#personal-container
-				input(type='checkbox', name='Personal', ng-model="formCtrl.expense.personal", ng-click="formCtrl.setPersonalLeftBudget(categoryModel)")
+				input(type='checkbox', name='Personal', ng-model="formCtrl.expense.personal", ng-click="formCtrl.setPersonalLeftBudget(categoryModel, subcategoryModel)")
 				span#personal-label Personal budget
 			textarea.form-control(placeholder='Description', ng-model="formCtrl.expense.description")
 			.money-left(ng-show="subcategoryModel")
@@ -40,7 +40,6 @@
 				select(name='subcategory', ng-model="subcategoryModelFilter", ng-options="subcategory.name for subcategory in expCtr.subcategories")
 					option(value="") Subcategory
 				input(type="text", name='author', placeholder='Author', ng-model="authorModelFilter", typeahead="expense.creator.name for expense in expCtr.allExpenses | filter:$viewValue | limitTo:8")
-				//input(type='text', name='author', placeholder='Author', ng-model="authorModelFilter")
 				a#excel-button.btn.btn-success(ng-click='expCtr.exportData(filteredData)') Export to Excel
 					i.fa.fa-file-excel-o.fa-1g
 				input(type='date', name='startDate', placeholder='Date', ng-model="startDateFilter")

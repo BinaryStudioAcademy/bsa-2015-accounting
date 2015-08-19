@@ -28,9 +28,8 @@ function getExpenses(req, res) {
 	}
   if (userId) filter.creatorId = userId;
 	Expense.find(expenseFilter)
-	.where(actionUtil.parseCriteria(req))
-	.sort(actionUtil.parseSort(req))
-	Expense.find(expenseFilter)
+    .where(actionUtil.parseCriteria(req))
+    .sort(actionUtil.parseSort(req))
 	.then(function(expenses) {
 		var users = User.find().then(function(users) {
 			return users;
