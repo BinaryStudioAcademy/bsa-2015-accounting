@@ -30,7 +30,6 @@ function getExpenses(req, res) {
 	Expense.find(expenseFilter)
 	.where(actionUtil.parseCriteria(req))
 	.sort(actionUtil.parseSort(req))
-	Expense.find(expenseFilter)
 	.then(function(expenses) {
 		var users = User.find().then(function(users) {
 			return users;
