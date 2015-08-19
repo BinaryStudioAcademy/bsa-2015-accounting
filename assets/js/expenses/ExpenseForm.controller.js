@@ -109,7 +109,7 @@ module.exports = function(app) {
 
     vm.setLeftBudget = setLeftBudget;
     function setLeftBudget(categoryModel) {
-      if(!vm.expense.personal) {
+      if(!vm.expense.personal && categoryModel) {
         var budget = $filter('filter')(vm.budgets, {category: {id: categoryModel.id}});
         if(vm.expense.currency == "UAH") {
           vm.leftBudget = (budget[0].category.budget - budget[0].category.used) * vm.exchangeRate;

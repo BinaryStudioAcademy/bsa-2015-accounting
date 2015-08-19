@@ -28,15 +28,23 @@ module.exports = function(app) {
     vm.editExpense = editExpense;
 
     vm.hiddenList = [];
-    vm.hiddenList[0] = true;
+    vm.check = false;
+    vm.toggleAllExpenses = toggleAllExpenses;
     vm.toggleCustom = toggleCustom;
+
+    function toggleAllExpenses() {
+      vm.check = !vm.check;
+      for(var i = 0; i < vm.allExpenses.length; i++) {
+        vm.hiddenList[i] = vm.check;
+      }
+    }
+
     function toggleCustom(index) {
       vm.hiddenList[index] = !vm.hiddenList[index];
     }
 
-    var MAX_LOAD = 10;
-    var startExpensesLimit = 0;
-    var expensesLimit = MAX_LOAD;
+    var MAX_LOAD = 20;
+    vm.expensesLimit = MAX_LOAD;
 
     getPersonalExpenses();
 
@@ -58,15 +66,15 @@ module.exports = function(app) {
 
     function convertDates(array) {
       array.forEach(function(item) {
-        item.time = new Date(item.time * 1000).toDateString();
+        item.time = new Date(item.time * 1000);
+        if(vm.dates.indexOf(String(item.time)) < 0) vm.dates.push(item.time);
       });
     }
 
     function isLoadMore() {
       if(typeof vm.allExpenses != "undefined") {
         if(vm.allExpenses.length <= MAX_LOAD && vm.allExpenses.length != 0) {
-          startExpensesLimit = 0;
-          expensesLimit = vm.allExpenses.length;
+          vm.expensesLimit = vm.allExpenses.length;
           return false;
         } else return true;
       }
@@ -74,7 +82,7 @@ module.exports = function(app) {
 
     function getExpensesByDate(date) {
       var expenses = [];
-      vm.expenses.forEach(function(expense) {
+      vm.allExpenses.forEach(function(expense) {
         if(date == expense.time) {
           expenses.push(expense);
         }
@@ -85,20 +93,7 @@ module.exports = function(app) {
     function loadExpenses() {
       // Check for length
       isLoadMore();
-
-      for(var i = startExpensesLimit; i < expensesLimit; i++) {
-        // Push dates
-        if(vm.dates.indexOf(String(vm.allExpenses[i].time)) < 0) vm.dates.push(String(vm.allExpenses[i].time));
-
-        // Add expense to the common array
-        vm.expenses[i] = vm.allExpenses[i];
-        vm.expenses[i].categoryName = vm.allExpenses[i].category.name;
-        vm.expenses[i].subcategoryName = vm.allExpenses[i].subcategory.name;
-        vm.expenses[i].authorName = vm.allExpenses[i].creator.name;
-      }
-
-      startExpensesLimit += MAX_LOAD;
-      expensesLimit += MAX_LOAD;
+      vm.expensesLimit += MAX_LOAD;
     }
 
     function deleteExpense(id, name) {

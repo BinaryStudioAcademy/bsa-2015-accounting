@@ -26,7 +26,16 @@ module.exports = function(app) {
     loadAllExpenses();
 
     vm.hiddenList = [];
-    vm.hiddenList[0] = true;
+    vm.check = false;
+    vm.toggleAllExpenses = toggleAllExpenses;
+
+    function toggleAllExpenses() {
+      vm.check = !vm.check;
+      for(var i = 0; i < vm.allExpenses.length; i++) {
+        vm.hiddenList[i] = vm.check;
+      }
+    }
+
     function toggleCustom(index) {
       vm.hiddenList[index] = !vm.hiddenList[index];
     }
@@ -41,8 +50,8 @@ module.exports = function(app) {
 
     function convertDates(array) {
       array.forEach(function(item) {
-        item.time = new Date(item.time * 1000).toDateString();
-        if(vm.dates.indexOf(String(item.time)) < 0) vm.dates.push(String(item.time));
+        item.time = new Date(item.time * 1000);
+        if(vm.dates.indexOf(String(item.time)) < 0) vm.dates.push(item.time);
       });
     }
 
@@ -213,7 +222,7 @@ module.exports = function(app) {
       vm.allExpenses = orderBy(vm.allExpenses, predicate, reverse);
       vm.dates = [];
       vm.allExpenses.forEach(function(item) {
-        if(vm.dates.indexOf(String(item.time)) < 0) vm.dates.push(String(item.time));
+        if(vm.dates.indexOf(String(item.time)) < 0) vm.dates.push(item.time);
       });
     }
   }

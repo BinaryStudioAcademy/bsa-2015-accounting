@@ -64,20 +64,16 @@
 					th
 						| Time
 					th
-						span(ng-click="sortType = 'currencySort'; sortReverse = !sortReverse; expCtr.sort(sortType, sortReverse)") Cost&nbsp;
-							span.fa.fa-caret-down(ng-show="sortType == 'currencySort' && !sortReverse")
-							span.fa.fa-caret-up(ng-show="sortType == 'currencySort' && sortReverse")
-							span.fa.fa-sort(ng-hide="sortType == 'currencySort'")
 						| Category
 					th
 						| Subcategory
 					th
 						| Name
 					th
-						span(ng-click="sortType = 'price'; sortReverse = !sortReverse; expCtr.sort(sortType, sortReverse)") Amount &nbsp;
-							span.fa.fa-caret-down(ng-show="sortType == 'price' && !sortReverse")
-							span.fa.fa-caret-up(ng-show="sortType == 'price' && sortReverse")
-							span.fa.fa-sort(ng-hide="sortType == 'price'")
+						span(ng-click="sortType = 'currencySort'; sortReverse = !sortReverse; expCtr.sort(sortType, sortReverse)") Amount &nbsp;
+							span.fa.fa-caret-down(ng-show="sortType == 'currencySort' && !sortReverse")
+							span.fa.fa-caret-up(ng-show="sortType == 'currencySort' && sortReverse")
+							span.fa.fa-sort(ng-hide="sortType == 'currencySort'")
 					th
 						span(ng-click="sortType = 'currency'; sortReverse = !sortReverse; expCtr.sort(sortType, sortReverse)") $ / &#8372; &nbsp;
 							span.fa.fa-caret-down(ng-show="sortType == 'currency' && !sortReverse")
@@ -108,7 +104,7 @@
 							i.fa.fa-chevron-down(ng-click="expCtr.toggleCustom($index)" ng-show="!expCtr.hiddenList[$index]")
 						td(colspan='7')
 
-							| {{ date | date:'MMM-dd-yyyy' }}
+							| {{ date | date: 'fullDate' }}
 					tr(ng-repeat="expense in filteredData", ng-init='expCtr.pageTitleEquals(filteredData)', ng-hide="expCtr.hiddenList[$parent.$index]" )
 						td
 							| {{ expense.time | date:'HH:mm' }}
