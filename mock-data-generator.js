@@ -123,8 +123,8 @@ _.times(years, function(n) {
 					db.expense.push(expense);
 				}
 				else {
-					_.times(casual.integer(3, 6), function() {
-						var expense = Factory.build('Expense', {time: expTime, creatorId: String(_.sample(db.user)._id), categoryId: category._id, subcategoryId: sub.id});
+					_.times(casual.integer(3, 6), function(k) {
+						var expense = Factory.build('Expense', {time: expTime + casual.integer(300, 900) * k, creatorId: String(_.sample(db.user)._id), categoryId: category._id, subcategoryId: sub.id});
 						if (expense.currency === 'UAH') {
 							expense.price *= 20;
 						}
