@@ -65,6 +65,10 @@ module.exports.policies = {
   },
   'HistoryController': {
     '*': ['isAuthenticated', 'isGlobalAdmin']
+  },
+  'PersonalController': {
+    '*': 'isAuthenticated',
+    'find': 'isAuthenticated'
   }
 
   /***************************************************************************

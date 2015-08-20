@@ -51,7 +51,7 @@ module.exports = function(app) {
     function convertDates(array) {
       array.forEach(function(item) {
         item.time = new Date(item.time * 1000);
-        if(vm.dates.indexOf(String(item.time)) < 0) vm.dates.push(item.time);
+        if(vm.dates.indexOf(item.time.toDateString()) < 0) vm.dates.push(item.time.toDateString());
       });
     }
 

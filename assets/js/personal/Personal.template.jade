@@ -40,18 +40,20 @@
 				col
 			thead
 				tr
-					th#income-money-header(colspan="4")
+					th#income-money-header(colspan="3")
 						| Income money
 				tr
 					th.header-text
-						| Date
-					th.header-text
-						| Category  
+						| Date 
 					th.header-text
 						| Amount
 					th.header-text
 						| Added by
 			tbody
+				tr(ng-repeat="event in personalCtrl.history")
+					td {{event.time | date:'dd.MM.yyyy'}}
+					td {{event.action}}
+					td {{event.who}}
 		table#income-table.table-hover.fixed
 			colgroup
 				col.col-category

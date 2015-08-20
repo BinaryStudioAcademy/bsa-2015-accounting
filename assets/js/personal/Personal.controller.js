@@ -19,6 +19,7 @@ module.exports = function(app) {
     vm.currentUser = $rootScope.currentUser;
     vm.allExpenses = [];
     vm.dates = [];
+    vm.history = [];
 
     vm.getExpensesByDate = getExpensesByDate;
     vm.loadExpenses = loadExpenses;
@@ -49,11 +50,17 @@ module.exports = function(app) {
 
     function getPersonalExpenses() {
       var personalExpensesPromise = PersonalService.getPersonalExpenses(vm.currentUser.id);
+      var personalHistoryPromise = PersonalService.getPersonalHistory();
       var categoriesPromise = CategoriesService.getCategories();
 
-      $q.all([personalExpensesPromise, categoriesPromise]).then(function(data) {
+      $q.all([personalExpensesPromise, categoriesPromise, personalHistoryPromise]).then(function(data) {
         vm.allExpenses = data[0];
         vm.categories = data[1];
+        vm.history = data[2];
+
+        vm.history.forEach(function(item) {
+          item.time = new Date(item.time * 1000);
+        });
 
         if(vm.allExpenses.length != 0 && vm.categories.length != 0) {
           convertDates(vm.allExpenses);
@@ -66,7 +73,7 @@ module.exports = function(app) {
     function convertDates(array) {
       array.forEach(function(item) {
         item.time = new Date(item.time * 1000);
-        if(vm.dates.indexOf(String(item.time)) < 0) vm.dates.push(item.time);
+        if(vm.dates.indexOf(item.time.toDateString()) < 0) vm.dates.push(item.time.toDateString());
       });
     }
 
