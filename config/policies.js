@@ -43,8 +43,9 @@ module.exports.policies = {
     'findOne': ['isAuthenticated', 'hasRightBudget'],
     'destroy': ['isAuthenticated', 'hasRightBudget'],
     'update': ['isAuthenticated', 'hasRightBudget'],
-    'create': ['isAuthenticated', 'hasRightBudget'],
-    'find': 'isAuthenticated'
+    'create': ['isAuthenticated', 'hasRightBudget'],    
+    'find': 'isAuthenticated',
+    'findDeleted':'isAuthenticated'
   },
   'CategoryController': {
     'findOne': ['isAuthenticated', 'hasRightCategory'],
@@ -65,6 +66,10 @@ module.exports.policies = {
   },
   'HistoryController': {
     '*': ['isAuthenticated', 'isGlobalAdmin']
+  },
+  'PersonalController': {
+    '*': 'isAuthenticated',
+    'find': 'isAuthenticated'
   }
 
   /***************************************************************************

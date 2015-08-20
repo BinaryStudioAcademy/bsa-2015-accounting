@@ -1,10 +1,12 @@
 var actionUtil = require('sails/lib/hooks/blueprints/actionUtil');
 var _ = require('lodash');
+var ObjectId = require('mongodb').ObjectID;
 
 module.exports = {
 	find: getBudgets,
 	create: createBudget,
-	update: updateBudget
+	update: updateBudget,
+	findDeleted: getDeleted
 };
 
 function getBudgets(req, res) {
@@ -37,6 +39,19 @@ function getBudgets(req, res) {
 		});
 		return [budgets, users, categories, expenses, currencies];
 	}).spread(function(budgets, users, categories, expenses, currencies) {
+		function getRate(time) {
+			var subexpDate = new Date(time * 1000);
+			var rate = _.find(currencies, function(currency) {
+				var currDate = new Date(currency.time * 1000);
+				return ((currDate.getFullYear() === subexpDate.getFullYear()) && (currDate.getMonth() === subexpDate.getMonth()) && (currDate.getDate() === subexpDate.getDate()));
+			});
+
+			if (!rate) {
+				return getRate(time - (24 * 60 * 60));
+			}
+			return rate;
+		}
+
 		budgets.forEach(function(budget) {
 			var category = _.find(categories, {id: budget.category.id});
 			budget.category.name = category.name;
@@ -69,12 +84,8 @@ function getBudgets(req, res) {
 				subcategory.used = 0;
 				subExpenses.forEach(function(subExpense) {
 					if (subExpense.currency !== "USD") {
-						var subexpDate = new Date(subExpense.time * 1000);
-						var rate = _.find(currencies, function(currency) {
-							var currDate = new Date(currency.time * 1000);
-							return ((currDate.getFullYear() === subexpDate.getFullYear()) && (currDate.getMonth() === subexpDate.getMonth()) && (currDate.getDate() === subexpDate.getDate()));
-						}).rate;
-						subcategory.used += (subExpense.price / rate);
+						var rate = getRate(subExpense.time);
+						subcategory.used += Number((subExpense.price / rate.rate).toFixed(2));
 					}
 					else {
 						subcategory.used += subExpense.price;
@@ -113,35 +124,134 @@ function updateBudget(req, res) {
 	var idParamExplicitlyIncluded = ((req.body && req.body.id) || req.query.id);
 	if (!idParamExplicitlyIncluded) delete values.id;
 
-	Budget.findOne(pk).exec(function (err, budget) {
-		if (err) return res.serverError(err);
-		if (!budget) return res.notFound();
+	if (values.restore) {
+		Budget.native(function(err, collection) {
+			if(err) return res.serverError(err);
 
-		if (values.setBudget) {
-			budget.category.budget = values.setBudget.budget;
-		}
+			collection.update({
+				_id: { $in: [pk, new ObjectId(pk)] }
+			},
+			{
+				$unset: {deletedBy: true}
+			},
+			function (err, results) {
+				if (err) return res.serverError(err);
+				return res.ok(results);
+			});
+		});
+	}
 
-		if (values.setSubBudget) {
-			_.find(budget.subcategories, {id: values.setSubBudget.id}).budget = values.setSubBudget.budget;
-		}
-
-		if (values.addSubcategory) {
-			budget.subcategories.push(values.addSubcategory);
-		}
-
-		if (values.delSubcategory) {
-			_.find(budget.subcategories, {id: values.delSubcategory.id}).deletedBy = req.session.passport.user || "unknown id";
-		}
-
-		budget.save(function (err) {
+	else {
+		Budget.findOne(pk).exec(function (err, budget) {
 			if (err) return res.serverError(err);
-		});
-		var log = {who: req.user.id, action: 'edited', type: 'budget', 
-			target: budget.id, time: Number((new Date().getTime() / 1000).toFixed())};
-		History.create(log).exec(function(err, log) {
-			if (err) return res.negotiate(err);
+			if (!budget) return res.notFound();
 
-			res.ok(budget);
+			if (values.setBudget) {
+				budget.category.budget = values.setBudget.budget;
+			}
+
+			if (values.setSubBudget) {
+				_.find(budget.subcategories, {id: values.setSubBudget.id}).budget = values.setSubBudget.budget;
+			}
+
+			if (values.addSubcategory) {
+				budget.subcategories.push(values.addSubcategory);
+			}
+
+			if (values.delSubcategory) {
+				_.find(budget.subcategories, function(sub) {
+					return sub.id == values.delSubcategory.id && !sub.deletedBy;
+				}).deletedBy = req.session.passport.user || "unknown id";
+			}
+
+			if (values.restoreSubcategory) {
+				delete _.find(budget.subcategories, function(sub) {
+					return sub.id == values.restoreSubcategory.id && sub.budget == values.restoreSubcategory.budget;
+				}).deletedBy;
+			}
+
+			budget.save(function (err) {
+				if (err) return res.serverError(err);
+			});
+			var log = {who: req.user.id, action: 'edited', type: 'budget', 
+				target: budget.id, time: Number((new Date().getTime() / 1000).toFixed())};
+			History.create(log).exec(function(err, log) {
+				if (err) return res.negotiate(err);
+
+				res.ok(budget);
+			});
 		});
+	}
+}
+
+function getDeleted(req, res) {
+	var permissions = _.pluck(_.filter(req.user.categories, function(per) {
+		return per.level == 3;
+	}), 'id');
+	var budgetFilter = req.user.admin ? {} : {'category.id': {$in: permissions}};
+
+	Budget.find(budgetFilter)
+	.where( actionUtil.parseCriteria(req) )
+	.then(function(budgets) {
+		var users = User.find({deletedBy: {$exists: false}}).then(function(users) {
+			return users;
+		});
+		var categories = Category.find().then(function(categories) {
+			return categories;
+		});
+		var year = actionUtil.parseCriteria(req).year;
+
+		return [budgets, users, categories];
+	}).spread(function(budgets, users, categories) {
+		var deletedStuff = {
+			budgets: [],
+			subcategories: []
+		};
+
+		budgets.forEach(function(budget) {
+			if (budget.deletedBy) {
+				var category = _.find(categories, {id: budget.category.id});
+				budget.category.name = category.name;
+
+				var user = _.find(users, {id: budget.creatorId}) || {id: "unknown id", name: "unknown name"};
+				budget.creator = {
+					id: user.id,
+					name: user.name
+				};
+				delete budget.creatorId;
+
+				user = _.find(users, {id: budget.deletedBy}) || {id: "unknown id", name: "unknown name"};
+				budget.deletedBy = {
+					id: user.id,
+					name: user.name
+				};
+				delete budget.year;
+				delete budget.subcategories;
+				deletedStuff.budgets.push(budget);
+			}
+			else {
+				budget.subcategories.forEach(function(subcategory) {
+					if (subcategory.deletedBy) {
+						var user = _.find(users, {id: subcategory.deletedBy}) || {id: "unknown id", name: "unknown name"};
+						var category = _.find(categories, {id: budget.category.id});
+						deletedStuff.subcategories.push({
+							budgetId: budget.id,
+							categoryId: category.id,
+							categoryName: category.name,
+							id: subcategory.id,
+							budget: subcategory.budget,
+							name: _.find(category.subcategories, {id: subcategory.id}).name,
+							deletedBy: {
+								id: user.id,
+								name: user.name
+							}
+						});
+					}
+				});
+			}
+		});
+		return res.send(deletedStuff);
+	}).fail(function(err) {
+		return res.send(err);
 	});
 }

@@ -19,6 +19,7 @@ module.exports = function(app) {
     vm.currentUser = $rootScope.currentUser;
     vm.allExpenses = [];
     vm.dates = [];
+    vm.history = [];
 
     vm.getExpensesByDate = getExpensesByDate;
     vm.loadExpenses = loadExpenses;
@@ -45,6 +46,16 @@ module.exports = function(app) {
     var MAX_LOAD = 10;
     vm.expensesLimit = MAX_LOAD;
 
+    function getHistory() {
+      vm.history = [];
+      PersonalService.getPersonalHistory().then(function(data) {
+        vm.history = data;
+        vm.history.forEach(function(item) {
+          item.time = new Date(item.time * 1000);
+        });
+      });
+    }
+
     getPersonalExpenses();
 
     function getPersonalExpenses() {
@@ -59,6 +70,7 @@ module.exports = function(app) {
           convertDates(vm.allExpenses);
           loadExpenses();
         }
+        getHistory();
         getUsersBudgets();
       });
     }
@@ -66,7 +78,7 @@ module.exports = function(app) {
     function convertDates(array) {
       array.forEach(function(item) {
         item.time = new Date(item.time * 1000);
-        if(vm.dates.indexOf(String(item.time)) < 0) vm.dates.push(item.time);
+        if(vm.dates.indexOf(item.time.toDateString()) < 0) vm.dates.push(item.time.toDateString());
       });
     }
 
@@ -195,25 +207,31 @@ module.exports = function(app) {
     var currencyExchangeSpentFlag = true;
 
     function changeCurrency(moneyType) {
-      vm.budgets.forEach(function(item) {
-        if(moneyType == "left") {
-          if(vm.currencyLeftModel == "USD" && currencyExchangeLeftFlag) {
+      if(moneyType == "left") {
+        if(vm.currencyLeftModel == "USD" && currencyExchangeLeftFlag) {
+          vm.budgets.forEach(function(item) {
             item.left /= vm.exchangeRate;
-            currencyExchangeLeftFlag = false;
-          } else if(vm.currencyLeftModel == "UAH" && !currencyExchangeLeftFlag) {
+          });
+          currencyExchangeLeftFlag = false;
+        } else if(vm.currencyLeftModel == "UAH" && !currencyExchangeLeftFlag) {
+          vm.budgets.forEach(function(item) {
             item.left *= vm.exchangeRate;
-            currencyExchangeLeftFlag = true;
-          }
-        } else {
-          if(vm.currencySpentModel == "USD" && currencyExchangeSpentFlag) {
-            item.spent /= vm.exchangeRate;
-            currencyExchangeSpentFlag = false;
-          } else if(vm.currencySpentModel == "UAH" && !currencyExchangeSpentFlag) {
-            item.spent *= vm.exchangeRate;
-            currencyExchangeSpentFlag = true;
-          }
+          });
+          currencyExchangeLeftFlag = true;
         }
-      });
+      } else {
+        if(vm.currencySpentModel == "USD" && currencyExchangeSpentFlag) {
+          vm.budgets.forEach(function(item) {
+            item.spent /= vm.exchangeRate;
+          });
+          currencyExchangeSpentFlag = false;
+        } else if(vm.currencySpentModel == "UAH" && !currencyExchangeSpentFlag) {
+          vm.budgets.forEach(function(item) {
+            item.spent *= vm.exchangeRate;
+          });
+          currencyExchangeSpentFlag = true;
+        }
+      }
     }
 
     // Money form
@@ -262,7 +280,9 @@ module.exports = function(app) {
             if(!add) newBudget = -newBudget;
 
             UsersService.editUser($rootScope.currentUser.id,
-              {addPersonalBudget: {id: vm.newMoney.category, budget: newBudget}});
+              {addPersonalBudget: {id: vm.newMoney.category, budget: newBudget}}).then(function() {
+                getHistory();
+              });
 
             updateBudgetTable(category[0].name, "left", newBudget);
 

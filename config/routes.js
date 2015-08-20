@@ -51,7 +51,11 @@ module.exports.routes = {
 
   'get /currency_by_year/:year': 'CurrencyController.find',
 
-  'get /user/current': 'UserController.getCurrentUser'
+  'get /user/current': 'UserController.getCurrentUser',
+
+  'get /personal': 'PersonalController.getPersonalHistory',
+
+  'get /deleted/budgets': 'BudgetController.findDeleted'
 
   /***************************************************************************
   *                                                                          *

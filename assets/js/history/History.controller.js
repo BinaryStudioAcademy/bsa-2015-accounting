@@ -9,8 +9,15 @@ module.exports = function(app) {
 		vm.type = 'Expense';
 		vm.types = ['Expense', 'Budget', 'User'];
 		vm.events = [];
+		vm.limit = 30;
+		vm.predicate = 'age';
+		vm.reverse = true;
+
 		vm.getEvents = getEvents;
-		
+		vm.order = order;
+
+
+
 		vm.getEvents(vm.type);
 
 		function getEvents(type) {
@@ -18,5 +25,10 @@ module.exports = function(app) {
 				vm.events = events;
 			});
 		}
+
+		function order (predicate) {
+			vm.reverse = (vm.predicate === predicate) ? !vm.reverse : false;
+			vm.predicate = predicate;
+		};
 	}
 };

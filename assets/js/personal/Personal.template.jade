@@ -29,29 +29,53 @@
 		button.btn.btn-danger(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = false', ng-show='!moneyForm.$visible')
 			| Take money&nbsp;
 			i.fa.fa-minus
-	button.btn.btn-warning(ng-click="personalCtrl.isCollapsedMoneyTable = !personalCtrl.isCollapsedMoneyTable; personalCtrl.changeMoneyText()") {{personalCtrl.moneyButtonText}} income money&nbsp;
+	button.btn.btn-warning(ng-click="personalCtrl.isCollapsedMoneyTable = !personalCtrl.isCollapsedMoneyTable; personalCtrl.changeMoneyText()", ng-hide="currentUser.categories.length == 0") {{personalCtrl.moneyButtonText}} income money&nbsp;
 		i.fa.fa-money
 	#main(ng-hide="personalCtrl.budgets.length == 0")
-		table#income-money-table.table-hover.fixed(collapse="personalCtrl.isCollapsedMoneyTable")
+		table.table-hover.fixed(ng-if="!personalCtrl.isCollapsedMoneyTable")
 			colgroup
-				col
-				col
-				col
-				col
+				col.table-money-date
+				col.table-money-category
+				col.table-money-amount
+				col.table-money-user
 			thead
 				tr
 					th#income-money-header(colspan="4")
 						| Income money
 				tr
 					th.header-text
-						| Date
+						| Date - Time
 					th.header-text
-						| Category  
+						| Category
 					th.header-text
 						| Amount
 					th.header-text
-						| Added by
+						| User
+		table#income-money-table.table-hover.fixed(ng-if="!personalCtrl.isCollapsedMoneyTable && personalCtrl.history.length <= 10")
+			colgroup
+				col.table-money-date
+				col.table-money-category
+				col.table-money-amount
+				col.table-money-user
 			tbody
+				tr(ng-repeat="event in personalCtrl.history")
+					td {{event.time | date:'dd.MM.yyyy - HH:mm'}}
+					td {{event.category}}
+					td {{event.action}}
+					td {{event.who}}
+		.table-container(ng-if="!personalCtrl.isCollapsedMoneyTable && personalCtrl.history.length > 10")
+			table#income-money-table.table-hover.fixed
+				colgroup
+					col.table-money-date
+					col.table-money-category
+					col.table-money-amount
+					col.table-money-user
+				tbody
+					tr(ng-repeat="event in personalCtrl.history")
+						td {{event.time | date:'dd.MM.yyyy - HH:mm'}}
+						td {{event.category}}
+						td {{event.action}}
+						td {{event.who}}
 		table#income-table.table-hover.fixed
 			colgroup
 				col.col-category
@@ -132,7 +156,7 @@
 							span.fa.fa-sort(ng-hide="sortType == 'currency'")
 					th
 						i.fa.fa-cog
-		#table-container
+		.table-container
 			table.table-hover.fixed
 					colgroup
 						col.table-date
