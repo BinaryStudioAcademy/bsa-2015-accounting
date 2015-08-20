@@ -1,5 +1,5 @@
 #personal-view
-	.alert.alert-warning(ng-show="currentUser.categories.length == 0")
+	.alert.alert-warning(ng-if="currentUser.categories.length == 0")
 		i.fa.fa-exclamation-triangle.fa-2x
 		h2 &nbsp;You do not have personal budget
 	#money-form(ng-show="currentUser.max_level > 1 || currentUser.admin", ng-init="showAddButton = true")
@@ -26,12 +26,12 @@
 		button#add-button.btn.btn-primary(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = true', ng-show='!moneyForm.$visible')
 			| Add money&nbsp;
 			i.fa.fa-plus
-		button.btn.btn-danger(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = false', ng-show='!moneyForm.$visible')
+		button.btn.btn-danger(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = false', ng-show='!moneyForm.$visible', ng-hide="currentUser.categories.length == 0")
 			| Take money&nbsp;
 			i.fa.fa-minus
 	button.btn.btn-warning(ng-click="personalCtrl.isCollapsedMoneyTable = !personalCtrl.isCollapsedMoneyTable; personalCtrl.changeMoneyText()", ng-hide="currentUser.categories.length == 0") {{personalCtrl.moneyButtonText}} income money&nbsp;
 		i.fa.fa-money
-	#main(ng-hide="personalCtrl.budgets.length == 0")
+	#main(ng-if="currentUser.categories.length != 0")
 		table.table-hover.fixed(ng-if="!personalCtrl.isCollapsedMoneyTable")
 			colgroup
 				col.table-money-date
@@ -105,7 +105,7 @@
 						span#budget-left {{budget.left | currency:""}}
 					td 
 						span#budget-spent {{budget.spent | currency:""}}
-		table.table-hover.fixed
+		table.table-hover.fixed(ng-if="personalCtrl.allExpenses.length != 0")
 			colgroup
 				col.table-toggle
 				col.table-date-header
@@ -156,7 +156,7 @@
 							span.fa.fa-sort(ng-hide="sortType == 'currency'")
 					th
 						i.fa.fa-cog
-		.table-container
+		.table-container(ng-if="personalCtrl.allExpenses.length != 0")
 			table.table-hover.fixed
 					colgroup
 						col.table-date

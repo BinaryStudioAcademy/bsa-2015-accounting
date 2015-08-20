@@ -15,7 +15,7 @@ module.exports = {
 
 function getExpenses(req, res) {
 	var year = req.param('year');
-	var userId = req.param('creator');
+	var isPersonal = req.param('personal');
 	var permissions = _.pluck(_.filter(req.user.categories, function(per) {
 		return per.level >= 1;
 	}), 'id');
@@ -26,7 +26,7 @@ function getExpenses(req, res) {
 		var end = Date.parse('12/31/' + year + ' 23:59:59') / 1000;
 		filter = {deletedBy: {$exists: false}, time: {$gte: start, $lte: end }};
 	}
-  if (userId) filter.creatorId = userId;
+  if (isPersonal) filter.creatorId = req.session.passport.user;
 	Expense.find(expenseFilter)
 	.where(actionUtil.parseCriteria(req))
 	.sort(actionUtil.parseSort(req))
