@@ -31,6 +31,10 @@ module.exports.http = {
   ***************************************************************************/
     passportInit    : require('passport').initialize(),
     passportSession : require('passport').session(),
+    // myRequestLogger: function (req, res, next) {
+    //     console.log("Requested :: ", req.method, req.url);
+    //     return next();
+    // },
 
     order: [
       'startRequestTimer',

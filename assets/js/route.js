@@ -35,6 +35,12 @@ module.exports = function(app) {
         controllerAs:'admCtrl',
         activetab: 'administration'
       }).
+      when('/history', {
+        templateUrl: '/templates/History.html',
+        controller: 'HistoryController',
+        controllerAs: 'hstCtrl',
+        activetab: 'history'
+      }).
       otherwise({
         redirectTo: '/expenses'
       });
