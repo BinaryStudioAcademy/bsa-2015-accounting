@@ -30,7 +30,7 @@
 					td {{subcat.name}}
 					td {{subcat.deletedBy.name}}
 					td
-						button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreSubcategory') restore
+						button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreSubcategory(subcat.budgetId, subcat.categoryId, subcat.id)') restore
 				tr(ng-show="binCtrl.deletedStuff.subcategories.length == 0")
 					td(colspan="5") no deleted subcategories in year {{binCtrl.year}}
 			thead

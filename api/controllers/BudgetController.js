@@ -156,6 +156,10 @@ function updateBudget(req, res) {
 				_.find(budget.subcategories, {id: values.delSubcategory.id}).deletedBy = req.session.passport.user || "unknown id";
 			}
 
+			if (values.restoreSubcategory) {
+				delete _.find(budget.subcategories, {id: values.restoreSubcategory.id}).deletedBy;
+			}
+
 			budget.save(function (err) {
 				if (err) return res.serverError(err);
 			});

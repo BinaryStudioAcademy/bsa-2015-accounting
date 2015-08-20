@@ -50,8 +50,34 @@ module.exports = function(app) {
 			});
 		};
 
-		vm.restoreSubcategory = function(id) {
-			
+		vm.restoreSubcategory = function(id, categoryId, subcategoryId) {
+			BudgetsService.getBudget(id).then(function(budget) {
+				console.log(budget);
+				var existingSubcategory = _.find(budget.subcategories, {id: subcategoryId});
+				if (!existingSubcategory.deletedBy) {
+					swal({
+						title: "Are you sure?",
+						text: "This will replace existing " + existingSubcategory.name + " subcategory",
+						type: "warning",
+						showCancelButton: true,
+						confirmButtonColor: "#DD6B55",
+						confirmButtonText: "Yes, pretty sure!",
+						closeOnConfirm: true
+					}, function() {
+						var restorePromise = BudgetsService.editBudget(id, {restoreSubcategory: {id: subcategoryId}});
+						var deletePromise = BudgetsService.editBudget(id, {delSubcategory: {id: existingSubcategory.id}});
+
+						$q.all([restorePromise, deletePromise]).then(function(data) {
+							return vm.updateYear();
+						});
+					});
+				}
+				else {
+					BudgetsService.editBudget(id, {restoreSubcategory: {id: subcategoryId}}).then(function(data) {
+						return vm.updateYear();
+					});
+				}
+			});
 		};
 	}
 };

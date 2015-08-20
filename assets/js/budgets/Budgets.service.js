@@ -6,6 +6,7 @@ module.exports = function(app) {
   function BudgetsService($resource) {
     return {
       getBudgets: getBudgets,
+      getBudget: getBudget,
       createBudget: createBudget,
       editBudget: editBudget,
       deleteBudget: deleteBudget,
@@ -15,6 +16,10 @@ module.exports = function(app) {
 
     function getRequest() {
       return $resource("/budget/:id", { id: "@id"});
+    }
+
+    function getBudget(budgetId) {
+      return getRequest().get({ id: budgetId }).$promise;
     }
 
     /**
