@@ -37,6 +37,19 @@ function getBudgets(req, res) {
 		});
 		return [budgets, users, categories, expenses, currencies];
 	}).spread(function(budgets, users, categories, expenses, currencies) {
+		function getRate(time) {
+			var subexpDate = new Date(time * 1000);
+			var rate = _.find(currencies, function(currency) {
+				var currDate = new Date(currency.time * 1000);
+				return ((currDate.getFullYear() === subexpDate.getFullYear()) && (currDate.getMonth() === subexpDate.getMonth()) && (currDate.getDate() === subexpDate.getDate()));
+			});
+
+			if (!rate) {
+				return getRate(time - (24 * 60 * 60));
+			}
+			return rate;
+		}
+
 		budgets.forEach(function(budget) {
 			var category = _.find(categories, {id: budget.category.id});
 			budget.category.name = category.name;
@@ -69,12 +82,8 @@ function getBudgets(req, res) {
 				subcategory.used = 0;
 				subExpenses.forEach(function(subExpense) {
 					if (subExpense.currency !== "USD") {
-						var subexpDate = new Date(subExpense.time * 1000);
-						var rate = _.find(currencies, function(currency) {
-							var currDate = new Date(currency.time * 1000);
-							return ((currDate.getFullYear() === subexpDate.getFullYear()) && (currDate.getMonth() === subexpDate.getMonth()) && (currDate.getDate() === subexpDate.getDate()));
-						}).rate;
-						subcategory.used += (subExpense.price / rate);
+						var rate = getRate(subExpense.time);
+						subcategory.used += (subExpense.price / rate.rate);
 					}
 					else {
 						subcategory.used += subExpense.price;
