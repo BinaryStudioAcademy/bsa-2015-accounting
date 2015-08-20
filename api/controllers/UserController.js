@@ -118,19 +118,21 @@ function updateUser(req, res) {
 			}
 		}
 
+    var cat = {};
 		if (values.addPersonalBudget) {
 			if (values.addPersonalBudget.budget > 0) {
 				action = 'gave ' + values.addPersonalBudget.budget + ' UAH';
 			} else {
 				action = 'took ' + (-values.addPersonalBudget.budget) + ' UAH';
 			}
-			var cat = _.find(user.categories, {id: values.addPersonalBudget.id});
+			cat = _.find(user.categories, {id: values.addPersonalBudget.id});
 			if (cat) {
 				if (!cat.budget) {cat.budget = 0};
 				cat.budget += values.addPersonalBudget.budget;
 			}
 			else {
 				user.categories.push(values.addPersonalBudget);
+        cat = values.addPersonalBudget;
 			}
 		}
 
@@ -138,7 +140,7 @@ function updateUser(req, res) {
 		//	user.name = values.setName;
 		//}
 
-		var log = {who: req.user.id, action: action, type: 'user', 
+		var log = {who: req.user.id, action: action, type: 'user', category: cat.id,
 			target: user.id, time: Number((new Date().getTime() / 1000).toFixed())};
 
 		user.save(function (err) {

@@ -11,6 +11,7 @@
 		font-weight 700
 	#income-table
 		margin-bottom 5px
+		margin-top 5px
 	#budget-left
 		color #008000
 		font-weight 700
@@ -81,7 +82,9 @@
 			font-weight 700
 			span
 				cursor pointer
-	#table-container
+	.table-container
+		overflow auto
+		height 300px !important
 		.btn
 			margin-left: 4px;
 	button
@@ -94,9 +97,6 @@
 		border-radius 5px
 	.dropdown-menu
 		padding 10px
-	#table-container
-		overflow auto
-		height 300px
 	
 	.table-date,
 	.table-expense,
@@ -127,3 +127,10 @@
 		border none 
 		padding 4px
 		border-radius 3px;
+		
+	.table-money-date
+		width 300px
+	.table-money-category
+		width 230px
+	.table-money-amount
+		width 280px

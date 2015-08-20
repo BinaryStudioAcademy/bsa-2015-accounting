@@ -14,7 +14,7 @@ module.exports = function(app) {
     }
 
     function getPersonalHistory() {
-      return $resource("/personal/:id", { id: "@id" }).query().$promise;
+      return $resource("/personal/:id", { id: "@id", sort: "time desc" }).query().$promise;
     }
   }
 };
