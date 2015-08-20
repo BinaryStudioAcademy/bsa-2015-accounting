@@ -80,7 +80,7 @@ function getUsers(req, res) {
 							category.used += expense.price;
 						}
 					});
-					category.used = Math.round(category.used * 100) / 100;
+					category.used = Number(category.used.toFixed(2));
 					if (!category.budget) category.budget = 0;
 					category.left = category.budget - category.used;
 				});

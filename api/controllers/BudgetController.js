@@ -85,7 +85,7 @@ function getBudgets(req, res) {
 				subExpenses.forEach(function(subExpense) {
 					if (subExpense.currency !== "USD") {
 						var rate = getRate(subExpense.time);
-						subcategory.used += (subExpense.price / rate.rate);
+						subcategory.used += Number((subExpense.price / rate.rate).toFixed(2));
 					}
 					else {
 						subcategory.used += subExpense.price;
