@@ -33,7 +33,6 @@ passport.use(new LocalStrategy({
             email: user.email,
             createdAt: user.createdAt,
             role: user.role,
-            permissions: user.permissions,
             id: user.id
           };
           return done(null, returnUser, {
