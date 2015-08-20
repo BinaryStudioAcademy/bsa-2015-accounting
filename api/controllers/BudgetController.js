@@ -96,7 +96,13 @@ function createBudget(req, res) {
 	data.creatorId = req.session.passport.user || "unknown id";
 	Budget.create(data).exec(function created (err, newInstance) {
 		if (err) return res.negotiate(err);
-		res.created(newInstance);
+		var log = {who: req.user.id, action: 'created', type: 'budget', 
+			target: newInstance.id, time: Number((new Date().getTime() / 1000).toFixed())};
+
+		History.create(log).exec(function(err, log) {
+			if (err) return res.negotiate(err);
+			res.created(newInstance);
+		});
 	});
 }
 
@@ -130,6 +136,12 @@ function updateBudget(req, res) {
 		budget.save(function (err) {
 			if (err) return res.serverError(err);
 		});
-		res.ok(budget);
+		var log = {who: req.user.id, action: 'edited', type: 'budget', 
+			target: budget.id, time: Number((new Date().getTime() / 1000).toFixed())};
+		History.create(log).exec(function(err, log) {
+			if (err) return res.negotiate(err);
+
+			res.ok(budget);
+		});
 	});
 }

@@ -102,11 +102,13 @@ function updateUser(req, res) {
 		if (err) return res.serverError(err);
 		if (!user) return res.notFound();
 
+		var action = 'edited';
 		if ((values.setAdminStatus === true || values.setAdminStatus === false) && req.user.admin) {
 			user.admin = values.setAdminStatus;
 		}
 
 		if (values.setPermissionLevel) {
+			action = 'changed permissions';
 			var cat = _.find(user.categories, {id: values.setPermissionLevel.id});
 			if (cat) {
 				cat.level = values.setPermissionLevel.level;
@@ -117,6 +119,11 @@ function updateUser(req, res) {
 		}
 
 		if (values.addPersonalBudget) {
+			if (values.addPersonalBudget.budget > 0) {
+				action = 'gave ' + values.addPersonalBudget.budget + ' UAH';
+			} else {
+				action = 'took ' + (-values.addPersonalBudget.budget) + ' UAH';
+			}
 			var cat = _.find(user.categories, {id: values.addPersonalBudget.id});
 			if (cat) {
 				if (!cat.budget) {cat.budget = 0};
@@ -131,9 +138,16 @@ function updateUser(req, res) {
 		//	user.name = values.setName;
 		//}
 
+		var log = {who: req.user.id, action: action, type: 'user', 
+			target: user.id, time: Number((new Date().getTime() / 1000).toFixed())};
+
 		user.save(function (err) {
 			if (err) return res.serverError(err);
+
+			History.create(log).exec(function(errr, log) {
+				if (errr) return res.negotiate(err);
+				res.ok(user);
+			});
 		});
-		res.ok(user);
 	});
 }

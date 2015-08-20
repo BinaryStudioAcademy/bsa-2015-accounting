@@ -25,6 +25,7 @@ db.budget = [];
 db.expense = [];
 db.user = [];
 db.currency = [];
+db.history = [];
 
 Factory.define('Subcategory')
 	.sequence('id', function() {return String(casual.integer(0, 10000000));});
@@ -42,7 +43,7 @@ Factory.define('Budget')
 
 Factory.define('Expense')
 	.sequence('_id', function() {return String(casual.integer(0, 10000000));})
-	.attr('price', function() {return casual.integer(3000, 10000);})
+	.attr('price', function() {return casual.integer(500, 2000);})
 	.attr('currency', function() {return casual.random_element(['USD', 'UAH']);})
 	.attr('description', function() {return casual.description;})
 	.attr('personal', function() {return false;})
@@ -115,7 +116,7 @@ _.times(years, function(n) {
 				}
 				if (nn === 4) {
 					var expense = Factory.build('Expense', {deletedBy: _.sample(db.user)._id, time: expTime, creatorId: String(_.sample(db.user)._id), categoryId: category._id, subcategoryId: sub.id});
-					db.expense.push(expense);
+							db.expense.push(expense);
 				} else if (nn === 5) {
 					var expense = Factory.build('Expense', {time: expTime, creatorId: String(_.sample(db.user)._id), categoryId: category._id, subcategoryId: sub.id});
 					expense.personal = true;
@@ -123,18 +124,20 @@ _.times(years, function(n) {
 					db.expense.push(expense);
 				}
 				else {
-					var expense = Factory.build('Expense', {time: expTime, creatorId: String(_.sample(db.user)._id), categoryId: category._id, subcategoryId: sub.id});
-					if (expense.currency === 'UAH') {
-						expense.price *= 20;
-					}
-					db.expense.push(expense);
+					_.times(casual.integer(3, 6), function(k) {
+						var expense = Factory.build('Expense', {time: expTime + casual.integer(300, 900) * k, creatorId: String(_.sample(db.user)._id), categoryId: category._id, subcategoryId: sub.id});
+						if (expense.currency === 'UAH') {
+							expense.price *= 20;
+						}
+						db.expense.push(expense);
+					});
 				}
 			});
 		});
 	});
 });
 
-var owner = {_id: 'a', login: 'admin@admin.admin', name: 'Admin3000', admin: true, categories: [], 'createdAt': new Date().toISOString(), 'updatedAt': new Date().toISOString(), password: hash};
+var owner = {_id: 'a', login: 'admin@admin.admin', name: 'Admin9000', admin: true, categories: [], 'createdAt': new Date().toISOString(), 'updatedAt': new Date().toISOString(), password: hash};
 db.user.push(owner);
 
 var url = 'mongodb://localhost:27017/portal-accounting';

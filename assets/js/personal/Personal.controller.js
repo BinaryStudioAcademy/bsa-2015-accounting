@@ -42,7 +42,7 @@ module.exports = function(app) {
       vm.hiddenList[index] = !vm.hiddenList[index];
     }
 
-    var MAX_LOAD = 20;
+    var MAX_LOAD = 10;
     vm.expensesLimit = MAX_LOAD;
 
     getPersonalExpenses();
@@ -72,7 +72,7 @@ module.exports = function(app) {
 
     function isLoadMore() {
       if(typeof vm.allExpenses != "undefined") {
-        if(vm.allExpenses.length <= MAX_LOAD || vm.allExpenses.length != 0) {
+        if(vm.allExpenses.length <= MAX_LOAD || vm.allExpenses.length == 0) {
           vm.expensesLimit = vm.allExpenses.length;
           return false;
         } else return true;
@@ -81,8 +81,9 @@ module.exports = function(app) {
 
     function getExpensesByDate(date) {
       var expenses = [];
+      var newDate = new Date(date).toDateString();
       vm.allExpenses.forEach(function(expense) {
-        if(date == expense.time) {
+        if(newDate == expense.time.toDateString()) {
           expenses.push(expense);
         }
       });
@@ -175,6 +176,7 @@ module.exports = function(app) {
     vm.exchangeRate = $rootScope.exchangeRate;
 
     function getUsersBudgets() {
+      vm.budgets = [];
       if(vm.currentUser.categories) {
         vm.currentUser.categories.forEach(function(item) {
           var category = $filter('filter')(vm.categories, {id: item.id});
@@ -280,17 +282,20 @@ module.exports = function(app) {
 
     function updateBudgetTable(categoryName, moneyType, newAmount) {
       if(moneyType == "left") {
+        var isNewBudget = true;
         vm.budgets.forEach(function(item) {
           if(item.categoryId == categoryName) {
             item.left += newAmount;
+            isNewBudget = false;
           }
-        })
+        });
+        if(isNewBudget) vm.budgets.push({categoryId: categoryName, left: newAmount, spent: 0});
       } else {
         vm.budgets.forEach(function(item) {
           if(item.categoryId == categoryName) {
             item.spent += newAmount;
           }
-        })
+        });
       }
     }
 
@@ -300,6 +305,23 @@ module.exports = function(app) {
     vm.moneyButtonText = "Show";
     function changeMoneyText() {
       vm.moneyButtonText = vm.moneyButtonText == "Show" ? "Hide" : "Show";
+    }
+
+    // Sort
+    vm.sort = sort;
+    var orderBy = $filter('orderBy');
+    vm.sortedExpenses = [];
+    function sort(predicate, reverse) {
+      vm.sortedExpenses = vm.allExpenses;
+      // Converting to USD
+      if(predicate == "currencySort") {
+        vm.sortedExpenses.forEach(function(expense) {
+          if(expense.currency == "UAH") {
+            expense.currencySort = expense.price / $rootScope.exchangeRate;
+          } else expense.currencySort = expense.price;
+        });
+      }
+      vm.sortedExpenses = orderBy(vm.sortedExpenses, predicate, reverse);
     }
   }
 };
