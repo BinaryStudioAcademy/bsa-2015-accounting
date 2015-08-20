@@ -17,7 +17,7 @@ module.exports = function(app) {
     vm.getExpensesByDate = getExpensesByDate;
     vm.toggleCustom = toggleCustom;
 
-    var MAX_LOAD = 20;
+    var MAX_LOAD = 10;
     vm.expensesLimit = MAX_LOAD;
 
     vm.allExpenses = [];
@@ -72,8 +72,9 @@ module.exports = function(app) {
 
     function getExpensesByDate(date) {
       var expenses = [];
+      var newDate = new Date(date).toDateString();
       vm.allExpenses.forEach(function(expense) {
-        if(date == expense.time) {
+        if(newDate == expense.time.toDateString()) {
           expenses.push(expense);
         }
       });
@@ -206,13 +207,15 @@ module.exports = function(app) {
     var orderBy = $filter('orderBy');
     vm.sortedExpenses = [];
     function sort(predicate, reverse) {
-      // Converting to USD
       vm.sortedExpenses = vm.allExpenses;
-      vm.sortedExpenses.forEach(function(expense) {
-        if(expense.currency == "UAH") {
-          expense.currencySort = expense.price / $rootScope.exchangeRate;
-        } else expense.currencySort = expense.price;
-      });
+      // Converting to USD
+      if(predicate == "currencySort") {
+        vm.sortedExpenses.forEach(function(expense) {
+          if(expense.currency == "UAH") {
+            expense.currencySort = expense.price / $rootScope.exchangeRate;
+          } else expense.currencySort = expense.price;
+        });
+      }
       vm.sortedExpenses = orderBy(vm.sortedExpenses, predicate, reverse);
     }
 
