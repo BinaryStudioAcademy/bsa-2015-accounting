@@ -21,59 +21,51 @@ module.exports = function(app) {
 			});
 		};
 
-		vm.restoreBudget = function(id, categoryId) {
+		vm.restoreMe = function(id, categoryId, subcategoryId, budget) {
 			BudgetsService.getBudgets(vm.year).then(function(budgets) {
-				var existingBudget = _.find(budgets, {category: {id: categoryId}});
-				if (existingBudget) {
+				var existing = _.find(budgets, {category: {id: categoryId}});
+				var restorePromise = function() {
+					return BudgetsService.editBudget(id, {restore: true});
+				};
+				var deletePromise = function() {
+					return BudgetsService.deleteBudget(existing.id);
+				};
+
+				if (subcategoryId) {
+					existing = _.find(existing.category.subcategories, {id: subcategoryId});
+					restorePromise = function() {
+						return BudgetsService.editBudget(id, {restoreSubcategory: {id: subcategoryId, budget: budget}});
+					};
+					deletePromise = function() {
+						return BudgetsService.editBudget(id, {delSubcategory: {id: existing.id}});
+					};
+				}
+
+				if (existing) {
+					if (subcategoryId) {
+						var mess = "There already is " + existing.name + " subcategory";
+					}
+					else {
+						var mess = "This will replace existing " + existing.category.name + " budget and all of it's subcategories";
+					}
 					swal({
 						title: "Are you sure?",
-						text: "This will replace existing " + existingBudget.category.name + " budget and all of it's subcategories",
+						text: mess,
 						type: "warning",
 						showCancelButton: true,
 						confirmButtonColor: "#DD6B55",
 						confirmButtonText: "Yes, pretty sure!",
 						closeOnConfirm: true
 					}, function() {
-						var restorePromise = BudgetsService.editBudget(id, {restore: true});
-						var deletePromise = BudgetsService.deleteBudget(existingBudget.id);
-
-						$q.all([restorePromise, deletePromise]).then(function(data) {
-							return vm.updateYear();
+						deletePromise().then(function() {
+							return restorePromise().then(function() {
+								return vm.updateYear();
+							});
 						});
 					});
 				}
 				else {
-					BudgetsService.editBudget(id, {restore: true}).then(function(data) {
-						return vm.updateYear();
-					});
-				}
-			});
-		};
-
-		vm.restoreSubcategory = function(id, categoryId, subcategoryId) {
-			BudgetsService.getBudget(id).then(function(budget) {
-				console.log(budget);
-				var existingSubcategory = _.find(budget.subcategories, {id: subcategoryId});
-				if (!existingSubcategory.deletedBy) {
-					swal({
-						title: "Are you sure?",
-						text: "This will replace existing " + existingSubcategory.name + " subcategory",
-						type: "warning",
-						showCancelButton: true,
-						confirmButtonColor: "#DD6B55",
-						confirmButtonText: "Yes, pretty sure!",
-						closeOnConfirm: true
-					}, function() {
-						var restorePromise = BudgetsService.editBudget(id, {restoreSubcategory: {id: subcategoryId}});
-						var deletePromise = BudgetsService.editBudget(id, {delSubcategory: {id: existingSubcategory.id}});
-
-						$q.all([restorePromise, deletePromise]).then(function(data) {
-							return vm.updateYear();
-						});
-					});
-				}
-				else {
-					BudgetsService.editBudget(id, {restoreSubcategory: {id: subcategoryId}}).then(function(data) {
+					restorePromise().then(function(data) {
 						return vm.updateYear();
 					});
 				}

@@ -11,31 +11,6 @@
 			thead
 				tr
 					th(colspan="5")
-						b Subcategories from existing categories
-				tr
-					th
-						b Budget
-					th
-						b Category
-					th
-						b Subcategory
-					th
-						b Deleted by
-					th
-						b Restore
-			tbody
-				tr(ng-repeat="subcat in binCtrl.deletedStuff.subcategories")
-					td {{subcat.budget | currency}}
-					td {{subcat.categoryName}}
-					td {{subcat.name}}
-					td {{subcat.deletedBy.name}}
-					td
-						button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreSubcategory(subcat.budgetId, subcat.categoryId, subcat.id)') restore
-				tr(ng-show="binCtrl.deletedStuff.subcategories.length == 0")
-					td(colspan="5") no deleted subcategories in year {{binCtrl.year}}
-			thead
-				tr
-					th(colspan="5")
 						b Full categories
 				tr
 					th
@@ -55,6 +30,31 @@
 					td {{budget.creator.name}}
 					td {{budget.deletedBy.name}}
 					td
-						button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreBudget(budget.id, budget.category.id)') restore
+						button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreMe(budget.id, budget.category.id)') restore
 				tr(ng-show="binCtrl.deletedStuff.budgets.length == 0")
 					td(colspan="5") no deleted budgets in year {{binCtrl.year}}
+			thead
+				tr
+					th(colspan="5")
+						b Subcategories from existing categories
+				tr
+					th
+						b Budget
+					th
+						b Category
+					th
+						b Subcategory
+					th
+						b Deleted by
+					th
+						b Restore
+			tbody
+				tr(ng-repeat="subcat in binCtrl.deletedStuff.subcategories")
+					td {{subcat.budget | currency}}
+					td {{subcat.categoryName}}
+					td {{subcat.name}}
+					td {{subcat.deletedBy.name}}
+					td
+						button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreMe(subcat.budgetId, subcat.categoryId, subcat.id, subcat.budget)') restore
+				tr(ng-show="binCtrl.deletedStuff.subcategories.length == 0")
+					td(colspan="5") no deleted subcategories in year {{binCtrl.year}}

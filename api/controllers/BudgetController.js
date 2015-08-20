@@ -153,11 +153,15 @@ function updateBudget(req, res) {
 			}
 
 			if (values.delSubcategory) {
-				_.find(budget.subcategories, {id: values.delSubcategory.id}).deletedBy = req.session.passport.user || "unknown id";
+				_.find(budget.subcategories, function(sub) {
+					return sub.id == values.delSubcategory.id && !sub.deletedBy;
+				}).deletedBy = req.session.passport.user || "unknown id";
 			}
 
 			if (values.restoreSubcategory) {
-				delete _.find(budget.subcategories, {id: values.restoreSubcategory.id}).deletedBy;
+				delete _.find(budget.subcategories, function(sub) {
+					return sub.id == values.restoreSubcategory.id && sub.budget == values.restoreSubcategory.budget;
+				}).deletedBy;
 			}
 
 			budget.save(function (err) {
@@ -220,6 +224,7 @@ function getDeleted(req, res) {
 						var category = _.find(categories, {id: budget.category.id});
 						deletedStuff.subcategories.push({
 							budgetId: budget.id,
+							categoryId: category.id,
 							categoryName: category.name,
 							id: subcategory.id,
 							budget: subcategory.budget,
