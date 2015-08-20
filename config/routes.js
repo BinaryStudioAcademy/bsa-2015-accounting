@@ -53,7 +53,9 @@ module.exports.routes = {
 
   'get /user/current': 'UserController.getCurrentUser',
 
-  'get /personal': 'PersonalController.getPersonalHistory'
+  'get /personal': 'PersonalController.getPersonalHistory',
+
+  'get /deleted/budgets': 'BudgetController.findDeleted'
 
   /***************************************************************************
   *                                                                          *
