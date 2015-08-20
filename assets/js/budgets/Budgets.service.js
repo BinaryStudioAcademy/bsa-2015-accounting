@@ -8,7 +8,9 @@ module.exports = function(app) {
       getBudgets: getBudgets,
       createBudget: createBudget,
       editBudget: editBudget,
-      deleteBudget: deleteBudget
+      deleteBudget: deleteBudget,
+      restoreBudget: restoreBudget,
+      getDeletedBudgets: getDeletedBudgets
     };
 
     function getRequest() {
@@ -47,6 +49,15 @@ module.exports = function(app) {
       return data.update({ id: budgetId }, newBudget).$promise;
     }
 
+    function restoreBudget(budgetId) {
+      var data = $resource("/budget/:id", { id: "@id" }, {
+        update: {
+          method: "PUT"
+        }
+      });
+      return data.update({ id: budgetId }, {$unset: {deletedBy: "" }}).$promise;
+    }
+
     /**
      * Removes budget by id
      * @param budgetId Budget id
@@ -54,6 +65,10 @@ module.exports = function(app) {
      */
     function deleteBudget(budgetId) {
       return getRequest().remove({ id: budgetId }).$promise;
+    }
+
+    function getDeletedBudgets(year) {
+      return $resource("/deleted/budgets", { where: {"year": year}}).get().$promise;
     }
   }
 };

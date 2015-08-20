@@ -22,6 +22,8 @@ block body
           a(href='#/personal', ng-class="{'active-tab':$route.current.activetab == 'personal'}", data-toggle='tab') Personal
         li
           a(href='#/administration', ng-class="{'active-tab':$route.current.activetab == 'administration'}", data-toggle='tab') Administration
+        li
+          a(href='#/bin', ng-class="{'active-tab':$route.current.activetab == 'bin'}", data-toggle='tab') Recovery bin
     main
       .tab-content
         #expenses.tab-pane.active

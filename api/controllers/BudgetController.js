@@ -1,10 +1,12 @@
 var actionUtil = require('sails/lib/hooks/blueprints/actionUtil');
 var _ = require('lodash');
+var ObjectId = require('mongodb').ObjectID;
 
 module.exports = {
 	find: getBudgets,
 	create: createBudget,
-	update: updateBudget
+	update: updateBudget,
+	findDeleted: getDeleted
 };
 
 function getBudgets(req, res) {
@@ -107,29 +109,119 @@ function updateBudget(req, res) {
 	var idParamExplicitlyIncluded = ((req.body && req.body.id) || req.query.id);
 	if (!idParamExplicitlyIncluded) delete values.id;
 
-	Budget.findOne(pk).exec(function (err, budget) {
-		if (err) return res.serverError(err);
-		if (!budget) return res.notFound();
+	if (values.restore) {
+		Budget.native(function(err, collection) {
+			if(err) return res.serverError(err);
 
-		if (values.setBudget) {
-			budget.category.budget = values.setBudget.budget;
-		}
-
-		if (values.setSubBudget) {
-			_.find(budget.subcategories, {id: values.setSubBudget.id}).budget = values.setSubBudget.budget;
-		}
-
-		if (values.addSubcategory) {
-			budget.subcategories.push(values.addSubcategory);
-		}
-
-		if (values.delSubcategory) {
-			_.find(budget.subcategories, {id: values.delSubcategory.id}).deletedBy = req.session.passport.user || "unknown id";
-		}
-
-		budget.save(function (err) {
-			if (err) return res.serverError(err);
+			collection.update({
+				_id: { $in: [pk, new ObjectId(pk)] }
+			},
+			{
+				$unset: {deletedBy: true}
+			},
+			function (err, results) {
+				if (err) return res.serverError(err);
+				return res.ok(results);
+			});
 		});
-		res.ok(budget);
-	});
+	}
+
+	else {
+		Budget.findOne(pk).exec(function (err, budget) {
+			if (err) return res.serverError(err);
+			if (!budget) return res.notFound();
+
+			if (values.setBudget) {
+				budget.category.budget = values.setBudget.budget;
+			}
+
+			if (values.setSubBudget) {
+				_.find(budget.subcategories, {id: values.setSubBudget.id}).budget = values.setSubBudget.budget;
+			}
+
+			if (values.addSubcategory) {
+				budget.subcategories.push(values.addSubcategory);
+			}
+
+			if (values.delSubcategory) {
+				_.find(budget.subcategories, {id: values.delSubcategory.id}).deletedBy = req.session.passport.user || "unknown id";
+			}
+
+			budget.save(function (err) {
+				if (err) return res.serverError(err);
+			});
+			res.ok(budget);
+		});
+	}
+}
+
+function getDeleted(req, res) {
+	var permissions = _.pluck(_.filter(req.user.categories, function(per) {
+		return per.level == 3;
+	}), 'id');
+	var budgetFilter = req.user.admin ? {} : {'category.id': {$in: permissions}};
+
+	Budget.find(budgetFilter)
+	.where( actionUtil.parseCriteria(req) )
+	.then(function(budgets) {
+		var users = User.find({deletedBy: {$exists: false}}).then(function(users) {
+			return users;
+		});
+		var categories = Category.find().then(function(categories) {
+			return categories;
+		});
+		var year = actionUtil.parseCriteria(req).year;
+
+		return [budgets, users, categories];
+	}).spread(function(budgets, users, categories) {
+		var deletedStuff = {
+			budgets: [],
+			subcategories: []
+		};
+
+		budgets.forEach(function(budget) {
+			if (budget.deletedBy) {
+				var category = _.find(categories, {id: budget.category.id});
+				budget.category.name = category.name;
+
+				var user = _.find(users, {id: budget.creatorId}) || {id: "unknown id", name: "unknown name"};
+				budget.creator = {
+					id: user.id,
+					name: user.name
+				};
+				delete budget.creatorId;
+
+				user = _.find(users, {id: budget.deletedBy}) || {id: "unknown id", name: "unknown name"};
+				budget.deletedBy = {
+					id: user.id,
+					name: user.name
+				};
+				delete budget.year;
+				delete budget.subcategories;
+				deletedStuff.budgets.push(budget);
+			}
+			else {
+				budget.subcategories.forEach(function(subcategory) {
+					if (subcategory.deletedBy) {
+						var user = _.find(users, {id: subcategory.deletedBy}) || {id: "unknown id", name: "unknown name"};
+						var category = _.find(categories, {id: budget.category.id});
+						deletedStuff.subcategories.push({
+							budgetId: budget.id,
+							categoryName: category.name,
+							id: subcategory.id,
+							budget: subcategory.budget,
+							name: _.find(category.subcategories, {id: subcategory.id}).name,
+							deletedBy: {
+								id: user.id,
+								name: user.name
+							}
+						});
+					}
+				});
+			}
+		});
+		return res.send(deletedStuff);
+	}).fail(function(err) {
+		return res.send(err);
+	}) 
 }

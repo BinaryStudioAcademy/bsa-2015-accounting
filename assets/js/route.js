@@ -35,6 +35,12 @@ module.exports = function(app) {
         controllerAs:'admCtrl',
         activetab: 'administration'
       }).
+      when('/bin', {
+        templateUrl: '/templates/Bin.html',
+        controller: 'BinController',
+        controllerAs:'binCtrl',
+        activetab: 'bin'
+      }).
       otherwise({
         redirectTo: '/expenses'
       });

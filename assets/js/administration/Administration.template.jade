@@ -6,7 +6,7 @@
 		div.controls
 			input.form-control(type='text' placeholder='search user' ng-model='admCtrl.filter.name')
 			b Category: 
-			select.form-control(ng-model='admCtrl.category' ng-change='admCtrl.updateCategory()' ng-options='category.name for category in admCtrl	.categories')
+			select.form-control(ng-model='admCtrl.category' ng-change='admCtrl.updateCategory()' ng-options='category.name for category in admCtrl.categories')
 			b Currency: 
 			select.form-control(ng-model='admCtrl.currency' ng-change='admCtrl.updateCurrency()')
 				option(value='UAH') UAH

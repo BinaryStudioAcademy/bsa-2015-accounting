@@ -1,0 +1,60 @@
+#bin-view
+	#expenses-section Десь тут можуть бути видалені експенси
+	.alert.alert-warning(ng-show="currentUser.max_level < 3")
+		i.fa.fa-exclamation-triangle.fa-2x
+		h2 &nbsp;Budgets section available only for users with administration rights
+	#budgets-section(ng-hide="currentUser.max_level < 3")
+		b Year: 
+		select.form-control(ng-model='binCtrl.year' ng-change='binCtrl.updateYear()')
+			option(ng-repeat='year in binCtrl.years', value='{{year}}') {{year}}
+		table.table-hover
+			thead
+				tr
+					th(colspan="5")
+						b Subcategories from existing categories
+				tr
+					th
+						b Budget
+					th
+						b Category
+					th
+						b Subcategory
+					th
+						b Deleted by
+					th
+						b Restore
+			tbody
+				tr(ng-repeat="subcat in binCtrl.deletedStuff.subcategories")
+					td {{subcat.budget | currency}}
+					td {{subcat.categoryName}}
+					td {{subcat.name}}
+					td {{subcat.deletedBy.name}}
+					td
+						button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreSubcategory') restore
+				tr(ng-show="binCtrl.deletedStuff.subcategories.length == 0")
+					td(colspan="5") no deleted subcategories in year {{binCtrl.year}}
+			thead
+				tr
+					th(colspan="5")
+						b Full categories
+				tr
+					th
+						b Budget
+					th
+						b Category
+					th
+						b Created by
+					th
+						b Deleted by
+					th
+						b Restore
+			tbody
+				tr(ng-repeat="budget in binCtrl.deletedStuff.budgets")
+					td {{budget.category.budget | currency}}
+					td {{budget.category.name}}
+					td {{budget.creator.name}}
+					td {{budget.deletedBy.name}}
+					td
+						button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreBudget(budget.id, budget.category.id)') restore
+				tr(ng-show="binCtrl.deletedStuff.budgets.length == 0")
+					td(colspan="5") no deleted budgets in year {{binCtrl.year}}
