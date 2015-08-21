@@ -9,8 +9,8 @@ module.exports = function(app) {
       getPersonalHistory: getPersonalHistory
     };
 
-    function getPersonalExpenses(creatorId) {
-      return $resource("/expense?creator=" + creatorId, { sort: "time desc", where: {personal: true}}).query().$promise;
+    function getPersonalExpenses() {
+      return $resource("/expense?personal=true", { sort: "time desc", where: {personal: true}}).query().$promise;
     }
 
     function getPersonalHistory() {

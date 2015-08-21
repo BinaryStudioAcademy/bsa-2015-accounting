@@ -43,7 +43,7 @@ module.exports.policies = {
     'findOne': ['isAuthenticated', 'hasRightBudget'],
     'destroy': ['isAuthenticated', 'hasRightBudget'],
     'update': ['isAuthenticated', 'hasRightBudget'],
-    'create': ['isAuthenticated', 'hasRightBudget'],    
+    'create': ['isAuthenticated', 'hasRightBudget'],
     'find': 'isAuthenticated',
     'findDeleted':'isAuthenticated'
   },
@@ -56,7 +56,9 @@ module.exports.policies = {
   },
   'ExpenseController': {
     '*': ['isAuthenticated', 'hasRightExpense'],
-    'find': 'isAuthenticated'
+    'find': 'isAuthenticated',
+    'findDeleted': 'isAuthenticated',
+    'restoreDeleted': 'isAuthenticated'
   },
   'UserController': {
    '*': ['isAuthenticated', 'isAdmin'],
