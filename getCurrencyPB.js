@@ -1,4 +1,4 @@
-console.log('*** Geting carwncy from Privat Bank... \n*** It could take some time...');
+console.log('*** Geting currency from Privat Bank... \n*** It could take some time...');
 _ = require('lodash');
 var https = require('https');
 var async = require('async');
