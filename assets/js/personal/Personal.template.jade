@@ -51,19 +51,7 @@
 						| Amount
 					th.header-text
 						| User
-		table#income-money-table.table-hover.fixed(ng-if="!personalCtrl.isCollapsedMoneyTable && personalCtrl.history.length <= 10")
-			colgroup
-				col.table-money-date
-				col.table-money-category
-				col.table-money-amount
-				col.table-money-user
-			tbody
-				tr(ng-repeat="event in personalCtrl.history")
-					td {{event.time | date:'dd.MM.yyyy - HH:mm'}}
-					td {{event.category}}
-					td {{event.action}}
-					td {{event.who}}
-		.table-container(ng-if="!personalCtrl.isCollapsedMoneyTable && personalCtrl.history.length > 10")
+		.table-container(ng-if="!personalCtrl.isCollapsedMoneyTable")
 			table#income-money-table.table-hover.fixed
 				colgroup
 					col.table-money-date

@@ -7,10 +7,13 @@
 
 var actionUtil = require('sails/lib/hooks/blueprints/actionUtil'),
 		_ = require('lodash');
+var ObjectId = require('mongodb').ObjectID;
 
 module.exports = {
 	find: getExpenses,
-	create: createExpense
+	create: createExpense,
+  findDeleted: findDeleted,
+  restoreDeleted: restoreDeleted
 };
 
 function getExpenses(req, res) {
@@ -76,4 +79,73 @@ function createExpense(req, res) {
 			res.created(newInstance);
 		});
 	});
+}
+
+function findDeleted(req, res) {
+  var permissions = _.pluck(_.filter(req.user.categories, function(per) {
+    return per.level == 3;
+  }), 'id');
+  var filter = {deletedBy: {$exists: true}};
+  var expenseFilter = req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}});
+
+  Expense.find(expenseFilter)
+    .where(actionUtil.parseCriteria(req))
+    .sort(actionUtil.parseSort(req))
+    .then(function(expenses) {
+      var users = User.find().then(function(users) {
+        return users;
+      });
+      var categories = Category.find().then(function(categories) {
+        return categories;
+      });
+      return [expenses, users, categories];
+    }).spread(function(expenses, users, categories) {
+      expenses.forEach(function(expense) {
+        var category = _.find(categories, {id: expense.categoryId});
+        expense.category = {
+          id: expense.categoryId,
+          name: category.name
+        };
+        expense.subcategory = {
+          id: expense.subcategoryId,
+          name: _.find(category.subcategories, {id: expense.subcategoryId}).name
+        };
+        delete expense.categoryId;
+        delete expense.subcategoryId;
+        var user = _.find(users, {id: expense.creatorId}) || {id: "unknown id", name: "unknown name"};
+        expense.creator = {
+          id: user.id,
+          name: user.name
+        };
+        delete expense.creatorId;
+        var deletedByUser = _.find(users, {id: expense.deletedBy}) || {id: "unknown id", name: "unknown name"};
+        delete expense.deletedBy;
+        expense.deletedBy = {
+          id: deletedByUser.id,
+          name: deletedByUser.name
+        };
+      });
+      return res.send(expenses);
+    }).fail(function(err) {
+      return res.send(err);
+    });
+}
+
+function restoreDeleted(req, res) {
+  var pk = actionUtil.requirePk(req);
+
+  Expense.native(function(err, collection) {
+    if(err) return res.serverError(err);
+
+    collection.update({
+        _id: { $in: [pk, new ObjectId(pk)] }
+      },
+      {
+        $unset: {deletedBy: true}
+      },
+      function (err, results) {
+        if (err) return res.serverError(err);
+        return res.ok(results);
+      });
+  });
 }

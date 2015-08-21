@@ -3,9 +3,9 @@ var _ = require('lodash');
 module.exports = function(app) {
 	app.controller('BinController', BinController);
 
-	BinController.$inject = ['BudgetsService', 'YearsService', '$q'];
+	BinController.$inject = ['BudgetsService', 'YearsService', 'ExpensesService', '$q'];
 
-	function BinController(BudgetsService, YearsService, $q) {
+	function BinController(BudgetsService, YearsService, ExpensesService, $q) {
 		var vm = this;
 
 		YearsService.getYears().then(function(years) {
@@ -71,5 +71,94 @@ module.exports = function(app) {
 				}
 			});
 		};
+
+    // Expenses section
+    vm.loadAllExpenses = loadAllExpenses;
+    vm.loadExpenses = loadExpenses;
+    vm.isLoadMore = isLoadMore;
+    vm.getExpensesByDate = getExpensesByDate;
+    vm.toggleCustom = toggleCustom;
+
+    var MAX_LOAD = 10;
+    vm.expensesLimit = MAX_LOAD;
+
+    vm.deletedExpenses = [];
+    vm.dates = [];
+
+    loadAllExpenses();
+
+    vm.hiddenList = [];
+    vm.check = false;
+    vm.toggleAllExpenses = toggleAllExpenses;
+
+    function toggleAllExpenses() {
+      vm.check = !vm.check;
+
+      for(var i = 0; i < vm.deletedExpenses.length; i++) {
+        vm.hiddenList[i] = vm.check;
+      }
+    }
+
+    function toggleCustom(index) {
+      vm.hiddenList[index] = !vm.hiddenList[index];
+    }
+
+    function loadAllExpenses() {
+      ExpensesService.getDeletedExpenses().then(function(data) {
+        vm.deletedExpenses = data;
+        convertDates(vm.deletedExpenses);
+        loadExpenses();
+      });
+    }
+
+    function convertDates(array) {
+      array.forEach(function(item) {
+        item.time = new Date(item.time * 1000);
+        if(vm.dates.indexOf(item.time.toDateString()) < 0) vm.dates.push(item.time.toDateString());
+      });
+    }
+
+    function isLoadMore() {
+      if(typeof vm.dates != "undefined") {
+        if(vm.dates.length <= MAX_LOAD || vm.dates.length == 0) {
+          vm.expensesLimit = vm.dates.length;
+          return false;
+        } else return true;
+      }
+    }
+
+    function loadExpenses() {
+      // Check for length
+      isLoadMore();
+      vm.expensesLimit += MAX_LOAD;
+    }
+
+    function getExpensesByDate(date) {
+      var expenses = [];
+      var newDate = new Date(date).toDateString();
+      vm.deletedExpenses.forEach(function(expense) {
+        if(newDate == expense.time.toDateString()) {
+          expenses.push(expense);
+        }
+      });
+      return expenses;
+    }
+
+    vm.restoreExpense = restoreExpense;
+    function restoreExpense(expenseId, expenseName) {
+      swal({
+        title: "Are you sure?",
+        text: "Are you sure want to restore '" + expenseName + "'?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Yes, pretty sure!",
+        closeOnConfirm: true
+      }, function() {
+        ExpensesService.restoreExpense(expenseId).then(function() {
+          loadAllExpenses();
+        });
+      });
+    }
 	}
 };
