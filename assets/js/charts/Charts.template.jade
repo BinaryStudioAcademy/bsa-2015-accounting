@@ -14,7 +14,7 @@
 					li
 						label Category
 						select.form-control(name='Category', ng-model="categoryModel1", ng-options="category.name for category in chartCtrl.categories")
-							option(value="") All category
+							option(value="") All categories
 				button.chart-butSum.btn.btn-info(ng-click='chartCtrl.toggleForm(true); chartCtrl.displayCategory(categoryModel1)') Dispay by year
 	
 		form.bottomForm

@@ -105,9 +105,13 @@ module.exports = function(app) {
 				var filterSum = _.filter(vm.allBudgets , function(budget) {
 					return (budget.category.name === name && budget.year === year);
 				});
-					return filterSum[0].category.budget;
-			}
 
+				if(filterSum[0] == undefined){
+					return ' - ';
+				}else{
+					return filterSum[0].category.budget;
+				}
+			}
 /*		vm.getSumExpenses = function (name, year){
 
 			var filterSum = _.filter(vm.allBudgets , function(budget) {

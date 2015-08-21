@@ -9,16 +9,15 @@ var urlDb = 'mongodb://localhost:27017/portal-accounting';
 
 var apiUrl = 'https://api.privatbank.ua/p24api/exchange_rates?json&date='
 var date = new Date()
-date.setDate(date.getDate() - 360)
+date.setDate(date.getDate() - 365)
 var startYear = date.getFullYear();
 var startMonth = date.getMonth();
 var startDay = date.getDate();
 var d = new Date(startYear, startMonth, startDay);
-
 var carrenciesUrls = [];
-var currencyArr = []
+var carrencyArr = []
 
-for(var i = 0; i <= 365; i++){
+for(var i = 0; i <= 364; i++){
 	d.setDate(d.getDate() + 1);
 	var y = d.getFullYear();
 	var m = d.getMonth();
@@ -26,7 +25,6 @@ for(var i = 0; i <= 365; i++){
 	var url = apiUrl + day + '.' + m + '.' + y;
 	carrenciesUrls.push(url);
 };
-var counter = 0;
 
 var callback = function(response) {
 	var data = '';
@@ -37,39 +35,39 @@ var callback = function(response) {
 	response.on('end', function() {
 		var rates = JSON.parse(data);
 		var rate = _.filter(rates.exchangeRate, function(obj) {
-			obj.date = new Date(rates.date).getTime()
-
+			obj.date = Date.parse(reversString(rates.date))/1000;
 			return obj.currency == "USD";
 		});
-		console.log(rate[0]);
-		currencyArr.push(rate[0]);
-		counter++;
+		carrencyArr.push(rate[0]);
 
-		if (counter < 2){
-			var options = {
-				host: "api.privatbank.ua",
-				path: carrenciesUrls[counter]
-			}
-			
-			https.request(options, callback).end();
-
-		}else{
-
-			console.log(currencyArr);
+		if (carrencyArr.length === 365) {
+			addToCollection(carrencyArr)
 		}
-
-	});
+		
+			});
 
 };
 
-/*carrenciesUrls.forEach( function(carrenciesUrl){*/
+carrenciesUrls.forEach( function(carrenciesUrl){
 
 	var options = {
 		host: "api.privatbank.ua",
-		path: carrenciesUrls[counter]
+		path: carrenciesUrl
 	};
 
 	https.request(options, callback).end();
+})
 
-/*})*/
+function addToCollection(exchangeRate) {
+		MongoClient.connect(urlDb, function(err, database) {
+			if (err) throw err;
+			database.collection('carrencyByPeriod').remove();
+			database.collection('carrencyByPeriod').insert(exchangeRate);
+			database.close();
+	});
+console.log('Done!');
+}
 
+function reversString(date){
+	return date.split(".").reverse().join(".");
+}
