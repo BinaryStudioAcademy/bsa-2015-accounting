@@ -13,7 +13,7 @@ var startYear = 2009;
 var years = 7;
 var categories = ['HR', 'Marketing', 'Finance', 'Technical', 'Accounting'];
 var events = ['Conference', 'Party', 'Businnes trip', 'Camping', 'Media event', 'Travel', 'Holiday', 'Sport event'];
-var charges = ['water', 'drinks', 'chips', 'pastery', 'fruits', 'vegetables', 'cheese', 'popcorn', 'transport', 'ice cream', 'smoothie', 'cakes', 'ballones', 'hats', 
+var charges = ['water', 'drinks', 'chips', 'pastery', 'fruits', 'vegetables', 'cheese', 'popcorn', 'transport', 'ice cream', 'smoothie', 'cakes', 'ballones', 'hats',
 'costumes', 'capes', 'bowler', 'snacks', 'cookies', 'ham', 'tickets'];
 
 var salt = bcrypt.genSaltSync(10, function(err, salt) {return salt});
@@ -116,8 +116,8 @@ _.times(years, function(n) {
 					db.currency.push(currency);
 				}
 				if (nn === 4) {
-					var expense = Factory.build('Expense', {deletedBy: String(_.sample(db.user)._id), time: expTime, creatorId: String(_.sample(db.user)._id), categoryId: category._id, subcategoryId: sub.id});
-							db.expense.push(expense);
+					//var expense = Factory.build('Expense', {deletedBy: String(_.sample(db.user)._id), time: expTime, creatorId: String(_.sample(db.user)._id), categoryId: category._id, subcategoryId: sub.id});
+					//		db.expense.push(expense);
 				} else if (nn === 5) {
 					var expense = Factory.build('Expense', {time: expTime, creatorId: String(_.sample(db.user)._id), categoryId: String(category._id), subcategoryId: String(sub.id)});
 					expense.personal = true;

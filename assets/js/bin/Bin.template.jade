@@ -1,8 +1,100 @@
 #bin-view
-	#expenses-section Десь тут можуть бути видалені експенси
 	.alert.alert-warning(ng-show="currentUser.max_level < 3")
 		i.fa.fa-exclamation-triangle.fa-2x
-		h2 &nbsp;Budgets section available only for users with administration rights
+		h2 &nbsp;This section available only for users with administration rights
+	#expenses-section(ng-hide="currentUser.max_level < 3")
+		table.table-hover.fixed
+			colgroup
+				col.table-toggle
+				col.table-date-header
+				col.table-category
+				col.table-expense
+				col.table-cost
+				col.table-carrency
+				col.table-sub
+				col.table-addBy
+				col.table-deletedBy
+				col.table-description-header
+			thead
+				tr
+					th(colspan="10") Deleted expenses
+				tr
+					th
+						button.fa.fa-list(ng-click='binCtrl.toggleAllExpenses()' ng-show='binCtrl.check')
+						button.fa.fa-th(ng-click='binCtrl.toggleAllExpenses()' ng-hide='binCtrl.check')
+					th
+						| Time
+					th
+						| Category
+					th#header-sub
+						| Subcategory
+					th
+						| Name
+					th
+						| Amount
+					th
+						| $ / &#8372;
+					th
+						| Added by
+					th
+						| Deleted by
+					th
+						i.fa.fa-cog
+		#main
+			table.table-hover.fixed(ng-hide="sortType")
+				colgroup
+					col.table-date
+					col.table-category
+					col.table-expense
+					col.table-cost
+					col.table-carrency
+					col.table-sub
+					col.table-addBy
+					col.table-deletedBy
+					col.table-description
+				tbody(ng-repeat="date in binCtrl.dates | limitTo: binCtrl.expensesLimit", ng-hide="!(filteredData = (binCtrl.getExpensesByDate(date) " +
+				"| filter: {name: nameModelFilter, category: {name: categoryModelFilter.name}, " +
+				"subcategory: {name: subcategoryModelFilter.name}, creator: {name: authorModelFilter}} " +
+				"| dateRange:startDateFilter:endDateFilter)).length")
+					tr.date-hilight
+						td
+							i.fa.fa-chevron-right(ng-click="binCtrl.toggleCustom($index)" ng-hide="!binCtrl.hiddenList[$index]" )
+							i.fa.fa-chevron-down(ng-click="binCtrl.toggleCustom($index)" ng-show="!binCtrl.hiddenList[$index]")
+						td(colspan='8')
+
+							| {{ date | date: 'fullDate' }}
+					tr(ng-repeat="expense in filteredData", ng-init='binCtrl.pageTitleEquals(filteredData)', ng-hide="binCtrl.hiddenList[$parent.$index]" )
+						td
+							| {{ expense.time | date:'HH:mm' }}
+						td
+							| {{ expense.category.name }}
+						td
+							| {{ expense.subcategory.name }}
+						td
+							| {{ expense.name  || 'empty' }}
+						td
+							| {{ expense.price  || 'empty' }}
+						td
+							| {{ expense.currency }}
+						td
+							| {{ expense.creator.name }}
+						td
+							| {{ expense.deletedBy.name }}
+						td
+							button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreExpense(expense.id, expense.name)') restore
+							.btn-group(dropdown='')
+								span.dropdown-menu.dropdown-menu-right(aria-labelledby='split-button') {{ expense.description }}
+				tbody(ng-show="binCtrl.isLoadMore()")
+					tr
+						td
+						td(colspan='8')
+							a(ng-click="binCtrl.loadExpenses()")
+								| load more expenses&nbsp;
+								i.fa.fa-plus
+				tbody(ng-if="binCtrl.deletedExpenses == 0")
+					tr
+						td(colspan='8')
+							| no deleted expenses
 	#budgets-section(ng-hide="currentUser.max_level < 3")
 		b Year: 
 		select.form-control(ng-model='binCtrl.year' ng-change='binCtrl.updateYear()')

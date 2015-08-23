@@ -56,9 +56,9 @@ module.exports = function(app) {
     }
 
     function isLoadMore() {
-      if(typeof vm.allExpenses != "undefined") {
-        if(vm.allExpenses.length <= MAX_LOAD || vm.allExpenses.length == 0) {
-          vm.expensesLimit = vm.allExpenses.length;
+      if(typeof vm.dates != "undefined") {
+        if(vm.dates.length <= MAX_LOAD || vm.dates.length == 0) {
+          vm.expensesLimit = vm.dates.length;
           return false;
         } else return true;
       }
@@ -133,14 +133,9 @@ module.exports = function(app) {
         },
         function() {
           ExpensesService.deleteExpense(id).then(function() {
-            for(var i = 0; i < vm.allExpenses.length; i++) {
-              if(vm.allExpenses[i].id === id) {
-                vm.allExpenses.splice(i, 1);
-                break;
-              }
-            }
+            loadAllExpenses();
+            swal("Deleted!", "Expense has been deleted.", "success");
           });
-          swal("Deleted!", "Expense has been deleted.", "success");
         });
     }
 

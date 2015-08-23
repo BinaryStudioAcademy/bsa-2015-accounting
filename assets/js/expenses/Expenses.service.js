@@ -10,7 +10,9 @@ module.exports = function(app) {
       createExpense: createExpense,
       editExpense: editExpense,
       deleteExpense: deleteExpense,
-      getCategories: getCategories
+      getCategories: getCategories,
+      getDeletedExpenses: getDeletedExpenses,
+      restoreExpense: restoreExpense
     };
 
     function getRequest() {
@@ -27,6 +29,19 @@ module.exports = function(app) {
 
     function getAllExpenses(year) {
       return $resource("/expenses_by_year/" + year).query().$promise;
+    }
+
+    function getDeletedExpenses() {
+      return $resource("/deleted/expenses", { sort: "time desc" }).query().$promise;
+    }
+
+    function restoreExpense(expenseId) {
+      var data = $resource("/expense/restore/:id", { id: "@id" }, {
+        update: {
+          method: "PUT"
+        }
+      });
+      return data.update({ id: expenseId }).$promise;
     }
 
     /**

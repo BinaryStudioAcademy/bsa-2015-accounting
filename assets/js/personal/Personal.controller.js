@@ -59,7 +59,7 @@ module.exports = function(app) {
     getPersonalExpenses();
 
     function getPersonalExpenses() {
-      var personalExpensesPromise = PersonalService.getPersonalExpenses(vm.currentUser.id);
+      var personalExpensesPromise = PersonalService.getPersonalExpenses();
       var categoriesPromise = CategoriesService.getCategories();
 
       $q.all([personalExpensesPromise, categoriesPromise]).then(function(data) {
@@ -83,9 +83,9 @@ module.exports = function(app) {
     }
 
     function isLoadMore() {
-      if(typeof vm.allExpenses != "undefined") {
-        if(vm.allExpenses.length <= MAX_LOAD || vm.allExpenses.length == 0) {
-          vm.expensesLimit = vm.allExpenses.length;
+      if(typeof vm.dates != "undefined") {
+        if(vm.dates.length <= MAX_LOAD || vm.dates.length == 0) {
+          vm.expensesLimit = vm.dates.length;
           return false;
         } else return true;
       }
@@ -143,7 +143,9 @@ module.exports = function(app) {
     }
 
     function editExpense(id) {
-      ExpensesService.editExpense(id, expense);
+      ExpensesService.editExpense(id, expense).then(function() {
+        getUsersBudgets();
+      });
     }
 
     function getField(fieldId, fieldName) {
@@ -189,15 +191,15 @@ module.exports = function(app) {
 
     function getUsersBudgets() {
       vm.budgets = [];
-      if(vm.currentUser.categories) {
-        vm.currentUser.categories.forEach(function(item) {
+      UsersService.getCurrentUser().then(function(user) {
+        user.categories.forEach(function(item) {
           var category = $filter('filter')(vm.categories, {id: item.id});
           item.categoryId = category[0].name;
           item.spent = item.used;
           item.left = item.budget - item.used;
           vm.budgets.push(item);
         });
-      }
+      });
     }
 
     vm.changeCurrency = changeCurrency;
@@ -281,11 +283,12 @@ module.exports = function(app) {
 
             UsersService.editUser($rootScope.currentUser.id,
               {addPersonalBudget: {id: vm.newMoney.category, budget: newBudget}}).then(function() {
+                getUsersBudgets();
                 getHistory();
               });
 
-            updateBudgetTable(category[0].name, "left", newBudget);
-
+            if($rootScope.currentUser.categories.length == 0)
+              $rootScope.currentUser.categories.push({id: vm.newMoney.category, budget: newBudget});
             swal("Ok!", "You " + addedTookWord + " " + vm.newMoney.money + " "
               + vm.newMoney.currency + " " + toFromWord + " your personal " + category[0].name + " budget", "success");
           });
@@ -298,25 +301,6 @@ module.exports = function(app) {
     vm.editNewMoneyObject = editNewMoneyObject;
     function editNewMoneyObject(data, field) {
       vm.newMoney[field] = data;
-    }
-
-    function updateBudgetTable(categoryName, moneyType, newAmount) {
-      if(moneyType == "left") {
-        var isNewBudget = true;
-        vm.budgets.forEach(function(item) {
-          if(item.categoryId == categoryName) {
-            item.left += newAmount;
-            isNewBudget = false;
-          }
-        });
-        if(isNewBudget) vm.budgets.push({categoryId: categoryName, left: newAmount, spent: 0});
-      } else {
-        vm.budgets.forEach(function(item) {
-          if(item.categoryId == categoryName) {
-            item.spent += newAmount;
-          }
-        });
-      }
     }
 
     // Income money table
