@@ -3,9 +3,9 @@ var swal = require('sweetalert');
 module.exports = function(app) {
   app.controller('ExpenseFormController', ExpenseFormController);
 
-  ExpenseFormController.$inject = ['ExpensesService', '$rootScope', 'BudgetsService', '$filter'];
+  ExpenseFormController.$inject = ['ExpensesService', '$rootScope', 'BudgetsService', 'UsersService', '$filter'];
 
-  function ExpenseFormController(ExpensesService, $rootScope, BudgetsService, $filter) {
+  function ExpenseFormController(ExpensesService, $rootScope, BudgetsService, UsersService, $filter) {
     var vm = this;
 
     // Create new expense
@@ -91,19 +91,21 @@ module.exports = function(app) {
     vm.setPersonalLeftBudget = setPersonalLeftBudget;
 
     function setPersonalLeftBudget(categoryModel, subcategoryModel) {
-      var budg;
       if(categoryModel) {
-        budg = $filter('filter')($rootScope.currentUser.categories, {id: categoryModel.id});
-      }
-      if(budg && vm.expense.personal) {
-        if(vm.expense.currency == "UAH") {
-          vm.leftBudget = budg[0].budget - budg[0].used;
-        } else {
-          vm.leftBudget = (budg[0].budget - budg[0].used) / vm.exchangeRate;
-        }
-      } else {
-        setLeftBudget(categoryModel);
-        setLeftSubcategoryBudget(categoryModel, subcategoryModel);
+        UsersService.getCurrentUser().then(function(user) {
+          var budg = $filter('filter')(user.categories, {id: categoryModel.id});
+
+          if(budg[0] && vm.expense.personal) {
+            if(vm.expense.currency == "UAH") {
+              vm.leftBudget = budg[0].budget - budg[0].used;
+            } else {
+              vm.leftBudget = (budg[0].budget - budg[0].used) / vm.exchangeRate;
+            }
+          } else {
+            setLeftBudget(categoryModel);
+            setLeftSubcategoryBudget(categoryModel, subcategoryModel);
+          }
+        });
       }
     }
 
