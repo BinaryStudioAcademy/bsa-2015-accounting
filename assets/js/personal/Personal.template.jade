@@ -242,6 +242,7 @@
 							.btn-group(dropdown='')
 								button.btn.fa.fa-info(ng-show='!rowform.$visible' type='button', dropdown-toggle='')
 								span.dropdown-menu.dropdown-menu-right(editable-text='expense.description', e-name='description' e-form='rowform' role='menu', aria-labelledby='split-button' onaftersave='personalCtrl.editExpenseObject($data, "description")') {{ expense.description }}
+						td.scroll-col(ng-if="!personalCtrl.isLoadMore()")
 				tbody(ng-show="personalCtrl.isLoadMore()")
 					tr
 						td

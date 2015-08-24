@@ -1,5 +1,9 @@
 #expenses-view
-	#rightBlock
+	button#responsive-btn.btn.btn-primary(ng-click="isRightBlockShow = !isRightBlockShow")
+		| New expense&nbsp;
+		i.fa.fa-chevron-right(ng-show="!isRightBlockShow")
+		i.fa.fa-chevron-down(ng-show="isRightBlockShow")
+	#rightBlock(ng-class="{showBlock: isRightBlockShow}")
 		.exchange
 			b Today currency exchange rate
 			br

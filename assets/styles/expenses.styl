@@ -21,7 +21,10 @@
 	.exchange
 		text-align center
 		color #222222
-		padding 12px 10px
+		b
+			display inline-block
+		span
+			display inline-block
 	.exchange, .expense-form
 		width 100%
 		border solid 1px #ddd
@@ -191,3 +194,57 @@
 		margin-bottom 10px
 	#form-subcategory-left
 		display inline-flex
+	
+	#responsive-btn
+		display none
+		width 100%
+		margin 0px !important
+		margin-bottom 5px !important
+		
+	.showBlock
+		display initial !important
+	
+	@media screen and (max-width: 1235px)
+		#leftBlock
+			width 78%
+		#rightBlock
+			display initial
+	
+	@media screen and (max-width: 1024px)
+		#leftBlock
+			width 100%
+		#rightBlock
+			position initial
+			width 100%
+			display none
+		#responsive-btn
+			display initial
+		.exchange
+			padding 5px
+		.expense-form
+			padding 5px
+			input, select, textarea
+				margin-bottom 5px
+			#personal-container
+				margin-top 180px
+				margin-bottom 5px
+			button
+				padding 5px 5px
+		.filters
+			#excel-button
+				width 34%
+				
+	@media screen and (max-width: 550px)
+		.filters
+			form
+				padding 5px
+				height 90px
+				input
+					padding 5px
+					margin-left 5px
+	
+	@media screen and (max-width: 420px)
+		.filters
+			form
+				input
+					margin-left 2px
