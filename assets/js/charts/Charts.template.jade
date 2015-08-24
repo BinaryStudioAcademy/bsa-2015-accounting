@@ -35,7 +35,7 @@
 		#barChart
 		br
 		#pieChart
-		h3 Budgets
+		h3 Budgets $
 		table(ng-hide='chartCtrl.viewTable') 
 			thead
 				tr
@@ -47,4 +47,4 @@
 					th
 						b {{ name }}
 					td(ng-repeat='year in chartCtrl.years')
-						| {{chartCtrl.getSumBudget(name, year) | currency}}
+						| {{chartCtrl.getSumBudget(name, year) | number:0}}
