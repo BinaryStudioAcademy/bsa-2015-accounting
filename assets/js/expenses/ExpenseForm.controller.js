@@ -62,9 +62,7 @@ module.exports = function(app) {
 
     function getCategories() {
       ExpensesService.getCategories().then(function(data) {
-        data.forEach(function(category) {
-          vm.categories.push(category);
-        });
+          vm.categories = data;
       });
     }
 

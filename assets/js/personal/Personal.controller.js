@@ -315,6 +315,7 @@ module.exports = function(app) {
     vm.sort = sort;
     var orderBy = $filter('orderBy');
     vm.sortedExpenses = [];
+    vm.sortType = false;
     function sort(predicate, reverse) {
       vm.sortedExpenses = vm.allExpenses;
       // Converting to USD
