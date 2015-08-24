@@ -4,6 +4,13 @@ module.exports = function(app) {
   HomepageController.$inject = ['$rootScope', 'UsersService', 'CurrencyService', '$route', '$filter'];
 
   function HomepageController($rootScope, UsersService, CurrencyService, $route, $filter) {
+    
+    //menu
+    $rootScope.menuTabs=false
+    $rootScope.toggleMenu = function(){
+      $rootScope.menuTabs =$rootScope.menuTabs=== false ? true: false;
+    }
+
     $rootScope.currentUser = {};
     $rootScope.$route = $route;
     UsersService.getCurrentUser().then(function(user) {
