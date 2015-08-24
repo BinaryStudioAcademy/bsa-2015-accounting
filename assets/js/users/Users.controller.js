@@ -5,12 +5,7 @@ module.exports = function(app) {
 
 	function UsersController(UsersService, filterFilter) {
 		var vm = this;
-//menu
 
-	vm.menuTabs=true
-	vm.toggleMenu = function(){
-		vm.menuTabs =vm.menuTabs=== false ? true: false;
-	}
 
 
 		vm.currentUser = UsersService.getCurrentUser();

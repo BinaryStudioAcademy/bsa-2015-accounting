@@ -5,14 +5,14 @@
 	#money-form(ng-show="currentUser.max_level > 1 || currentUser.admin", ng-init="showAddButton = true")
 		form(editable-form='', name='moneyForm', onaftersave='personalCtrl.processMoney(showAddButton); personalCtrl.showTitle(false)', ng-show='personalCtrl.isShowTitle')
 			div
-				span.title Amount: 
+				span.title Amount:
 				span(editable-number='personalCtrl.newMoney.money', e-name='amount', e-form='moneyForm', onbeforesave="personalCtrl.checkField($data)", onaftersave='personalCtrl.editNewMoneyObject($data, "money")', e-required='') {{ personalCtrl.newMoney.money }}
 			div
-				span.title Currency: 
+				span.title Currency:
 				span(editable-select='personalCtrl.newMoney.currency', e-name='currency', e-form='moneyForm', e-ng-options='currency for currency in personalCtrl.currency', onbeforesave="personalCtrl.checkField($data)", onaftersave='personalCtrl.editNewMoneyObject($data, "currency")', e-required='')
 					| {{ personalCtrl.newMoney.currency }}
 			div
-				span.title Category: 
+				span.title Category:
 				span(editable-select='personalCtrl.newMoney.category', e-name='category', e-form='moneyForm', onshow='loadGroups()', e-ng-options='category.id as category.name for category in personalCtrl.categories', onbeforesave="personalCtrl.checkField($data)", onaftersave='personalCtrl.editNewMoneyObject($data, "category")', e-required='')
 					| {{ personalCtrl.newMoney.category }}
 			#button-group
@@ -77,21 +77,21 @@
 					th.header-text
 						| Category
 					th.header-text
-						| Left  
+						| Left&nbsp;
 						#currency-group.btn-group(ng-click="personalCtrl.changeCurrency('left')")
 							label.btn.btn-primary(ng-model="personalCtrl.currencyLeftModel", btn-radio="'UAH'") UAH
 							label.btn.btn-primary(ng-model="personalCtrl.currencyLeftModel", btn-radio="'USD'") USD
 					th.header-text
-						| Spent  
+						| Spent&nbsp;
 						#currency-group.btn-group(ng-click="personalCtrl.changeCurrency('spent')")
 							label.btn.btn-primary(ng-model="personalCtrl.currencySpentModel", btn-radio="'UAH'") UAH
 							label.btn.btn-primary(ng-model="personalCtrl.currencySpentModel", btn-radio="'USD'") USD
 			tbody
 				tr(ng-repeat="budget in personalCtrl.budgets")
 					td {{budget.categoryId}}
-					td 
+					td
 						span#budget-left {{budget.left | currency:""}}
-					td 
+					td
 						span#budget-spent {{budget.spent | currency:""}}
 		table.table-hover.fixed(ng-if="personalCtrl.allExpenses.length != 0")
 			colgroup
@@ -113,39 +113,39 @@
 						button.fa.fa-list(ng-click='personalCtrl.toggleAllExpenses()' ng-show='personalCtrl.check')
 						button.fa.fa-th(ng-click='personalCtrl.toggleAllExpenses()' ng-hide='personalCtrl.check')
 					th
-						span(ng-click="sortType = 'time'; sortReverse = !sortReverse; personalCtrl.sort(sortType, sortReverse)") Time&nbsp;
-							span.fa.fa-caret-down(ng-show="sortType == 'time' && !sortReverse")
-							span.fa.fa-caret-up(ng-show="sortType == 'time' && sortReverse")
-							span.fa.fa-sort(ng-hide="sortType == 'time'")
+						span(ng-click="personalCtrl.sortType = 'time'; sortReverse = !sortReverse; personalCtrl.sort(personalCtrl.sortType, sortReverse)") Time&nbsp;
+							span.fa.fa-caret-down(ng-show="personalCtrl.sortType == 'time' && !sortReverse")
+							span.fa.fa-caret-up(ng-show="personalCtrl.sortType == 'time' && sortReverse")
+							span.fa.fa-sort(ng-hide="personalCtrl.sortType == 'time'")
 					th
-						span(ng-click="sortType = 'category.name'; sortReverse = !sortReverse; personalCtrl.sort(sortType, sortReverse)") Category&nbsp;
-							span.fa.fa-caret-down(ng-show="sortType == 'category.name' && !sortReverse")
-							span.fa.fa-caret-up(ng-show="sortType == 'category.name' && sortReverse")
-							span.fa.fa-sort(ng-hide="sortType == 'category.name'")
+						span(ng-click="personalCtrl.sortType = 'category.name'; sortReverse = !sortReverse; personalCtrl.sort(personalCtrl.sortType, sortReverse)") Category&nbsp;
+							span.fa.fa-caret-down(ng-show="personalCtrl.sortType == 'category.name' && !sortReverse")
+							span.fa.fa-caret-up(ng-show="personalCtrl.sortType == 'category.name' && sortReverse")
+							span.fa.fa-sort(ng-hide="personalCtrl.sortType == 'category.name'")
 					th
-						span(ng-click="sortType = 'subcategory.name'; sortReverse = !sortReverse; personalCtrl.sort(sortType, sortReverse)") Subcategory&nbsp;
-							span.fa.fa-caret-down(ng-show="sortType == 'subcategory.name' && !sortReverse")
-							span.fa.fa-caret-up(ng-show="sortType == 'subcategory.name' && sortReverse")
-							span.fa.fa-sort(ng-hide="sortType == 'subcategory.name'")
+						span(ng-click="personalCtrl.sortType = 'subcategory.name'; sortReverse = !sortReverse; personalCtrl.sort(personalCtrl.sortType, sortReverse)") Subcategory&nbsp;
+							span.fa.fa-caret-down(ng-show="personalCtrl.sortType == 'subcategory.name' && !sortReverse")
+							span.fa.fa-caret-up(ng-show="personalCtrl.sortType == 'subcategory.name' && sortReverse")
+							span.fa.fa-sort(ng-hide="personalCtrl.sortType == 'subcategory.name'")
 					th
-						span(ng-click="sortType = 'name'; sortReverse = !sortReverse; personalCtrl.sort(sortType, sortReverse)") Name&nbsp;
-							span.fa.fa-caret-down(ng-show="sortType == 'name' && !sortReverse")
-							span.fa.fa-caret-up(ng-show="sortType == 'name' && sortReverse")
-							span.fa.fa-sort(ng-hide="sortType == 'name'")
+						span(ng-click="personalCtrl.sortType = 'name'; sortReverse = !sortReverse; personalCtrl.sort(personalCtrl.sortType, sortReverse)") Name&nbsp;
+							span.fa.fa-caret-down(ng-show="personalCtrl.sortType == 'name' && !sortReverse")
+							span.fa.fa-caret-up(ng-show="personalCtrl.sortType == 'name' && sortReverse")
+							span.fa.fa-sort(ng-hide="personalCtrl.sortType == 'name'")
 					th
-						span(ng-click="sortType = 'currencySort'; sortReverse = !sortReverse; personalCtrl.sort(sortType, sortReverse)") Amount&nbsp;
-							span.fa.fa-caret-down(ng-show="sortType == 'currencySort' && !sortReverse")
-							span.fa.fa-caret-up(ng-show="sortType == 'currencySort' && sortReverse")
-							span.fa.fa-sort(ng-hide="sortType == 'currencySort'")
+						span(ng-click="personalCtrl.sortType = 'currencySort'; sortReverse = !sortReverse; personalCtrl.sort(personalCtrl.sortType, sortReverse)") Amount&nbsp;
+							span.fa.fa-caret-down(ng-show="personalCtrl.sortType == 'currencySort' && !sortReverse")
+							span.fa.fa-caret-up(ng-show="personalCtrl.sortType == 'currencySort' && sortReverse")
+							span.fa.fa-sort(ng-hide="personalCtrl.sortType == 'currencySort'")
 					th
-						span(ng-click="sortType = 'currency'; sortReverse = !sortReverse; personalCtrl.sort(sortType, sortReverse)") $ / &#8372; &nbsp;
-							span.fa.fa-caret-down(ng-show="sortType == 'currency' && !sortReverse")
-							span.fa.fa-caret-up(ng-show="sortType == 'currency' && sortReverse")
-							span.fa.fa-sort(ng-hide="sortType == 'currency'")
+						span(ng-click="personalCtrl.sortType = 'currency'; sortReverse = !sortReverse; personalCtrl.sort(personalCtrl.sortType, sortReverse)") $ / &#8372; &nbsp;
+							span.fa.fa-caret-down(ng-show="personalCtrl.sortType == 'currency' && !sortReverse")
+							span.fa.fa-caret-up(ng-show="personalCtrl.sortType == 'currency' && sortReverse")
+							span.fa.fa-sort(ng-hide="personalCtrl.sortType == 'currency'")
 					th
 						i.fa.fa-cog
 		.table-container(ng-if="personalCtrl.allExpenses.length != 0")
-			table.table-hover.fixed
+			table.table-hover.fixed(ng-hide="personalCtrl.sortType")
 					colgroup
 						col.table-date
 						col.table-category
@@ -194,6 +194,7 @@
 								.btn-group(dropdown='')
 									button.btn.fa.fa-info(ng-show='!rowform.$visible' type='button', dropdown-toggle='')
 									span.dropdown-menu.dropdown-menu-right(editable-text='expense.description', e-name='description' onbeforesave="personalCtrl.checkField($data)" e-form='rowform' role='menu', aria-labelledby='split-button' onaftersave='personalCtrl.editExpenseObject($data, "description")') {{ expense.description }}
+							td.scroll-col(ng-if="!personalCtrl.isLoadMore()")
 					tbody(ng-show="personalCtrl.isLoadMore()")
 						tr
 							td
@@ -201,3 +202,50 @@
 								a(ng-click="personalCtrl.loadExpenses(); personalCtrl.pushList(true)")
 									| load more expenses&nbsp;
 									i.fa.fa-plus
+			// filter table
+			table.table-hover.fixed(ng-if="personalCtrl.sortType")
+				colgroup
+					col.table-date
+					col.table-category
+					col.table-expense
+					col.table-cost
+					col.table-carrency
+					col.table-sub
+					col.table-description
+				tbody
+					tr(ng-repeat="expense in personalCtrl.sortedExpenses | limitTo: personalCtrl.expensesLimit")
+						td
+							| {{ expense.time | date:'dd.MM.yyyy' }}
+						td
+							span(editable-select='expense.category.id', e-name='category.name', onshow="personalCtrl.getSubcategories($data)", e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "categoryId")', e-ng-options='category.id as category.name for category in personalCtrl.categories' e-ng-change="personalCtrl.getSubcategories($data)", e-required="")
+								| {{ personalCtrl.getField(expense.category.id, "category") || 'empty' }}
+						td
+							span(editable-select='expense.subcategory.id', e-name='subcategory.name', e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "subcategoryId")', onbeforesave="personalCtrl.checkField($data)", e-ng-options='subcategory.id as subcategory.name for subcategory in personalCtrl.subcategories', e-required="")
+								| {{ personalCtrl.getField(expense.subcategory.id, "subcategory") || expense.subcategory.name }}
+						td
+							span(editable-text='expense.name', e-name='name', e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "name")', onbeforesave="personalCtrl.checkField($data)", e-required="")
+								| {{ expense.name  || 'empty' }}
+						td
+							span(editable-number='expense.price', e-name='price', e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "price")', onbeforesave="personalCtrl.checkField($data)", e-required="")
+								| {{ expense.price  || 'empty' }}
+						td
+							span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in personalCtrl.currency', onaftersave='personalCtrl.editExpenseObject($data, "currency")' e-required="")
+								| {{ expense.currency }}
+						td
+							form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', onaftersave="personalCtrl.editExpense(expense.id)", shown='inserted == expense')
+
+								button.btn-xs.btn.btn-success.fa.fa-check(type='submit', ng-disabled='rowform.$waiting')
+								button#delete-button.btn-xs.btn.btn-warning.fa.fa-ban(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
+							.buttons(ng-show='!rowform.$visible')
+								button.btn-xs.btn.btn-primary.edit-button.fa.fa-pencil(ng-click='rowform.$show()')
+								button.btn-xs.btn.btn-danger.fa.fa-trash-o(ng-click="personalCtrl.deleteExpense(expense.id, expense.name)")
+							.btn-group(dropdown='')
+								button.btn.fa.fa-info(ng-show='!rowform.$visible' type='button', dropdown-toggle='')
+								span.dropdown-menu.dropdown-menu-right(editable-text='expense.description', e-name='description' e-form='rowform' role='menu', aria-labelledby='split-button' onaftersave='personalCtrl.editExpenseObject($data, "description")') {{ expense.description }}
+				tbody(ng-show="personalCtrl.isLoadMore()")
+					tr
+						td
+						td(colspan='7')
+							a(ng-click="personalCtrl.loadExpenses(); personalCtrl.pushList(true)")
+								| load more expenses&nbsp;
+								i.fa.fa-plus

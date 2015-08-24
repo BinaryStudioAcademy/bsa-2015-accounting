@@ -1,19 +1,12 @@
 #chart-view
+
 	.chart-Topcontainer
 		width 25%
 		padding 0 22px
-		height 515px;
 		right 30px
-		top 60px
+		top 105px
 		position fixed
 
-	li
-		text-decoration none
-		list-style none
-	
-	.chart-filterList
-		li
-			margin-top 10px
 	.chartsBlock
 		width 65%
 		float left
@@ -50,4 +43,17 @@
 		& > text
 			&:last-child
 				display none
+	@media screen and (max-width: 680px)
+		.chart-Topcontainer
+			width 100%
+			padding 0 22px
+			margin 0 20px
+			position relative
 
+		.chartsBlock
+			width 95%
+		#pieChart
+			margin-left 10px
+
+		table, h3
+			display none

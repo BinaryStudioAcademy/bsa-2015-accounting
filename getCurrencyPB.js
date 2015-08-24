@@ -15,7 +15,7 @@ var startMonth = date.getMonth();
 var startDay = date.getDate();
 var d = new Date(startYear, startMonth, startDay);
 var carrenciesUrls = [];
-var carrencyArr = []
+var currencyArr = []
 
 for(var i = 0; i <= 364; i++){
 	d.setDate(d.getDate() + 1);
@@ -35,24 +35,30 @@ var callback = function(response) {
 	response.on('end', function() {
 		var rates = JSON.parse(data);
 		var rate = _.filter(rates.exchangeRate, function(obj) {
+			delete obj.baseCurrency;
+			delete obj.saleRateNB;
+			delete obj.purchaseRateNB;
+			delete obj.saleRate;
+			obj.rate = obj.purchaseRate;
+			delete obj.purchaseRate;
 			obj.date = Date.parse(reversString(rates.date))/1000;
 			return obj.currency == "USD";
 		});
-		carrencyArr.push(rate[0]);
-
-		if (carrencyArr.length === 365) {
-			addToCollection(carrencyArr)
+		currencyArr.push(rate[0]);
+		console.log(rate[0]);
+		if (currencyArr.length === 365) {
+			addToCollection(currencyArr)
 		}
 		
 			});
 
 };
 
-carrenciesUrls.forEach( function(carrenciesUrl){
+carrenciesUrls.forEach( function(currenciesUrl){
 
 	var options = {
 		host: "api.privatbank.ua",
-		path: carrenciesUrl
+		path: currenciesUrl
 	};
 
 	https.request(options, callback).end();
@@ -61,8 +67,8 @@ carrenciesUrls.forEach( function(carrenciesUrl){
 function addToCollection(exchangeRate) {
 		MongoClient.connect(urlDb, function(err, database) {
 			if (err) throw err;
-			database.collection('carrencyByPeriod').remove();
-			database.collection('carrencyByPeriod').insert(exchangeRate);
+			database.collection('currencyByPeriod').remove();
+			database.collection('currencyByPeriod').insert(exchangeRate);
 			database.close();
 	});
 console.log('Done!');
