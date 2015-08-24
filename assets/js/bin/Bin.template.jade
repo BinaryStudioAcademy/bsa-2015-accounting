@@ -96,7 +96,7 @@
 						td(colspan='8')
 							| no deleted expenses
 	#budgets-section(ng-hide="currentUser.max_level < 3")
-		b Year: 
+		b.responsive-hide Year: 
 		select.form-control(ng-model='binCtrl.year' ng-change='binCtrl.updateYear()')
 			option(ng-repeat='year in binCtrl.years', value='{{year}}') {{year}}
 		table.table-hover
@@ -109,9 +109,9 @@
 						b Budget
 					th
 						b Category
-					th
+					th.responsive-hide
 						b Created by
-					th
+					th.responsive-hide
 						b Deleted by
 					th
 						b Restore
@@ -119,8 +119,8 @@
 				tr(ng-repeat="budget in binCtrl.deletedStuff.budgets")
 					td {{budget.category.budget | currency}}
 					td {{budget.category.name}}
-					td {{budget.creator.name}}
-					td {{budget.deletedBy.name}}
+					td.responsive-hide {{budget.creator.name}}
+					td.responsive-hide {{budget.deletedBy.name}}
 					td
 						button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreMe(budget.id, budget.category.id)') restore
 				tr(ng-show="binCtrl.deletedStuff.budgets.length == 0")
@@ -132,20 +132,20 @@
 				tr
 					th
 						b Budget
-					th
+					th.responsive-hide
 						b Category
 					th
 						b Subcategory
-					th
+					th.responsive-hide
 						b Deleted by
 					th
 						b Restore
 			tbody
 				tr(ng-repeat="subcat in binCtrl.deletedStuff.subcategories")
 					td {{subcat.budget | currency}}
-					td {{subcat.categoryName}}
+					td.responsive-hide {{subcat.categoryName}}
 					td {{subcat.name}}
-					td {{subcat.deletedBy.name}}
+					td.responsive-hide {{subcat.deletedBy.name}}
 					td
 						button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreMe(subcat.budgetId, subcat.categoryId, subcat.id, subcat.budget)') restore
 				tr(ng-show="binCtrl.deletedStuff.subcategories.length == 0")
