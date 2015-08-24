@@ -93,12 +93,12 @@
 						span#budget-left {{budget.left | currency:""}}
 					td
 						span#budget-spent {{budget.spent | currency:""}}
-		table.table-hover.fixed(ng-if="personalCtrl.allExpenses.length != 0")
+		table.table-hover.fixed.expenses-table(ng-if="personalCtrl.allExpenses.length != 0")
 			colgroup
-				col.table-toggle
-				col.table-date-header
+				col.table-toggle.responsive-hide
+				col.table-date-header.responsive-hide
 				col.table-category
-				col.table-expense
+				col.table-expense.responsive-hide
 				col.table-cost
 				col.table-carrency
 				col.table-sub
@@ -106,13 +106,13 @@
 				col.table-description-header
 			thead
 				tr
-					th#outcome-header(colspan="8")
+					th#outcome-header.responsive-hide(colspan="8")
 						| Personal expenses
 				tr
-					th
+					th.responsive-hide
 						button.fa.fa-list(ng-click='personalCtrl.toggleAllExpenses()' ng-show='personalCtrl.check')
 						button.fa.fa-th(ng-click='personalCtrl.toggleAllExpenses()' ng-hide='personalCtrl.check')
-					th
+					th.responsive-hide
 						span(ng-click="personalCtrl.sortType = 'time'; sortReverse = !sortReverse; personalCtrl.sort(personalCtrl.sortType, sortReverse)") Time&nbsp;
 							span.fa.fa-caret-down(ng-show="personalCtrl.sortType == 'time' && !sortReverse")
 							span.fa.fa-caret-up(ng-show="personalCtrl.sortType == 'time' && sortReverse")
@@ -122,7 +122,7 @@
 							span.fa.fa-caret-down(ng-show="personalCtrl.sortType == 'category.name' && !sortReverse")
 							span.fa.fa-caret-up(ng-show="personalCtrl.sortType == 'category.name' && sortReverse")
 							span.fa.fa-sort(ng-hide="personalCtrl.sortType == 'category.name'")
-					th
+					th.responsive-hide
 						span(ng-click="personalCtrl.sortType = 'subcategory.name'; sortReverse = !sortReverse; personalCtrl.sort(personalCtrl.sortType, sortReverse)") Subcategory&nbsp;
 							span.fa.fa-caret-down(ng-show="personalCtrl.sortType == 'subcategory.name' && !sortReverse")
 							span.fa.fa-caret-up(ng-show="personalCtrl.sortType == 'subcategory.name' && sortReverse")
@@ -145,11 +145,11 @@
 					th
 						i.fa.fa-cog
 		.table-container(ng-if="personalCtrl.allExpenses.length != 0")
-			table.table-hover.fixed(ng-hide="personalCtrl.sortType")
+			table.table-hover.fixed.expenses-table(ng-hide="personalCtrl.sortType")
 					colgroup
-						col.table-date
+						col.table-date.responsive-hide
 						col.table-category
-						col.table-expense
+						col.table-expense.responsive-hide
 						col.table-cost
 						col.table-carrency
 						col.table-sub
@@ -166,12 +166,12 @@
 
 								| {{ date | date: 'fullDate' }}
 						tr(ng-repeat="expense in filteredData", ng-init='personalCtrl.pageTitleEquals(filteredData)', ng-hide="personalCtrl.hiddenList[$parent.$index]" )
-							td
+							td.responsive-hide
 								| {{ expense.time | date:'HH:mm' }}
 							td
 								span(editable-select='expense.category.id', e-name='category.name', onshow="personalCtrl.getSubcategories($data)", e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "categoryId")', e-ng-options='category.id as category.name for category in personalCtrl.categories' e-ng-change="personalCtrl.getSubcategories($data)", e-required="")
 									| {{ personalCtrl.getField(expense.category.id, "category") || 'empty' }}
-							td
+							td.responsive-hide
 								span(editable-select='expense.subcategory.id', e-name='subcategory.name', e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "subcategoryId")', onbeforesave="personalCtrl.checkField($data)", e-ng-options='subcategory.id as subcategory.name for subcategory in personalCtrl.subcategories', e-required="")
 									| {{ personalCtrl.getField(expense.subcategory.id, "subcategory") || expense.subcategory.name }}
 							td
@@ -203,23 +203,23 @@
 									| load more expenses&nbsp;
 									i.fa.fa-plus
 			// filter table
-			table.table-hover.fixed(ng-if="personalCtrl.sortType")
+			table.table-hover.fixed.expenses-table(ng-if="personalCtrl.sortType")
 				colgroup
-					col.table-date
+					col.table-date.responsive-hide
 					col.table-category
-					col.table-expense
+					col.table-expense.responsive-hide
 					col.table-cost
 					col.table-carrency
 					col.table-sub
 					col.table-description
 				tbody
 					tr(ng-repeat="expense in personalCtrl.sortedExpenses | limitTo: personalCtrl.expensesLimit")
-						td
+						td.responsive-hide
 							| {{ expense.time | date:'dd.MM.yyyy' }}
 						td
 							span(editable-select='expense.category.id', e-name='category.name', onshow="personalCtrl.getSubcategories($data)", e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "categoryId")', e-ng-options='category.id as category.name for category in personalCtrl.categories' e-ng-change="personalCtrl.getSubcategories($data)", e-required="")
 								| {{ personalCtrl.getField(expense.category.id, "category") || 'empty' }}
-						td
+						td.responsive-hide
 							span(editable-select='expense.subcategory.id', e-name='subcategory.name', e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "subcategoryId")', onbeforesave="personalCtrl.checkField($data)", e-ng-options='subcategory.id as subcategory.name for subcategory in personalCtrl.subcategories', e-required="")
 								| {{ personalCtrl.getField(expense.subcategory.id, "subcategory") || expense.subcategory.name }}
 						td

@@ -51,10 +51,10 @@
 
 		table.table-hover.fixed
 			colgroup
-				col.table-toggle
-				col.table-date-header
+				col.table-toggle.responsive-hide
+				col.table-date-header.responsive-hide
 				col.table-category
-				col.table-expense
+				col.table-expense.responsive-hide
 				col.table-cost
 				col.table-carrency
 				col.table-sub
@@ -62,10 +62,10 @@
 				col.table-description-header
 			thead
 				tr
-					th
+					th.responsive-hide
 						button.fa.fa-list(ng-click='expCtr.toggleAllExpenses()' ng-show='expCtr.check')
 						button.fa.fa-th(ng-click='expCtr.toggleAllExpenses()' ng-hide='expCtr.check')
-					th
+					th.responsive-hide
 						span(ng-click="sortType = 'time'; sortReverse = !sortReverse; expCtr.sort(sortType, sortReverse)") Time&nbsp;
 							span.fa.fa-caret-down(ng-show="sortType == 'time' && !sortReverse")
 							span.fa.fa-caret-up(ng-show="sortType == 'time' && sortReverse")
@@ -75,7 +75,7 @@
 							span.fa.fa-caret-down(ng-show="sortType == 'category.name' && !sortReverse")
 							span.fa.fa-caret-up(ng-show="sortType == 'category.name' && sortReverse")
 							span.fa.fa-sort(ng-hide="sortType == 'category.name'")
-					th#header-sub
+					th#header-sub.responsive-hide
 						span(ng-click="sortType = 'subcategory.name'; sortReverse = !sortReverse; expCtr.sort(sortType, sortReverse)") Subcategory&nbsp;
 							span.fa.fa-caret-down(ng-show="sortType == 'subcategory.name' && !sortReverse")
 							span.fa.fa-caret-up(ng-show="sortType == 'subcategory.name' && sortReverse")
@@ -105,9 +105,9 @@
 		#main
 			table.table-hover.fixed(ng-hide="sortType")
 				colgroup
-					col.table-date
+					col.table-date.responsive-hide
 					col.table-category
-					col.table-expense
+					col.table-expense.responsive-hide
 					col.table-cost
 					col.table-carrency
 					col.table-sub
@@ -125,12 +125,12 @@
 
 							| {{ date | date: 'fullDate' }}
 					tr(ng-repeat="expense in filteredData", ng-init='expCtr.pageTitleEquals(filteredData)', ng-hide="expCtr.hiddenList[$parent.$index]" )
-						td
+						td.responsive-hide
 							| {{ expense.time | date:'HH:mm' }}
 						td
 							span(editable-select='expense.category.id', e-name='category.name', onshow="expCtr.getSubcategories($data)", e-form='rowform', onaftersave='expCtr.editExpenseObject($data, "categoryId")', e-ng-options='category.id as category.name for category in expCtr.categories' e-ng-change="expCtr.getSubcategories($data)", e-required="")
 								| {{ expCtr.getField(expense.category.id, "category") || 'empty' }}
-						td
+						td.responsive-hide
 							span(editable-select='expense.subcategory.id', e-name='subcategory.name', e-form='rowform', onaftersave='expCtr.editExpenseObject($data, "subcategoryId")', onbeforesave="expCtr.checkField($data)", e-ng-options='subcategory.id as subcategory.name for subcategory in expCtr.subcategories', e-required="")
 								| {{ expCtr.getField(expense.subcategory.id, "subcategory") || expense.subcategory.name }}
 						td
@@ -165,9 +165,9 @@
 			// filter table
 			table.table-hover.fixed(ng-if="sortType")
 				colgroup
-					col.table-date
+					col.table-date.responsive-hide
 					col.table-category
-					col.table-expense
+					col.table-expense.responsive-hide
 					col.table-cost
 					col.table-carrency
 					col.table-sub
@@ -175,12 +175,12 @@
 					col.table-description
 				tbody
 					tr(ng-repeat="expense in expCtr.sortedExpenses | limitTo: expCtr.expensesLimit")
-						td
+						td.responsive-hide
 							| {{ expense.time | date:'dd.MM.yyyy' }}
 						td
 							span(editable-select='expense.category.id', e-name='category.name', onshow="expCtr.getSubcategories($data)", e-form='rowform', onaftersave='expCtr.editExpenseObject($data, "categoryId")', e-ng-options='category.id as category.name for category in expCtr.categories' e-ng-change="expCtr.getSubcategories($data)", e-required="")
 								| {{ expCtr.getField(expense.category.id, "category") || 'empty' }}
-						td
+						td.responsive-hide
 							span(editable-select='expense.subcategory.id', e-name='subcategory.name', e-form='rowform', onaftersave='expCtr.editExpenseObject($data, "subcategoryId")', onbeforesave="expCtr.checkField($data)", e-ng-options='subcategory.id as subcategory.name for subcategory in expCtr.subcategories', e-required="")
 								| {{ expCtr.getField(expense.subcategory.id, "subcategory") || expense.subcategory.name }}
 						td
