@@ -27,27 +27,27 @@ function getCurrentUser(req, res) {
 		});
 		return [expenses, currencies];
 	}).spread(function(expenses, currencies) {
-    var personalExpenses = _.filter(expenses, function(expense) {
-      return (expense.creatorId == req.user.id);
-    });
-    var budget = req.user.budget;
-    req.user.budget = {};
-    req.user.budget.used = 0;
-    personalExpenses.forEach(function(expense) {
-      if (expense.currency !== "UAH") {
-        var expDate = new Date(expense.time * 1000);
-        var rate = _.find(currencies, function(currency) {
-          var currDate = new Date(currency.time * 1000);
-          return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
-        }).rate;
-        req.user.budget.used += (expense.price * rate);
-      }
-      else {
-        req.user.budget.used += expense.price;
-      }
-    });
-    req.user.budget.used = Number(req.user.budget.used.toFixed(2));
-    req.user.budget.left = budget - req.user.budget.used;
+		var personalExpenses = _.filter(expenses, function(expense) {
+			return (expense.creatorId == req.user.id);
+		});
+		var budget = req.user.budget;
+		req.user.budget = {};
+		req.user.budget.used = 0;
+		personalExpenses.forEach(function(expense) {
+			if (expense.currency !== "UAH") {
+				var expDate = new Date(expense.time * 1000);
+				var rate = _.find(currencies, function(currency) {
+					var currDate = new Date(currency.time * 1000);
+					return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
+				}).rate;
+				req.user.budget.used += (expense.price * rate);
+			}
+			else {
+				req.user.budget.used += expense.price;
+			}
+		});
+		req.user.budget.used = Number(req.user.budget.used.toFixed(2));
+		req.user.budget.left = budget - req.user.budget.used;
 		return res.json(req.user);
 	});
 }
@@ -64,27 +64,27 @@ function getUsers(req, res) {
 			return [users, expenses, currencies];
 		}).spread(function(users, expenses, currencies) {
 			users.forEach(function(user) {
-        var personalExpenses = _.filter(expenses, function(expense) {
-          return (expense.creatorId == user.id);
-        });
-        var budget = user.budget;
-        user.budget = {};
-        user.budget.used = 0;
-        personalExpenses.forEach(function(expense) {
-          if (expense.currency !== "UAH") {
-            var expDate = new Date(expense.time * 1000);
-            var rate = _.find(currencies, function(currency) {
-              var currDate = new Date(currency.time * 1000);
-              return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
-            }).rate;
-            user.budget.used += (expense.price * rate);
-          }
-          else {
-            user.budget.used += expense.price;
-          }
-        });
-        user.budget.used = Number(user.budget.used.toFixed(2));
-        user.budget.left = budget - user.budget.used;
+				var personalExpenses = _.filter(expenses, function(expense) {
+					return (expense.creatorId == user.id);
+				});
+				var budget = user.budget || 0;
+				user.budget = {};
+				user.budget.used = 0;
+				personalExpenses.forEach(function(expense) {
+					if (expense.currency !== "UAH") {
+						var expDate = new Date(expense.time * 1000);
+						var rate = _.find(currencies, function(currency) {
+							var currDate = new Date(currency.time * 1000);
+							return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
+						}).rate;
+						user.budget.used += (expense.price * rate);
+					}
+					else {
+						user.budget.used += expense.price;
+					}
+				});
+				user.budget.used = Number(user.budget.used.toFixed(2));
+				user.budget.left = budget - user.budget.used;
 			});
 			return res.send(users);
 		}).fail(function(err) {
@@ -119,14 +119,14 @@ function updateUser(req, res) {
 			}
 		}
 
-		if (values.addPersonalBudget) {
-			if (values.addPersonalBudget.budget > 0) {
-				action = 'gave ' + values.addPersonalBudget.budget + ' UAH';
+		if (values.editPersonalBudget) {
+			if (values.editPersonalBudget > 0) {
+				action = 'gave ' + values.editPersonalBudget + ' UAH';
 			} else {
-				action = 'took ' + (-values.addPersonalBudget.budget) + ' UAH';
+				action = 'took ' + (-values.editPersonalBudget) + ' UAH';
 			}
-
-			user.budget += values.addPersonalBudget.budget;
+			if (user.budget) {user.budget += values.editPersonalBudget;}
+			else user.budget = values.editPersonalBudget;
 		}
 
 		//if (values.setName) {

@@ -5,8 +5,6 @@
 	div(ng-hide="currentUser.max_level < 3")
 		div.controls
 			input.form-control(type='text' placeholder='search users' ng-model='admCtrl.filter.name')
-			b.responsive-hide Category: 
-			select.form-control(ng-model='admCtrl.category' ng-change='admCtrl.updateCategory()' ng-options='category.name for category in admCtrl.categories')
 			b.responsive-hide Currency: 
 			select.form-control(ng-model='admCtrl.currency' ng-change='admCtrl.updateCurrency()')
 				option(value='UAH') UAH
@@ -16,8 +14,8 @@
 				tr
 					th(colspan='2')
 						b User
-					th(rowspan='2')
-						b Rights
+					th
+						b Category rights
 					th.responsive-hide(colspan='2')
 						b Personal budget
 				tr
@@ -25,6 +23,8 @@
 						b Name
 					th
 						b Global admin
+					th
+						select.form-control(ng-model='admCtrl.category' ng-change='admCtrl.updateCategory()' ng-options='category.name for category in admCtrl.categories')
 					th.responsive-hide
 						b Left
 					th.responsive-hide
@@ -38,8 +38,8 @@
 					td
 						a(href="#" editable-select="admCtrl.getUserCategory(user).level" ng-class="{bad: admCtrl.getUserCategory(user).level == 0}" ng-hide="user.admin" onaftersave="admCtrl.updateRights(user)" e-ng-options="permit.level as permit.text for permit in admCtrl.permits") {{admCtrl.permits[admCtrl.getUserCategory(user).level].text}}
 						span(ng-show="user.admin") Global admin
-					td.responsive-hide(ng-class="{bad: admCtrl.getUserCategory(user).left < 0}") {{admCtrl.getUserCategory(user).left/admCtrl.rate || 0 | currency:(admCtrl.currency + " ")}}
-						span(ng-show="admCtrl.getUserCategory(user).level > 1")
-							button.btn.btn-xs.btn-primary(ng-click='admCtrl.editPersonalBudget(user, true)') add
-							button.btn.btn-xs.btn-danger(ng-click='admCtrl.editPersonalBudget(user, false)') take
-					td.responsive-hide {{admCtrl.getUserCategory(user).used/admCtrl.rate | currency:(admCtrl.currency + " ")}}
+					td.responsive-hide(ng-class="{bad: user.budget.left < 0}") {{user.budget.left/admCtrl.rate || 0 | currency:(admCtrl.currency + " ")}}
+						span(ng-show='user.budget.left < 0')  overuse!
+						button.btn.btn-xs.btn-primary(ng-click='admCtrl.editPersonalBudget(user, true)') add
+						button.btn.btn-xs.btn-danger(ng-click='admCtrl.editPersonalBudget(user, false)') take
+					td.responsive-hide {{user.budget.used/admCtrl.rate | currency:(admCtrl.currency + " ")}}

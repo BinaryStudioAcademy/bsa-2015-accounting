@@ -33,10 +33,10 @@ module.exports = function(app) {
 		});
 
 		vm.editPersonalBudget = function(user, add) {
-			var title = "Add " + vm.category.name + " personal money for " + user.name;
+			var title = "Add personal money for " + user.name;
 			var action = " added";
 			if (!add) {
-				title = "Take back " + vm.category.name + " personal money from " + user.name;
+				title = "Take back personal money from " + user.name;
 				action = " taken";
 			}
 			swal({
@@ -53,12 +53,12 @@ module.exports = function(app) {
 					swal.showInputError("You need to enter positive value");
 					return false;
 				}
-				if (!add && inputValue > vm.getUserCategory(user).left/vm.rate) {
+				if (!add && inputValue > user.budget.left/vm.rate) {
 					swal.showInputError("You can't take back more than there is left");
 					return false;
 				}
 				if (!add) {inputValue = -inputValue};
-				UsersService.editUser(user.id, {addPersonalBudget: {id: vm.category.id, budget: Number(inputValue * vm.rate)}}).then(function(res) {
+				UsersService.editUser(user.id, {editPersonalBudget: Number((inputValue * vm.rate).toFixed(2))}).then(function(res) {
 					vm.updateUsers();
 					swal("Ok!", Math.abs(inputValue) + " " + vm.currency + action, "success");
 				});
@@ -97,7 +97,7 @@ module.exports = function(app) {
 			if (!result) {
 				var level = 0;
 				if (user.admin) { level = 3; }
-				user.categories.push({id: vm.category.id, budget: 0, level: level, used: 0});
+				user.categories.push({id: vm.category.id, level: level});
 				return vm.getUserCategory(user);
 			}
 			return result;
