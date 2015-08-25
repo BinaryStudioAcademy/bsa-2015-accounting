@@ -10,7 +10,7 @@ block body
 			#user-info
 				a(href="/#/personal") &nbsp;{{currentUser.name}}&nbsp;
 				a.btn.btn-warning(href="/logout") Log Out
-		nav(ng-hide='menuTabs')
+		nav(ng-show='menuTabs')
 			ul.nav.nav-tabs.tabs-left
 				li
 					a(href='#/expenses', ng-class="{'active-tab':$route.current.activetab == 'expenses'}", data-toggle='tab') Expenses
