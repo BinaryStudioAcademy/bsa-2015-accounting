@@ -6,7 +6,7 @@ module.exports = function(app) {
   function HomepageController($rootScope, UsersService, CurrencyService, $route, $filter) {
     
     //menu
-    $rootScope.menuTabs=false
+    $rootScope.menuTabs=true
     $rootScope.toggleMenu = function(){
       $rootScope.menuTabs =$rootScope.menuTabs=== false ? true: false;
     }
