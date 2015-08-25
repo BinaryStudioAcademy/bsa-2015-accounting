@@ -6,10 +6,10 @@ module.exports = function(app) {
 	function HistoryController(HistoryService) {
 		var vm = this;
 
-		vm.type = 'Expense';
-		vm.types = ['Expense', 'Budget', 'User'];
+		vm.type = 'All';
+		vm.types = ['All', 'Expense', 'Budget', 'User'];
 		vm.events = [];
-		vm.limit = 30;
+		vm.limit = 50;
 		vm.predicate = 'age';
 		vm.reverse = true;
 
@@ -21,6 +21,11 @@ module.exports = function(app) {
 		vm.getEvents(vm.type);
 
 		function getEvents(type) {
+			if (type === 'All') {
+				type = '';
+			} else {
+				type.toLowerCase()
+			}
 			HistoryService.getEvents(type).then(function(events) {
 				vm.events = events;
 			});
