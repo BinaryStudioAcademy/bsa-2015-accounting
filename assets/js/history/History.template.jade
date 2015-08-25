@@ -9,22 +9,27 @@
 		table
 			thead
 				tr
-					th.history-col-user
+					th(ng-hide='hstCtrl.type != "All"')
+						span(ng-click="hstCtrl.order('type')") Section&nbsp;
+							span.fa.fa-caret-down(ng-show="hstCtrl.predicate == 'type' && !hstCtrl.reverse")
+							span.fa.fa-caret-up(ng-show="hstCtrl.predicate == 'type' && hstCtrl.reverse")
+							span.fa.fa-sort(ng-hide="hstCtrl.predicate == 'type'")
+					th(ng-class="{'quarter': hstCtrl.type != 'All'}")
 						span(ng-click="hstCtrl.order('who')") User&nbsp;
 							span.fa.fa-caret-down(ng-show="hstCtrl.predicate == 'who' && !hstCtrl.reverse")
 							span.fa.fa-caret-up(ng-show="hstCtrl.predicate == 'who' && hstCtrl.reverse")
 							span.fa.fa-sort(ng-hide="hstCtrl.predicate == 'who'")
-					th.history-col-action
+					th(ng-class="{'quarter': hstCtrl.type != 'All'}")
 						span(ng-click="hstCtrl.order('action')") Action&nbsp;
 							span.fa.fa-caret-down(ng-show="hstCtrl.predicate == 'action' && !hstCtrl.reverse")
 							span.fa.fa-caret-up(ng-show="hstCtrl.predicate == 'action' && hstCtrl.reverse")
 							span.fa.fa-sort(ng-hide="hstCtrl.predicate == 'action'")
-					th.history-col-name
+					th(ng-class="{'quarter': hstCtrl.type != 'All'}")
 						span(ng-click="hstCtrl.order('target')") Name&nbsp;
 							span.fa.fa-caret-down(ng-show="hstCtrl.predicate == 'target' && !hstCtrl.reverse")
 							span.fa.fa-caret-up(ng-show="hstCtrl.predicate == 'target' && hstCtrl.reverse")
 							span.fa.fa-sort(ng-hide="hstCtrl.predicate == 'target'")
-					th.history-col-date
+					th(ng-class="{'quarter': hstCtrl.type != 'All'}")
 						span(ng-click="hstCtrl.order('time')") Date&nbsp;
 							span.fa.fa-caret-down(ng-show="hstCtrl.predicate == 'time' && !hstCtrl.reverse")
 							span.fa.fa-caret-up(ng-show="hstCtrl.predicate == 'time' && hstCtrl.reverse")
@@ -32,6 +37,7 @@
 
 			tbody(ng-repeat='event in hstCtrl.events | limitTo: hstCtrl.limit | orderBy: hstCtrl.predicate : hstCtrl.reverse')
 				tr
+					td(ng-hide='hstCtrl.type != "All"') {{event.type}}
 					td {{event.who}}
 					td {{event.action}}
 					td {{event.target}}
