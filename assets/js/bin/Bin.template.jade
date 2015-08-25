@@ -5,28 +5,28 @@
 	#expenses-section(ng-hide="currentUser.max_level < 3")
 		table.table-hover.fixed
 			colgroup
-				col.table-toggle
-				col.table-date-header
+				col.table-toggle.responsive-hide
+				col.table-date-header.responsive-hide
 				col.table-category
 				col.table-expense
 				col.table-cost
 				col.table-carrency
-				col.table-sub
+				col.table-sub.responsive-hide
 				col.table-addBy
-				col.table-deletedBy
+				col.table-deletedBy.responsive-hide
 				col.table-description-header
 			thead
 				tr
 					th(colspan="10") Deleted expenses
 				tr
-					th
+					th.responsive-hide
 						button.fa.fa-list(ng-click='binCtrl.toggleAllExpenses()' ng-show='binCtrl.check')
 						button.fa.fa-th(ng-click='binCtrl.toggleAllExpenses()' ng-hide='binCtrl.check')
-					th
+					th.responsive-hide
 						| Time
 					th
 						| Category
-					th#header-sub
+					th#header-sub.responsive-hide
 						| Subcategory
 					th
 						| Name
@@ -36,21 +36,21 @@
 						| $ / &#8372;
 					th
 						| Added by
-					th
+					th.responsive-hide
 						| Deleted by
 					th
 						i.fa.fa-cog
 		#main
 			table.table-hover.fixed(ng-hide="sortType")
 				colgroup
-					col.table-date
+					col.table-date.responsive-hide
 					col.table-category
 					col.table-expense
 					col.table-cost
 					col.table-carrency
-					col.table-sub
+					col.table-sub.responsive-hide
 					col.table-addBy
-					col.table-deletedBy
+					col.table-deletedBy.responsive-hide
 					col.table-description
 				tbody(ng-repeat="date in binCtrl.dates | limitTo: binCtrl.expensesLimit", ng-hide="!(filteredData = (binCtrl.getExpensesByDate(date) " +
 				"| filter: {name: nameModelFilter, category: {name: categoryModelFilter.name}, " +
@@ -64,11 +64,11 @@
 
 							| {{ date | date: 'fullDate' }}
 					tr(ng-repeat="expense in filteredData", ng-init='binCtrl.pageTitleEquals(filteredData)', ng-hide="binCtrl.hiddenList[$parent.$index]" )
-						td
+						td.responsive-hide
 							| {{ expense.time | date:'HH:mm' }}
 						td
 							| {{ expense.category.name }}
-						td
+						td.responsive-hide
 							| {{ expense.subcategory.name }}
 						td
 							| {{ expense.name  || 'empty' }}
@@ -78,7 +78,7 @@
 							| {{ expense.currency }}
 						td
 							| {{ expense.creator.name }}
-						td
+						td.responsive-hide
 							| {{ expense.deletedBy.name }}
 						td
 							button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreExpense(expense.id, expense.name)') restore
@@ -96,7 +96,7 @@
 						td(colspan='8')
 							| no deleted expenses
 	#budgets-section(ng-hide="currentUser.max_level < 3")
-		b Year: 
+		b.responsive-hide Year: 
 		select.form-control(ng-model='binCtrl.year' ng-change='binCtrl.updateYear()')
 			option(ng-repeat='year in binCtrl.years', value='{{year}}') {{year}}
 		table.table-hover
@@ -109,9 +109,9 @@
 						b Budget
 					th
 						b Category
-					th
+					th.responsive-hide
 						b Created by
-					th
+					th.responsive-hide
 						b Deleted by
 					th
 						b Restore
@@ -119,8 +119,8 @@
 				tr(ng-repeat="budget in binCtrl.deletedStuff.budgets")
 					td {{budget.category.budget | currency}}
 					td {{budget.category.name}}
-					td {{budget.creator.name}}
-					td {{budget.deletedBy.name}}
+					td.responsive-hide {{budget.creator.name}}
+					td.responsive-hide {{budget.deletedBy.name}}
 					td
 						button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreMe(budget.id, budget.category.id)') restore
 				tr(ng-show="binCtrl.deletedStuff.budgets.length == 0")
@@ -132,20 +132,20 @@
 				tr
 					th
 						b Budget
-					th
+					th.responsive-hide
 						b Category
 					th
 						b Subcategory
-					th
+					th.responsive-hide
 						b Deleted by
 					th
 						b Restore
 			tbody
 				tr(ng-repeat="subcat in binCtrl.deletedStuff.subcategories")
 					td {{subcat.budget | currency}}
-					td {{subcat.categoryName}}
+					td.responsive-hide {{subcat.categoryName}}
 					td {{subcat.name}}
-					td {{subcat.deletedBy.name}}
+					td.responsive-hide {{subcat.deletedBy.name}}
 					td
 						button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreMe(subcat.budgetId, subcat.categoryId, subcat.id, subcat.budget)') restore
 				tr(ng-show="binCtrl.deletedStuff.subcategories.length == 0")

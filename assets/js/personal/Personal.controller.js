@@ -196,7 +196,9 @@ module.exports = function(app) {
           var category = $filter('filter')(vm.categories, {id: item.id});
           item.categoryId = category[0].name;
           item.spent = item.used;
-          item.left = item.budget - item.used;
+          if(item.budget) {
+            item.left = item.budget - item.used;
+          } else item.left = -item.used;
           vm.budgets.push(item);
         });
       });
