@@ -28,7 +28,7 @@
 			textarea.form-control(placeholder='Description', ng-model="formCtrl.expense.description")
 			.money-left(ng-show="subcategoryModel")
 				#form-category-left
-					b {{categoryModel.name}} budget left:
+					b {{formCtrl.budgetType}} budget left:
 					span.green  {{formCtrl.leftBudget - formCtrl.expense.price | currency:""}} {{formCtrl.expense.currency}}
 				#form-subcategory-left(ng-hide="formCtrl.expense.personal")
 					br
