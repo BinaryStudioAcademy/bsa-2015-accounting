@@ -78,7 +78,7 @@ _.times(categories.length, function(n) {
 	var category = Factory.build('Category', {name: names[n], subcategories: subs});
 	var categoryId = String(category._id);
 	_.times(5, function() {
-		var user = Factory.build('User', {password: hash, admin: false, categories: [{id: categoryId, budget: casual.integer(29, 33) * 1000, level: casual.integer(1, 3)}]});
+		var user = Factory.build('User', {password: hash, admin: false, budget: casual.integer(29, 33) * 1000, categories: [{id: categoryId, level: casual.integer(1, 3)}]});
 		db.user.push(user);
 	});
 	var managers = _.sample(db.user, 20).map(function(usr) {
