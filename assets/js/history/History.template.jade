@@ -14,22 +14,22 @@
 							span.fa.fa-caret-down(ng-show="hstCtrl.predicate == 'type' && !hstCtrl.reverse")
 							span.fa.fa-caret-up(ng-show="hstCtrl.predicate == 'type' && hstCtrl.reverse")
 							span.fa.fa-sort(ng-hide="hstCtrl.predicate == 'type'")
-					th(ng-class="{'quarter': hstCtrl.type != 'All'}")
+					th
 						span(ng-click="hstCtrl.order('who')") User&nbsp;
 							span.fa.fa-caret-down(ng-show="hstCtrl.predicate == 'who' && !hstCtrl.reverse")
 							span.fa.fa-caret-up(ng-show="hstCtrl.predicate == 'who' && hstCtrl.reverse")
 							span.fa.fa-sort(ng-hide="hstCtrl.predicate == 'who'")
-					th(ng-class="{'quarter': hstCtrl.type != 'All'}")
+					th
 						span(ng-click="hstCtrl.order('action')") Action&nbsp;
 							span.fa.fa-caret-down(ng-show="hstCtrl.predicate == 'action' && !hstCtrl.reverse")
 							span.fa.fa-caret-up(ng-show="hstCtrl.predicate == 'action' && hstCtrl.reverse")
 							span.fa.fa-sort(ng-hide="hstCtrl.predicate == 'action'")
-					th(ng-class="{'quarter': hstCtrl.type != 'All'}")
+					th
 						span(ng-click="hstCtrl.order('target')") Name&nbsp;
 							span.fa.fa-caret-down(ng-show="hstCtrl.predicate == 'target' && !hstCtrl.reverse")
 							span.fa.fa-caret-up(ng-show="hstCtrl.predicate == 'target' && hstCtrl.reverse")
 							span.fa.fa-sort(ng-hide="hstCtrl.predicate == 'target'")
-					th(ng-class="{'quarter': hstCtrl.type != 'All'}")
+					th
 						span(ng-click="hstCtrl.order('time')") Date&nbsp;
 							span.fa.fa-caret-down(ng-show="hstCtrl.predicate == 'time' && !hstCtrl.reverse")
 							span.fa.fa-caret-up(ng-show="hstCtrl.predicate == 'time' && hstCtrl.reverse")
