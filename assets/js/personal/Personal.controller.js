@@ -195,10 +195,10 @@ module.exports = function(app) {
         user.categories.forEach(function(item) {
           var category = $filter('filter')(vm.categories, {id: item.id});
           item.categoryId = category[0].name;
-          item.spent = item.used;
+          item.spent = item.used || 0;
           if(item.budget) {
             item.left = item.budget - item.used;
-          } else item.left = -item.used;
+          } else item.left = 0;
           vm.budgets.push(item);
         });
       });
