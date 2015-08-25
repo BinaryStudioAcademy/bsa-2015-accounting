@@ -30,7 +30,7 @@ function getCurrentUser(req, res) {
 		var personalExpenses = _.filter(expenses, function(expense) {
 			return (expense.creatorId == req.user.id);
 		});
-		var budget = req.user.budget;
+		var budget = req.user.budget || 0;
 		req.user.budget = {};
 		req.user.budget.used = 0;
 		personalExpenses.forEach(function(expense) {

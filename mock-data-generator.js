@@ -138,7 +138,7 @@ _.times(years, function(n) {
 	});
 });
 
-var owner = {_id: new ObjectId(), login: 'admin@admin.admin', name: 'Admin9000', admin: true, categories: [], 'createdAt': new Date().toISOString(), 'updatedAt': new Date().toISOString(), password: hash};
+var owner = {_id: new ObjectId(), login: 'admin@admin.admin', budget: 0, name: 'Admin9000', admin: true, categories: [], 'createdAt': new Date().toISOString(), 'updatedAt': new Date().toISOString(), password: hash};
 db.user.push(owner);
 
 var url = 'mongodb://localhost:27017/portal-accounting';

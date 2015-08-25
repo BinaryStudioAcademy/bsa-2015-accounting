@@ -10,7 +10,7 @@ module.exports = function(app) {
     };
 
     function getPersonalExpenses() {
-      return $resource("/expense?personal=true", { sort: "time desc", where: {personal: true}}).query().$promise;
+      return $resource("/expense/personal", { sort: "time desc" }).query().$promise;
     }
 
     function getPersonalHistory() {

@@ -1,7 +1,4 @@
 #personal-view
-	.alert.alert-warning(ng-if="currentUser.categories.length == 0")
-		i.fa.fa-exclamation-triangle.fa-2x
-		h2 &nbsp;You do not have personal budget
 	#money-form(ng-show="currentUser.max_level > 1 || currentUser.admin", ng-init="showAddButton = true")
 		form(editable-form='', name='moneyForm', onaftersave='personalCtrl.processMoney(showAddButton); personalCtrl.showTitle(false)', ng-show='personalCtrl.isShowTitle')
 			div
@@ -11,10 +8,6 @@
 				span.title Currency:
 				span(editable-select='personalCtrl.newMoney.currency', e-name='currency', e-form='moneyForm', e-ng-options='currency for currency in personalCtrl.currency', onbeforesave="personalCtrl.checkField($data)", onaftersave='personalCtrl.editNewMoneyObject($data, "currency")', e-required='')
 					| {{ personalCtrl.newMoney.currency }}
-			div
-				span.title Category:
-				span(editable-select='personalCtrl.newMoney.category', e-name='category', e-form='moneyForm', onshow='loadGroups()', e-ng-options='category.id as category.name for category in personalCtrl.categories', onbeforesave="personalCtrl.checkField($data)", onaftersave='personalCtrl.editNewMoneyObject($data, "category")', e-required='')
-					| {{ personalCtrl.newMoney.category }}
 			#button-group
 				span(ng-show='moneyForm.$visible')
 					button.action-button.btn.btn-primary(type='submit', ng-disabled='moneyForm.$waiting', ng-show="showAddButton")
@@ -26,16 +19,15 @@
 		button#add-button.btn.btn-primary(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = true', ng-show='!moneyForm.$visible')
 			| Add money&nbsp;
 			i.fa.fa-plus
-		button.btn.btn-danger(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = false', ng-show='!moneyForm.$visible', ng-hide="currentUser.categories.length == 0")
+		button.btn.btn-danger(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = false', ng-show='!moneyForm.$visible', ng-hide="currentUser.budget.left == 0")
 			| Take money&nbsp;
 			i.fa.fa-minus
-	button.btn.btn-warning(ng-click="personalCtrl.isCollapsedMoneyTable = !personalCtrl.isCollapsedMoneyTable; personalCtrl.changeMoneyText()", ng-hide="currentUser.categories.length == 0") {{personalCtrl.moneyButtonText}} income money&nbsp;
+	button.btn.btn-warning(ng-click="personalCtrl.isCollapsedMoneyTable = !personalCtrl.isCollapsedMoneyTable; personalCtrl.changeMoneyText()", ng-hide="personalCtrl.history.length == 0") {{personalCtrl.moneyButtonText}} income money&nbsp;
 		i.fa.fa-money
-	#main(ng-if="currentUser.categories.length != 0")
+	#main
 		table.table-hover.fixed(ng-if="!personalCtrl.isCollapsedMoneyTable")
 			colgroup
 				col.table-money-date
-				col.table-money-category
 				col.table-money-amount
 				col.table-money-user
 			thead
@@ -46,8 +38,6 @@
 					th.header-text
 						| Date - Time
 					th.header-text
-						| Category
-					th.header-text
 						| Amount
 					th.header-text
 						| User
@@ -55,27 +45,22 @@
 			table#income-money-table.table-hover.fixed
 				colgroup
 					col.table-money-date
-					col.table-money-category
 					col.table-money-amount
 					col.table-money-user
 				tbody
 					tr(ng-repeat="event in personalCtrl.history")
 						td {{event.time | date:'dd.MM.yyyy - HH:mm'}}
-						td {{event.category}}
 						td {{event.action}}
 						td {{event.who}}
 		table#income-table.table-hover.fixed
 			colgroup
-				col.col-category
 				col.col-budget
 				col.col-left
 			thead
 				tr
 					th#income-header(colspan="3")
-						| Personal budgets
+						| Personal budget
 				tr
-					th.header-text
-						| Category
 					th.header-text
 						| Left&nbsp;
 						#currency-group.btn-group(ng-click="personalCtrl.changeCurrency('left')")
@@ -87,12 +72,11 @@
 							label.btn.btn-primary(ng-model="personalCtrl.currencySpentModel", btn-radio="'UAH'") UAH
 							label.btn.btn-primary(ng-model="personalCtrl.currencySpentModel", btn-radio="'USD'") USD
 			tbody
-				tr(ng-repeat="budget in personalCtrl.budgets")
-					td {{budget.categoryId}}
+				tr
 					td
-						span#budget-left {{budget.left | currency:""}}
+						span#budget-left {{personalCtrl.budget.left | currency:""}}
 					td
-						span#budget-spent {{budget.spent | currency:""}}
+						span#budget-spent {{personalCtrl.budget.used | currency:""}}
 		table.table-hover.fixed.expenses-table(ng-if="personalCtrl.allExpenses.length != 0")
 			colgroup
 				col.table-toggle.responsive-hide
