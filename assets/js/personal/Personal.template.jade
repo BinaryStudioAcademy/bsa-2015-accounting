@@ -19,8 +19,8 @@
 		button#add-button.btn.btn-primary(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = true', ng-show='!moneyForm.$visible')
 			| Add money&nbsp;
 			i.fa.fa-plus
-		button.btn.btn-danger(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = false', ng-show='!moneyForm.$visible', ng-hide="currentUser.budget.left == 0")
-			| Take money&nbsp;
+		button.btn.btn-danger(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = false', ng-show='!moneyForm.$visible')
+			| Give back money&nbsp;
 			i.fa.fa-minus
 	button.btn.btn-warning(ng-click="personalCtrl.isCollapsedMoneyTable = !personalCtrl.isCollapsedMoneyTable; personalCtrl.changeMoneyText()", ng-hide="personalCtrl.history.length == 0") {{personalCtrl.moneyButtonText}} income money&nbsp;
 		i.fa.fa-money
