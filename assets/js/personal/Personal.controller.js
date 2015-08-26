@@ -264,6 +264,11 @@ module.exports = function(app) {
               newBudget = vm.newMoney.money * $rootScope.exchangeRate;
             } else newBudget = vm.newMoney.money;
 
+            if(!add && newBudget > vm.budget.left) {
+              swal.showInputError("You can't give back more than there is left");
+              return false;
+            }
+
             if(!add) newBudget = -newBudget;
 
             UsersService.editUser($rootScope.currentUser.id,
