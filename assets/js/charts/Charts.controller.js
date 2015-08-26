@@ -146,9 +146,9 @@ module.exports = function(app) {
 
 				var names = _.pluck(vm.budgets, 'category.name');
 				var planned =_.map( _.pluck(vm.budgets, 'category.budget'), mathRound);
-				var spended = _.map(_.pluck(vm.budgets, 'category.used'), mathRound);
-				var titleText = 'Categories budget by ' + vm.year ;
-				barChart(names, planned, spended, titleText, vm.budgetVisible);
+				var spent = _.map(_.pluck(vm.budgets, 'category.used'), mathRound);
+				var titleText = 'Categories budget in ' + vm.year ;
+				barChart(names, planned, spent, titleText, vm.budgetVisible);
 				pieChart(names, planned, titleText);
 		}
 		vm.categoryModel = [];
@@ -159,10 +159,10 @@ module.exports = function(app) {
 					displayAllCategory ()
 			}else{
 				var names = _.pluck(vm.categoryModel.subcategories, 'name');
-				var spended =_.map(_.pluck(vm.categoryModel.subcategories, 'used'), mathRound);
+				var spent =_.map(_.pluck(vm.categoryModel.subcategories, 'used'), mathRound);
 				var planned =_.map(_.pluck(vm.categoryModel.subcategories, 'budget'), mathRound);
-				var titleText = 'Subcategory '+ vm.categoryModel.name +' budget by ' + vm.year
-				barChart(names, planned, spended, titleText, vm.budgetVisible);
+				var titleText = 'Subcategory '+ vm.categoryModel.name +' budget in ' + vm.year
+				barChart(names, planned, spent, titleText, vm.budgetVisible);
 				pieChart(names, planned, titleText);
 			}
 
@@ -197,8 +197,8 @@ vm.selectedCategory = [];
 			var ey = vm.endDate.getFullYear();
 			var em = vm.endDate.getMonth();
 			var ed = vm.endDate.getDay()
-			var spendedByPeriod = [];
-			var titleText = 'Spended ' + vm.selectedCategory.name + ' by period ' + y + '.' +  m + '.' + d + ' - ' + ey + '.' +  em + '.' + ed
+			var spentByPeriod = [];
+			var titleText = 'Expenses  ' + vm.selectedCategory.name + ' by period ' + y + '.' +  m + '.' + d + ' - ' + ey + '.' +  em + '.' + ed
 			var planned =0;
 			vm.budgetVisible = true
 			var filteredExpense = dateRange(vm.allExpenses, vm.startDate, vm.endDate);
@@ -216,15 +216,14 @@ vm.selectedCategory = [];
 				});
 
 				changeSubcategoryCurrency ()
-					console.log(totalSubExpenses);
-					spendedByPeriod.push(Math.round(totalSubExpenses));
+					spentByPeriod.push(Math.round(totalSubExpenses));
 			});
 
-				barChart(uniqueSubcategoryNames, planned, spendedByPeriod, titleText ,vm.budgetVisible);
-				pieChart(uniqueSubcategoryNames, spendedByPeriod, titleText);
+				barChart(uniqueSubcategoryNames, planned, spentByPeriod, titleText ,vm.budgetVisible);
+				pieChart(uniqueSubcategoryNames, spentByPeriod, titleText);
 			}
 
-		function barChart(names, planned, spended, titleTxt, budgetVisible) {
+		function barChart(names, planned, spent, titleTxt, budgetVisible) {
 			$('#barChart').highcharts({
 				colors: ["#7cb5ec", "#f7a35c", "#90ee7e", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
 				chart: {
@@ -275,7 +274,7 @@ vm.selectedCategory = [];
 				},
 				series: [ {
 					name: 'Expenses',
-					data: spended,
+					data: spent,
 					visible: budgetVisible,
 					colorByPoint: budgetVisible
 				},
