@@ -57,6 +57,7 @@ module.exports.policies = {
   'ExpenseController': {
     '*': ['isAuthenticated', 'hasRightExpense'],
     'find': 'isAuthenticated',
+    'findPersonalExpenses': 'isAuthenticated',
     'findDeleted': 'isAuthenticated',
     'restoreDeleted': 'isAuthenticated'
   },

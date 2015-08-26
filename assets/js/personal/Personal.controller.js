@@ -70,6 +70,7 @@ module.exports = function(app) {
           convertDates(vm.allExpenses);
           loadExpenses();
         }
+        changeExpenseCurrency();
         getHistory();
         getUsersBudgets();
       });
@@ -186,21 +187,12 @@ module.exports = function(app) {
     }
 
     // Income data
-    vm.budgets = [];
+    vm.budget = {};
     vm.exchangeRate = $rootScope.exchangeRate;
 
     function getUsersBudgets() {
-      vm.budgets = [];
       UsersService.getCurrentUser().then(function(user) {
-        user.categories.forEach(function(item) {
-          var category = $filter('filter')(vm.categories, {id: item.id});
-          item.categoryId = category[0].name;
-          item.spent = item.used || 0;
-          if(item.budget) {
-            item.left = item.budget - item.used;
-          } else item.left = 0;
-          vm.budgets.push(item);
-        });
+        vm.budget = user.budget;
       });
     }
 
@@ -213,26 +205,18 @@ module.exports = function(app) {
     function changeCurrency(moneyType) {
       if(moneyType == "left") {
         if(vm.currencyLeftModel == "USD" && currencyExchangeLeftFlag) {
-          vm.budgets.forEach(function(item) {
-            item.left /= vm.exchangeRate;
-          });
+          vm.budget.left /= vm.exchangeRate;
           currencyExchangeLeftFlag = false;
         } else if(vm.currencyLeftModel == "UAH" && !currencyExchangeLeftFlag) {
-          vm.budgets.forEach(function(item) {
-            item.left *= vm.exchangeRate;
-          });
+          vm.budget.left *= vm.exchangeRate;
           currencyExchangeLeftFlag = true;
         }
       } else {
         if(vm.currencySpentModel == "USD" && currencyExchangeSpentFlag) {
-          vm.budgets.forEach(function(item) {
-            item.spent /= vm.exchangeRate;
-          });
+          vm.budget.used /= vm.exchangeRate;
           currencyExchangeSpentFlag = false;
         } else if(vm.currencySpentModel == "UAH" && !currencyExchangeSpentFlag) {
-          vm.budgets.forEach(function(item) {
-            item.spent *= vm.exchangeRate;
-          });
+          vm.budget.used *= vm.exchangeRate;
           currencyExchangeSpentFlag = true;
         }
       }
@@ -253,22 +237,21 @@ module.exports = function(app) {
 
     vm.processMoney = processMoney;
     function processMoney(add) {
-      var category = $filter('filter')(vm.categories, {id: vm.newMoney.category});
       // Check permissions
-      if($rootScope.getPermission(vm.newMoney.category.id) > 1 || $rootScope.currentUser.admin) {
+      if($rootScope.currentUser.max_level > 1 || $rootScope.currentUser.admin) {
         var addTakeWord = "add";
         var toFromWord = "to";
         var addedTookWord = "added";
         if(!add) {
-          addTakeWord = "take";
+          addTakeWord = "give back";
           toFromWord = "from";
-          addedTookWord = "took";
+          addedTookWord = "gave back";
         }
         // Ok
         swal({
             title: "Are you sure?",
             text: "Are you sure want to " + addTakeWord + " " + vm.newMoney.money + " "
-            + vm.newMoney.currency + " " + toFromWord + " your personal " + category[0].name + " budget?",
+            + vm.newMoney.currency + " " + toFromWord + " your personal budget?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -281,22 +264,25 @@ module.exports = function(app) {
               newBudget = vm.newMoney.money * $rootScope.exchangeRate;
             } else newBudget = vm.newMoney.money;
 
+            if(!add && newBudget > vm.budget.left) {
+              swal.showInputError("You can't give back more than there is left");
+              return false;
+            }
+
             if(!add) newBudget = -newBudget;
 
             UsersService.editUser($rootScope.currentUser.id,
-              {addPersonalBudget: {id: vm.newMoney.category, budget: newBudget}}).then(function() {
+              {editPersonalBudget: newBudget}).then(function() {
                 getUsersBudgets();
                 getHistory();
               });
 
-            if($rootScope.currentUser.categories.length == 0)
-              $rootScope.currentUser.categories.push({id: vm.newMoney.category, budget: newBudget});
             swal("Ok!", "You " + addedTookWord + " " + vm.newMoney.money + " "
-              + vm.newMoney.currency + " " + toFromWord + " your personal " + category[0].name + " budget", "success");
+              + vm.newMoney.currency + " " + toFromWord + " your personal budget", "success");
           });
       } else {
         // No permissions
-        swal("Cancelled", "You have no permissions to add money to the " + category[0].name + " category", "error");
+        swal("Cancelled", "You have no permissions", "error");
       }
     }
 
@@ -329,6 +315,26 @@ module.exports = function(app) {
         });
       }
       vm.sortedExpenses = orderBy(vm.sortedExpenses, predicate, reverse);
+    }
+
+    // Currency exchange
+    vm.currencyModel = "UAH";
+
+    vm.changeExpenseCurrency = changeExpenseCurrency;
+    function changeExpenseCurrency() {
+      if(vm.currencyModel == "USD") {
+        vm.allExpenses.forEach(function(expense) {
+          if(expense.currency == "UAH") {
+            expense.newPrice = expense.price / $rootScope.exchangeRate;
+          } else expense.newPrice = expense.price;
+        });
+      } else if(vm.currencyModel == "UAH") {
+        vm.allExpenses.forEach(function(expense) {
+          if(expense.currency == "USD") {
+            expense.newPrice = expense.price * $rootScope.exchangeRate;
+          } else expense.newPrice = expense.price;
+        });
+      }
     }
   }
 };

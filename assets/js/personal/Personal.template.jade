@@ -1,7 +1,4 @@
 #personal-view
-	.alert.alert-warning(ng-if="currentUser.categories.length == 0")
-		i.fa.fa-exclamation-triangle.fa-2x
-		h2 &nbsp;You do not have personal budget
 	#money-form(ng-show="currentUser.max_level > 1 || currentUser.admin", ng-init="showAddButton = true")
 		form(editable-form='', name='moneyForm', onaftersave='personalCtrl.processMoney(showAddButton); personalCtrl.showTitle(false)', ng-show='personalCtrl.isShowTitle')
 			div
@@ -11,31 +8,26 @@
 				span.title Currency:
 				span(editable-select='personalCtrl.newMoney.currency', e-name='currency', e-form='moneyForm', e-ng-options='currency for currency in personalCtrl.currency', onbeforesave="personalCtrl.checkField($data)", onaftersave='personalCtrl.editNewMoneyObject($data, "currency")', e-required='')
 					| {{ personalCtrl.newMoney.currency }}
-			div
-				span.title Category:
-				span(editable-select='personalCtrl.newMoney.category', e-name='category', e-form='moneyForm', onshow='loadGroups()', e-ng-options='category.id as category.name for category in personalCtrl.categories', onbeforesave="personalCtrl.checkField($data)", onaftersave='personalCtrl.editNewMoneyObject($data, "category")', e-required='')
-					| {{ personalCtrl.newMoney.category }}
 			#button-group
 				span(ng-show='moneyForm.$visible')
 					button.action-button.btn.btn-primary(type='submit', ng-disabled='moneyForm.$waiting', ng-show="showAddButton")
 						| Add
 					button.action-button.btn.btn-danger(type='submit', ng-disabled='moneyForm.$waiting', ng-show="!showAddButton")
-						| Take
+						| Give back
 					button#cancel-button.btn.btn-default(type='button', ng-disabled='moneyForm.$waiting', ng-click='moneyForm.$cancel(); personalCtrl.showTitle(false)')
 						| Cancel
 		button#add-button.btn.btn-primary(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = true', ng-show='!moneyForm.$visible')
 			| Add money&nbsp;
 			i.fa.fa-plus
-		button.btn.btn-danger(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = false', ng-show='!moneyForm.$visible', ng-hide="currentUser.categories.length == 0")
-			| Take money&nbsp;
+		button.btn.btn-danger(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = false', ng-show='!moneyForm.$visible')
+			| Give back money&nbsp;
 			i.fa.fa-minus
-	button.btn.btn-warning(ng-click="personalCtrl.isCollapsedMoneyTable = !personalCtrl.isCollapsedMoneyTable; personalCtrl.changeMoneyText()", ng-hide="currentUser.categories.length == 0") {{personalCtrl.moneyButtonText}} income money&nbsp;
+	button.btn.btn-warning(ng-click="personalCtrl.isCollapsedMoneyTable = !personalCtrl.isCollapsedMoneyTable; personalCtrl.changeMoneyText()", ng-hide="personalCtrl.history.length == 0") {{personalCtrl.moneyButtonText}} income money&nbsp;
 		i.fa.fa-money
-	#main(ng-if="currentUser.categories.length != 0")
+	#main
 		table.table-hover.fixed(ng-if="!personalCtrl.isCollapsedMoneyTable")
 			colgroup
 				col.table-money-date
-				col.table-money-category
 				col.table-money-amount
 				col.table-money-user
 			thead
@@ -46,8 +38,6 @@
 					th.header-text
 						| Date - Time
 					th.header-text
-						| Category
-					th.header-text
 						| Amount
 					th.header-text
 						| User
@@ -55,44 +45,39 @@
 			table#income-money-table.table-hover.fixed
 				colgroup
 					col.table-money-date
-					col.table-money-category
 					col.table-money-amount
 					col.table-money-user
 				tbody
 					tr(ng-repeat="event in personalCtrl.history")
 						td {{event.time | date:'dd.MM.yyyy - HH:mm'}}
-						td {{event.category}}
 						td {{event.action}}
 						td {{event.who}}
 		table#income-table.table-hover.fixed
 			colgroup
-				col.col-category
 				col.col-budget
 				col.col-left
 			thead
 				tr
 					th#income-header(colspan="3")
-						| Personal budgets
+						| Personal budget
 				tr
 					th.header-text
-						| Category
-					th.header-text
 						| Left&nbsp;
-						#currency-group.btn-group(ng-click="personalCtrl.changeCurrency('left')")
+						.currency-group.btn-group(ng-click="personalCtrl.changeCurrency('left')")
 							label.btn.btn-primary(ng-model="personalCtrl.currencyLeftModel", btn-radio="'UAH'") UAH
 							label.btn.btn-primary(ng-model="personalCtrl.currencyLeftModel", btn-radio="'USD'") USD
 					th.header-text
 						| Spent&nbsp;
-						#currency-group.btn-group(ng-click="personalCtrl.changeCurrency('spent')")
+						.currency-group.btn-group(ng-click="personalCtrl.changeCurrency('spent')")
 							label.btn.btn-primary(ng-model="personalCtrl.currencySpentModel", btn-radio="'UAH'") UAH
 							label.btn.btn-primary(ng-model="personalCtrl.currencySpentModel", btn-radio="'USD'") USD
 			tbody
-				tr(ng-repeat="budget in personalCtrl.budgets")
-					td {{budget.categoryId}}
+				tr
 					td
-						span#budget-left {{budget.left | currency:""}}
+						span.budget-amount(ng-class="{bad: personalCtrl.budget.left < 0}") {{personalCtrl.budget.left | currency:""}}
+						span.bad(ng-show='personalCtrl.budget.left < 0') &nbsp;overuse!
 					td
-						span#budget-spent {{budget.spent | currency:""}}
+						span.budget-amount {{personalCtrl.budget.used | currency:""}}
 		table.table-hover.fixed.expenses-table(ng-if="personalCtrl.allExpenses.length != 0")
 			colgroup
 				col.table-toggle.responsive-hide
@@ -138,14 +123,13 @@
 							span.fa.fa-caret-up(ng-show="personalCtrl.sortType == 'currencySort' && sortReverse")
 							span.fa.fa-sort(ng-hide="personalCtrl.sortType == 'currencySort'")
 					th
-						span(ng-click="personalCtrl.sortType = 'currency'; sortReverse = !sortReverse; personalCtrl.sort(personalCtrl.sortType, sortReverse)") $ / &#8372; &nbsp;
-							span.fa.fa-caret-down(ng-show="personalCtrl.sortType == 'currency' && !sortReverse")
-							span.fa.fa-caret-up(ng-show="personalCtrl.sortType == 'currency' && sortReverse")
-							span.fa.fa-sort(ng-hide="personalCtrl.sortType == 'currency'")
+						.currency-group.btn-group(ng-click="personalCtrl.changeExpenseCurrency()")
+							label.btn.btn-primary(ng-model="personalCtrl.currencyModel", btn-radio="'UAH'") UAH
+							label.btn.btn-primary(ng-model="personalCtrl.currencyModel", btn-radio="'USD'") USD
 					th
 						i.fa.fa-cog
 		.table-container(ng-if="personalCtrl.allExpenses.length != 0")
-			table.table-hover.fixed.expenses-table(ng-hide="personalCtrl.sortType")
+			table.table-hover.fixed.expenses-table(ng-if="!personalCtrl.sortType")
 					colgroup
 						col.table-date.responsive-hide
 						col.table-category
@@ -179,10 +163,10 @@
 									| {{ expense.name  || 'empty' }}
 							td
 								span(editable-number='expense.price', e-name='price', e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "price")', onbeforesave="personalCtrl.checkField($data)", e-required="")
-									| {{ expense.price  || 'empty' }}
+									| {{ expense.newPrice | currency:'' }}
 							td
 								span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in personalCtrl.currency', onaftersave='personalCtrl.editExpenseObject($data, "currency")' e-required="")
-									| {{ expense.currency }}
+									| {{ personalCtrl.currencyModel }}
 							td
 								form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', onaftersave="personalCtrl.editExpense(expense.id)", shown='inserted == expense')
 
@@ -227,10 +211,10 @@
 								| {{ expense.name  || 'empty' }}
 						td
 							span(editable-number='expense.price', e-name='price', e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "price")', onbeforesave="personalCtrl.checkField($data)", e-required="")
-								| {{ expense.price  || 'empty' }}
+								| {{ expense.newPrice | currency:'' }}
 						td
 							span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in personalCtrl.currency', onaftersave='personalCtrl.editExpenseObject($data, "currency")' e-required="")
-								| {{ expense.currency }}
+								| {{ personalCtrl.currencyModel }}
 						td
 							form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', onaftersave="personalCtrl.editExpense(expense.id)", shown='inserted == expense')
 

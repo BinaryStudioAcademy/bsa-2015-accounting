@@ -8,7 +8,7 @@ module.exports = function(app) {
       getEvents: getEvents,
     };
    function getRequest(type) {
-      return $resource("/history", {"type": type.toLowerCase()});
+      return $resource("/history", {"type": type});
     }
 
     function getEvents(type) {

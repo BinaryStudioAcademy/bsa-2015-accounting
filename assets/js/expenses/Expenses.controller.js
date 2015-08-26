@@ -44,6 +44,7 @@ module.exports = function(app) {
       ExpensesService.getExpenses().then(function(data) {
         vm.allExpenses = data;
         convertDates(vm.allExpenses);
+        changeCurrency();
         loadExpenses();
       });
     }
@@ -151,7 +152,9 @@ module.exports = function(app) {
     }
 
     function editExpense(id) {
-      ExpensesService.editExpense(id, expense);
+      ExpensesService.editExpense(id, expense).then(function() {
+        changeCurrency();
+      });
     }
 
     function getField(fieldId, fieldName) {
@@ -221,6 +224,26 @@ module.exports = function(app) {
         || $rootScope.currentUser.admin) {
         return true;
       } else return false;
+    }
+
+    // Currency exchange
+    vm.currencyModel = "UAH";
+
+    vm.changeCurrency = changeCurrency;
+    function changeCurrency() {
+      if(vm.currencyModel == "USD") {
+        vm.allExpenses.forEach(function(expense) {
+          if(expense.currency == "UAH") {
+            expense.newPrice = expense.price / $rootScope.exchangeRate;
+          } else expense.newPrice = expense.price;
+        });
+      } else if(vm.currencyModel == "UAH") {
+        vm.allExpenses.forEach(function(expense) {
+          if(expense.currency == "USD") {
+            expense.newPrice = expense.price * $rootScope.exchangeRate;
+          } else expense.newPrice = expense.price;
+        });
+      }
     }
   }
 };

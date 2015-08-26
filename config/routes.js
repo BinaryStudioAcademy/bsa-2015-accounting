@@ -57,7 +57,9 @@ module.exports.routes = {
 
   'get /deleted/budgets': 'BudgetController.findDeleted',
   'get /deleted/expenses': 'ExpenseController.findDeleted',
-  'put /expense/restore/:id': 'ExpenseController.restoreDeleted'
+  'put /expense/restore/:id': 'ExpenseController.restoreDeleted',
+
+  'get /expense/personal': 'ExpenseController.findPersonalExpenses'
 
   /***************************************************************************
   *                                                                          *
