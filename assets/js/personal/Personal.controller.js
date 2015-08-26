@@ -70,6 +70,7 @@ module.exports = function(app) {
           convertDates(vm.allExpenses);
           loadExpenses();
         }
+        changeExpenseCurrency();
         getHistory();
         getUsersBudgets();
       });
@@ -309,6 +310,26 @@ module.exports = function(app) {
         });
       }
       vm.sortedExpenses = orderBy(vm.sortedExpenses, predicate, reverse);
+    }
+
+    // Currency exchange
+    vm.currencyModel = "UAH";
+
+    vm.changeExpenseCurrency = changeExpenseCurrency;
+    function changeExpenseCurrency() {
+      if(vm.currencyModel == "USD") {
+        vm.allExpenses.forEach(function(expense) {
+          if(expense.currency == "UAH") {
+            expense.newPrice = expense.price / $rootScope.exchangeRate;
+          } else expense.newPrice = expense.price;
+        });
+      } else if(vm.currencyModel == "UAH") {
+        vm.allExpenses.forEach(function(expense) {
+          if(expense.currency == "USD") {
+            expense.newPrice = expense.price * $rootScope.exchangeRate;
+          } else expense.newPrice = expense.price;
+        });
+      }
     }
   }
 };

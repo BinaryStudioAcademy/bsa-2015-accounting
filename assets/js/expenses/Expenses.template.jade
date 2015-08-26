@@ -91,10 +91,9 @@
 							span.fa.fa-caret-up(ng-show="sortType == 'currencySort' && sortReverse")
 							span.fa.fa-sort(ng-hide="sortType == 'currencySort'")
 					th
-						span(ng-click="sortType = 'currency'; sortReverse = !sortReverse; expCtr.sort(sortType, sortReverse)") $ / &#8372; &nbsp;
-							span.fa.fa-caret-down(ng-show="sortType == 'currency' && !sortReverse")
-							span.fa.fa-caret-up(ng-show="sortType == 'currency' && sortReverse")
-							span.fa.fa-sort(ng-hide="sortType == 'currency'")
+						.currency-group.btn-group(ng-click="expCtr.changeCurrency()")
+							label.btn.btn-primary(ng-model="expCtr.currencyModel", btn-radio="'UAH'") UAH
+							label.btn.btn-primary(ng-model="expCtr.currencyModel", btn-radio="'USD'") USD
 					th
 						span(ng-click="sortType = 'creator.name'; sortReverse = !sortReverse; expCtr.sort(sortType, sortReverse)") Added by&nbsp;
 							span.fa.fa-caret-down(ng-show="sortType == 'creator.name' && !sortReverse")
@@ -103,7 +102,7 @@
 					th
 						i.fa.fa-cog
 		#main
-			table.table-hover.fixed(ng-hide="sortType")
+			table.table-hover.fixed(ng-if="!sortType")
 				colgroup
 					col.table-date.responsive-hide
 					col.table-category
@@ -135,13 +134,13 @@
 								| {{ expCtr.getField(expense.subcategory.id, "subcategory") || expense.subcategory.name }}
 						td
 							span(editable-text='expense.name', e-name='name', e-form='rowform', onaftersave='expCtr.editExpenseObject($data, "name")', onbeforesave="expCtr.checkField($data)", e-required="")
-								| {{ expense.name  || 'empty' }}
+								| {{ expense.name || 'empty' }}
 						td
 							span(editable-number='expense.price', e-name='price', e-form='rowform', onaftersave='expCtr.editExpenseObject($data, "price")', onbeforesave="expCtr.checkField($data)", e-required="")
-								| {{ expense.price  || 'empty' }}
+								| {{ expense.newPrice | currency:'' }}
 						td
 							span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in expCtr.currency', onaftersave='expCtr.editExpenseObject($data, "currency")' e-required="")
-								| {{ expense.currency }}
+								| {{ expCtr.currencyModel }}
 						td
 							span(e-name='creator', e-form='rowform') {{ expense.creator.name }}
 						td
@@ -188,10 +187,10 @@
 								| {{ expense.name  || 'empty' }}
 						td
 							span(editable-number='expense.price', e-name='price', e-form='rowform', onaftersave='expCtr.editExpenseObject($data, "price")', onbeforesave="expCtr.checkField($data)", e-required="")
-								| {{ expense.price  || 'empty' }}
+								| {{ expense.newPrice | currency:'' }}
 						td
 							span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in expCtr.currency', onaftersave='expCtr.editExpenseObject($data, "currency")' e-required="")
-								| {{ expense.currency }}
+								| {{ expCtr.currencyModel }}
 						td
 							span(e-name='creator', e-form='rowform') {{ expense.creator.name }}
 						td
