@@ -1,8 +1,8 @@
 #bin-view
-	.alert.alert-warning(ng-show="currentUser.max_level < 3")
+	.alert.alert-warning(ng-show="currentUser.max_level < 2")
 		i.fa.fa-exclamation-triangle.fa-2x
 		h2 &nbsp;This section available only for users with administration rights
-	#expenses-section(ng-hide="currentUser.max_level < 3")
+	#expenses-section(ng-hide="currentUser.max_level < 2")
 		table.table-hover.fixed
 			colgroup
 				col.table-toggle.responsive-hide

@@ -128,10 +128,10 @@ function createExpense(req, res) {
 
 function findDeleted(req, res) {
   var permissions = _.pluck(_.filter(req.user.categories, function(per) {
-    return per.level == 3;
+    return per.level == 2;
   }), 'id');
   var filter = {deletedBy: {$exists: true}};
-  var expenseFilter = req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}});
+  var expenseFilter = req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}, 'creatorId': req.user.id});
 
   Expense.find(expenseFilter)
     .where(actionUtil.parseCriteria(req))
