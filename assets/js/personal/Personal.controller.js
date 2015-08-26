@@ -243,9 +243,9 @@ module.exports = function(app) {
         var toFromWord = "to";
         var addedTookWord = "added";
         if(!add) {
-          addTakeWord = "take";
+          addTakeWord = "give back";
           toFromWord = "from";
-          addedTookWord = "took";
+          addedTookWord = "gave back";
         }
         // Ok
         swal({
