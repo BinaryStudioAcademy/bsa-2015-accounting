@@ -29,7 +29,7 @@
 							span.fa.fa-caret-down(ng-show="hstCtrl.predicate == 'target' && !hstCtrl.reverse")
 							span.fa.fa-caret-up(ng-show="hstCtrl.predicate == 'target' && hstCtrl.reverse")
 							span.fa.fa-sort(ng-hide="hstCtrl.predicate == 'target'")
-					th
+					th.col-hide
 						span(ng-click="hstCtrl.order('time')") Date&nbsp;
 							span.fa.fa-caret-down(ng-show="hstCtrl.predicate == 'time' && !hstCtrl.reverse")
 							span.fa.fa-caret-up(ng-show="hstCtrl.predicate == 'time' && hstCtrl.reverse")
@@ -41,7 +41,7 @@
 					td {{event.who}}
 					td {{event.action}}
 					td {{event.target}}
-					td {{event.time | date:'HH:mm dd.MM.yyyy'}}
+					td.col-hide {{event.time | date:'HH:mm dd.MM.yyyy'}}
 			tbody(ng-hide="hstCtrl.events.length <= hstCtrl.limit")
 				tr
 					td(colspan='4')
