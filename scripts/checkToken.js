@@ -18,7 +18,12 @@ module.exports = function(req, res, next){
 			}
 		});
 	} else {
-		return res.redirect('http://localhost:2020/login');
+		var current_url = req.protocol + '://' + req.get('host') + req.url;
+
+		var cookies = new Cookies(req, res);
+		cookies.set('referer', current_url);
+
+		res.redirect('http://localhost:2020/');
 		// res.status(403).send({ success: false, message: "No Token Provided"});
 	}
 };

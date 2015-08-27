@@ -1,4 +1,6 @@
 var passport = require('passport');
+var jsonwebtoken = require('jsonwebtoken');
+var Cookies = require('cookies');
 
 module.exports = {
 
@@ -26,7 +28,11 @@ module.exports = {
     },
 
     logout: function(req, res) {
-        req.logout();
-        res.redirect('/');
+        var current_url = req.protocol + '://' + req.get('host') + req.url;
+
+        var cookies = new Cookies(req, res);
+        cookies.set('referer', current_url);
+
+        res.redirect('http://localhost:2020/logout');
     }
 };
