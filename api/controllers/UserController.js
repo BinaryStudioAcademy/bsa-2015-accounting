@@ -15,12 +15,11 @@ module.exports = {
 };
 
 function getCurrentUser(req, res) {
-	if(!req.isAuthenticated()) return res.forbidden();
+	// if(!req.decoded) return res.forbidden();
 
-	req.user.max_level = _.max(req.user.categories, function(pr) {
-		return pr.level;
-	}).level;
-
+	// req.user.max_level = _.max(req.user.categories, function(pr) {
+	// 	return pr.level;
+	// }).level;
 	Currency.find().then(function(currencies) {
 		var expenses = Expense.find({deletedBy: {$exists: false}, personal: true}).then(function(categories) {
 			return categories;

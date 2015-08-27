@@ -13,7 +13,7 @@ module.exports = {
 };
 
 function getPersonalHistory(req, res) {
-  History.find({type: "user", target: req.session.passport.user})
+  History.find({type: "user", target: req.user.id})
     .sort(actionUtil.parseSort(req))
     .then(function(events) {
     var users = User.find().then(function(users) {

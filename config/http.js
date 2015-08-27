@@ -29,20 +29,25 @@ module.exports.http = {
   * router is invoked by the "router" middleware below.)                     *
   *                                                                          *
   ***************************************************************************/
-    passportInit    : require('passport').initialize(),
-    passportSession : require('passport').session(),
+    // passportInit    : require('passport').initialize(),
+    // passportSession : require('passport').session(),
+
     // myRequestLogger: function (req, res, next) {
     //     console.log("Requested :: ", req.method, req.url);
     //     return next();
     // },
+    checkToken: function (req, res, next) {
+          require('../scripts/checkToken.js')(req,res, next);
+    },
 
     order: [
       'startRequestTimer',
       'cookieParser',
       'session',
-      'passportInit',     
-      'passportSession', 
-      'myRequestLogger',
+      // 'passportInit',     
+      // 'passportSession', 
+      // 'myRequestLogger',
+      'checkToken',
       'bodyParser',
       'handleBodyParserError',
       'compress',
