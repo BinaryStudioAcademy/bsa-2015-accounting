@@ -72,13 +72,16 @@
 
 	.nav>li>a:focus, .nav>li>a:hover
 		background -webkit-linear-gradient(left, #e2e2e2 0%,#fefefe 100%);
-
+	.showMenu
+		display initial !important
+		
 	@media screen and (max-width: 1235px)
 		main
 			margin-left 0
 		.menu-active
 			display none
 		nav
+			display initial
 			width 100%
 			margin-top 0
 			float none
@@ -88,8 +91,6 @@
 			top 33px
 		ul
 			display inline-flex
-		#menu-btn
-			display block
 		.active-tab
 			background -webkit-linear-gradient(top, #e2e2e2 0%,#fefefe 100%)
 
@@ -97,7 +98,10 @@
 			background -webkit-linear-gradient(top, #e2e2e2 0%,#fefefe 100%)
 
 	@media screen and (max-width: 680px)
+		#menu-btn
+			display block
 		nav
+			display none
 			top 52px
 			position fixed
 			height 276px
