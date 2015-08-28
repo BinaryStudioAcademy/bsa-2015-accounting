@@ -32,7 +32,7 @@ module.exports = {
 
         var cookies = new Cookies(req, res);
         cookies.set('referer', current_url);
-
-        res.redirect('http://localhost:2020/logout');
+        cookies.set('x-access-token');
+        res.redirect('/');
     }
 };
