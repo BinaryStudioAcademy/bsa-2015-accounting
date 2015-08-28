@@ -88,7 +88,7 @@
 				col.table-carrency
 				col.table-sub
 				col.table-addBy
-				col.table-description-header
+				col.table-description-header.responsive-hide
 			thead
 				tr
 					th#outcome-header.responsive-hide(colspan="8")
@@ -126,7 +126,7 @@
 						.currency-group.btn-group(ng-click="personalCtrl.changeExpenseCurrency()")
 							label.btn.btn-primary(ng-model="personalCtrl.currencyModel", btn-radio="'UAH'") UAH
 							label.btn.btn-primary(ng-model="personalCtrl.currencyModel", btn-radio="'USD'") USD
-					th
+					th.responsive-hide
 						i.fa.fa-cog
 		.table-container(ng-if="personalCtrl.allExpenses.length != 0")
 			table.table-hover.fixed.expenses-table(ng-if="!personalCtrl.sortType")
@@ -137,7 +137,7 @@
 						col.table-cost
 						col.table-carrency
 						col.table-sub
-						col.table-description
+						col.table-description.responsive-hide
 					tbody(ng-repeat="date in personalCtrl.dates | limitTo: personalCtrl.expensesLimit", ng-hide="!(filteredData = (personalCtrl.getExpensesByDate(date) " +
 					"| filter: {name: nameModelFilter, category: {name: categoryModelFilter.name}, " +
 					"subcategory: {name: subcategoryModelFilter.name}, creator: {name: authorModelFilter}} " +
@@ -167,7 +167,7 @@
 							td
 								span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in personalCtrl.currency', onaftersave='personalCtrl.editExpenseObject($data, "currency")' e-required="")
 									| {{ personalCtrl.currencyModel }}
-							td
+							td.responsive-hide
 								form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', onaftersave="personalCtrl.editExpense(expense.id)", shown='inserted == expense')
 
 									button.btn-xs.btn.btn-success.fa.fa-check(type='submit', ng-disabled='rowform.$waiting')
@@ -178,7 +178,7 @@
 								.btn-group(dropdown='')
 									button.btn.fa.fa-info(ng-show='!rowform.$visible' type='button', dropdown-toggle='')
 									span.dropdown-menu.dropdown-menu-right(editable-text='expense.description', e-name='description' onbeforesave="personalCtrl.checkField($data)" e-form='rowform' role='menu', aria-labelledby='split-button' onaftersave='personalCtrl.editExpenseObject($data, "description")') {{ expense.description }}
-							td.scroll-col(ng-if="!personalCtrl.isLoadMore()")
+							td.scroll-col.responsive-hide(ng-if="!personalCtrl.isLoadMore()")
 					tbody(ng-show="personalCtrl.isLoadMore()")
 						tr
 							td
@@ -195,7 +195,7 @@
 					col.table-cost
 					col.table-carrency
 					col.table-sub
-					col.table-description
+					col.table-description.responsive-hide
 				tbody
 					tr(ng-repeat="expense in personalCtrl.sortedExpenses | limitTo: personalCtrl.expensesLimit")
 						td.responsive-hide
@@ -215,7 +215,7 @@
 						td
 							span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in personalCtrl.currency', onaftersave='personalCtrl.editExpenseObject($data, "currency")' e-required="")
 								| {{ personalCtrl.currencyModel }}
-						td
+						td.responsive-hide
 							form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', onaftersave="personalCtrl.editExpense(expense.id)", shown='inserted == expense')
 
 								button.btn-xs.btn.btn-success.fa.fa-check(type='submit', ng-disabled='rowform.$waiting')
@@ -226,7 +226,7 @@
 							.btn-group(dropdown='')
 								button.btn.fa.fa-info(ng-show='!rowform.$visible' type='button', dropdown-toggle='')
 								span.dropdown-menu.dropdown-menu-right(editable-text='expense.description', e-name='description' e-form='rowform' role='menu', aria-labelledby='split-button' onaftersave='personalCtrl.editExpenseObject($data, "description")') {{ expense.description }}
-						td.scroll-col(ng-if="!personalCtrl.isLoadMore()")
+						td.scroll-col.responsive-hide(ng-if="!personalCtrl.isLoadMore()")
 				tbody(ng-show="personalCtrl.isLoadMore()")
 					tr
 						td

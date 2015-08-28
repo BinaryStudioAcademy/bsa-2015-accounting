@@ -58,8 +58,8 @@
 				col.table-cost
 				col.table-carrency
 				col.table-sub
-				col.table-addBy
-				col.table-description-header
+				col.table-addBy.responsive-hide
+				col.table-description-header.responsive-hide
 			thead
 				tr
 					th.responsive-hide
@@ -94,12 +94,12 @@
 						.currency-group.btn-group(ng-click="expCtr.changeCurrency()")
 							label.btn.btn-primary(ng-model="expCtr.currencyModel", btn-radio="'UAH'") UAH
 							label.btn.btn-primary(ng-model="expCtr.currencyModel", btn-radio="'USD'") USD
-					th
+					th.responsive-hide
 						span(ng-click="sortType = 'creator.name'; sortReverse = !sortReverse; expCtr.sort(sortType, sortReverse)") Added by&nbsp;
 							span.fa.fa-caret-down(ng-show="sortType == 'creator.name' && !sortReverse")
 							span.fa.fa-caret-up(ng-show="sortType == 'creator.name' && sortReverse")
 							span.fa.fa-sort(ng-hide="sortType == 'creator.name'")
-					th
+					th.responsive-hide
 						i.fa.fa-cog
 		#main
 			table.table-hover.fixed(ng-if="!sortType")
@@ -110,8 +110,8 @@
 					col.table-cost
 					col.table-carrency
 					col.table-sub
-					col.table-addBy
-					col.table-description
+					col.table-addBy.responsive-hide
+					col.table-description.responsive-hide
 				tbody(ng-repeat="date in expCtr.dates | limitTo: expCtr.expensesLimit", ng-hide="!(filteredData = (expCtr.getExpensesByDate(date) " +
 				"| filter: {name: nameModelFilter, category: {name: categoryModelFilter.name}, " +
 				"subcategory: {name: subcategoryModelFilter.name}, creator: {name: authorModelFilter}} " +
@@ -141,9 +141,9 @@
 						td
 							span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in expCtr.currency', onaftersave='expCtr.editExpenseObject($data, "currency")' e-required="")
 								| {{ expCtr.currencyModel }}
-						td
+						td.responsive-hide
 							span(e-name='creator', e-form='rowform') {{ expense.creator.name }}
-						td
+						td.responsive-hide
 							form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', onaftersave="expCtr.editExpense(expense.id)", shown='inserted == expense')
 
 								button.btn-xs.btn.btn-success.fa.fa-check(type='submit', ng-disabled='rowform.$waiting')
@@ -170,8 +170,8 @@
 					col.table-cost
 					col.table-carrency
 					col.table-sub
-					col.table-addBy
-					col.table-description
+					col.table-addBy.responsive-hide
+					col.table-description.responsive-hide
 				tbody
 					tr(ng-repeat="expense in expCtr.sortedExpenses | limitTo: expCtr.expensesLimit")
 						td.responsive-hide
@@ -191,9 +191,9 @@
 						td
 							span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in expCtr.currency', onaftersave='expCtr.editExpenseObject($data, "currency")' e-required="")
 								| {{ expCtr.currencyModel }}
-						td
+						td.responsive-hide
 							span(e-name='creator', e-form='rowform') {{ expense.creator.name }}
-						td
+						td.responsive-hide
 							form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', onaftersave="expCtr.editExpense(expense.id)", shown='inserted == expense')
 
 								button.btn-xs.btn.btn-success.fa.fa-check(type='submit', ng-disabled='rowform.$waiting')
