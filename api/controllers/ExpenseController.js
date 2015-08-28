@@ -114,7 +114,7 @@ function findPersonalExpenses(req, res) {
 
 function createExpense(req, res) {
 	var data = actionUtil.parseValues(req);
-	data.creatorId = req.session.passport.user || "unknown id";
+	data.creatorId = req.user.id || "unknown id";
 	Expense.create(data).exec(function created (err, newInstance) {
 		if (err) return res.negotiate(err);
 		var log = {who: req.user.id, action: 'created', type: 'expense', target: newInstance.id, time: Number((new Date().getTime() / 1000).toFixed())};

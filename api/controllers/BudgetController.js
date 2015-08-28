@@ -104,7 +104,7 @@ function getBudgets(req, res) {
 
 function createBudget(req, res) {
 	var data = actionUtil.parseValues(req);
-	data.creatorId = req.session.passport.user || "unknown id";
+	data.creatorId = req.user.id || "unknown id";
 	Budget.create(data).exec(function created (err, newInstance) {
 		if (err) return res.negotiate(err);
 		var log = {who: req.user.id, action: 'created', type: 'budget', 
@@ -161,7 +161,7 @@ function updateBudget(req, res) {
 			if (values.delSubcategory) {
 				_.find(budget.subcategories, function(sub) {
 					return sub.id == values.delSubcategory.id && !sub.deletedBy;
-				}).deletedBy = req.session.passport.user || "unknown id";
+				}).deletedBy = req.user.id || "unknown id";
 			}
 
 			if (values.restoreSubcategory) {
