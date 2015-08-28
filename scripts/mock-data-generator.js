@@ -134,7 +134,7 @@ _.times(years, function(n) {
 	});
 });
 
-var admin = {_id: '55ddbde6d636c0e46a23fc90', categories: [], 'createdAt': new Date().toISOString(), 'updatedAt': new Date().toISOString()};
+var admin = {_id: ObjectId('55ddbde6d636c0e46a23fc90'), categories: [], budget: 0, 'createdAt': new Date().toISOString(), 'updatedAt': new Date().toISOString()};
 admin.admin = true; // temp
 admin.name = 'Admin9000'; // temp
 db.user.push(admin);

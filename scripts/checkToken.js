@@ -11,7 +11,7 @@ module.exports = function(req, res, next){
 			if (err) {
 				res.status(403).send({ success: false, message: "Failed to authenticate user"});
 			} else {
-				User.findOne({_id: decoded.id}).exec(function(err, user) {
+				User.findOne({id: decoded.id}).exec(function(err, user) {
 					req.user = _.assign(decoded, user);
 					next();
 				})
