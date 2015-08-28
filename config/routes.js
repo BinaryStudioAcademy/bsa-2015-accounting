@@ -34,17 +34,17 @@ module.exports.routes = {
 
   'get /': 'HomepageController',
 
-  'get /login': {
-    view: 'login'
-  },
+  // 'get /login': {
+  //   view: 'login'
+  // },
 
-  'post /login': 'AuthController.login',
+  // 'post /login': 'AuthController.login',
 
   '/logout': 'AuthController.logout',
 
-  'get /signup': {
-    view: 'signup'
-  },
+  // 'get /signup': {
+  //   view: 'signup'
+  // },
 
   'get /years': 'YearsController',
   'get /expenses_by_year/:year': 'ExpenseController.find',

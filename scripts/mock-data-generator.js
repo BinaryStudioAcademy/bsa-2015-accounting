@@ -6,7 +6,7 @@ var Factory = require('rosie').Factory;
 var _ = require('lodash');
 var bcrypt = require('bcryptjs');
 var MongoClient = require('mongodb').MongoClient;
-var objectId = require('./config/objectId.js');
+var objectId = require('../config/objectId.js');
 var ObjectId = require('mongodb').ObjectID;
 
 var startYear = 2009;
@@ -114,10 +114,6 @@ _.times(years, function(n) {
 				if (index === -1) {
 					var currency = Factory.build('Currency', {time: curTime});
 					db.currency.push(currency);
-				}
-				if (nn === 4) {
-					//var expense = Factory.build('Expense', {deletedBy: String(_.sample(db.user)._id), time: expTime, creatorId: String(_.sample(db.user)._id), categoryId: category._id, subcategoryId: sub.id});
-					//		db.expense.push(expense);
 				} else if (nn === 5) {
 					var expense = Factory.build('Expense', {time: expTime, creatorId: String(_.sample(db.user)._id), categoryId: String(category._id), subcategoryId: String(sub.id)});
 					expense.personal = true;
@@ -138,8 +134,10 @@ _.times(years, function(n) {
 	});
 });
 
-var owner = {_id: new ObjectId(), login: 'admin@admin.admin', budget: 0, name: 'Admin9000', admin: true, categories: [], 'createdAt': new Date().toISOString(), 'updatedAt': new Date().toISOString(), password: hash};
-db.user.push(owner);
+var admin = {_id: '55ddbde6d636c0e46a23fc90', categories: [], 'createdAt': new Date().toISOString(), 'updatedAt': new Date().toISOString()};
+admin.admin = true; // temp
+admin.name = 'Admin9000'; // temp
+db.user.push(admin);
 
 var url = 'mongodb://localhost:27017/portal-accounting';
 
