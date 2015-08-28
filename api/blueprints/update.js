@@ -90,7 +90,6 @@ module.exports = function updateOneRecord (req, res) {
         History.create(log).exec(function(err, log) {
           if (err) return res.negotiate(err);
 
-          console.log(log);
           res.ok(populatedRecord);
         });
       }); // </foundAgain>

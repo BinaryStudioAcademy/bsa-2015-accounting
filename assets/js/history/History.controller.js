@@ -10,7 +10,7 @@ module.exports = function(app) {
 		vm.types = ['All', 'Expense', 'Budget', 'User'];
 		vm.events = [];
 		vm.limit = 50;
-		vm.predicate = 'age';
+		vm.predicate = 'time';
 		vm.reverse = true;
 
 		vm.getEvents = getEvents;
