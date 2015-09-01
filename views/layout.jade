@@ -1,6 +1,7 @@
 doctype html
 html(ng-app='accounting')
   head
+    link(href="http://team.binary-studio.com/app/styles/css/style.css", rel="stylesheet")
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css')
     link(rel='stylesheet', href='http://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css')
     link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
@@ -14,6 +15,7 @@ html(ng-app='accounting')
     block body
 
     // The linker searches for this tag and adds js.  If there's no linker, we point to sails.io.js
+    script(src="http://team.binary-studio.com/app/javascripts/header.js")
     script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js')
 
     script(src="http://code.highcharts.com/highcharts.js")

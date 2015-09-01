@@ -3,13 +3,8 @@ extends ./layout
 //-ng-click='toggleMenu()', (ng-show='menuTabs' )
 block body
 	#menu-view(ng-controller='HomepageController')
-		header
-			i#menu-btn.fa.fa-bars(ng-click="isMenuShow = !isMenuShow")
-			#page-name 
-				h2 Accounting app
-			#user-info
-				a(href="/#/personal") &nbsp;{{currentUser.name}}&nbsp;
-				a.btn.btn-warning(href="/logout") Log Out
+		header#header
+
 		nav(ng-class="{showMenu: isMenuShow}")
 			ul.nav.nav-tabs.tabs-left
 				li
