@@ -16,7 +16,7 @@ module.exports = function(app) {
 		};
 
 		function getRequest() {
-			return $resource("/expense/:id", { id: "@id" });
+			return $resource("expense/:id", { id: "@id" });
 		}
 
 		/**
@@ -24,19 +24,19 @@ module.exports = function(app) {
 		 * @returns promise object
 		 */
 		function getExpenses() {
-			return $resource("/expense/:id", { id: "@id", sort: "time desc" }).query().$promise;
+			return $resource("expense/:id", { id: "@id", sort: "time desc" }).query().$promise;
 		}
 
 		function getAllExpenses(year) {
-			return $resource("/expenses_by_year/" + year).query().$promise;
+			return $resource("expenses_by_year/" + year).query().$promise;
 		}
 
 		function getDeletedExpenses() {
-			return $resource("/deleted/expenses", { sort: "time desc" }).query().$promise;
+			return $resource("deleted/expenses", { sort: "time desc" }).query().$promise;
 		}
 
 		function restoreExpense(expenseId) {
-			var data = $resource("/expense/restore/:id", { id: "@id" }, {
+			var data = $resource("expense/restore/:id", { id: "@id" }, {
 				update: {
 					method: "PUT"
 				}
@@ -60,7 +60,7 @@ module.exports = function(app) {
 		 * @returns promise object
 		 */
 		function editExpense(expenseId, newExpense) {
-			var data = $resource("/expense/:id", { id: "@id" }, {
+			var data = $resource("expense/:id", { id: "@id" }, {
 				update: {
 					method: "PUT"
 				}
@@ -78,7 +78,7 @@ module.exports = function(app) {
 		}
 
 		function getCategories() {
-			return $resource("/category/:id", { id: "@id" }).query().$promise;
+			return $resource("category/:id", { id: "@id" }).query().$promise;
 		}
 	}
 };

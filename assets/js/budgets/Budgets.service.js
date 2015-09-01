@@ -15,7 +15,7 @@ module.exports = function(app) {
     };
 
     function getRequest() {
-      return $resource("/budget/:id", { id: "@id"});
+      return $resource("budget/:id", { id: "@id"});
     }
 
     function getBudget(budgetId) {
@@ -27,7 +27,7 @@ module.exports = function(app) {
      * @returns budgets array
      */
     function getBudgets(year) {
-      return $resource("/budget", { where: {"year": year}}).query().$promise;
+      return $resource("budget", { where: {"year": year}}).query().$promise;
     }
 
     /**
@@ -46,7 +46,7 @@ module.exports = function(app) {
      * @returns edited object
      */
     function editBudget(budgetId, newBudget) {
-      var data = $resource("/budget/:id", { id: "@id" }, {
+      var data = $resource("budget/:id", { id: "@id" }, {
         update: {
           method: "PUT"
         }
@@ -55,7 +55,7 @@ module.exports = function(app) {
     }
 
     function restoreBudget(budgetId) {
-      var data = $resource("/budget/:id", { id: "@id" }, {
+      var data = $resource("budget/:id", { id: "@id" }, {
         update: {
           method: "PUT"
         }
@@ -73,7 +73,7 @@ module.exports = function(app) {
     }
 
     function getDeletedBudgets(year) {
-      return $resource("/deleted/budgets", { where: {"year": year}}).get().$promise;
+      return $resource("deleted/budgets", { where: {"year": year}}).get().$promise;
     }
   }
 };

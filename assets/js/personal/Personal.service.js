@@ -10,11 +10,11 @@ module.exports = function(app) {
     };
 
     function getPersonalExpenses() {
-      return $resource("/expense/personal", { sort: "time desc" }).query().$promise;
+      return $resource("expense/personal", { sort: "time desc" }).query().$promise;
     }
 
     function getPersonalHistory() {
-      return $resource("/personal/:id", { id: "@id", sort: "time desc" }).query().$promise;
+      return $resource("personal/:id", { id: "@id", sort: "time desc" }).query().$promise;
     }
   }
 };

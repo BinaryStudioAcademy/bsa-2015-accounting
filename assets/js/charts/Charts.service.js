@@ -11,7 +11,7 @@ module.exports = function(app) {
     };
 
     function getCategories() {
-      return $resource("/category/:id", { id: "@id" }).query().$promise;
+      return $resource("category/:id", { id: "@id" }).query().$promise;
     }
   }
 };

@@ -13,7 +13,7 @@ module.exports = function(app) {
     };
 
     function getRequest() {
-      return $resource("/category/:id", { id: "@id" });
+      return $resource("category/:id", { id: "@id" });
     }
 
     /**
@@ -48,7 +48,7 @@ module.exports = function(app) {
      * @returns edited object
      */
     function editCategory(categoryId, newCategory) {
-      var data = $resource("/category/:id", { id: "@id" }, {
+      var data = $resource("category/:id", { id: "@id" }, {
         update: {
           method: "PUT"
         }

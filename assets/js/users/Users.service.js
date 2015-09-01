@@ -13,7 +13,7 @@ module.exports = function(app) {
     };
 
     function getRequest() {
-      return $resource("/user/:id", { id: "@id" });
+      return $resource("user/:id", { id: "@id" });
     }
 
     /**
@@ -25,7 +25,7 @@ module.exports = function(app) {
     }
 
     function getCurrentUser() {
-      var User = $resource("/user/current");
+      var User = $resource("user/current");
       return User.get().$promise;
     }
 
@@ -45,7 +45,7 @@ module.exports = function(app) {
      * @returns edited object
      */
     function editUser(userId, newUsers) {
-      var data = $resource("/user/:id", { id: "@id" }, {
+      var data = $resource("user/:id", { id: "@id" }, {
         update: {
           method: "PUT"
         }

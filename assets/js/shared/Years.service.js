@@ -9,7 +9,7 @@ module.exports = function(app) {
     };
 
     function getRequest() {
-      return $resource("/years");
+      return $resource("years");
     }
 
     /**
