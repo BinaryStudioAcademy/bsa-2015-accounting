@@ -7,7 +7,7 @@ module.exports = function(grunt) {
 	grunt.config.set('browserify', {
 		vendor: {
 			src: [],
-			dest:'.tmp/public/accounting/js/app-libs.js',
+			dest:'.tmp/public/js/app-libs.js',
 			options: {
 				require: libs
 			}
@@ -15,7 +15,7 @@ module.exports = function(grunt) {
 
 		client: {
 			src: 'assets/js/index.js',
-			dest: '.tmp/public/accounting/js/app.js',
+			dest: '.tmp/public/js/app.js',
 			options: {
 				external: libs
 			}

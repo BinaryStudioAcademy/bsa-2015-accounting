@@ -7,7 +7,7 @@ module.exports = function(grunt) {
         flatten: true,
 				cwd: 'assets/js/',
 				src: ['**/*.jade'],
-				dest: '.tmp/public/accounting/templates',
+				dest: '.tmp/public/templates',
 				ext: '.html'
 			}]
 		}

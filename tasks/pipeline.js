@@ -15,7 +15,7 @@
 // (if you're using LESS with the built-in default config, you'll want
 //  to change `assets/styles/importer.less` instead.)
 var cssFilesToInject = [
-  '/accounting/styles/**/*.css'
+  '/styles/**/*.css'
 ];
 
 
@@ -45,7 +45,7 @@ var jsFilesToInject = [
 // templates get spit out to the same file.  Be sure and check out `tasks/README.md`
 // for information on customizing and installing new tasks.
 var templateFilesToInject = [
-  '/accounting/templates/**/*.html'
+  '/templates/**/*.html'
 ];
 
 
@@ -54,10 +54,10 @@ var templateFilesToInject = [
 // (i.e. where the other Grunt tasks spit them out, or in some cases, where
 // they reside in the first place)
 module.exports.cssFilesToInject = cssFilesToInject.map(function(path) {
-  return '.tmp/public/accounting/' + path;
+  return '.tmp/public/' + path;
 });
 module.exports.jsFilesToInject = jsFilesToInject.map(function(path) {
-  return '.tmp/public/accounting/' + path;
+  return '.tmp/public/' + path;
 });
 module.exports.templateFilesToInject = templateFilesToInject.map(function(path) {
   return 'assets/' + path;
