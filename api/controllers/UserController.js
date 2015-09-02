@@ -103,7 +103,7 @@ function updateUser(req, res) {
 		if (!user) return res.notFound();
 
 		var action = 'edited';
-		if ((values.setAdminStatus === true || values.setAdminStatus === false) && req.user.admin) {
+		if ((values.setAdminStatus === true || values.setAdminStatus === false) && (req.user.role === 'ADMIN' || req.user.admin)) {
 			user.admin = values.setAdminStatus;
 		}
 

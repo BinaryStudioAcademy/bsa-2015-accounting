@@ -11,7 +11,7 @@ module.exports = function(req, res, next) {
 			if (permissions) {
 				var permission = permissions.level >= 2;
 			}
-			if (req.user.admin || permission) {
+			if (req.user.role === "ADMIN" || req.user.admin || permission) {
 				next();
 			} else {
 				return res.forbidden("You don't have permission to do this");
@@ -32,7 +32,7 @@ module.exports = function(req, res, next) {
 
 			var creator = expense.creatorId === req.user.id;
 
-			if (req.user.admin || permission || creator) {
+			if (req.user.role === "ADMIN" || req.user.admin || permission || creator) {
 				next();
 			} else {
 				return res.forbidden("You don't have permission to do this");

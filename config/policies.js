@@ -30,49 +30,49 @@ module.exports.policies = {
   'AuthController': {
     '*': true
   },
-  'HomepageController': {
-    '*': 'isAuthenticated'
+   'HomepageController': {
+    '*': true
   },
   'YearsController': {
-    '*': 'isAuthenticated'
+    '*': true
   },
   'CurrencyController': {
-    '*': 'isAuthenticated'
+    '*': true
   },
   'BudgetController': {
-    'findOne': ['isAuthenticated', 'hasRightBudget'],
-    'destroy': ['isAuthenticated', 'hasRightBudget'],
-    'update': ['isAuthenticated', 'hasRightBudget'],
-    'create': ['isAuthenticated', 'hasRightBudget'],
-    'find': 'isAuthenticated',
-    'findDeleted':'isAuthenticated'
+    'findOne': 'hasRightBudget',
+    'destroy': 'hasRightBudget',
+    'update': 'hasRightBudget',
+    'create': 'hasRightBudget',
+    'find': true,
+    'findDeleted': true
   },
   'CategoryController': {
-    'findOne': ['isAuthenticated', 'hasRightCategory'],
-    'destroy': ['isAuthenticated', 'hasRightCategory'],
-    'update': ['isAuthenticated', 'hasRightCategory'],
-    'create': ['isAuthenticated', 'hasRightCategory'],
-    'find': 'isAuthenticated'
+    'findOne': 'hasRightCategory',
+    'destroy': 'hasRightCategory',
+    'update': 'hasRightCategory',
+    'create': 'hasRightCategory',
+    'find': true
   },
   'ExpenseController': {
-    '*': ['isAuthenticated', 'hasRightExpense'],
-    'find': 'isAuthenticated',
-    'findPersonalExpenses': 'isAuthenticated',
-    'findDeleted': 'isAuthenticated',
-    'restoreDeleted': 'isAuthenticated'
+    '*': 'hasRightExpense',
+    'find': true,
+    'findPersonalExpenses': true,
+    'findDeleted': true,
+    'restoreDeleted': true
   },
   'UserController': {
-   '*': ['isAuthenticated', 'isAdmin'],
-   'findOne': ['isAuthenticated', 'isThatUser'],
-   'update': 'isAuthenticated',
-   'getCurrentUser': ['isAuthenticated']
+   '*': 'isAdmin',
+   'findOne': 'isThatUser',
+   'update': true,
+   'getCurrentUser': true
   },
   'HistoryController': {
-    '*': ['isAuthenticated', 'isGlobalAdmin']
+    '*': 'isGlobalAdmin'
   },
   'PersonalController': {
-    '*': 'isAuthenticated',
-    'find': 'isAuthenticated'
+    '*': true,
+    'find': true
   }
 
   /***************************************************************************

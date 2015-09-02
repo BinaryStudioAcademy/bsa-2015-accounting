@@ -17,7 +17,7 @@ module.exports = function(req, res, next) {
 		}
 	}
 
-	if (req.user.admin || permission) {
+	if (req.user.role === "ADMIN" || req.user.admin || permission) {
 		next();
 	} else {
 		return res.forbidden("You don't hane permission to do this");
