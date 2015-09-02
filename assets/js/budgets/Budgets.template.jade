@@ -1,5 +1,5 @@
 #budgets-view
-	button.btn.btn-primary#new-budget(type='button' ng-click="budCtrl.createNewBudget()" ng-show="currentUser.admin") create new budget {{budCtrl.years[0] + 1}}
+	button.btn.btn-primary#new-budget(type='button' ng-click="budCtrl.createNewBudget()" ng-show="currentUser.admin || currentUser.role == 'ADMIN'") create new budget {{budCtrl.years[0] + 1}}
 	table.table-hover
 		col(width='150')
 		col(width='250')
@@ -41,8 +41,8 @@
 					.buttons(ng-show='!rowform.$visible')
 						i.fa.fa-chevron-right(ng-click="budCtrl.toggleCustom($index)" ng-show="!budCtrl.hiddenList[$index]")
 						i.fa.fa-chevron-down(ng-click="budCtrl.toggleCustom($index)" ng-hide="!budCtrl.hiddenList[$index]")
-						button.btn.btn-xs.btn-primary(ng-click='rowform.$show()' ng-show="budCtrl.getUserCategory(currentUser, budget.category).level > 2 || currentUser.admin") edit
-						button.btn.btn-xs.btn-danger(ng-click='budCtrl.deleteBudget(budget)' ng-show="budCtrl.getUserCategory(currentUser, budget.category).level > 2 || currentUser.admin") del
+						button.btn.btn-xs.btn-primary(ng-click='rowform.$show()' ng-show="budCtrl.getUserCategory(currentUser, budget.category).level > 2 || currentUser.admin || currentUser.role == 'ADMIN'") edit
+						button.btn.btn-xs.btn-danger(ng-click='budCtrl.deleteBudget(budget)' ng-show="budCtrl.getUserCategory(currentUser, budget.category).level > 2 || currentUser.admin || currentUser.role == 'ADMIN'") del
 				th
 					span(editable-text='budget.category.name' name='name' e-form='rowform' onbeforesave='budCtrl.checkName($data, budget.category)' e-typeahead='category for category in budCtrl.categoriesAutocomplete(budget.category)') {{budget.category.name || 'Unnamed category'}}
 				th
@@ -68,8 +68,8 @@
 						button.btn.btn-xs.btn-default(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
 							| cancel
 					.buttons(ng-show='!rowform.$visible')
-						button.btn.btn-xs.btn-primary(ng-click='rowform.$show()' ng-show="budCtrl.getUserCategory(currentUser, budget.category).level > 2 || currentUser.admin") edit
-						button.btn.btn-xs.btn-danger(ng-click='budCtrl.deleteSubcategory(budget, subcategory)' ng-show="budCtrl.getUserCategory(currentUser, budget.category).level > 2 || currentUser.admin") del
+						button.btn.btn-xs.btn-primary(ng-click='rowform.$show()' ng-show="budCtrl.getUserCategory(currentUser, budget.category).level > 2 || currentUser.admin || currentUser.role == 'ADMIN'") edit
+						button.btn.btn-xs.btn-danger(ng-click='budCtrl.deleteSubcategory(budget, subcategory)' ng-show="budCtrl.getUserCategory(currentUser, budget.category).level > 2 || currentUser.admin || currentUser.role == 'ADMIN'") del
 				td
 					span(editable-text='subcategory.name', e-name='subcategory.name', e-form='rowform' onbeforesave='budCtrl.checkName($data, budget.category, subcategory)' e-typeahead='subcategory for subcategory in budCtrl.subcategoriesAutocomplete(budget.category, subcategory)')
 						|{{subcategory.name || 'Unnamed subcategory' }}
@@ -84,13 +84,13 @@
 					span(ng-show="subcategory.budget - subcategory.used < 0") overused
 				
 			tr(ng-hide="!budCtrl.hiddenList[$index]")
-				td(colspan='4' ng-show="budCtrl.getUserCategory(currentUser, budget.category).level > 2 || currentUser.admin")
+				td(colspan='4' ng-show="budCtrl.getUserCategory(currentUser, budget.category).level > 2 || currentUser.admin || currentUser.role == 'ADMIN'")
 					a(ng-click="budCtrl.addSubcategory(budget.category)")
 						| new subcategory in {{budget.category.name}} 
 						i.fa.fa-plus 
 		tbody
 			tr
-				td(colspan='4' ng-show="currentUser.admin")
+				td(colspan='4' ng-show="currentUser.admin || currentUser.role == 'ADMIN'")
 					a(ng-click="budCtrl.addBudget()")
 						| new category in year {{budCtrl.year}} 
 						i.fa.fa-plus
