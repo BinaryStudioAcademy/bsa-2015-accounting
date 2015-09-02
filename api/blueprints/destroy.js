@@ -27,7 +27,7 @@ module.exports = function updateOneRecord (req, res) {
 	// Create `values` object (monolithic combination of all parameters)
 	// But omit the blacklisted params (like JSONP callback param, etc.)
 	var values = {
-		deletedBy: req.session.passport.user,
+		deletedBy: req.user.id,
 		id: actionUtil.parseValues(req).id
 	};
 
