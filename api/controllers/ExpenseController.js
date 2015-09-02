@@ -28,7 +28,7 @@ function getExpenses(req, res) {
 		var end = Date.parse('12/31/' + year + ' 23:59:59') / 1000;
 		filter = {deletedBy: {$exists: false}, time: {$gte: start, $lte: end }};
 	}
-  var expenseFilter = req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}});
+  var expenseFilter = req.user.role === 'ADMIN' || req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}});
 	Expense.find(expenseFilter)
 	.where(actionUtil.parseCriteria(req))
 	.sort(actionUtil.parseSort(req))
@@ -71,7 +71,7 @@ function findPersonalExpenses(req, res) {
     return per.level >= 1;
   }), 'id');
   var filter = {deletedBy: {$exists: false}, personal: true};
-  var expenseFilter = req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}});
+  var expenseFilter = req.user.role === 'ADMIN' || req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}});
 
   Expense.find(expenseFilter)
     .sort(actionUtil.parseSort(req))
@@ -131,7 +131,7 @@ function findDeleted(req, res) {
     return per.level == 2;
   }), 'id');
   var filter = {deletedBy: {$exists: true}};
-  var expenseFilter = req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}, 'creatorId': req.user.id});
+  var expenseFilter = req.user.role === 'ADMIN' || req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}, 'creatorId': req.user.id});
 
   Expense.find(expenseFilter)
     .where(actionUtil.parseCriteria(req))

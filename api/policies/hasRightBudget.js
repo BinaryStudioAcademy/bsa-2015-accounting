@@ -1,6 +1,6 @@
 module.exports = function(req, res, next) {
 	if (req.method === 'POST') {
-		if (req.user.admin) {
+		if (req.user.role === "ADMIN" || req.user.admin) {
 			next();
 		} else {
 			return res.forbidden("You don't hane permission to do this");
@@ -24,7 +24,7 @@ module.exports = function(req, res, next) {
 						break;
 				}
 			}
-			if (req.user.admin || permission) {
+			if (req.user.role === "ADMIN" || req.user.admin || permission) {
 				next();
 			} else {
 				return res.forbidden("You don't have permission to do this");

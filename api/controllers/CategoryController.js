@@ -10,7 +10,7 @@ function find(req, res) {
 	var permissions = _.pluck(_.filter(req.user.categories, function(per) {
 		return per.level >= 1;
 	}), 'id');
-	var filter = req.user.admin ? {} : {id: {$in: permissions}};
+	var filter = req.user.role === 'ADMIN' || req.user.admin ? {} : {id: {$in: permissions}};
 	Category.find(filter).exec(function(err, categories) {
 		if (err) return res.serverError(err);
 
