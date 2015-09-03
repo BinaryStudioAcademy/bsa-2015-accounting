@@ -20,6 +20,9 @@ module.exports = function(req, res, next){
 	} else {
 		var current_url = req.protocol + '://' + 'team.binary-studio.com' + req.url; //req.get('host')
 
+		console.log('### req.url =>', req.url);
+		console.log('### current_url =>', current_url);
+
 		var cookies = new Cookies(req, res);
 		cookies.set('referer', current_url);
 
