@@ -29,6 +29,7 @@ require('./route.js')(app);
 var getHeader = function() {
 var request = new XMLHttpRequest();
 request.open('GET', 'http://team.binary-studio.com/app/header', true);
+    request.withCredentials = true;
     request.send();
     request.onreadystatechange = function() {
         if (request.readyState != 4) return;
