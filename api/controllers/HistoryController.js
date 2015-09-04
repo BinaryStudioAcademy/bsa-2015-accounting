@@ -34,7 +34,8 @@ function find(req, res) {
 					target = _.find(categories, {id: budget.category.id}).name + ' ' + budget.year;
 					break;
 				case 'user':
-					target = _.find(users, {id: event.target}).name;
+					u = _.find(users, {id: event.target})
+					target = u ? u.name : 'anonymous';
 					break;
 			}
 
