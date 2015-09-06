@@ -49,6 +49,7 @@ module.exports = function(app) {
 
         $rootScope.$emit('new-expense', vm.expense);
         vm.expense = {};
+        vm.expense.currency = "UAH";
         swal("Successfully added!", "You added new expense!", "success");
       });
     }
