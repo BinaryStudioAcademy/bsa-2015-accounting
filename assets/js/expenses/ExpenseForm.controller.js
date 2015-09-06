@@ -3,9 +3,9 @@ var swal = require('sweetalert');
 module.exports = function(app) {
   app.controller('ExpenseFormController', ExpenseFormController);
 
-  ExpenseFormController.$inject = ['ExpensesService', '$rootScope', 'BudgetsService', 'UsersService', '$filter'];
+  ExpenseFormController.$inject = ['ExpensesService', '$rootScope', 'BudgetsService', 'UsersService', '$filter', '$scope'];
 
-  function ExpenseFormController(ExpensesService, $rootScope, BudgetsService, UsersService, $filter) {
+  function ExpenseFormController(ExpensesService, $rootScope, BudgetsService, UsersService, $filter, $scope) {
     var vm = this;
 
     // Create new expense
@@ -50,6 +50,7 @@ module.exports = function(app) {
         $rootScope.$emit('new-expense', vm.expense);
         vm.expense = {};
         vm.expense.currency = "UAH";
+        $scope.expenseForm.$setPristine();
         swal("Successfully added!", "You added new expense!", "success");
       });
     }
