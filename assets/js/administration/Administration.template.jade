@@ -36,7 +36,7 @@
 					td {{user.name}} {{user.surname}}
 					td
 						a(href="#" editable-checkbox="user.admin" e-title="Accounting admin?" ng-show="currentUser.admin || currentUser.role == 'ADMIN'" onaftersave="admCtrl.updateRole(user)") {{user.admin && "YES" || "NO" }}
-						span(ng-show="!currentUser.admin || currentUser.role == 'ADMIN'") {{user.admin && "YES" || "NO" }}
+						span(ng-hide="currentUser.admin || currentUser.role == 'ADMIN'") {{user.admin && "YES" || "NO" }}
 					td
 						a(href="#" editable-select="admCtrl.getUserCategory(user).level" ng-class="{bad: admCtrl.getUserCategory(user).level == 0}" ng-hide="user.admin" onaftersave="admCtrl.updateRights(user)" e-ng-options="permit.level as permit.text for permit in admCtrl.permits") {{admCtrl.permits[admCtrl.getUserCategory(user).level].text}}
 						span(ng-show="user.admin") Accounting admin

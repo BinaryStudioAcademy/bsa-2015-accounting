@@ -31,6 +31,7 @@ module.exports = function(app) {
 
 			vm.users.forEach(function(user) {
 				var local = localData(user.serverUserId);
+				if (local) user.id = local.id;
 				user.admin = local ? local.admin : false;
 				user.budget = local ? local.budget : 0;
 				user.categories = local ? local.categories : [];
@@ -123,6 +124,7 @@ module.exports = function(app) {
 
 				vm.users.forEach(function(user) {
 					var local = localData(user.serverUserId);
+					if (local) user.id = local.id;
 					user.admin = local ? local.admin : false;
 					user.budget = local ? local.budget : 0;
 					user.categories = local ? local.categories : [];
