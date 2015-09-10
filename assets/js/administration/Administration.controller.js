@@ -134,7 +134,7 @@ module.exports = function(app) {
 			var result = _.find(user.categories, {id: vm.category.id});
 			if (!result) {
 				var level = 0;
-				if (user.admin || user.role == 'ADMIN') { level = 3; }
+				if (user.admin) { level = 3; }
 				user.categories.push({id: vm.category.id, level: level});
 				return vm.getUserCategory(user);
 			}
