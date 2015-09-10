@@ -26,7 +26,7 @@ module.exports = function(app) {
 		}
 
 		function getGlobalUsers() {
-			return $resource("profile/api/users/").query().$promise;
+			return $resource("../profile/api/users/").query().$promise;
 		}
 
 		function getCurrentUser() {
