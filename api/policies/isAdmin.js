@@ -1,5 +1,6 @@
 module.exports = function(req, res, next) {
-		var max = _.max(req.user.categories, function(pr) {
+		var categories = req.user.categories || [];
+		var max = _.max(categories, function(pr) {
 			return pr.level;
 		});
 		if (req.user.role === "ADMIN" || req.user.admin || max.level >= 3) {

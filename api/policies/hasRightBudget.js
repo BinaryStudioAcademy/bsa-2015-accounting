@@ -11,7 +11,8 @@ module.exports = function(req, res, next) {
 			if (!budget) return res.notFound();
 
 			var id = budget.category.id;
-			var permissions = req.user.categories.filter(function(per) {
+			var categories = req.user.categories || [];
+			var permissions = categories.filter(function(per) {
 				return per.id === id && per.level >= 0;
 			})[0];
 			if (permissions) {
