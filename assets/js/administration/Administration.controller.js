@@ -142,7 +142,7 @@ module.exports = function(app) {
 		}
 
 		function localData(global_id) {
-			return _.find(vm.localUsers, {global_id: global_id}) ? true : false;
+			return _.find(vm.localUsers, {global_id: global_id});
 		}
 	}
 };
