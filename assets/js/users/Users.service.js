@@ -1,65 +1,69 @@
 module.exports = function(app) {
-  app.factory('UsersService', UsersService);
+	app.factory('UsersService', UsersService);
 
-  UsersService.$inject = ["$resource"];
+	UsersService.$inject = ["$resource"];
 
-  function UsersService($resource) {
-    return {
-      getUsers: getUsers,
-      getCurrentUser: getCurrentUser,
-      createUser: createUser,
-      editUser: editUser,
-      deleteUser: deleteUser
-    };
+	function UsersService($resource) {
+		return {
+			getUsers: getUsers,
+			getCurrentUser: getCurrentUser,
+			createUser: createUser,
+			editUser: editUser,
+			deleteUser: deleteUser
+		};
 
-    function getRequest() {
-      return $resource("user/:id", { id: "@id" });
-    }
+		function getRequest() {
+			return $resource("user/:id", { id: "@id" });
+		}
 
-    /**
-     * Gets users array
-     * @returns users array
-     */
-    function getUsers() {
-      return getRequest().query().$promise;
-    }
+		/**
+		 * Gets users array
+		 * @returns users array
+		 */
+		function getUsers() {
+			return getRequest().query().$promise;
+		}
 
-    function getCurrentUser() {
-      var User = $resource("user/current");
-      return User.get().$promise;
-    }
+		function getGlobalUsers() {
+			return $resource("profile/api/users/").query().$promise;
+		}
 
-    /**
-     * Creates new users
-     * @param newUsers New users object
-     * @returns created object
-     */
-    function createUser(newUsers) {
-      return getRequest().save(newUsers);
-    }
+		function getCurrentUser() {
+			var User = $resource("user/current");
+			return User.get().$promise;
+		}
 
-    /**
-     * Updates user by id
-     * @param userId User id
-     * @param newUsers New user object
-     * @returns edited object
-     */
-    function editUser(userId, newUsers) {
-      var data = $resource("user/:id", { id: "@id" }, {
-        update: {
-          method: "PUT"
-        }
-      });
-      return data.update({ id: userId }, newUsers).$promise;
-    }
+		/**
+		 * Creates new users
+		 * @param newUsers New users object
+		 * @returns created object
+		 */
+		function createUser(newUsers) {
+			return getRequest().save(newUsers);
+		}
 
-    /**
-     * Removes user by id
-     * @param userId User id
-     * @returns deleted object
-     */
-    function deleteUser(userId) {
-      return getRequest().remove({ id: userId });
-    }
-  }
+		/**
+		 * Updates user by id
+		 * @param userId User id
+		 * @param newUsers New user object
+		 * @returns edited object
+		 */
+		function editUser(userId, newUsers) {
+			var data = $resource("user/:id", { id: "@id" }, {
+				update: {
+					method: "PUT"
+				}
+			});
+			return data.update({ id: userId }, newUsers).$promise;
+		}
+
+		/**
+		 * Removes user by id
+		 * @param userId User id
+		 * @returns deleted object
+		 */
+		function deleteUser(userId) {
+			return getRequest().remove({ id: userId });
+		}
+	}
 };

@@ -20,13 +20,21 @@ module.exports = function(app) {
 			{level: 3, text: "Category admin"}
 		];
 
-		var usersPromise = UsersService.getUsers();
+		var localUsersPromise = UsersService.getUsers();
+		var globalUsersPromise = UsersService.getGlobalUsers();
 		var categoriesPromise = CategoriesService.getCategories();
 
-		$q.all([usersPromise, categoriesPromise]).then(function(data) {
-			vm.users = data[0] || [];
-			vm.categories = data[1] || [];
+		$q.all([localUsersPromise, globalUsersPromise, categoriesPromise]).then(function(data) {
+			vm.localUsers = data[0] || [];
+			vm.users = data[1] || [];
+			vm.categories = data[2] || [];
 
+			vm.users.forEach(function(user) {
+				var local = localData(user.serverUserId);
+				user.admin = local ? local.admin : false;
+				user.budget = local ? local.budget : 0;
+				user.categories = local ? local.categories : [];
+			});
 			vm.currency = 'UAH';
 			vm.rate = 1;
 			vm.category = vm.categories[0];
@@ -57,24 +65,47 @@ module.exports = function(app) {
 					swal.showInputError("You can't take back more than there is left");
 					return false;
 				}
-				if (!add) {inputValue = -inputValue};
-				UsersService.editUser(user.id, {editPersonalBudget: Number((inputValue * vm.rate).toFixed(2))}).then(function(res) {
-					vm.updateUsers();
-					swal("Ok!", Math.abs(inputValue) + " " + vm.currency + action, "success");
-				});
+				if (!add) {inputValue = -inputValue}
+				if (localData(user.serverUserId)) {
+					UsersService.editUser(user.id, {editPersonalBudget: Number((inputValue * vm.rate).toFixed(2))}).then(function(res) {
+						vm.updateUsers();
+						swal("Ok!", Math.abs(inputValue) + " " + vm.currency + action, "success");
+					});
+				}
+				else {
+					UsersService.createUser({global_id: user.serverUserId, budget: Number((inputValue * vm.rate).toFixed(2))}).then(function(res) {
+						vm.updateUsers();
+						swal("Ok!", Math.abs(inputValue) + " " + vm.currency + action, "success");
+					});
+				}
+				
 			});
 		}
 
 		vm.updateRole = function(user) {
-			UsersService.editUser(user.id, {setAdminStatus: user.admin}).then(function() {
-				vm.updateUsers();
-			});
+			if (localData(user.serverUserId)) {
+				UsersService.editUser(user.id, {setAdminStatus: user.admin}).then(function() {
+					vm.updateUsers();
+				});
+			}
+			else {
+				UsersService.createUser({global_id: user.serverUserId, admin: user.admin}).then(function(res) {
+					vm.updateUsers();
+				});
+			}
 		}
 
 		vm.updateRights = function(user) {
-			UsersService.editUser(user.id, {setPermissionLevel: {id: vm.category.id, level: vm.getUserCategory(user).level}}).then(function() {
-				vm.updateUsers();
-			});
+			if (localData(user.serverUserId)) {
+				UsersService.editUser(user.id, {setPermissionLevel: {id: vm.category.id, level: vm.getUserCategory(user).level}}).then(function() {
+					vm.updateUsers();
+				});
+			}
+			else {
+				UsersService.createUser({global_id: user.serverUserId, categories: [{id: vm.category.id, level: vm.getUserCategory(user).level}]}).then(function(res) {
+					vm.updateUsers();
+				});
+			}
 		}
 
 		vm.updateCurrency = function() {
@@ -87,8 +118,15 @@ module.exports = function(app) {
 		}
 
 		vm.updateUsers = function() {
-			UsersService.getUsers().then(function(users) {
-				vm.users = users || [];
+			UsersService.getUsers().then(function(localUsers) {
+				vm.localUsers = localUsers || [];
+
+				vm.users.forEach(function(user) {
+					var local = localData(user.serverUserId);
+					user.admin = local ? local.admin : false;
+					user.budget = local ? local.budget : 0;
+					user.categories = local ? local.categories : [];
+				});
 			});
 		}
 
@@ -101,6 +139,10 @@ module.exports = function(app) {
 				return vm.getUserCategory(user);
 			}
 			return result;
+		}
+
+		function localData(global_id) {
+			return _.find(vm.localUsers, {global_id: global_id}) ? true : false;
 		}
 	}
 };

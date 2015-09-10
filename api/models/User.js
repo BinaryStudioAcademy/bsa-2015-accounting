@@ -2,8 +2,9 @@ var bcrypt = require('bcryptjs');
 
 module.exports = {
 	attributes: {
-		_id: {
-			type: 'string'
+		global_id: {
+			type: 'string',
+			required: true
 		},
 		categories: {
 			type: 'array',
