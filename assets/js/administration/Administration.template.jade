@@ -32,7 +32,7 @@
 					th.responsive-hide
 						b Used
 			tbody
-				tr(ng-repeat='user in admCtrl.users | filter:admCtrl.filter' ng-class="{'this-is-me': currentUser.id == user.id}")
+				tr(ng-repeat='user in admCtrl.users | filter:admCtrl.filter' ng-class="{'this-is-me': currentUser.id == user.serverUserId}")
 					td {{user.name}} {{user.surname}}
 					td
 						a(href="#" editable-checkbox="user.admin" e-title="Accounting admin?" ng-show="currentUser.admin || currentUser.role == 'ADMIN'" onaftersave="admCtrl.updateRole(user)") {{user.admin && "YES" || "NO" }}
@@ -45,4 +45,4 @@
 						button.btn.btn-xs.btn-danger(ng-click='admCtrl.editPersonalBudget(user, false)') take
 					td.responsive-hide(ng-class="{bad: user.budget.left < 0}") {{user.budget.left/admCtrl.rate || 0 | currency:(admCtrl.currency + " ")}}
 						span(ng-show='user.budget.left < 0')  overuse!
-					td.responsive-hide {{user.budget.used/admCtrl.rate | currency:(admCtrl.currency + " ")}}
+					td.responsive-hide {{user.budget.used/admCtrl.rate || 0 | currency:(admCtrl.currency + " ")}}

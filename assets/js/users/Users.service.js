@@ -40,7 +40,7 @@ module.exports = function(app) {
 		 * @returns created object
 		 */
 		function createUser(newUsers) {
-			return getRequest().save(newUsers);
+			return getRequest().save(newUsers).$promise;
 		}
 
 		/**
