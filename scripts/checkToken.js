@@ -8,6 +8,7 @@ module.exports = function(req, res, next){
 
 	if (token) {
 		jsonwebtoken.verify(token, 'superpupersecret', function(err, decoded) {
+			console.log('i am decoded', decoded);
 			if (err) {
 				res.status(403).send({ success: false, message: "Failed to authenticate user"});
 			} else {

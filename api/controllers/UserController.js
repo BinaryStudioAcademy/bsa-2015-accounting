@@ -20,35 +20,8 @@ function getCurrentUser(req, res) {
 	req.user.max_level = req.user.role === 'ADMIN' || req.user.admin ? 10 : _.max(req.user.categories, function(pr) {
 		return pr.level;
 	}).level || 0;
-	Currency.find().then(function(currencies) {
-		var expenses = Expense.find({deletedBy: {$exists: false}, personal: true}).then(function(categories) {
-			return categories;
-		});
-		return [expenses, currencies];
-	}).spread(function(expenses, currencies) {
-		var personalExpenses = _.filter(expenses, function(expense) {
-			return (expense.creatorId == req.user.id);
-		});
-		var budget = req.user.budget || 0;
-		req.user.budget = {};
-		req.user.budget.used = 0;
-		personalExpenses.forEach(function(expense) {
-			if (expense.currency !== "UAH") {
-				var expDate = new Date(expense.time * 1000);
-				var rate = _.find(currencies, function(currency) {
-					var currDate = new Date(currency.time * 1000);
-					return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
-				}).rate;
-				req.user.budget.used += (expense.price * rate);
-			}
-			else {
-				req.user.budget.used += expense.price;
-			}
-		});
-		req.user.budget.used = Number(req.user.budget.used.toFixed(2));
-		req.user.budget.left = budget - req.user.budget.used;
-		return res.json(req.user);
-	});
+	
+	return res.json(req.user);
 }
 
 function getUsers(req, res) {
