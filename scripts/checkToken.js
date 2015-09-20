@@ -1,6 +1,5 @@
 var jsonwebtoken = require('jsonwebtoken');
 var Cookies = require('cookies');
-var _ = require('lodash');
 
 module.exports = function(req, res, next){
 	var cookies = new Cookies(req, res);
@@ -8,12 +7,12 @@ module.exports = function(req, res, next){
 
 	if (token) {
 		jsonwebtoken.verify(token, 'superpupersecret', function(err, decoded) {
-			console.log('i am decoded', decoded);
 			if (err) {
 				res.status(403).send({ success: false, message: "Failed to authenticate user"});
 			} else {
-				User.findOne({id: decoded.id}).exec(function(err, user) {
-					req.user = _.assign(decoded, user);
+				User.findOne({global_id: decoded.id}).exec(function(err, user) {
+					req.user = user || {global_id: decoded.id, categories: [], admin: false, budget: 0};
+					req.user.role = decoded.role;
 					next();
 				})
 			}

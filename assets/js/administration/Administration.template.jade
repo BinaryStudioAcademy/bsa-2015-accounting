@@ -32,9 +32,9 @@
 					th.responsive-hide
 						b Used
 			tbody
-				tr(ng-repeat='user in admCtrl.users | filter:admCtrl.filter' ng-class="{'this-is-me': currentUser.id == user.serverUserId}")
+				tr(ng-repeat='user in admCtrl.users | filter:admCtrl.filter' ng-class="{'this-is-me': currentUser.global_id == user.serverUserId}")
 					td {{user.name}} {{user.surname}}
-						span(ng-if="{'this-is-me': currentUser.id == user.serverUserId}")  (you)
+						span(ng-if="{currentUser.global_id == user.serverUserId}")  (you)
 					td
 						a(href="#" editable-checkbox="user.admin" e-title="Accounting admin?" ng-show="currentUser.admin || currentUser.role == 'ADMIN'" onaftersave="admCtrl.updateRole(user)") {{user.admin && "YES" || "NO" }}
 						span(ng-hide="currentUser.admin || currentUser.role == 'ADMIN'") {{user.admin && "YES" || "NO" }}
