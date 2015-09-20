@@ -10,7 +10,7 @@ module.exports = function(req, res, next){
 			if (err) {
 				res.status(403).send({ success: false, message: "Failed to authenticate user"});
 			} else {
-				User.findOne({global_id: decoded.id}).exec(function(err, user) {
+				User.findOne({global_id: decoded.id, deletedBy: {$exists: false}}).exec(function(err, user) {
 					req.user = user || {global_id: decoded.id, categories: [], admin: false, budget: 0};
 					req.user.role = decoded.role;
 					next();
