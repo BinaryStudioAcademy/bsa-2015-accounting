@@ -85,7 +85,7 @@ function findPersonalExpenses(req, res) {
       return [expenses, users, categories];
     }).spread(function(expenses, users, categories) {
       var personalExpenses = _.filter(expenses, function(expense) {
-        return (expense.creatorId == req.user.id);
+        return (expense.creatorId == req.user.global_id);
       });
       personalExpenses.forEach(function(expense) {
         var category = _.find(categories, {id: expense.categoryId});
@@ -114,7 +114,7 @@ function findPersonalExpenses(req, res) {
 
 function createExpense(req, res) {
 	var data = actionUtil.parseValues(req);
-	data.creatorId = req.user.id || "unknown id";
+	data.creatorId = req.user.global_id || "unknown id";
 	Expense.create(data).exec(function created (err, newInstance) {
 		if (err) return res.negotiate(err);
 		var log = {who: req.user.id, action: 'created', type: 'expense', target: newInstance.id, time: Number((new Date().getTime() / 1000).toFixed())};
@@ -131,7 +131,7 @@ function findDeleted(req, res) {
     return per.level == 2;
   }), 'id');
   var filter = {deletedBy: {$exists: true}};
-  var expenseFilter = req.user.role === 'ADMIN' || req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}, 'creatorId': req.user.id});
+  var expenseFilter = req.user.role === 'ADMIN' || req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}, 'creatorId': req.user.global_id});
 
   Expense.find(expenseFilter)
     .where(actionUtil.parseCriteria(req))

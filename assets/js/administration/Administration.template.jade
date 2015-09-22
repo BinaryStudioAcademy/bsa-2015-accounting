@@ -4,7 +4,7 @@
 		h2 &nbsp;You don't have administration rights
 	div(ng-hide="currentUser.max_level < 3")
 		div.controls
-			input.form-control(type='text' placeholder='search users' ng-model='admCtrl.filter.name')
+			input.form-control(type='text' placeholder='search users' ng-model='admCtrl.filter.$')
 			b.responsive-hide Currency: 
 			select.form-control(ng-model='admCtrl.currency' ng-change='admCtrl.updateCurrency()')
 				option(value='UAH') UAH

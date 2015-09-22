@@ -31,7 +31,7 @@ module.exports = function(req, res, next) {
 				var permission = permissions >= 2;
 			}
 
-			var creator = expense.creatorId === req.user.id;
+			var creator = expense.creatorId === req.user.global_id;
 
 			if (req.user.role === "ADMIN" || req.user.admin || permission || creator) {
 				next();
