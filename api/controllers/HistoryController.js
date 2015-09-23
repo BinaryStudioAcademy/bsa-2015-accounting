@@ -22,18 +22,10 @@ function find(req, res) {
 		});
 		return [events, users, expenses, budgets, categories];
 	}).spread(function(events, users, expenses, budgets, categories) {
-		console.log('events', events);
-		console.log('users', users);
-		console.log('expenses', expenses);
-		console.log('budgets', budgets);
-		console.log('categories', categories);
 		events.forEach(function(event) {
 			var user = _.find(users, {id: event.who});
-			console.log('user#', user);
 			var time = event.time * 1000;
-			console.log('time#', time);
 			var target = 'no name';
-			console.log('target', target);
 			switch (event.type) {
 				case 'expense':
 					target = _.find(expenses, {id: event.target}).name;
@@ -48,12 +40,11 @@ function find(req, res) {
 					break;
 			}
 
-			event.who = user ? user.name : 'no name';
+			event.who = user && user.hasOwnProperty('global_id') ? user.global_id : 'no global id';
 			event.target = target;
 			event.time = time;
 			console.log('events#', event);
 		});
-		console.log('events', events);
 		res.send(events);
 	}).fail(function(err) {
 		return res.send(err);
