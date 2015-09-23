@@ -33,7 +33,8 @@ module.exports = function(app) {
 
 				eventsPlus = events.map(function(event) {
 					var user = event.name ? _.find(globalUsers, {id: event.name}) : false;
-					return event.name = user ? user.name + user.surname : 'NO NAME';
+					event.name = user ? user.name + user.surname : 'NO NAME';
+					return event;
 				});
 				console.log('eventsPlus', eventsPlus);
 				vm.events = eventsPlus;
