@@ -8,25 +8,25 @@ function find(req, res) {
 	var filter = req.query.type ? {type: req.query.type} : {};
 	console.log('filter', filter);
 	History.find(filter).then(function(events) {
-		console.log('events', events);
 		var users = User.find().then(function(users) {
 			return users;
 		});
-		console.log('users', users);
 		var expenses = Expense.find().then(function(expenses) {
 			return expenses;
 		});
-		console.log('expenses', expenses);
 		var budgets = Budget.find().then(function(budgets) {
 			return budgets;
 		});
-		console.log('budgets', budgets);
 		var categories = Category.find().then(function(categories) {
 			return categories;
 		});
-		console.log('categories', categories);
 		return [events, users, expenses, budgets, categories];
 	}).spread(function(events, users, expenses, budgets, categories) {
+		console.log('events', events);
+		console.log('users', users);
+		console.log('expenses', expenses);
+		console.log('budgets', budgets);
+		console.log('categories', categories);
 		events.forEach(function(event) {
 			var user = _.find(users, {id: event.who});
 			console.log('user#', user);
@@ -48,7 +48,7 @@ function find(req, res) {
 					break;
 			}
 
-			event.who = user.name;
+			event.who = user ? user.name : 'no name';
 			event.target = target;
 			event.time = time;
 			console.log('events#', event);
