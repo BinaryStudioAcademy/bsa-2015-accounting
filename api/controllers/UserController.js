@@ -27,56 +27,55 @@ function getCurrentUser(req, res) {
 
 function getUsers(req, res) {
 	http.get("../profile/api/users/", function(data) {
-		console.log("statusCode: " + data.statusCode);
-		console.log("Got response: " + data);
-		var users = data.body;
+		//var users = data.body;
+		var users = data;
 
-		User.find({deletedBy: {$exists: false}})
-			.then(function(localUsers) {
-				var expenses = Expense.find({deletedBy: {$exists: false}, personal: true}).then(function(categories) {
-					return categories;
-				});
-				var currencies = Currency.find().then(function(currencies) {
-					return currencies;
-				});
-				return [localUsers, expenses, currencies];
-			}).spread(function(localUsers, expenses, currencies) {
-				localUsers.forEach(function(user) {
-					var personalExpenses = _.filter(expenses, function(expense) {
-						return (expense.creatorId == user.global_id);
-					});
-					var budget = user.budget || 0;
-					user.budget = {};
-					user.budget.used = 0;
-					personalExpenses.forEach(function(expense) {
-						if (expense.currency !== "UAH") {
-							var expDate = new Date(expense.time * 1000);
-							var rate = _.find(currencies, function(currency) {
-								var currDate = new Date(currency.time * 1000);
-								return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
-							}).rate;
-							user.budget.used += (expense.price * rate);
-						}
-						else {
-							user.budget.used += expense.price;
-						}
-					});
-					user.budget.used = Number(user.budget.used.toFixed(2));
-					user.budget.left = budget - user.budget.used;
-				});
-
-				users.forEach(function(user) {
-					var local = _.find(localUsers, {global_id: user.serverUserId});
-					if (local) user.id = local.id;
-					user.admin = local ? local.admin : false;
-					user.budget = local ? local.budget : {used: 0, left: 0};
-					user.categories = local ? local.categories : [];
-				});
-				
-				return res.send(users);
-			}).fail(function(err) {
-				return res.send(err);
-			})
+		//User.find({deletedBy: {$exists: false}})
+		//	.then(function(localUsers) {
+		//		var expenses = Expense.find({deletedBy: {$exists: false}, personal: true}).then(function(categories) {
+		//			return categories;
+		//		});
+		//		var currencies = Currency.find().then(function(currencies) {
+		//			return currencies;
+		//		});
+		//		return [localUsers, expenses, currencies];
+		//	}).spread(function(localUsers, expenses, currencies) {
+		//		localUsers.forEach(function(user) {
+		//			var personalExpenses = _.filter(expenses, function(expense) {
+		//				return (expense.creatorId == user.global_id);
+		//			});
+		//			var budget = user.budget || 0;
+		//			user.budget = {};
+		//			user.budget.used = 0;
+		//			personalExpenses.forEach(function(expense) {
+		//				if (expense.currency !== "UAH") {
+		//					var expDate = new Date(expense.time * 1000);
+		//					var rate = _.find(currencies, function(currency) {
+		//						var currDate = new Date(currency.time * 1000);
+		//						return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
+		//					}).rate;
+		//					user.budget.used += (expense.price * rate);
+		//				}
+		//				else {
+		//					user.budget.used += expense.price;
+		//				}
+		//			});
+		//			user.budget.used = Number(user.budget.used.toFixed(2));
+		//			user.budget.left = budget - user.budget.used;
+		//		});
+		//		users.forEach(function(user) {
+		//			var local = _.find(localUsers, {global_id: user.serverUserId});
+		//			if (local) user.id = local.id;
+		//			user.admin = local ? local.admin : false;
+		//			user.budget = local ? local.budget : {used: 0, left: 0};
+		//			user.categories = local ? local.categories : [];
+		//		});
+		//		
+		//		return res.send(users);
+		//	}).fail(function(err) {
+		//		return res.send(err);
+		//	})
+		return res.send(users);
 	}).on('error', function(e) {
 		return res.send(e);
 		//console.log("Got glogal users error: " + e.message);
