@@ -26,7 +26,7 @@ function getCurrentUser(req, res) {
 }
 
 function getUsers(req, res) {
-	http.get("../profile/api/users/", function(data) {
+	http.get("http://team.binary-studio.com/profile/api/users/", function(data) {
 		//var users = data.body;
 		var users = JSON.parse(data);
 
