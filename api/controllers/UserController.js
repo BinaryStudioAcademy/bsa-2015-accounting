@@ -28,7 +28,7 @@ function getCurrentUser(req, res) {
 function getUsers(req, res) {
 	http.get("../profile/api/users/", function(data) {
 		//var users = data.body;
-		var users = data;
+		var users = JSON.parse(data);
 
 		//User.find({deletedBy: {$exists: false}})
 		//	.then(function(localUsers) {
