@@ -27,14 +27,15 @@ module.exports = function(app) {
 				type.toLowerCase()
 			}
 			$q.all([HistoryService.getEvents(type), UsersService.getGlobalUsers()]).then(function(data) {
+				console.log('data', data);
 				var events = data[0] || [];
 				var globalUsers = data[1] || [];
 
 				eventsPlus = events.map(function(event) {
 					var user = event.name ? _.find(globalUsers, {id: event.name}) : false;
-					event.name = user ? user.name + user.surname : 'NO NAME';
+					return event.name = user ? user.name + user.surname : 'NO NAME';
 				});
-				console.log(eventsPlus);
+				console.log('eventsPlus', eventsPlus);
 				vm.events = eventsPlus;
 			});
 		}
