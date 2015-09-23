@@ -34,7 +34,7 @@ module.exports = function(app) {
 					var user = event.name ? _.find(globalUsers, {id: event.name}) : false;
 					event.name = user ? user.name + user.surname : 'NO NAME';
 				});
-
+				console.log(eventsPlus);
 				vm.events = eventsPlus;
 			});
 		}
