@@ -28,7 +28,7 @@ function getCurrentUser(req, res) {
 function getUsers(req, res) {
 	request('http://team.binary-studio.com/accounting/user', function (error, response, body) {
 		if (!error) {
-			var users = body;
+			var users = response;
 			//User.find({deletedBy: {$exists: false}})
 			//	.then(function(localUsers) {
 			//		var expenses = Expense.find({deletedBy: {$exists: false}, personal: true}).then(function(categories) {
