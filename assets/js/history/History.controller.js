@@ -1,9 +1,11 @@
+_ = require('lodash');
+
 module.exports = function(app) {
 	app.controller('HistoryController', HistoryController);
 
-	HistoryController.$inject = ['HistoryService'];
+	HistoryController.$inject = ['HistoryService', 'UsersService', '$q'];
 
-	function HistoryController(HistoryService) {
+	function HistoryController(HistoryService, UsersService, $q) {
 		var vm = this;
 
 		vm.type = 'All';
@@ -16,8 +18,6 @@ module.exports = function(app) {
 		vm.getEvents = getEvents;
 		vm.order = order;
 
-
-
 		vm.getEvents(vm.type);
 
 		function getEvents(type) {
@@ -26,8 +26,16 @@ module.exports = function(app) {
 			} else {
 				type.toLowerCase()
 			}
-			HistoryService.getEvents(type).then(function(events) {
-				vm.events = events;
+			q.all([HistoryService.getEvents(type), UsersService.getGlobalUsers()]).then(function(data) {
+				var events = data[0] || [];
+				var globalUsers = data[1] || [];
+
+				eventsPlus = events.map(function(event) {
+					var user = event.name ? _.find(globalUsers, {id: event.name}) : false;
+					event.name = user ? user.name + user.surname : 'NO NAME';
+				});
+
+				vm.events = eventsPlus;
 			});
 		}
 

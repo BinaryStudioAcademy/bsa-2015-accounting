@@ -39,8 +39,7 @@ function find(req, res) {
 					target = u ? u.name : 'anonymous';
 					break;
 			}
-
-			event.who = user && user.hasOwnProperty('global_id') ? user.global_id : 'no global id';
+			event.who = user && user.hasOwnProperty('global_id') ? user.global_id : false;
 			event.target = target;
 			event.time = time;
 			console.log('events#', event);
