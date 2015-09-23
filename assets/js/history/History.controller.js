@@ -27,9 +27,10 @@ module.exports = function(app) {
 				type.toLowerCase()
 			}
 			$q.all([HistoryService.getEvents(type), UsersService.getGlobalUsers()]).then(function(data) {
-				console.log('data', data);
 				var events = data[0] || [];
 				var globalUsers = data[1] || [];
+				console.log('events', events);
+				console.log('globalUsers', globalUsers);
 
 				var eventsPlus = events.map(function(event) {
 					var user = event.who ? _.find(globalUsers, {id: event.who}) : false;
