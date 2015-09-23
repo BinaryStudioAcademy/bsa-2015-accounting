@@ -31,9 +31,9 @@ module.exports = function(app) {
 				var events = data[0] || [];
 				var globalUsers = data[1] || [];
 
-				eventsPlus = events.map(function(event) {
-					var user = event.name ? _.find(globalUsers, {id: event.name}) : false;
-					event.name = user ? user.name + user.surname : 'NO NAME';
+				var eventsPlus = events.map(function(event) {
+					var user = event.who ? _.find(globalUsers, {id: event.who}) : false;
+					event.who = user ? user.name + user.surname : 'NO NAME';
 					return event;
 				});
 				console.log('eventsPlus', eventsPlus);
