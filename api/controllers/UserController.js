@@ -26,7 +26,7 @@ function getCurrentUser(req, res) {
 }
 
 function getUsers(req, res) {
-	request('../profile/api/users/', function (error, response, body) {
+	request('http://team.binary-studio.com/accounting/user', function (error, response, body) {
 		if (!error) {
 			var users = body;
 			User.find({deletedBy: {$exists: false}})
