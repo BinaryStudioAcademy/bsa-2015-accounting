@@ -65,6 +65,7 @@ module.exports = function(app) {
 					user.categories = local ? local.categories : [];
 					user.local = local ? true : false;
 				});
+				console.log("hey, we r global_users", global_users);
 				return global_users;
 			});
 		}

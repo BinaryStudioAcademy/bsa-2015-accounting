@@ -25,6 +25,7 @@ module.exports = function(app) {
 
 		$q.all([usersPromise, categoriesPromise]).then(function(data) {
 			vm.users = data[0] || [];
+			console.log("hey, we r vm.users", vm.users);
 			vm.categories = data[1] || [];
 
 			//vm.users.forEach(function(user) {
