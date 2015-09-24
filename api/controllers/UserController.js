@@ -27,9 +27,9 @@ function getCurrentUser(req, res) {
 }
 
 function getUsers(req, res) {
-	var cookies = new Cookies(req, res);
-	console.log('this-is-cookies', cookies.request.headers.Cookie);
-	request.cookie(cookies.request.cookies)
+	// var cookies = new Cookies(req, res);
+	console.log('this-is-cookies', req.request.Cookie);
+	request.cookie(req.request.cookies);
 
 	request('http://team.binary-studio.com/profile/api/users/', function (error, response, body) {
 		console.log('this-is-body/users', body);
