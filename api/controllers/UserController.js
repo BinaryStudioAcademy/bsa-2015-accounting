@@ -28,8 +28,8 @@ function getCurrentUser(req, res) {
 
 function getUsers(req, res) {
 	// var cookies = new Cookies(req, res);
-	console.log('this-is-cookies', req.request.cookies);
-	request.cookie(req.request.cookies);
+	console.log('this-is-cookies', req.cookies);
+	request.cookie(req.cookies);
 
 	request('http://team.binary-studio.com/profile/api/users/', function (error, response, body) {
 		console.log('this-is-body/users', body);
