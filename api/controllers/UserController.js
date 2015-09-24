@@ -28,14 +28,11 @@ function getCurrentUser(req, res) {
 
 function getUsers(req, res) {
 	var cookies = new Cookies(req, res);
-	var url = 'http://team.binary-studio.com/profile/api/users/';
+	console.log('this-is-cookies', cookies);
+	request.cookie(cookies)
 
-	var j = request.jar();
-	j.setCookie(cookies, url);
-
-	request({url: url, jar: j}, function (error, response, body) {
-		console.log('response', response);
-		console.log('body', body);
+	request('http://team.binary-studio.com/profile/api/users/', function (error, response, body) {
+		console.log('this-is-body/users', body);
 		if (!error) {
 			var users = body;
 			User.find({deletedBy: {$exists: false}})
