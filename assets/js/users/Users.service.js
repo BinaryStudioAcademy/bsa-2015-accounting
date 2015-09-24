@@ -6,7 +6,7 @@ module.exports = function(app) {
 	function UsersService($resource) {
 		return {
 			getUsers: getUsers,
-			getGlobalUsers: getGlobalUsers,
+			//getGlobalUsers: getGlobalUsers,
 			getCurrentUser: getCurrentUser,
 			createUser: createUser,
 			editUser: editUser,
