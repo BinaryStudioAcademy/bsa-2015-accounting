@@ -8,6 +8,7 @@
 var actionUtil = require('sails/lib/hooks/blueprints/actionUtil');
 var _ = require('lodash');
 var request = require('request');
+var Cookies = require('cookies');
 
 module.exports = {
 	find: getUsers,
@@ -26,9 +27,15 @@ function getCurrentUser(req, res) {
 }
 
 function getUsers(req, res) {
-	request('http://team.binary-studio.com/accounting/user', function (error, response, body) {
+	var options = {
+		url: 'http://team.binary-studio.com/accounting/user',
+		headers: {
+			'x-access-token': cookies.get('x-access-token')
+		}
+	};
+	request(options, function (error, response, body) {
 		if (!error) {
-			var users = response;
+			var users = body;
 			//User.find({deletedBy: {$exists: false}})
 			//	.then(function(localUsers) {
 			//		var expenses = Expense.find({deletedBy: {$exists: false}, personal: true}).then(function(categories) {
