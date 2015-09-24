@@ -28,15 +28,12 @@ function getCurrentUser(req, res) {
 
 function getUsers(req, res) {
 	var cookies = new Cookies(req, res);
-	var token = cookies.get('x-access-token');
-	console.log('token', token);
-	var options = {
-		url: 'http://team.binary-studio.com/profile/api/users/',
-		headers: {
-			'x-access-token': token
-		}
-	};
-	request(options, function (error, response, body) {
+	var url = 'http://team.binary-studio.com/profile/api/users/';
+
+	var j = request.jar();
+	j.setCookie(cookies, url);
+
+	request({url: url, jar: j}, function (error, response, body) {
 		console.log('response', response);
 		console.log('body', body);
 		if (!error) {
