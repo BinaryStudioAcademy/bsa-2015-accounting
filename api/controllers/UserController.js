@@ -29,13 +29,16 @@ function getCurrentUser(req, res) {
 function getUsers(req, res) {
 	var cookies = new Cookies(req, res);
 	var token = cookies.get('x-access-token');
+	console.log('token', token);
 	var options = {
-		url: '../profile/api/users/',
+		url: 'http://team.binary-studio.com/profile/api/users/',
 		headers: {
 			'x-access-token': token
 		}
 	};
 	request(options, function (error, response, body) {
+		console.log('response', response);
+		console.log('body', body);
 		if (!error) {
 			var users = body;
 			User.find({deletedBy: {$exists: false}})
@@ -83,7 +86,6 @@ function getUsers(req, res) {
 				}).fail(function(err) {
 					return res.send(err);
 				})
-			return res.send(users);
 		}
 		else {
 			return res.send(error);
