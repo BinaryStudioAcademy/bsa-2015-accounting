@@ -32,6 +32,7 @@ function getUsers(req, res) {
 	request.cookie(req.headers.cookie);
 
 	request('http://team.binary-studio.com/profile/api/users/', function (error, response, body) {
+		console.log('this-is-response', response);
 		console.log('this-is-body/users', body);
 		if (!error) {
 			var users = body;
