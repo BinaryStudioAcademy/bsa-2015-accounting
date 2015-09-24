@@ -53,7 +53,7 @@ module.exports = function(app) {
 			var globalUsersPromise = $resource("../profile/api/users/").query().$promise;
 			var localUsersPromise = getRequest().query().$promise;
 
-			$q.all([globalUsersPromise, localUsersPromise]).then(function(data) {
+			return $q.all([globalUsersPromise, localUsersPromise]).then(function(data) {
 				var global_users = data[0] || [];
 				var local_users = data[1] || [];
 

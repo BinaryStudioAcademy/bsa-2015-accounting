@@ -20,30 +20,25 @@ module.exports = function(app) {
 			{level: 3, text: "Category admin"}
 		];
 
-		//var usersPromise = UsersService.getUsers();
-		//var categoriesPromise = CategoriesService.getCategories();
+		var usersPromise = UsersService.getUsers();
+		var categoriesPromise = CategoriesService.getCategories();
 
-		vm.updateUsers();
-		CategoriesService.getCategories().then(function(categories) {
-			vm.categories = categories || [];
+		$q.all([usersPromise, categoriesPromise]).then(function(data) {
+			vm.users = data[0] || [];
+			console.log("hey, we r vm.users", vm.users);
+			vm.categories = data[1] || [];
+
+			//vm.users.forEach(function(user) {
+			//	var local = localData(user.serverUserId);
+			//	if (local) user.id = local.id;
+			//	user.admin = local ? local.admin : false;
+			//	user.budget = local ? local.budget : 0;
+			//	user.categories = local ? local.categories : [];
+			//});
+			vm.currency = 'UAH';
+			vm.rate = 1;
+			vm.category = vm.categories[0];
 		});
-
-		//$q.all([usersPromise, categoriesPromise]).then(function(data) {
-		//	vm.users = data[0] || [];
-		//	console.log("hey, we r vm.users", vm.users);
-		//	vm.categories = data[1] || [];
-//
-		//	//vm.users.forEach(function(user) {
-		//	//	var local = localData(user.serverUserId);
-		//	//	if (local) user.id = local.id;
-		//	//	user.admin = local ? local.admin : false;
-		//	//	user.budget = local ? local.budget : 0;
-		//	//	user.categories = local ? local.categories : [];
-		//	//});
-		//	vm.currency = 'UAH';
-		//	vm.rate = 1;
-		//	vm.category = vm.categories[0];
-		//});
 
 		vm.editPersonalBudget = function(user, add) {
 			var title = "Add personal money for " + user.name;
@@ -125,7 +120,6 @@ module.exports = function(app) {
 		vm.updateUsers = function() {
 			UsersService.getUsers().then(function(users) {
 				vm.users = users || [];
-				console.log("hey, we r vm.users", vm.users);
 			});
 		}
 
