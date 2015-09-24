@@ -21,13 +21,57 @@ module.exports = function(app) {
 		 * Gets users array
 		 * @returns users array
 		 */
+		//function getUsers() {
+		//	
+//
+//
+//
+//
+//
+//
+		//		return $q(function(resolve, reject) {
+		//			var globalUsersPromise = $resource("../profile/api/users/").query().$promise;
+		//			var localUsersPromise = getRequest().query().$promise;
+//
+		//			$q.all([globalUsersPromise, localUsersPromise]).then(function(data) {
+		//				var global_users = data[0] || [];
+		//				var local_users = data[1] || [];
+//
+		//				global_users.forEach(function(user) {
+		//					var local = _.find(local_users, {global_id: user.serverUserId});
+		//					if (local) user.id = local.id;
+		//					user.admin = local ? local.admin : false;
+		//					user.budget = local ? local.budget : {used: 0, left: 0};
+		//					user.categories = local ? local.categories : [];
+		//				});
+		//				resolve(global_users);
+		//			});
+		//		});
+//
+		//}
 		function getUsers() {
-			return getRequest().query().$promise;
+			var globalUsersPromise = $resource("../profile/api/users/").query().$promise;
+			var localUsersPromise = getRequest().query().$promise;
+
+			$q.all([globalUsersPromise, localUsersPromise]).then(function(data) {
+				var global_users = data[0] || [];
+				var local_users = data[1] || [];
+
+				global_users.forEach(function(user) {
+					var local = _.find(local_users, {global_id: user.serverUserId});
+					if (local) user.id = local.id;
+					user.admin = local ? local.admin : false;
+					user.budget = local ? local.budget : {used: 0, left: 0};
+					user.categories = local ? local.categories : [];
+					user.local = local ? true : false;
+				});
+				return global_users;
+			});
 		}
 
-		function getGlobalUsers() {
-			return $resource("../profile/api/users/").query().$promise;
-		}
+		//function getGlobalUsers() {
+		//	return $resource("../profile/api/users/").query().$promise;
+		//}
 
 		function getCurrentUser() {
 			var User = $resource("user/current");

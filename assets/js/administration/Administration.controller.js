@@ -20,22 +20,20 @@ module.exports = function(app) {
 			{level: 3, text: "Category admin"}
 		];
 
-		var localUsersPromise = UsersService.getUsers();
-		var globalUsersPromise = UsersService.getGlobalUsers();
+		var usersPromise = UsersService.getUsers();
 		var categoriesPromise = CategoriesService.getCategories();
 
-		$q.all([localUsersPromise, globalUsersPromise, categoriesPromise]).then(function(data) {
-			vm.localUsers = data[0] || [];
-			vm.users = data[1] || [];
-			vm.categories = data[2] || [];
+		$q.all([usersPromise, categoriesPromise]).then(function(data) {
+			vm.users = data[0] || [];
+			vm.categories = data[1] || [];
 
-			vm.users.forEach(function(user) {
-				var local = localData(user.serverUserId);
-				if (local) user.id = local.id;
-				user.admin = local ? local.admin : false;
-				user.budget = local ? local.budget : 0;
-				user.categories = local ? local.categories : [];
-			});
+			//vm.users.forEach(function(user) {
+			//	var local = localData(user.serverUserId);
+			//	if (local) user.id = local.id;
+			//	user.admin = local ? local.admin : false;
+			//	user.budget = local ? local.budget : 0;
+			//	user.categories = local ? local.categories : [];
+			//});
 			vm.currency = 'UAH';
 			vm.rate = 1;
 			vm.category = vm.categories[0];
@@ -67,7 +65,7 @@ module.exports = function(app) {
 					return false;
 				}
 				if (!add) {inputValue = -inputValue}
-				if (localData(user.serverUserId)) {
+				if (user.local)) {
 					UsersService.editUser(user.id, {editPersonalBudget: Number((inputValue * vm.rate).toFixed(2))}).then(function(res) {
 						vm.updateUsers();
 						swal("Ok!", Math.abs(inputValue) + " " + vm.currency + action, "success");
@@ -84,7 +82,7 @@ module.exports = function(app) {
 		}
 
 		vm.updateRole = function(user) {
-			if (localData(user.serverUserId)) {
+			if (user.local)) {
 				UsersService.editUser(user.id, {setAdminStatus: user.admin}).then(function() {
 					vm.updateUsers();
 				});
@@ -97,7 +95,7 @@ module.exports = function(app) {
 		}
 
 		vm.updateRights = function(user) {
-			if (localData(user.serverUserId)) {
+			if (user.local)) {
 				UsersService.editUser(user.id, {setPermissionLevel: {id: vm.category.id, level: vm.getUserCategory(user).level}}).then(function() {
 					vm.updateUsers();
 				});
@@ -119,16 +117,8 @@ module.exports = function(app) {
 		}
 
 		vm.updateUsers = function() {
-			UsersService.getUsers().then(function(localUsers) {
-				vm.localUsers = localUsers || [];
-
-				vm.users.forEach(function(user) {
-					var local = localData(user.serverUserId);
-					if (local) user.id = local.id;
-					user.admin = local ? local.admin : false;
-					user.budget = local ? local.budget : 0;
-					user.categories = local ? local.categories : [];
-				});
+			UsersService.getUsers().then(function(users) {
+				vm.users = users || [];
 			});
 		}
 
@@ -143,8 +133,8 @@ module.exports = function(app) {
 			return result;
 		}
 
-		function localData(global_id) {
-			return _.find(vm.localUsers, {global_id: global_id});
-		}
+		//function localData(global_id) {
+		//	return _.find(vm.localUsers, {global_id: global_id});
+		//}
 	}
 };
