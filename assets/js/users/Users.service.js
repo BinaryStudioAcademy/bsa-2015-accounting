@@ -1,9 +1,9 @@
 module.exports = function(app) {
 	app.factory('UsersService', UsersService);
 
-	UsersService.$inject = ["$resource"];
+	UsersService.$inject = ["$resource", "$q"];
 
-	function UsersService($resource) {
+	function UsersService($resource, $q) {
 		return {
 			getUsers: getUsers,
 			//getGlobalUsers: getGlobalUsers,
