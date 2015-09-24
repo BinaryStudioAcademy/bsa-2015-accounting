@@ -65,7 +65,7 @@ module.exports = function(app) {
 					return false;
 				}
 				if (!add) {inputValue = -inputValue}
-				if (user.local)) {
+				if (user.local) {
 					UsersService.editUser(user.id, {editPersonalBudget: Number((inputValue * vm.rate).toFixed(2))}).then(function(res) {
 						vm.updateUsers();
 						swal("Ok!", Math.abs(inputValue) + " " + vm.currency + action, "success");
@@ -82,7 +82,7 @@ module.exports = function(app) {
 		}
 
 		vm.updateRole = function(user) {
-			if (user.local)) {
+			if (user.local) {
 				UsersService.editUser(user.id, {setAdminStatus: user.admin}).then(function() {
 					vm.updateUsers();
 				});
@@ -95,7 +95,7 @@ module.exports = function(app) {
 		}
 
 		vm.updateRights = function(user) {
-			if (user.local)) {
+			if (user.local) {
 				UsersService.editUser(user.id, {setPermissionLevel: {id: vm.category.id, level: vm.getUserCategory(user).level}}).then(function() {
 					vm.updateUsers();
 				});
