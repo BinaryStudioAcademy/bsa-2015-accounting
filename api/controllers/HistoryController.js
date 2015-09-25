@@ -23,7 +23,7 @@ function find(req, res) {
 		return [events, users, expenses, budgets, categories];
 	}).spread(function(events, users, expenses, budgets, categories) {
 		events.forEach(function(event) {
-			var user = _.find(users, {id: event.who});
+			// var user = _.find(users, {id: event.who});
 			var time = event.time * 1000;
 			var target = 'no name';
 			switch (event.type) {
@@ -39,7 +39,7 @@ function find(req, res) {
 					target = u ? u.name : 'anonymous';
 					break;
 			}
-			event.who = user && user.hasOwnProperty('global_id') ? user.global_id : false;
+			// event.who =  user && user.hasOwnProperty('global_id') ? user.global_id : false;
 			event.target = target;
 			event.time = time;
 			console.log('events#', event);

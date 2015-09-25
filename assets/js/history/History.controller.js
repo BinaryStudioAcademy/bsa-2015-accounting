@@ -28,12 +28,12 @@ module.exports = function(app) {
 			}
 			$q.all([HistoryService.getEvents(type), UsersService.getGlobalUsers()]).then(function(data) {
 				var events = data[0] || [];
-				var globalUsers = data[1] || [];
+				var users = data[1] || [];
 				console.log('events', events);
 				console.log('globalUsers', globalUsers);
 
 				var eventsPlus = events.map(function(event) {
-					var user = event.who ? _.find(globalUsers, {id: event.who}) : false;
+					var user =  _.find(globalUsers, {id: event.who});
 					event.who = user ? user.name + user.surname : 'NO NAME';
 					return event;
 				});
