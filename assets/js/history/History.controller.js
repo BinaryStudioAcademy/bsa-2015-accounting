@@ -30,10 +30,10 @@ module.exports = function(app) {
 				var events = data[0] || [];
 				var users = data[1] || [];
 				console.log('events', events);
-				console.log('globalUsers', globalUsers);
+				console.log('globalUsers', users);
 
 				var eventsPlus = events.map(function(event) {
-					var user =  _.find(globalUsers, {id: event.who});
+					var user =  _.find(users, {id: event.who});
 					event.who = user ? user.name + user.surname : 'NO NAME';
 					return event;
 				});
