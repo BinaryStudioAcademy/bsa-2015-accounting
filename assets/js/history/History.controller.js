@@ -34,7 +34,7 @@ module.exports = function(app) {
 
 				var eventsPlus = events.map(function(event) {
 					var user =  _.find(users, {id: event.who});
-					event.who = user ? user.name + user.surname : 'NO NAME';
+					event.who = user ? user.name + ' ' + user.surname : 'NO NAME';
 					return event;
 				});
 				console.log('eventsPlus', eventsPlus);

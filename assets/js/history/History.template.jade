@@ -35,7 +35,7 @@
 							span.fa.fa-caret-up(ng-show="hstCtrl.predicate == 'time' && hstCtrl.reverse")
 							span.fa.fa-sort(ng-hide="hstCtrl.predicate == 'time'")
 
-			tbody(ng-repeat='event in hstCtrl.events track by $index | limitTo: hstCtrl.limit | orderBy: hstCtrl.predicate : hstCtrl.reverse')
+			tbody(ng-repeat='event in hstCtrl.events | limitTo: hstCtrl.limit | orderBy: hstCtrl.predicate : hstCtrl.reverse')
 				tr
 					td(ng-hide='hstCtrl.type != "All"') {{event.type}}
 					td {{event.who}}
