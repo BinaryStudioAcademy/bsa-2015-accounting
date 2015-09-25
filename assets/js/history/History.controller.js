@@ -23,9 +23,8 @@ module.exports = function(app) {
 		function getEvents(type) {
 			if (type === 'All') {
 				type = '';
-			} else {
-				type.toLowerCase()
 			}
+
 			$q.all([HistoryService.getEvents(type), UsersService.getUsers()]).then(function(data) {
 				var events = data[0] || [];
 				var users = data[1] || [];
@@ -42,7 +41,7 @@ module.exports = function(app) {
 			});
 		}
 
-		function order (predicate) {
+		function order(predicate) {
 			vm.reverse = (vm.predicate === predicate) ? !vm.reverse : false;
 			vm.predicate = predicate;
 		};

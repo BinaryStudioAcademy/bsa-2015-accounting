@@ -35,8 +35,7 @@ function find(req, res) {
 					target = _.find(categories, {id: budget.category.id}).name + ' ' + budget.year;
 					break;
 				case 'user':
-					u = _.find(users, {id: event.target})
-					target = u ? u.name : 'anonymous';
+					target = event.target;
 					break;
 			}
 			// event.who =  user && user.hasOwnProperty('global_id') ? user.global_id : false;
