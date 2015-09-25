@@ -44,6 +44,6 @@
 					td.col-hide {{event.time | date:'HH:mm dd.MM.yyyy'}}
 			tbody(ng-hide="hstCtrl.events.length <= hstCtrl.limit")
 				tr
-					td(colspan='4')
+					td(colspan='5')
 						a(ng-click="hstCtrl.limit = hstCtrl.limit + 30")
 							| Load more
