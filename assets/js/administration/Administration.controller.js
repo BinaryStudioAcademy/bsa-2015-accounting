@@ -12,7 +12,6 @@ module.exports = function(app) {
 	function AdministrationController(UsersService, CategoriesService, CurrencyService, $q, $rootScope) {
 		var vm = this;
 
-		//vm.roles = ['user', 'global admin'];
 		vm.permits = [
 			{level: 0, text: "no rights"},
 			{level: 1, text: "Read only"},
@@ -20,31 +19,23 @@ module.exports = function(app) {
 			{level: 3, text: "Category admin"}
 		];
 
+		vm.currency = 'UAH';
+		vm.rate = 1;
+
 		var usersPromise = UsersService.getUsers();
 		var categoriesPromise = CategoriesService.getCategories();
 
 		$q.all([usersPromise, categoriesPromise]).then(function(data) {
 			vm.users = data[0] || [];
-			console.log("hey, we r vm.users", vm.users);
 			vm.categories = data[1] || [];
-
-			//vm.users.forEach(function(user) {
-			//	var local = localData(user.serverUserId);
-			//	if (local) user.id = local.id;
-			//	user.admin = local ? local.admin : false;
-			//	user.budget = local ? local.budget : 0;
-			//	user.categories = local ? local.categories : [];
-			//});
-			vm.currency = 'UAH';
-			vm.rate = 1;
 			vm.category = vm.categories[0];
 		});
 
 		vm.editPersonalBudget = function(user, add) {
-			var title = "Add personal money for " + user.name;
+			var title = "Add personal money for " + user.name + " " + user.surname;
 			var action = " added";
 			if (!add) {
-				title = "Take back personal money from " + user.name;
+				title = "Take back personal money from " + user.name + " " + user.surname;
 				action = " taken";
 			}
 			swal({
@@ -80,7 +71,7 @@ module.exports = function(app) {
 				}
 				
 			});
-		}
+		};
 
 		vm.updateRole = function(user) {
 			if (user.local) {
@@ -93,7 +84,7 @@ module.exports = function(app) {
 					vm.updateUsers();
 				});
 			}
-		}
+		};
 
 		vm.updateRights = function(user) {
 			if (user.local) {
@@ -106,7 +97,7 @@ module.exports = function(app) {
 					vm.updateUsers();
 				});
 			}
-		}
+		};
 
 		vm.updateCurrency = function() {
 			if (vm.currency == 'USD') {
@@ -115,13 +106,13 @@ module.exports = function(app) {
 			else {
 				vm.rate = 1;
 			}
-		}
+		};
 
 		vm.updateUsers = function() {
 			UsersService.getUsers().then(function(users) {
 				vm.users = users || [];
 			});
-		}
+		};
 
 		vm.getUserCategory = function(user) {
 			var result = _.find(user.categories, {id: vm.category.id});
@@ -132,10 +123,6 @@ module.exports = function(app) {
 				return vm.getUserCategory(user);
 			}
 			return result;
-		}
-
-		//function localData(global_id) {
-		//	return _.find(vm.localUsers, {global_id: global_id});
-		//}
+		};
 	}
 };

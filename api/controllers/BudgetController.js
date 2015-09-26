@@ -19,9 +19,6 @@ function getBudgets(req, res) {
 	Budget.find(budgetFilter)
 	.where( actionUtil.parseCriteria(req) )
 	.then(function(budgets) {
-		var users = User.find(filter).then(function(users) {
-			return users;
-		});
 		var categories = Category.find().then(function(categories) {
 			return categories;
 		});
@@ -37,8 +34,8 @@ function getBudgets(req, res) {
 		var currencies = Currency.find(filter).then(function(currencies) {
 			return currencies;
 		});
-		return [budgets, users, categories, expenses, currencies];
-	}).spread(function(budgets, users, categories, expenses, currencies) {
+		return [budgets, categories, expenses, currencies];
+	}).spread(function(budgets, categories, expenses, currencies) {
 		function getRate(time) {
 			var subexpDate = new Date(time * 1000);
 			var rate = _.find(currencies, function(currency) {
@@ -67,12 +64,6 @@ function getBudgets(req, res) {
 			});
 			budget.category.subcategories = subcategories;
 			delete budget.subcategories;
-			var user = _.find(users, {id: budget.creatorId}) || {id: "unknown id", name: "unknown name"};
-			budget.creator = {
-				id: user.id,
-				name: user.name
-			};
-			delete budget.creatorId;
 
 			budget.category.used = 0;
 			var distributed = 0;
@@ -193,16 +184,13 @@ function getDeleted(req, res) {
 	Budget.find(budgetFilter)
 	.where( actionUtil.parseCriteria(req) )
 	.then(function(budgets) {
-		var users = User.find({deletedBy: {$exists: false}}).then(function(users) {
-			return users;
-		});
 		var categories = Category.find().then(function(categories) {
 			return categories;
 		});
 		var year = actionUtil.parseCriteria(req).year;
 
-		return [budgets, users, categories];
-	}).spread(function(budgets, users, categories) {
+		return [budgets, categories];
+	}).spread(function(budgets, categories) {
 		var deletedStuff = {
 			budgets: [],
 			subcategories: []
@@ -212,19 +200,6 @@ function getDeleted(req, res) {
 			if (budget.deletedBy) {
 				var category = _.find(categories, {id: budget.category.id});
 				budget.category.name = category.name;
-
-				var user = _.find(users, {id: budget.creatorId}) || {id: "unknown id", name: "unknown name"};
-				budget.creator = {
-					id: user.id,
-					name: user.name
-				};
-				delete budget.creatorId;
-
-				user = _.find(users, {id: budget.deletedBy}) || {id: "unknown id", name: "unknown name"};
-				budget.deletedBy = {
-					id: user.id,
-					name: user.name
-				};
 				delete budget.year;
 				delete budget.subcategories;
 				deletedStuff.budgets.push(budget);
@@ -232,7 +207,6 @@ function getDeleted(req, res) {
 			else {
 				budget.subcategories.forEach(function(subcategory) {
 					if (subcategory.deletedBy) {
-						var user = _.find(users, {id: subcategory.deletedBy}) || {id: "unknown id", name: "unknown name"};
 						var category = _.find(categories, {id: budget.category.id});
 						deletedStuff.subcategories.push({
 							budgetId: budget.id,
@@ -241,10 +215,7 @@ function getDeleted(req, res) {
 							id: subcategory.id,
 							budget: subcategory.budget,
 							name: _.find(category.subcategories, {id: subcategory.id}).name,
-							deletedBy: {
-								id: user.id,
-								name: user.name
-							}
+							deletedBy: subcategory.deletedBy
 						});
 					}
 				});

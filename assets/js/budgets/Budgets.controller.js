@@ -19,11 +19,6 @@ module.exports = function(app) {
 			vm.hiddenList[index] = !vm.hiddenList[index];
 		};
 
-		//vm.years = [];
-		//vm.budgets = [];
-		//vm.expenses = [];
-		//vm.categoriesList = [];
-
 		YearsService.getYears().then(function(years) {
 			vm.years = years.sort(function(a, b){return b - a});
 			if (!vm.years.length) vm.years = [(new Date().getFullYear())];
@@ -184,7 +179,7 @@ module.exports = function(app) {
 				return vm.getUserCategory(user, category);
 			}
 			return result;
-		}
+		};
 
 		vm.sendData = function(budget, subcategory) {
 			if (subcategory) {
