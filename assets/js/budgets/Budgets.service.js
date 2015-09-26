@@ -1,9 +1,9 @@
 module.exports = function(app) {
 	app.factory('BudgetsService', BudgetsService);
 
-	BudgetsService.$inject = ["$resource"];
+	BudgetsService.$inject = ["$resource", "$q"];
 
-	function BudgetsService($resource) {
+	function BudgetsService($resource, $q) {
 		return {
 			getBudgets: getBudgets,
 			getBudget: getBudget,
