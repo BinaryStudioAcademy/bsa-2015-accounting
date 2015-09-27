@@ -1,9 +1,9 @@
 module.exports = function(app) {
 	app.factory('ExpensesService', ExpensesService);
 
-	ExpensesService.$inject = ["$resource"];
+	ExpensesService.$inject = ["$resource", "$q"];
 
-	function ExpensesService($resource) {
+	function ExpensesService($resource, $q) {
 		return {
 			getExpenses: getExpenses,
 			getAllExpenses: getAllExpenses,
@@ -24,15 +24,68 @@ module.exports = function(app) {
 		 * @returns promise object
 		 */
 		function getExpenses() {
-			return $resource("expense/:id", { id: "@id", sort: "time desc" }).query().$promise;
+			var usersPromise = $resource("../profile/api/users/").query().$promise;
+			var expensesPromise = $resource("expense/:id", { id: "@id", sort: "time desc" }).query().$promise;
+
+			return $q.all([usersPromise, expensesPromise]).then(function(data) {
+				var users = data[0] || [];
+				var expenses = data[1] || [];
+
+				expenses.forEach(function(expense) {
+					var user = _.find(users, {serverUserId: expense.creatorId}) || {serverUserId: "unknown id", name: "someone", surname: "unknown"};
+					expense.creator = {
+						global_id: user.serverUserId,
+						name: user.name + " " + user.surname
+					};
+					delete expense.creatorId;
+				});
+				return expenses;
+			});
 		}
 
 		function getAllExpenses(year) {
-			return $resource("expenses_by_year/" + year).query().$promise;
+			var usersPromise = $resource("../profile/api/users/").query().$promise;
+			var expensesPromise = $resource("expenses_by_year/" + year).query().$promise;
+
+			return $q.all([usersPromise, expensesPromise]).then(function(data) {
+				var users = data[0] || [];
+				var expenses = data[1] || [];
+
+				expenses.forEach(function(expense) {
+					var user = _.find(users, {serverUserId: expense.creatorId}) || {serverUserId: "unknown id", name: "someone", surname: "unknown"};
+					expense.creator = {
+						global_id: user.serverUserId,
+						name: user.name + " " + user.surname
+					};
+					delete expense.creatorId;
+				});
+				return expenses;
+			});
 		}
 
 		function getDeletedExpenses() {
-			return $resource("deleted/expenses", { sort: "time desc" }).query().$promise;
+			var usersPromise = $resource("../profile/api/users/").query().$promise;
+			var expensesPromise = $resource("deleted/expenses", { sort: "time desc" }).query().$promise;
+
+			return $q.all([usersPromise, expensesPromise]).then(function(data) {
+				var users = data[0] || [];
+				var expenses = data[1] || [];
+
+				expenses.forEach(function(expense) {
+					var user = _.find(users, {serverUserId: expense.creatorId}) || {serverUserId: "unknown id", name: "someone", surname: "unknown"};
+					expense.creator = {
+						global_id: user.serverUserId,
+						name: user.name + " " + user.surname
+					};
+					delete expense.creatorId;
+					user = _.find(users, {serverUserId: expense.deletedBy}) || {serverUserId: "unknown id", name: "someone", surname: "unknown"};
+					expense.deletedBy = {
+						global_id: user.serverUserId,
+						name: user.name + " " + user.surname
+					};
+				});
+				return expenses;
+			});
 		}
 
 		function restoreExpense(expenseId) {

@@ -148,7 +148,7 @@
 
 								button.btn-xs.btn.btn-success.fa.fa-check(type='submit', ng-disabled='rowform.$waiting')
 								button#delete-button.btn-xs.btn.btn-warning.fa.fa-ban(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
-							.buttons(ng-show='!rowform.$visible && expCtr.isUserExpense(expense.creator.id, expense.category.id)')
+							.buttons(ng-show='!rowform.$visible && expCtr.isUserExpense(expense.creator.global_id, expense.category.id)')
 								button.btn-xs.btn.btn-primary.edit-button.fa.fa-pencil(ng-click='rowform.$show()')
 								button.btn-xs.btn.btn-danger.fa.fa-trash-o(ng-click="expCtr.deleteExpense(expense.id, expense.name)")
 							.btn-group(dropdown='')
@@ -198,7 +198,7 @@
 
 								button.btn-xs.btn.btn-success.fa.fa-check(type='submit', ng-disabled='rowform.$waiting')
 								button#delete-button.btn-xs.btn.btn-warning.fa.fa-ban(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
-							.buttons(ng-show='!rowform.$visible && expCtr.isUserExpense(expense.creator.id, expense.category.id)')
+							.buttons(ng-show='!rowform.$visible && expCtr.isUserExpense(expense.creator.global_id, expense.category.id)')
 								button.btn-xs.btn.btn-primary.edit-button.fa.fa-pencil(ng-click='rowform.$show()')
 								button.btn-xs.btn.btn-danger.fa.fa-trash-o(ng-click="expCtr.deleteExpense(expense.id, expense.name)")
 							.btn-group(dropdown='')

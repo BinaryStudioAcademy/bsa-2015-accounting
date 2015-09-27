@@ -26,9 +26,6 @@ module.exports = function(app) {
 		 * Gets budgets array
 		 * @returns budgets array
 		 */
-		//function getBudgets(year) {
-		//	return $resource("budget", { where: {"year": year}}).query().$promise;
-		//}
 		function getBudgets(year) {
 			var usersPromise = $resource("../profile/api/users/").query().$promise;
 			var budgetsPromise = $resource("budget", { where: {"year": year}}).query().$promise;
@@ -38,7 +35,7 @@ module.exports = function(app) {
 				var budgets = data[1] || [];
 
 				budgets.forEach(function(budget) {
-					var user = _.find(users, {serverUserId: budget.creatorId}) || {serverUserId: "unknown id", name: "unknown name"};
+					var user = _.find(users, {serverUserId: budget.creatorId}) || {serverUserId: "unknown id", name: "someone", surname: "unknown"};
 					budget.creator = {
 						global_id: user.serverUserId,
 						name: user.name + " " + user.surname
@@ -100,13 +97,13 @@ module.exports = function(app) {
 				var deletedStuff = data[1] || [];
 
 				deletedStuff.budgets.forEach(function(budget) {
-					var user = _.find(users, {serverUserId: budget.creatorId}) || {serverUserId: "unknown id", name: "unknown name"};
+					var user = _.find(users, {serverUserId: budget.creatorId}) || {serverUserId: "unknown id", name: "someone", surname: "unknown"};
 					budget.creator = {
 						global_id: user.serverUserId,
 						name: user.name + " " + user.surname
 					};
 					delete budget.creatorId;
-					user = _.find(users, {serverUserId: budget.deletedBy}) || {serverUserId: "unknown id", name: "unknown name"};
+					user = _.find(users, {serverUserId: budget.deletedBy}) || {serverUserId: "unknown id", name: "someone", surname: "unknown"};
 					budget.deletedBy = {
 						global_id: user.serverUserId,
 						name: user.name + " " + user.surname
@@ -114,7 +111,7 @@ module.exports = function(app) {
 				});
 
 				deletedStuff.subcategories.forEach(function(subcategory) {
-					var user = _.find(users, {serverUserId: subcategory.deletedBy}) || {serverUserId: "unknown id", name: "unknown name"};
+					var user = _.find(users, {serverUserId: subcategory.deletedBy}) || {serverUserId: "unknown id", name: "someone", surname: "unknown"};
 					subcategory.deletedBy = {
 						global_id: user.serverUserId,
 						name: user.name + " " + user.surname
