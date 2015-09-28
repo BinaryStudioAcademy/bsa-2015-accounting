@@ -112,7 +112,7 @@
 					col.table-sub
 					col.table-addBy.responsive-hide
 					col.table-description.responsive-hide
-				tbody(ng-repeat="date in expCtr.dates | limitTo: expCtr.expensesLimit track by $index", ng-hide="!(filteredData = (expCtr.getExpensesByDate(date) " +
+				tbody(ng-repeat="date in expCtr.dates | limitTo: expCtr.expensesLimit", ng-hide="!(filteredData = (expCtr.getExpensesByDate(date) " +
 				"| filter: {name: nameModelFilter, category: {name: categoryModelFilter.name}, " +
 				"subcategory: {name: subcategoryModelFilter.name}, creator: {name: authorModelFilter}} " +
 				"| dateRange:startDateFilter:endDateFilter)).length")
@@ -122,7 +122,7 @@
 							i.fa.fa-chevron-down(ng-click="expCtr.toggleCustom($index)" ng-show="!expCtr.hiddenList[$index]")
 						td(colspan='7')
 
-							| {{ date | date: 'fullDate' }}
+							| {{ date}}
 					tr(ng-repeat="expense in filteredData", ng-init='expCtr.pageTitleEquals(filteredData)', ng-hide="expCtr.hiddenList[$parent.$index]" )
 						td.responsive-hide
 							| {{ expense.time | date:'HH:mm' }}
