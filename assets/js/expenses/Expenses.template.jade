@@ -121,8 +121,7 @@
 							i.fa.fa-chevron-right(ng-click="expCtr.toggleCustom($index)" ng-hide="!expCtr.hiddenList[$index]" )
 							i.fa.fa-chevron-down(ng-click="expCtr.toggleCustom($index)" ng-show="!expCtr.hiddenList[$index]")
 						td(colspan='7')
-
-							| {{ date}}
+							| {{ date | date: 'fullDate' }}
 					tr(ng-repeat="expense in filteredData", ng-init='expCtr.pageTitleEquals(filteredData)', ng-hide="expCtr.hiddenList[$parent.$index]" )
 						td.responsive-hide
 							| {{ expense.time | date:'HH:mm' }}

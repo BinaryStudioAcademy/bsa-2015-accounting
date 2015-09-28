@@ -119,6 +119,7 @@ module.exports = function(app) {
 		// On new expense
 		$rootScope.$on('new-expense', function(event, args) {
 			if(vm.dates.indexOf(String(args.time)) < 0) vm.dates.unshift(args.time);
+			console.log('Daaates', vm.dates);
 			vm.allExpenses.unshift(args);
 			console.log("allExpensessss", vm.allExpenses);
 			changeCurrency();
