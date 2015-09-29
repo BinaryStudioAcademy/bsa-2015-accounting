@@ -39,7 +39,7 @@ module.exports = function(app) {
 		function getCurrentUser() {
 			return $q(function(resolve, reject) {
 				$resource("user/current").get().$promise.then(function(local_user) {
-					$resource("../profile/api/users?serverUserId=" + local_user.global_id).$promise.query().then(function(global_user) {
+					$resource("../profile/api/users?serverUserId=" + local_user.global_id).query().$promise.then(function(global_user) {
 						local_user.name = global_user[0].name + " " + global_user[0].surname;
 						console.log("here is me", local_user);
 						resolve(local_user);
