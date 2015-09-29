@@ -19,6 +19,10 @@ module.exports = function(app) {
 			vm.hiddenList[index] = !vm.hiddenList[index];
 		};
 
+		UsersService.getCurrentUser().then(function(me) {
+			console.log("check me", me);
+		});
+
 		YearsService.getYears().then(function(years) {
 			vm.years = years.sort(function(a, b){return b - a});
 			if (!vm.years.length) vm.years = [(new Date().getFullYear())];
