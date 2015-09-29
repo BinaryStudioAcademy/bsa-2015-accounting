@@ -31,6 +31,10 @@ module.exports = function(app) {
 			vm.category = vm.categories[0];
 		});
 
+		UsersService.getCurrentUser().then(function(me) {
+			console.log("check me", me);
+		});
+
 		vm.editPersonalBudget = function(user, add) {
 			var title = "Add personal money for " + user.name + " " + user.surname;
 			var action = " added";
