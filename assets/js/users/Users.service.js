@@ -37,20 +37,8 @@ module.exports = function(app) {
 		}
 
 		function getCurrentUser() {
-			//var globalUserPromise = $resource("../profile/api/users?serverUserId=55dc13391846c68a1ad56daa").query().$promise;
-			//var localUserPromise = $resource("user/current").get().$promise;
-//
-			//return $q.all([globalUserPromise, localUserPromise]).then(function(data) {
-			//	var global_user = data[0][0] || {name: "someone", surname: "unknown"};
-			//	var local_user = data[1];
-//
-			//	local_user.name = global_user.name + " " + global_user.surname;
-//
-			//	return local_user;
-			//});
-
-			return $resource("user/current").get().then(function(local_user) {
-				return $resource("../profile/api/users?serverUserId=" + local_user.global_id).query().then(function(global_user) {
+			$resource("user/current").get().then(function(local_user) {
+				$resource("../profile/api/users?serverUserId=" + local_user.global_id).query().then(function(global_user) {
 					local_user.name = global_user[0].name + " " + global_user[0].surname;
 					console.log("here is me", local_user);
 					return local_user;
