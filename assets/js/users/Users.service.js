@@ -37,8 +37,14 @@ module.exports = function(app) {
 		}
 
 		function getCurrentUser() {
-			var User = $resource("user/current");
-			return User.get().$promise;
+			return $q(function(resolve, reject) {
+				$resource("user/current").get().$promise.then(function(local_user) {
+					$resource("../profile/api/users?serverUserId=" + local_user.global_id).query().$promise.then(function(global_user) {
+						local_user.name = global_user[0].name + " " + global_user[0].surname;
+						resolve(local_user);
+					});
+				});
+			});
 		}
 
 		/**
