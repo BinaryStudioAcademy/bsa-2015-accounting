@@ -13,7 +13,7 @@ module.exports = {
 };
 
 function getPersonalHistory(req, res) {
-  History.find({type: "user", target: req.user.id})
+  History.find({type: "user", target: req.user.global_id})
     .sort(actionUtil.parseSort(req))
     .then(function(events) {
     var users = User.find().then(function(users) {
@@ -21,10 +21,10 @@ function getPersonalHistory(req, res) {
     });
     return [events, users];
   }).spread(function(events, users) {
-    var userName;
+    var userWithName;
     events.forEach(function(event) {
-      userName = _.find(users, {id: event.who}).name;
-      event.who = userName;
+      userWithName = _.find(users, {id: event.who});
+      event.who = userWithName ? userWithName.name : 'no name';
     });
     res.send(events);
   }).fail(function(err) {
