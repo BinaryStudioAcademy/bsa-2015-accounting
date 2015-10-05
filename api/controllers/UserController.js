@@ -101,8 +101,8 @@ function updateUser(req, res) {
 			else user.budget = values.editPersonalBudget;
 		}
 
-		var log = {who: req.user.id, action: action, type: 'user',
-			target: user.id, time: Number((new Date().getTime() / 1000).toFixed())};
+		var log = {who: req.user.global_id, action: action, type: 'user',
+			target: user.global_id, time: Number((new Date().getTime() / 1000).toFixed())};
 
 		user.save(function (err) {
 			if (err) return res.serverError(err);

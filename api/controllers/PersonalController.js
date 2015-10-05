@@ -22,13 +22,13 @@ function getPersonalHistory(req, res) {
     });
     return [events, users];
   }).spread(function(events, users) {
-    console.log('events & users', events, users);
+    console.log('events 1', events);
     var userWithName;
     events.forEach(function(event) {
       userWithName = _.find(users, {id: event.who});
       event.who = userWithName ? userWithName.name : 'no name';
     });
-    console.log('events', events);
+    console.log('events 2', events);
     res.send(events);
   }).fail(function(err) {
     return res.send(err);

@@ -46,7 +46,7 @@ module.exports = function updateOneRecord (req, res) {
 
     if (err) return res.serverError(err);
     if (!matchingRecord) return res.notFound();
-    var log = {who: req.user.global_id, action: 'edited', type: req.path.split('/')[1], 
+    var log = {who: req.user.id, action: 'edited', type: req.path.split('/')[1], 
       target: matchingRecord.id, time: Number((new Date().getTime() / 1000).toFixed())};
 
     Model.update(pk, values).exec(function updated(err, records) {
