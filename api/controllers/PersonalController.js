@@ -26,6 +26,7 @@ function getPersonalHistory(req, res) {
       userWithName = _.find(users, {id: event.who});
       event.who = userWithName ? userWithName.name : 'no name';
     });
+    console.log('events', events);
     res.send(events);
   }).fail(function(err) {
     return res.send(err);
