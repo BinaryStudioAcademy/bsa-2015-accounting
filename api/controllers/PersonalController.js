@@ -13,6 +13,7 @@ module.exports = {
 };
 
 function getPersonalHistory(req, res) {
+  console.log('global id', req.user);
   History.find({type: "user", target: req.user.global_id})
     .sort(actionUtil.parseSort(req))
     .then(function(events) {
@@ -21,6 +22,7 @@ function getPersonalHistory(req, res) {
     });
     return [events, users];
   }).spread(function(events, users) {
+    console.log('events & users', events, users);
     var userWithName;
     events.forEach(function(event) {
       userWithName = _.find(users, {id: event.who});
