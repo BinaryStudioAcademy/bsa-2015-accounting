@@ -13,6 +13,9 @@ module.exports = function(req, res, next){
 				User.findOne({global_id: decoded.id, deletedBy: {$exists: false}}).exec(function(err, user) {
 					req.user = user || {global_id: decoded.id, categories: [], admin: false, budget: 0};
 					req.user.role = decoded.role;
+					req.user.max_level = req.user.role === 'ADMIN' || req.user.admin ? 10 : _.max(req.user.categories, function(pr) {
+						return pr.level;
+					}).level || 0;
 					next();
 				})
 			}

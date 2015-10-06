@@ -15,20 +15,42 @@ module.exports = {
 };
 
 function getCurrentUser(req, res) {
-	// if(!req.decoded) return res.forbidden();
-
-	req.user.max_level = req.user.role === 'ADMIN' || req.user.admin ? 10 : _.max(req.user.categories, function(pr) {
-		return pr.level;
-	}).level || 0;
-	
-	return res.json(req.user);
+	Expense.find({deletedBy: {$exists: false}, personal: true, creatorId: req.user.global_id})
+		.then(function(expenses) {
+			var currencies = Currency.find().then(function(currencies) {
+				return currencies;
+			});
+			return [expenses, currencies];
+		}).spread(function(expenses, currencies) {
+				var budget = req.user.budget || 0;
+				req.user.budget = {};
+				req.user.budget.used = 0;
+				expenses.forEach(function(expense) {
+					if (expense.currency !== "UAH") {
+						var expDate = new Date(expense.time * 1000);
+						var rate = _.find(currencies, function(currency) {
+							var currDate = new Date(currency.time * 1000);
+							return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
+						}).rate;
+						req.user.budget.used += (expense.price * rate);
+					}
+					else {
+						req.user.budget.used += expense.price;
+					}
+				});
+				req.user.budget.used = Number(req.user.budget.used.toFixed(2));
+				req.user.budget.left = budget - req.user.budget.used;
+			return res.send(req.user);
+		}).fail(function(err) {
+			return res.send(err);
+		});
 }
 
 function getUsers(req, res) {
 	User.find({deletedBy: {$exists: false}})
 		.then(function(users) {
-			var expenses = Expense.find({deletedBy: {$exists: false}, personal: true}).then(function(categories) {
-				return categories;
+			var expenses = Expense.find({deletedBy: {$exists: false}, personal: true}).then(function(expenses) {
+				return expenses;
 			});
 			var currencies = Currency.find().then(function(currencies) {
 				return currencies;
@@ -61,7 +83,7 @@ function getUsers(req, res) {
 			return res.send(users);
 		}).fail(function(err) {
 			return res.send(err);
-		})
+		});
 }
 
 function updateUser(req, res) {
