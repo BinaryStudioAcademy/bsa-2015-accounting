@@ -1,79 +1,85 @@
 console.log('*** Geting currency from Privat Bank... \n*** It could take some time...');
-_ = require('lodash');
+var _ = require('lodash');
 var https = require('https');
-var async = require('async');
 var MongoClient = require('mongodb').MongoClient;
 var urlDb = 'mongodb://localhost:27017/portal-accounting';
-
-
-
 var apiUrl = 'https://api.privatbank.ua/p24api/exchange_rates?json&date='
-var date = new Date()
-date.setDate(date.getDate() - 365)
+var date = new Date();
+date.setDate(date.getDate() - 365);
 var startYear = date.getFullYear();
 var startMonth = date.getMonth();
 var startDay = date.getDate();
 var d = new Date(startYear, startMonth, startDay);
 var carrenciesUrls = [];
-var currencyArr = []
+var currencyArr = [];
+var approximatedArr = [];
 
-for(var i = 0; i <= 364; i++){
+for(var i = 0; i <= 364; i++) {
 	d.setDate(d.getDate() + 1);
 	var y = d.getFullYear();
-	var m = d.getMonth();
+	var m = d.getMonth() + 1;
 	var day = d.getDate();
 	var url = apiUrl + day + '.' + m + '.' + y;
 	carrenciesUrls.push(url);
-};
+}
 
-var callback = function(response) {
+function callback(response) {
 	var data = '';
 	response.on('data', function(chunk) {
 		data += chunk;
 	});
 
 	response.on('end', function() {
-		var rates = JSON.parse(data);
-		var rate = _.filter(rates.exchangeRate, function(obj) {
-			delete obj.baseCurrency;
-			delete obj.saleRateNB;
-			delete obj.purchaseRateNB;
-			delete obj.saleRate;
-			obj.rate = obj.purchaseRate;
-			delete obj.purchaseRate;
-			obj.date = Date.parse(reversString(rates.date))/1000;
+		var ratesData = JSON.parse(data);
+		var time = Date.parse(formatDate(ratesData.date)) / 1000;
+		var rates = _.find(ratesData.exchangeRate, function(obj) {
 			return obj.currency == "USD";
-		});
-		currencyArr.push(rate[0]);
-		console.log(rate[0]);
-		if (currencyArr.length === 365) {
-			addToCollection(currencyArr)
+		}) || {purchaseRate: 0};
+		var rate = rates.purchaseRate || 0;
+		if (rate === 0) {
+			approximatedArr.push({date: ratesData.date, time: time});
 		}
-		
+		currencyArr.push({time: time, rate: rate});
+		if (currencyArr.length === 365) {
+			currencyArr.sort(function(a, b) {
+				return a.time - b.time;
 			});
-
+			for (var i = 0; i < currencyArr.length; i++) {
+				currencyArr[i].rate = currencyArr[i].rate || currencyArr[i - 1].rate;
+			}
+			addToCollection(currencyArr);
+		}
+	});
 };
 
-carrenciesUrls.forEach( function(currenciesUrl){
-
+carrenciesUrls.forEach(function(currenciesUrl) {
 	var options = {
 		host: "api.privatbank.ua",
 		path: currenciesUrl
 	};
 
 	https.request(options, callback).end();
-})
+});
 
-function addToCollection(exchangeRate) {
-		MongoClient.connect(urlDb, function(err, database) {
-			if (err) throw err;
-			database.collection('currencyByPeriod').remove();
-			database.collection('currencyByPeriod').insert(exchangeRate);
-			database.close();
+function addToCollection(rates) {
+	MongoClient.connect(urlDb, function(err, database) {
+		if (err) throw err;
+		database.collection('currency').remove({});
+		database.collection('currency').insert(rates);
+		database.close();
 	});
-console.log('Done!');
+	if (approximatedArr.length > 0) {
+		approximatedArr.sort(function(a, b) {
+			return a.time - b.time;
+		});
+		console.log('*** Rates approximated for:');
+		approximatedArr.forEach(function(item) {
+			console.log('***', item.date);
+		});
+	}
+	console.log('*** Done!');
 }
 
-function reversString(date){
+function formatDate(date) {
 	return date.split(".").reverse().join(".");
 }
