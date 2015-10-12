@@ -19,68 +19,68 @@
 
 module.exports.policies = {
 
-  /***************************************************************************
-  *                                                                          *
-  * Default policy for all controllers and actions (`true` allows public     *
-  * access)                                                                  *
-  *                                                                          *
-  ***************************************************************************/
+	/***************************************************************************
+	*                                                                          *
+	* Default policy for all controllers and actions (`true` allows public     *
+	* access)                                                                  *
+	*                                                                          *
+	***************************************************************************/
 
-  '*': false,
-  'AuthController': {
-    '*': true
-  },
-   'HomepageController': {
-    '*': true
-  },
-  'YearsController': {
-    '*': true
-  },
-  'CurrencyController': {
-    '*': true
-  },
-  'BudgetController': {
-    'findOne': 'hasRightBudget',
-    'destroy': 'hasRightBudget',
-    'update': 'hasRightBudget',
-    'create': 'hasRightBudget',
-    'find': true,
-    'findDeleted': true
-  },
-  'CategoryController': {
-    'findOne': 'hasRightCategory',
-    'destroy': 'hasRightCategory',
-    'update': 'hasRightCategory',
-    'create': 'hasRightCategory',
-    'find': true
-  },
-  'ExpenseController': {
-    '*': 'hasRightExpense',
-    'find': true,
-    'findPersonalExpenses': true,
-    'findDeleted': true,
-    'restoreDeleted': true
-  },
-  'UserController': {
-   '*': 'isAdmin',
-   'findOne': 'isThatUser',
-   'update': true,
-   'getCurrentUser': true
-  },
-  'HistoryController': {
-    '*': 'isGlobalAdmin'
-  },
-  'PersonalController': {
-    '*': true,
-    'find': true
-  }
+	'*': false,
+	'AuthController': {
+		'*': true
+	},
+	 'HomepageController': {
+		'*': true
+	},
+	'YearsController': {
+		'*': true
+	},
+	'CurrencyController': {
+		'*': true
+	},
+	'BudgetController': {
+		'findOne': 'hasRightBudget',
+		'destroy': 'hasRightBudget',
+		'update': 'hasRightBudget',
+		'create': 'hasRightBudget',
+		'find': true,
+		'findDeleted': true
+	},
+	'CategoryController': {
+		'findOne': 'hasRightCategory',
+		'update': 'hasRightCategory',
+		'create': 'hasRightCategory',
+		'find': true,
+		'destroy': false
+	},
+	'ExpenseController': {
+		'*': 'hasRightExpense',
+		'find': true,
+		'findPersonalExpenses': true,
+		'findDeleted': true,
+		'restoreDeleted': true
+	},
+	'UserController': {
+	 '*': 'isAdmin',
+	 'findOne': 'isThatUser',
+	 'update': true,
+	 'getCurrentUser': true
+	},
+	'HistoryController': {
+		'*': 'isGlobalAdmin'
+	},
+	'PersonalController': {
+		'*': true,
+		'find': true
+	}
 
-  /***************************************************************************
-  *                                                                          *
-  * Here's an example of mapping some policies to run before a controller    *
-  * and its actions                                                          *
-  *                                                                          *
-  ***************************************************************************/
+	/***************************************************************************
+	*                                                                          *
+	* Here's an example of mapping some policies to run before a controller    *
+	* and its actions                                                          *
+	*                                                                          *
+	***************************************************************************/
 	// RabbitController: {
 
 		// Apply the `false` policy as the default for all of RabbitController's actions

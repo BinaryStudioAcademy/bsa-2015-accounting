@@ -29,7 +29,6 @@ function getExpenses(req, res) {
 		filter = {deletedBy: {$exists: false}, time: {$gte: start, $lte: end }};
 	}
 	var expenseFilter = req.user.role === 'ADMIN' || req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}});
-	console.log('this is expenseFilter', expenseFilter);
 	Expense.find(expenseFilter)
 	.where(actionUtil.parseCriteria(req))
 	.sort(actionUtil.parseSort(req))
@@ -39,8 +38,6 @@ function getExpenses(req, res) {
 		});
 		return [expenses, categories];
 	}).spread(function(expenses, categories) {
-		console.log('these r raw expenses', expenses);
-		console.log('these r raw categories', categories);
 		expenses.forEach(function(expense) {
 			var category = _.find(categories, {id: expense.categoryId});
 			expense.category = {
@@ -54,7 +51,6 @@ function getExpenses(req, res) {
 			delete expense.categoryId;
 			delete expense.subcategoryId;
 		});
-		console.log('these r processed expenses', expenses);
 		return res.send(expenses);
 	}).fail(function(err) {
 		return res.send(err);
