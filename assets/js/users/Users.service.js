@@ -25,11 +25,10 @@ module.exports = function(app) {
 
 				global_users.forEach(function(user) {
 					var local = _.find(local_users, {global_id: user.serverUserId});
-					if (local) user.id = local.id;
+					user.id = local ? local.id : false;
 					user.admin = local ? local.admin : false;
 					user.budget = local ? local.budget : {used: 0, left: 0};
 					user.categories = local ? local.categories : [];
-					user.local = local ? true : false;
 				});
 				return global_users;
 			});
