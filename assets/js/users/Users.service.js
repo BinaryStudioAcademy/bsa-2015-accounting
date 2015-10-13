@@ -8,8 +8,7 @@ module.exports = function(app) {
 			getUsers: getUsers,
 			getCurrentUser: getCurrentUser,
 			createUser: createUser,
-			editUser: editUser,
-			deleteUser: deleteUser
+			editUser: editUser
 		};
 
 		function getRequest() {
@@ -56,28 +55,13 @@ module.exports = function(app) {
 			return getRequest().save(newUsers).$promise;
 		}
 
-		/**
-		 * Updates user by id
-		 * @param userId User id
-		 * @param newUsers New user object
-		 * @returns edited object
-		 */
 		function editUser(userId, newUsers) {
-			var data = $resource("user/:id", { id: "@id" }, {
+			var data = $resource("user/:id", { global_id: "@id" }, {
 				update: {
 					method: "PUT"
 				}
 			});
-			return data.update({ id: userId }, newUsers).$promise;
-		}
-
-		/**
-		 * Removes user by id
-		 * @param userId User id
-		 * @returns deleted object
-		 */
-		function deleteUser(userId) {
-			return getRequest().remove({ id: userId });
+			return data.update({ global_id: userId }, newUsers).$promise;
 		}
 	}
 };

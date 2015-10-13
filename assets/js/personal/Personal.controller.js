@@ -271,7 +271,7 @@ module.exports = function(app) {
 
             if(!add) newBudget = -newBudget;
 
-            UsersService.editUser($rootScope.currentUser.id,
+            UsersService.editUser($rootScope.currentUser.global_id,
               {editPersonalBudget: newBudget}).then(function() {
                 getUsersBudgets();
                 getHistory();
