@@ -46,22 +46,17 @@ module.exports = function(app) {
 			});
 		}
 
-		/**
-		 * Creates new users
-		 * @param newUsers New users object
-		 * @returns created object
-		 */
-		function createUser(newUsers) {
-			return getRequest().save(newUsers).$promise;
+		function createUser(userData) {
+			return getRequest().save(userData).$promise;
 		}
 
-		function editUser(userId, newUsers) {
-			var data = $resource("user/:id", { global_id: "@id" }, {
+		function editUser(userId, userData) {
+			var data = $resource("user/:id", { id: "@id" }, {
 				update: {
 					method: "PUT"
 				}
 			});
-			return data.update({ global_id: userId }, newUsers).$promise;
+			return data.update({ id: userId }, userData).$promise;
 		}
 	}
 };
