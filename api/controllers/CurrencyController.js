@@ -22,8 +22,9 @@ if (year) {
 	}
 
 	Currency.find(filter)
-    .limit(actionUtil.parseLimit(req))
-    .exec(function found(err, currencies) {
+		.sort(actionUtil.parseSort(req))
+		.limit(actionUtil.parseLimit(req))
+		.exec(function found(err, currencies) {
 		if (err) return res.serverError(err);
 		res.ok(currencies);
 	});
