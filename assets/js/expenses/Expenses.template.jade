@@ -5,12 +5,12 @@
 		i.fa.fa-chevron-down(ng-show="isRightBlockShow")
 	#rightBlock(ng-class="{showBlock: isRightBlockShow}")
 		.exchange
-			b Today currency exchange rate
+			b Today's exchange rate
 			br
 			|{{exchangeRate}} UAH for 1 USD
 		form.expense-form(name="expenseForm", ng-controller="ExpenseFormController as formCtrl",
 		ng-submit="expenseForm.$valid && formCtrl.createExpense(categoryModel, subcategoryModel)", novalidate)
-			input.form-control(type="text", name='Name', placeholder='Expense', ng-model="formCtrl.expense.name", typeahead="expense.name for expense in expCtr.allExpenses | filter:$viewValue | limitTo:8", required)
+			input.form-control(type="text", name='Name', placeholder='Expense name', ng-model="formCtrl.expense.name", typeahead="expense.name for expense in expCtr.allExpenses | filter:$viewValue | limitTo:8", required)
 			input.form-control(type='date', name='Date', placeholder='Date', ng-model="formCtrl.date", required)
 			select(name='Category', ng-model="categoryModel", ng-change="formCtrl.getSubcategories(categoryModel)",
 			ng-options="category.name for category in formCtrl.categories", required)
@@ -24,7 +24,7 @@
 				option UAH
 			#personal-container
 				input(type='checkbox', name='Personal', ng-model="formCtrl.expense.personal", ng-click="formCtrl.setPersonalLeftBudget(categoryModel, subcategoryModel)")
-				span#personal-label Personal budget
+				span#personal-label Use personal budget
 			textarea.form-control(placeholder='Description', ng-model="formCtrl.expense.description")
 			.money-left(ng-show="subcategoryModel")
 				#form-category-left
@@ -38,7 +38,7 @@
 	#leftBlock
 		.filters
 			form
-				input(type='text', name='cost-range', placeholder='Expense', ng-model="nameModelFilter")
+				input(type='text', name='cost-range', placeholder='Expense name', ng-model="nameModelFilter")
 				select(name='category', ng-model="categoryModelFilter", ng-change="expCtr.getSubcategories(categoryModelFilter.id)", ng-options="category.name for category in expCtr.categories")
 					option(value="") Category
 				select(name='subcategory', ng-model="subcategoryModelFilter", ng-options="subcategory.name for subcategory in expCtr.subcategories")

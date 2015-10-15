@@ -1,12 +1,13 @@
 var swal = require('sweetalert');
+var _ = require('lodash');
 
 module.exports = function(app) {
 
 	app.controller('ExpensesController', ExpensesController);
 
-	ExpensesController.$inject = ['ExpensesService', '$rootScope', 'CategoriesService', '$filter', '$scope'];
+	ExpensesController.$inject = ['ExpensesService', '$rootScope', 'CategoriesService', '$filter', '$scope', 'CurrencyService'];
 
-	function ExpensesController(ExpensesService, $rootScope, CategoriesService, $filter, $scope) {
+	function ExpensesController(ExpensesService, $rootScope, CategoriesService, $filter, $scope, CurrencyService) {
 		var vm = this;
 
 		vm.loadAllExpenses = loadAllExpenses;
@@ -28,6 +29,23 @@ module.exports = function(app) {
 		vm.hiddenList = [];
 		vm.check = false;
 		vm.toggleAllExpenses = toggleAllExpenses;
+
+		CurrencyService.getExchangeRate().then(function(data) {
+			vm.exchangeRates = data;
+		});
+
+		function getExchangeRate(time) {
+			var rate = _.find(vm.exchangeRates, function(exchangeRate) {
+				return compareDays(time, exchangeRate.time);
+			});
+			return rate ? rate.rate : $rootScope.exchangeRate;
+		}
+
+		function compareDays(time1, time2) {
+			var date1 = new Date(time1 * 1000);
+			var date2 = new Date(time2 * 1000);
+			return (date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate());
+		}
 
 		function toggleAllExpenses() {
 			vm.check = !vm.check;
@@ -235,13 +253,13 @@ module.exports = function(app) {
 			if(vm.currencyModel == "USD") {
 				vm.allExpenses.forEach(function(expense) {
 					if(expense.currency == "UAH") {
-						expense.newPrice = expense.price / $rootScope.exchangeRate;
+						expense.newPrice = expense.price / getExchangeRate(expense.time);
 					} else expense.newPrice = expense.price;
 				});
 			} else if(vm.currencyModel == "UAH") {
 				vm.allExpenses.forEach(function(expense) {
 					if(expense.currency == "USD") {
-						expense.newPrice = expense.price * $rootScope.exchangeRate;
+						expense.newPrice = expense.price * getExchangeRate(expense.time);
 					} else expense.newPrice = expense.price;
 				});
 			}
