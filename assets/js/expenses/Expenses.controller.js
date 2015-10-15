@@ -38,7 +38,14 @@ module.exports = function(app) {
 			var rate = _.find(vm.exchangeRates, function(exchangeRate) {
 				return compareDays(time, exchangeRate.time);
 			});
-			return rate ? rate.rate : $rootScope.exchangeRate;
+			var res = rate ? rate.rate : $rootScope.exchangeRate;
+			console.log('vm.exchangeRates', vm.exchangeRates);
+			console.log('time', time);
+			console.log('rate', rate);
+			console.log('rate.rate', rate.rate);
+			console.log('res', res);
+			console.log('-----------------------');
+			return res;
 		}
 
 		function compareDays(time1, time2) {
