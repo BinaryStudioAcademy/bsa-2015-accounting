@@ -253,13 +253,13 @@ module.exports = function(app) {
 			if(vm.currencyModel == "USD") {
 				vm.allExpenses.forEach(function(expense) {
 					if(expense.currency == "UAH") {
-						expense.newPrice = expense.price / getExchangeRate(expense.time);
+						expense.newPrice = expense.price / getExchangeRate(expense.time.getTime() / 1000);
 					} else expense.newPrice = expense.price;
 				});
 			} else if(vm.currencyModel == "UAH") {
 				vm.allExpenses.forEach(function(expense) {
 					if(expense.currency == "USD") {
-						expense.newPrice = expense.price * getExchangeRate(expense.time);
+						expense.newPrice = expense.price * getExchangeRate(expense.time.getTime() / 1000);
 					} else expense.newPrice = expense.price;
 				});
 			}
