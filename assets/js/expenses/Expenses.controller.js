@@ -30,7 +30,7 @@ module.exports = function(app) {
 		vm.check = false;
 		vm.toggleAllExpenses = toggleAllExpenses;
 
-		CurrencyService.getExchangeRate().then(function(data) {
+		CurrencyService.getExchangeRates().then(function(data) {
 			vm.exchangeRates = data;
 		});
 
@@ -38,14 +38,7 @@ module.exports = function(app) {
 			var rate = _.find(vm.exchangeRates, function(exchangeRate) {
 				return compareDays(time, exchangeRate.time);
 			});
-			var res = rate ? rate.rate : $rootScope.exchangeRate;
-			console.log('vm.exchangeRates', vm.exchangeRates);
-			console.log('time', time);
-			console.log('rate', rate);
-			console.log('rate.rate', rate.rate);
-			console.log('res', res);
-			console.log('-----------------------');
-			return res;
+			return rate ? rate.rate : $rootScope.exchangeRate;
 		}
 
 		function compareDays(time1, time2) {

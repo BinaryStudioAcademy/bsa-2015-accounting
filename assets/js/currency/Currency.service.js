@@ -13,8 +13,8 @@ module.exports = function(app) {
       return $resource("currency").query({sort: "time DESC", limit: 1}).$promise;
     }
 
-    function getExchangeRates(year) {
-      return $resource("currency", { where: {"year": year}}).query().$promise;
+    function getExchangeRates() {
+      return $resource("currency").query().$promise;
     }
   }
 };
