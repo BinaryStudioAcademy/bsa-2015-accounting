@@ -23,9 +23,13 @@ module.exports = function(app) {
 		 * Gets expenses array
 		 * @returns promise object
 		 */
-		function getExpenses() {
+		function getExpenses(expensesQuery) {
+			if (!expensesQuery) {
+				expensesQuery = { id: "@id", sort: "time desc" };
+			}
+
 			var usersPromise = $resource("../profile/api/users/").query().$promise;
-			var expensesPromise = $resource("expense/:id", { id: "@id", sort: "time desc" }).query().$promise;
+			var expensesPromise = $resource("expense/:id", expensesQuery).query().$promise;
 
 			return $q.all([usersPromise, expensesPromise]).then(function(data) {
 				var users = data[0] || [];

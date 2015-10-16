@@ -10,6 +10,51 @@ module.exports = function(app) {
 	function ExpensesController(ExpensesService, $rootScope, CategoriesService, $filter, $scope, CurrencyService) {
 		var vm = this;
 
+		//vm.expensesQuery = {
+		//	name,
+		//	categoryId,
+		//	subcategoryId,
+		//	creatorId,
+		//	start,
+		//	end,
+		//	limit,
+		//	sort
+		//};
+
+		vm.expensesQuery = {limit: 10, sort: 'time desc'};
+		
+		vm.updateExpenses = function() {
+			ExpensesService.getExpenses(vm.expensesQuery).then(function(data) {
+				vm.expenses = data;
+				updateSections();
+			});
+		}
+
+		function updateSections() {
+			if (vm.expensesQuery.sort.indexOf('time') < 0) {
+				vm.expensesSections = [ { title: 'ONE SECTION', content: vm.expenses } ];
+			}
+			else {
+				vm.expensesSections = [];
+				vm.expenses.forEach(function(expense) {
+					var date = new Date(expense.time * 1000).toDateString();
+					if (_.find(vm.expensesSections, { 'title': date })) {
+						vm.expensesSections.push({
+							title: date,
+							content: _.filter(vm.expenses, function(expense) {
+								var expenseDate = new Date(expense.time * 1000).toDateString();
+								return expenseDate === date;
+							})
+						});
+					}
+				});
+			}
+		}
+
+		vm.updateExpenses();
+
+
+		/*
 		vm.loadAllExpenses = loadAllExpenses;
 		vm.loadExpenses = loadExpenses;
 		vm.isLoadMore = isLoadMore;
@@ -264,5 +309,6 @@ module.exports = function(app) {
 				});
 			}
 		}
+		*/
 	}
 };

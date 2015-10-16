@@ -34,8 +34,6 @@ function getExpenses(req, res) {
 	expenseFilter = queryParams.categoryId ? _.assign(expenseFilter, {categoryId: queryParams.categoryId}) : expenseFilter;
 	expenseFilter = queryParams.subcategoryId ? _.assign(expenseFilter, {subcategoryId: queryParams.subcategoryId}) : expenseFilter;
 	expenseFilter = queryParams.creatorId ? _.assign(expenseFilter, {creatorId: queryParams.creatorId}) : expenseFilter;
-	expenseFilter = queryParams.crea ? _.assign(expenseFilter, {creatorId: {'contains': queryParams.crea}}) : expenseFilter;
-	expenseFilter = queryParams.creator ? _.assign(expenseFilter, {'creatorId': queryParams.creator}) : expenseFilter;
 	if (queryParams.start) {
 		var startTime = Number(queryParams.start);
 		if (queryParams.end) {
@@ -45,8 +43,10 @@ function getExpenses(req, res) {
 			expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lte: (startTime + 86400) }});
 		}
 	}
-	console.log('this is expenseFilter', expenseFilter);
-	console.log('this is limit', actionUtil.parseLimit(req));
+	else if (queryParams.end) {
+		var startTime = Number(queryParams.end);
+		expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lte: (startTime + 86400) }});
+	}
 	Expense.find()
 	.where(expenseFilter)
 	.limit(actionUtil.parseLimit(req))
