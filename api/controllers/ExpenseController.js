@@ -43,9 +43,11 @@ function getExpenses(req, res) {
 			expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lte: (startTime + 86400) }});
 		}
 	}
-	console.log('this is final expenseFilter', expenseFilter);
-	Expense.find(expenseFilter)
-	//.where(actionUtil.parseCriteria(req))
+	console.log('this is expenseFilter', expenseFilter);
+	console.log('this is limit', actionUtil.parseLimit(req));
+	Expense.find()
+	.where(expenseFilter)
+	.limit(actionUtil.parseLimit(req))
 	.sort(actionUtil.parseSort(req))
 	.then(function(expenses) {
 		var categories = Category.find().then(function(categories) {
