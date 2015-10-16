@@ -35,6 +35,10 @@ module.exports = function(app) {
 			vm.updateExpenses();
 		}
 
+		vm.timeToDate = function(time) {
+			return new Date(time * 1000).toDateString();
+		}
+
 		function updateSections() {
 			if (vm.expensesQuery.sort.indexOf('time') < 0) {
 				vm.expensesSections = [ { title: 'ONE SECTION', content: vm.expenses } ];
@@ -42,12 +46,12 @@ module.exports = function(app) {
 			else {
 				vm.expensesSections = [];
 				vm.expenses.forEach(function(expense) {
-					var date = new Date(expense.time * 1000).toDateString();
+					var date = vm.timeToDate(expense.time);
 					if (!_.find(vm.expensesSections, { 'title': date })) {
 						vm.expensesSections.push({
 							title: date,
 							content: _.filter(vm.expenses, function(expense) {
-								var expenseDate = new Date(expense.time * 1000).toDateString();
+								var expenseDate = vm.timeToDate(expense.time);
 								return expenseDate === date;
 							})
 						});

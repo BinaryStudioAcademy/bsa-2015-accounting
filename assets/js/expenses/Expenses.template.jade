@@ -118,7 +118,7 @@
 					tr.date-hilight
 						td(colspan='8') {{ section.title }}
 					tr(ng-repeat="expense in section.content")
-						td.responsive-hide {{ new Date(expense.time * 1000) | date:'dd.MM.yyyy' }}
+						td.responsive-hide {{ expCtr.timeToDate(expense.time) | date:'dd.MM.yyyy' }}
 						td {{ expense.category.name }}
 						td.responsive-hide {{ expense.subcategory.name }}
 						td {{ expense.name }}
@@ -136,7 +136,7 @@
 							.btn-group(dropdown='')
 								button.btn.fa.fa-info(ng-show='!rowform.$visible' type='button', dropdown-toggle='')
 								span.dropdown-menu.dropdown-menu-right(editable-text='expense.description', e-name='description' e-form='rowform' role='menu', aria-labelledby='split-button' onaftersave='expCtr.editExpenseObject($data, "description")') {{ expense.description }}
-				tbody
+				tbody(ng-if="expCtr.expenses.length < expCtr.expensesQuery.limit")
 					tr
 						td(colspan='8')
 							a(ng-click="expCtr.loadMoreExpenses()")
