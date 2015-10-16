@@ -142,10 +142,9 @@ module.exports = function(app) {
 			}).subcategories;
 		};
 
-		vm.getSubcategories = function(id) {
-			vm.subcategories = _.find(vm.categories, function(category) {
-				return category.id === id;
-			}).subcategories;
+		vm.logData = function(data) {
+			console.log(data);
+			return "nope";
 		};
 
 		CategoriesService.getCategories().then(function(data) {
