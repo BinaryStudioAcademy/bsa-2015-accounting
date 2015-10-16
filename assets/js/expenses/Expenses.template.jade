@@ -62,7 +62,7 @@
 			thead
 				tr
 					th.responsive-hide
-						span(ng-click="expCtr.expensesQuery.sort = 'time desc'; expCtr.updateExpenses()") Date&nbsp;
+						span(ng-click="expCtr.expensesQuery.sort = 'time asc'; expCtr.updateExpenses()") Date&nbsp;
 							//span.fa.fa-caret-down(ng-show="sortType == 'time' && !sortReverse")
 							//span.fa.fa-caret-up(ng-show="sortType == 'time' && sortReverse")
 							//span.fa.fa-sort(ng-hide="sortType == 'time'")
@@ -136,7 +136,7 @@
 							.btn-group(dropdown='')
 								button.btn.fa.fa-info(ng-show='!rowform.$visible' type='button', dropdown-toggle='')
 								span.dropdown-menu.dropdown-menu-right(editable-text='expense.description', e-name='description' e-form='rowform' role='menu', aria-labelledby='split-button' onaftersave='expCtr.editExpenseObject($data, "description")') {{ expense.description }}
-				tbody(ng-if="expCtr.expenses.length < expCtr.expensesQuery.limit")
+				tbody(ng-if="expCtr.expenses.length === expCtr.expensesQuery.limit")
 					tr
 						td(colspan='8')
 							a(ng-click="expCtr.loadMoreExpenses()")
