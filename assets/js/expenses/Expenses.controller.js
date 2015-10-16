@@ -229,7 +229,7 @@ module.exports = function(app) {
 			if(predicate == "currencySort") {
 				vm.sortedExpenses.forEach(function(expense) {
 					if(expense.currency == "UAH") {
-						expense.currencySort = expense.price / $rootScope.exchangeRate;
+						expense.currencySort = expense.price / getExchangeRate(expense.time.getTime() / 1000);
 					} else expense.currencySort = expense.price;
 				});
 			}

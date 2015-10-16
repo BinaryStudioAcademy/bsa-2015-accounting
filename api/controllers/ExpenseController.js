@@ -18,6 +18,8 @@ module.exports = {
 };
 
 function getExpenses(req, res) {
+	console.log('this is criterea filter standard', actionUtil.parseCriteria(req));
+	console.log('this is allParams', req.allParams());
 	var year = req.param('year');
 	var permissions = _.pluck(_.filter(req.user.categories, function(per) {
 		return per.level >= 1;
@@ -29,6 +31,7 @@ function getExpenses(req, res) {
 		filter = {deletedBy: {$exists: false}, time: {$gte: start, $lte: end }};
 	}
 	var expenseFilter = req.user.role === 'ADMIN' || req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}});
+	console.log('this is criterea filter old', expenseFilter);
 	Expense.find(expenseFilter)
 	.where(actionUtil.parseCriteria(req))
 	.sort(actionUtil.parseSort(req))
