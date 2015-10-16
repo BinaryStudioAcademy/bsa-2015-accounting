@@ -124,27 +124,24 @@ module.exports = function(app) {
 			}
 		};
 
-		vm.checkSubcategory = function(subcategoryId, categoryId) {
-			if (subcategoryId == "" || null || undefined) {
-				return "Nope, something's wrong";
-			}
-			var subcategories = _.find(vm.categories, function(category) {
-				return category.id === categoryId;
-			}).subcategories;
-			if (!_.find(subcategories, { id: subcategoryId })) {
-				return "Nope, something's wrong";
-			}
-		};
-
 		vm.getSubcategories = function(id) {
 			return _.find(vm.categories, function(category) {
 				return category.id === id;
 			}).subcategories;
 		};
 
-		vm.logData = function(data) {
-			console.log(data);
-			return "nope";
+		vm.checkCategory = function(id) {
+			if (id == "" || null || undefined) {
+				return "Nope, something's wrong";
+			}
+		};
+
+		vm.checkSubcategory = function(data) {
+			var subcategories = _.find(vm.categories, { id: data.categoryId }).subcategories;
+			if (!_.find(subcategories, { id: data.subcategoryId })) {
+				swal("Error", "Something wrong with subcategory", "error");
+				return "Nope, something's wrong";
+			}
 		};
 
 		CategoriesService.getCategories().then(function(data) {
