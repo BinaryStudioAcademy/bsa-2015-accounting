@@ -23,7 +23,7 @@ module.exports = function(app) {
 
 		vm.expensesQuery = {limit: 10, sort: 'time desc'};
 		vm.currencies = ["UAH", "USD"];
-		
+
 		vm.updateExpenses = function() {
 			ExpensesService.getExpenses(vm.expensesQuery).then(function(data) {
 				vm.expenses = data;
@@ -87,7 +87,7 @@ module.exports = function(app) {
 				currency: expense.currency
 			};
 			ExpensesService.editExpense(expense.id, newData).then(function() {
-				changeCurrency();
+				vm.updateExpenses();
 			});
 		};
 
@@ -125,6 +125,12 @@ module.exports = function(app) {
 
 		vm.getSubcategories = function(id) {
 			return _.find(vm.categories, function(category) {
+				return category.id === id;
+			}).subcategories;
+		};
+
+		vm.getSubcategories = function(id) {
+			vm.subcategories = _.find(vm.categories, function(category) {
 				return category.id === id;
 			}).subcategories;
 		};

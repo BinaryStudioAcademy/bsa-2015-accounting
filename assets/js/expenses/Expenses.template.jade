@@ -114,19 +114,19 @@
 					tr(ng-repeat="expense in section.content")
 						td.responsive-hide {{ expCtr.timeToDate(expense.time) | date:"dd.MM.yyyy HH:mm" }}
 						td
-							span(editable-select='expense.category.id', e-name='category.name', e-form='rowform', e-ng-options='category.id as category.name for category in expCtr.categories')
+							span(editable-select='expense.category.id', e-name='category.name', e-form='rowform', e-ng-options='category.id as category.name for category in expCtr.categories', e-ng-change='expCtr.getSubcategories($data)')
 								| {{ expense.category.name || 'empty' }}
 						td.responsive-hide
-							span(editable-select='expense.subcategory.id', e-name='subcategory.name', e-form='rowform', e-ng-options='subcategory.id as subcategory.name for subcategory in expCtr.getSubcategories(expense.category.id)')
+							span(editable-select='expense.subcategory.id', e-name='subcategory.name', e-form='rowform', e-ng-options='subcategory.id as subcategory.name for subcategory in expCtr.subcategories')
 								| {{ expense.subcategory.name || 'empty' }}
 						td
 							span(editable-text='expense.name', e-name='name', e-form='rowform', onbeforesave="expCtr.checkName($data)")
 								| {{ expense.name || 'empty' }}
 						td
 							span(editable-number='expense.price', e-name='price', e-form='rowform', onbeforesave="expCtr.checkPrice($data)")
-								| {{ expense.price || '0' | currency}}
+								| {{ expense.price || '0' | currency:''}}
 						td
-							span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in expCtr.currency')
+							span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in expCtr.currencies')
 								| {{ expense.currency || 'empty' }}
 						td.responsive-hide {{ expense.creator.name }}
 						td.responsive-hide
