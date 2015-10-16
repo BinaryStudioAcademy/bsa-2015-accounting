@@ -104,6 +104,7 @@ module.exports = function(app) {
 				function() {
 					ExpensesService.deleteExpense(expense.id).then(function() {
 						vm.updateExpenses();
+						swal("Deleted!", expense.name + " has been moved to the recovery bin.", "success");
 					});
 				});
 		};

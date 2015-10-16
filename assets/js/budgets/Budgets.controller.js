@@ -142,7 +142,8 @@ module.exports = function(app) {
 			}, function() {
 				if (budget.id) {
 					BudgetsService.deleteBudget(budget.id).then(function () {
-						return vm.updateYear();
+						vm.updateYear();
+						swal("Deleted!", budget.category.name + " has been moved to the recovery bin.", "success");
 					});
 				}
 				else {
@@ -163,7 +164,8 @@ module.exports = function(app) {
 			}, function() {
 				if (subcategory.id) {
 					BudgetsService.editBudget(budget.id, {delSubcategory: {id: subcategory.id}}).then(function () {
-						return vm.updateYear();
+						vm.updateYear();
+						swal("Deleted!", subcategory.name + " has been moved to the recovery bin.", "success");
 					});
 				}
 				else {

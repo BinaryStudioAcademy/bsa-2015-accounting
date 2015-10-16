@@ -114,7 +114,7 @@
 					tr(ng-repeat="expense in section.content")
 						td.responsive-hide {{ expCtr.timeToDate(expense.time) | date:"dd.MM.yyyy HH:mm" }}
 						td
-							span(editable-select='expense.category.id', e-name='category.name', e-form='rowform', e-ng-options='category.id as category.name for category in expCtr.categories', e-ng-change='expCtr.getSubcategories($data)')
+							span(editable-select='expense.category.id', e-name='category.name', e-form='rowform', e-ng-options='category.id as category.name for category in expCtr.categories', onshow='expCtr.getSubcategories($data)', e-ng-change='expCtr.getSubcategories($data)')
 								| {{ expense.category.name || 'empty' }}
 						td.responsive-hide
 							span(editable-select='expense.subcategory.id', e-name='subcategory.name', e-form='rowform', e-ng-options='subcategory.id as subcategory.name for subcategory in expCtr.subcategories')
@@ -137,7 +137,7 @@
 								button.btn-xs.btn.btn-primary.edit-button.fa.fa-pencil(ng-click='rowform.$show()')
 								button.btn-xs.btn.btn-danger.fa.fa-trash-o(ng-click="expCtr.deleteExpense(expense)")
 							.btn-group(dropdown='')
-								button.btn.fa.fa-info(ng-show='!rowform.$visible' type='button', dropdown-toggle='')
+								button.btn.fa.fa-info(ng-show='!rowform.$visible && expense.description != ""' type='button', dropdown-toggle='')
 								span.dropdown-menu.dropdown-menu-right(editable-text='expense.description', e-name='description' e-form='rowform' role='menu', aria-labelledby='split-button' onaftersave='expCtr.editExpenseObject($data, "description")') {{ expense.description }}
 				tbody(ng-if="expCtr.expenses.length === expCtr.expensesQuery.limit")
 					tr
