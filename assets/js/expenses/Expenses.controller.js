@@ -80,8 +80,11 @@ module.exports = function(app) {
 
 		vm.updateExpense = function(expense) {
 			var newData = {
-				name: ,
-				price: 
+				name: expense.name,
+				categoryId: expense.category.id,
+				subcategoryId: expense.subcategory.id,
+				price: expense.price,
+				currency: expense.currency
 			};
 			ExpensesService.editExpense(expense.id, newData).then(function() {
 				changeCurrency();
