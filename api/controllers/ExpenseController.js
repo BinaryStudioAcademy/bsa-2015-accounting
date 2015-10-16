@@ -31,6 +31,8 @@ function getExpenses(req, res) {
 	var expenseFilter = req.user.role === 'ADMIN' || req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}});
 	var queryParams = actionUtil.parseCriteria(req);
 	expenseFilter = queryParams.name ? _.assign(expenseFilter, {name: {'contains': queryParams.name}}) : expenseFilter;
+	expenseFilter = queryParams.nameee ? _.assign(expenseFilter, {name: queryParams.nameee}) : expenseFilter;
+	expenseFilter = queryParams.nameeeeee ? _.assign(expenseFilter, {'name': queryParams.nameeeeee}) : expenseFilter;
 	expenseFilter = queryParams.categoryId ? _.assign(expenseFilter, {categoryId: queryParams.categoryId}) : expenseFilter;
 	expenseFilter = queryParams.subcategoryId ? _.assign(expenseFilter, {subcategoryId: queryParams.subcategoryId}) : expenseFilter;
 	expenseFilter = queryParams.creatorId ? _.assign(expenseFilter, {creatorId: queryParams.creatorId}) : expenseFilter;
