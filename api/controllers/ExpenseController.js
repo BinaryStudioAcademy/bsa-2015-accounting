@@ -18,8 +18,6 @@ module.exports = {
 };
 
 function getExpenses(req, res) {
-	console.log('this is criterea filter standard', actionUtil.parseCriteria(req));
-	console.log('this is allParams', req.allParams());
 	var year = req.param('year');
 	var permissions = _.pluck(_.filter(req.user.categories, function(per) {
 		return per.level >= 1;
@@ -31,9 +29,23 @@ function getExpenses(req, res) {
 		filter = {deletedBy: {$exists: false}, time: {$gte: start, $lte: end }};
 	}
 	var expenseFilter = req.user.role === 'ADMIN' || req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}});
-	console.log('this is criterea filter old', expenseFilter);
+	var queryParams = actionUtil.parseCriteria(req);
+	expenseFilter = queryParams.name ? _.assign(expenseFilter, {name: {'contains': queryParams.name}}) : expenseFilter;
+	expenseFilter = queryParams.categoryId ? _.assign(expenseFilter, {categoryId: queryParams.categoryId}) : expenseFilter;
+	expenseFilter = queryParams.subcategoryId ? _.assign(expenseFilter, {subcategoryId: queryParams.subcategoryId}) : expenseFilter;
+	expenseFilter = queryParams.creatorId ? _.assign(expenseFilter, {creatorId: queryParams.creatorId}) : expenseFilter;
+	if (queryParams.start) {
+		var startTime = Number(queryParams.start);
+		if (queryParams.end) {
+			expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lte: Number(queryParams.end) }});
+		}
+		else {
+			expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lte: (startTime + 86400) }});
+		}
+	}
+	console.log('this is final expenseFilter', expenseFilter);
 	Expense.find(expenseFilter)
-	.where(actionUtil.parseCriteria(req))
+	//.where(actionUtil.parseCriteria(req))
 	.sort(actionUtil.parseSort(req))
 	.then(function(expenses) {
 		var categories = Category.find().then(function(categories) {
