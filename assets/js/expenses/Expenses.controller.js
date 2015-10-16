@@ -36,28 +36,45 @@ module.exports = function(app) {
 		}
 
 		vm.timeToDate = function(time) {
-			return new Date(time * 1000).toDateString();
+			return new Date(time * 1000);
 		}
 
 		function updateSections() {
 			if (vm.expensesQuery.sort.indexOf('time') < 0) {
-				vm.expensesSections = [ { title: 'ONE SECTION', content: vm.expenses } ];
+				vm.expensesSections = [ { title: 'All dates', content: vm.expenses } ];
 			}
 			else {
 				vm.expensesSections = [];
 				vm.expenses.forEach(function(expense) {
-					var date = vm.timeToDate(expense.time);
+					var date = vm.timeToDate(expense.time).toDateString();
 					if (!_.find(vm.expensesSections, { 'title': date })) {
 						vm.expensesSections.push({
 							title: date,
 							content: _.filter(vm.expenses, function(expense) {
-								var expenseDate = vm.timeToDate(expense.time);
+								var expenseDate = vm.timeToDate(expense.time).toDateString();
 								return expenseDate === date;
 							})
 						});
 					}
 				});
 			}
+		}
+
+		vm.getSortingStatus = function(param) {
+			if (vm.expensesQuery.sort.indexOf(param) > -1) {
+				return vm.expensesQuery.sort.slice(param.length + 1) === 'desc' ? 1 : -1;
+			}
+			return 0;
+		}
+
+		vm.toggleSorting = function(param) {
+			if (vm.expensesQuery.sort.indexOf(param) > -1) {
+				vm.expensesQuery.sort = param + (vm.expensesQuery.sort.slice(param.length + 1) === 'desc' ? ' asc' : ' desc');
+			}
+			else {
+				vm.expensesQuery.sort = param + ' desc';
+			}
+			vm.updateExpenses();
 		}
 
 		vm.updateExpenses();

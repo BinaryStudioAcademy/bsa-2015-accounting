@@ -62,45 +62,39 @@
 			thead
 				tr
 					th.responsive-hide
-						span(ng-click="expCtr.expensesQuery.sort = 'time asc'; expCtr.updateExpenses()") Date&nbsp;
-							//span.fa.fa-caret-down(ng-show="sortType == 'time' && !sortReverse")
-							//span.fa.fa-caret-up(ng-show="sortType == 'time' && sortReverse")
-							//span.fa.fa-sort(ng-hide="sortType == 'time'")
-							span.fa.fa-sort
+						span(ng-click="expCtr.toggleSorting('time')") Date&nbsp;
+							span.fa.fa-caret-down(ng-if="expCtr.getSortingStatus('time') === 1")
+							span.fa.fa-caret-up(ng-if="expCtr.getSortingStatus('time') === -1")
+							span.fa.fa-sort(ng-if="expCtr.getSortingStatus('time') === 0")
 					th
-						span(ng-click="expCtr.expensesQuery.sort = 'categoryId desc'; expCtr.updateExpenses()") Category&nbsp;
-							//span.fa.fa-caret-down(ng-show="sortType == 'category.name' && !sortReverse")
-							//span.fa.fa-caret-up(ng-show="sortType == 'category.name' && sortReverse")
-							//span.fa.fa-sort(ng-hide="sortType == 'category.name'")
-							span.fa.fa-sort
+						span(ng-click="expCtr.toggleSorting('categoryId')") Category&nbsp;
+							span.fa.fa-caret-down(ng-if="expCtr.getSortingStatus('categoryId') === 1")
+							span.fa.fa-caret-up(ng-if="expCtr.getSortingStatus('categoryId') === -1")
+							span.fa.fa-sort(ng-if="expCtr.getSortingStatus('categoryId') === 0")
 					th#header-sub.responsive-hide
-						span(ng-click="expCtr.expensesQuery.sort = 'subcategoryId desc'; expCtr.updateExpenses()") Subcategory&nbsp;
-							//span.fa.fa-caret-down(ng-show="sortType == 'subcategory.name' && !sortReverse")
-							//span.fa.fa-caret-up(ng-show="sortType == 'subcategory.name' && sortReverse")
-							//span.fa.fa-sort(ng-hide="sortType == 'subcategory.name'")
-							span.fa.fa-sort
+						span(ng-click="expCtr.toggleSorting('subcategoryId')") Subcategory&nbsp;
+							span.fa.fa-caret-down(ng-if="expCtr.getSortingStatus('subcategoryId') === 1")
+							span.fa.fa-caret-up(ng-if="expCtr.getSortingStatus('subcategoryId') === -1")
+							span.fa.fa-sort(ng-if="expCtr.getSortingStatus('subcategoryId') === 0")
 					th
-						span(ng-click="expCtr.expensesQuery.sort = 'name desc'; expCtr.updateExpenses()") Name&nbsp;
-							//span.fa.fa-caret-down(ng-show="sortType == 'name' && !sortReverse")
-							//span.fa.fa-caret-up(ng-show="sortType == 'name' && sortReverse")
-							//span.fa.fa-sort(ng-hide="sortType == 'name'")
-							span.fa.fa-sort
+						span(ng-click="expCtr.toggleSorting('name')") Name&nbsp;
+							span.fa.fa-caret-down(ng-if="expCtr.getSortingStatus('name') === 1")
+							span.fa.fa-caret-up(ng-if="expCtr.getSortingStatus('name') === -1")
+							span.fa.fa-sort(ng-if="expCtr.getSortingStatus('name') === 0")
 					th
-						span(ng-click="expCtr.expensesQuery.sort = 'price desc'; expCtr.updateExpenses()") Amount&nbsp;
-							//span.fa.fa-caret-down(ng-show="sortType == 'currencySort' && !sortReverse")
-							//span.fa.fa-caret-up(ng-show="sortType == 'currencySort' && sortReverse")
-							//span.fa.fa-sort(ng-hide="sortType == 'currencySort'")
-							span.fa.fa-sort
+						span(ng-click="expCtr.toggleSorting('price')") Price&nbsp;
+							span.fa.fa-caret-down(ng-if="expCtr.getSortingStatus('price') === 1")
+							span.fa.fa-caret-up(ng-if="expCtr.getSortingStatus('price') === -1")
+							span.fa.fa-sort(ng-if="expCtr.getSortingStatus('price') === 0")
 					th
 						.currency-group.btn-group(ng-click="expCtr.changeCurrency()")
 							label.btn.btn-primary(ng-model="expCtr.currencyModel", btn-radio="'UAH'") UAH
 							label.btn.btn-primary(ng-model="expCtr.currencyModel", btn-radio="'USD'") USD
 					th.responsive-hide
-						span(ng-click="expCtr.expensesQuery.sort = 'creatorId desc'; expCtr.updateExpenses()") Added by&nbsp;
-							//span.fa.fa-caret-down(ng-show="sortType == 'creator.name' && !sortReverse")
-							//span.fa.fa-caret-up(ng-show="sortType == 'creator.name' && sortReverse")
-							//span.fa.fa-sort(ng-hide="sortType == 'creator.name'")
-							span.fa.fa-sort
+						span(ng-click="expCtr.toggleSorting('creatorId')") Added by&nbsp;
+							span.fa.fa-caret-down(ng-if="expCtr.getSortingStatus('creatorId') === 1")
+							span.fa.fa-caret-up(ng-if="expCtr.getSortingStatus('creatorId') === -1")
+							span.fa.fa-sort(ng-if="expCtr.getSortingStatus('creatorId') === 0")
 					th.responsive-hide
 						i.fa.fa-cog
 		#main
@@ -118,7 +112,7 @@
 					tr.date-hilight
 						td(colspan='8') {{ section.title }}
 					tr(ng-repeat="expense in section.content")
-						td.responsive-hide {{ expCtr.timeToDate(expense.time) | date:'dd.MM.yyyy' }}
+						td.responsive-hide {{ expCtr.timeToDate(expense.time) | date:"dd.MM.yyyy HH:mm" }}
 						td {{ expense.category.name }}
 						td.responsive-hide {{ expense.subcategory.name }}
 						td {{ expense.name }}
