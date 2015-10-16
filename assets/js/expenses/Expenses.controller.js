@@ -109,18 +109,30 @@ module.exports = function(app) {
 				});
 		};
 
-		vm.checkName = function(data) {
-			if (data == "") {
+		vm.checkName = function(name) {
+			if (name == "") {
 				return "You call that a name???";
 			}
 		};
 
-		vm.checkPrice = function(data) {
-			if (data == null) {
+		vm.checkPrice = function(price) {
+			if (price == null) {
 				return "Maybe you meant 0?";
 			}
-			if (data < 0) {
+			if (price < 0) {
 				return "Negative budgets not allowed";
+			}
+		};
+
+		vm.checkSubcategory = function(subcategoryId, categoryId) {
+			if (subcategoryId == "" || null || undefined) {
+				return "Nope, something's wrong";
+			}
+			var subcategories = _.find(vm.categories, function(category) {
+				return category.id === categoryId;
+			}).subcategories;
+			if (!_.find(subcategories, { id: subcategoryId }})) {
+				return "Nope, something's wrong";
 			}
 		};
 

@@ -117,7 +117,7 @@
 							span(editable-select='expense.category.id', e-name='category.name', e-form='rowform', e-ng-options='category.id as category.name for category in expCtr.categories', onshow='expCtr.getSubcategories($data)', e-ng-change='expCtr.getSubcategories($data)')
 								| {{ expense.category.name || 'empty' }}
 						td.responsive-hide
-							span(editable-select='expense.subcategory.id', e-name='subcategory.name', e-form='rowform', e-ng-options='subcategory.id as subcategory.name for subcategory in expCtr.subcategories')
+							span(editable-select='expense.subcategory.id', e-name='subcategory.name', e-form='rowform', e-ng-options='subcategory.id as subcategory.name for subcategory in expCtr.subcategories', onbeforesave="expCtr.checkSubcategory($data, expense.category.id)")
 								| {{ expense.subcategory.name || 'empty' }}
 						td
 							span(editable-text='expense.name', e-name='name', e-form='rowform', onbeforesave="expCtr.checkName($data)")
