@@ -30,6 +30,11 @@ module.exports = function(app) {
 			});
 		}
 
+		vm.loadMoreExpenses = function() {
+			vm.expensesQuery.limit += 10;
+			vm.updateExpenses();
+		}
+
 		function updateSections() {
 			if (vm.expensesQuery.sort.indexOf('time') < 0) {
 				vm.expensesSections = [ { title: 'ONE SECTION', content: vm.expenses } ];
