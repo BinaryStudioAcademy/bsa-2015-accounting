@@ -22,6 +22,7 @@ module.exports = function(app) {
 		//};
 
 		vm.expensesQuery = {limit: 10, sort: 'time desc'};
+		vm.currencies = ["UAH", "USD"];
 		
 		vm.updateExpenses = function() {
 			ExpensesService.getExpenses(vm.expensesQuery).then(function(data) {
@@ -77,6 +78,57 @@ module.exports = function(app) {
 			vm.updateExpenses();
 		}
 
+		vm.updateExpense = function(expense) {
+			var newData = {
+				name: ,
+				price: 
+			};
+			ExpensesService.editExpense(expense.id, newData).then(function() {
+				changeCurrency();
+			});
+		};
+
+		vm.deleteExpense = function(expense) {
+			swal({
+					title: "Are you sure?",
+					text: "You're about to delete " + expense.name,
+					type: "warning",
+					showCancelButton: true,
+					confirmButtonColor: "#DD6B55",
+					confirmButtonText: "Yes, delete it!",
+					closeOnConfirm: false
+				},
+				function() {
+					ExpensesService.deleteExpense(expense.id).then(function() {
+						vm.updateExpenses();
+					});
+				});
+		};
+
+		vm.checkName = function(data) {
+			if (data == "") {
+				return "You call that a name???";
+			}
+		};
+
+		vm.checkPrice = function(data) {
+			if (data == null) {
+				return "Maybe you meant 0?";
+			}
+			if (data < 0) {
+				return "Negative budgets not allowed";
+			}
+		};
+
+		vm.getSubcategories(id) = function(data) {
+			return _.find(vm.categories, function(category) {
+				return category.id === id;
+			}).subcategories;
+		};
+
+		CategoriesService.getCategories().then(function(data) {
+			vm.categories = data;
+		});
 		vm.updateExpenses();
 
 

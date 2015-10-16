@@ -72,7 +72,7 @@
 							span.fa.fa-caret-up(ng-if="expCtr.getSortingStatus('categoryId') === -1")
 							span.fa.fa-sort(ng-if="expCtr.getSortingStatus('categoryId') === 0")
 					th#header-sub.responsive-hide
-						span(ng-click="expCtr.toggleSorting('subcategoryId')") Subcategory&nbsp;
+						span(ng-click="expCtr.toggleSorting('subcategoryId')") Subcat.&nbsp;
 							span.fa.fa-caret-down(ng-if="expCtr.getSortingStatus('subcategoryId') === 1")
 							span.fa.fa-caret-up(ng-if="expCtr.getSortingStatus('subcategoryId') === -1")
 							span.fa.fa-sort(ng-if="expCtr.getSortingStatus('subcategoryId') === 0")
@@ -109,24 +109,33 @@
 					col.table-addBy.responsive-hide
 					col.table-description.responsive-hide
 				tbody(ng-repeat="section in expCtr.expensesSections")
-					tr.date-hilight
+					tr.section-header
 						td(colspan='8') {{ section.title }}
 					tr(ng-repeat="expense in section.content")
 						td.responsive-hide {{ expCtr.timeToDate(expense.time) | date:"dd.MM.yyyy HH:mm" }}
-						td {{ expense.category.name }}
-						td.responsive-hide {{ expense.subcategory.name }}
-						td {{ expense.name }}
-						td {{ expense.price }}
-						td {{ expense.currency }}
+						td
+							span(editable-select='expense.category.id', e-name='category.name', e-form='rowform', e-ng-options='category.id as category.name for category in expCtr.categories')
+								| {{ expense.category.name || 'empty' }}
+						td.responsive-hide
+							span(editable-select='expense.subcategory.id', e-name='subcategory.name', e-form='rowform', e-ng-options='subcategory.id as subcategory.name for subcategory in expCtr.getSubcategories(expense.category.id)')
+								| {{ expense.subcategory.name || 'empty' }}
+						td
+							span(editable-text='expense.name', e-name='name', e-form='rowform', onbeforesave="expCtr.checkName($data)")
+								| {{ expense.name || 'empty' }}
+						td
+							span(editable-number='expense.price', e-name='price', e-form='rowform', onbeforesave="expCtr.checkPrice($data)")
+								| {{ expense.price || '0' | currency}}
+						td
+							span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in expCtr.currency')
+								| {{ expense.currency || 'empty' }}
 						td.responsive-hide {{ expense.creator.name }}
 						td.responsive-hide
-							form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', onaftersave="expCtr.editExpense(expense.id)", shown='inserted == expense')
-
+							form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', onaftersave="expCtr.updateExpense(expense)")
 								button.btn-xs.btn.btn-success.fa.fa-check(type='submit', ng-disabled='rowform.$waiting')
 								button#delete-button.btn-xs.btn.btn-warning.fa.fa-ban(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
-							.buttons(ng-show='!rowform.$visible && expCtr.isUserExpense(expense.creator.global_id, expense.category.id)')
+							.buttons(ng-show='!rowform.$visible')
 								button.btn-xs.btn.btn-primary.edit-button.fa.fa-pencil(ng-click='rowform.$show()')
-								button.btn-xs.btn.btn-danger.fa.fa-trash-o(ng-click="expCtr.deleteExpense(expense.id, expense.name)")
+								button.btn-xs.btn.btn-danger.fa.fa-trash-o(ng-click="expCtr.deleteExpense(expense)")
 							.btn-group(dropdown='')
 								button.btn.fa.fa-info(ng-show='!rowform.$visible' type='button', dropdown-toggle='')
 								span.dropdown-menu.dropdown-menu-right(editable-text='expense.description', e-name='description' e-form='rowform' role='menu', aria-labelledby='split-button' onaftersave='expCtr.editExpenseObject($data, "description")') {{ expense.description }}
