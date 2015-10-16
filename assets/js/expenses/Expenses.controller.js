@@ -131,7 +131,7 @@ module.exports = function(app) {
 			var subcategories = _.find(vm.categories, function(category) {
 				return category.id === categoryId;
 			}).subcategories;
-			if (!_.find(subcategories, { id: subcategoryId }})) {
+			if (!_.find(subcategories, { id: subcategoryId })) {
 				return "Nope, something's wrong";
 			}
 		};
