@@ -38,7 +38,7 @@ module.exports = function(app) {
 				vm.expensesSections = [];
 				vm.expenses.forEach(function(expense) {
 					var date = new Date(expense.time * 1000).toDateString();
-					if (_.find(vm.expensesSections, { 'title': date })) {
+					if (!_.find(vm.expensesSections, { 'title': date })) {
 						vm.expensesSections.push({
 							title: date,
 							content: _.filter(vm.expenses, function(expense) {
