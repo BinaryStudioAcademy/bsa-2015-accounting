@@ -84,7 +84,8 @@ module.exports = function(app) {
 				categoryId: expense.category.id,
 				subcategoryId: expense.subcategory.id,
 				price: expense.price,
-				currency: expense.currency
+				currency: expense.currency,
+				description: expense.description || ""
 			};
 			ExpensesService.editExpense(expense.id, newData).then(function() {
 				vm.updateExpenses();

@@ -138,7 +138,7 @@
 								button.btn-xs.btn.btn-danger.fa.fa-trash-o(ng-click="expCtr.deleteExpense(expense)")
 							.btn-group(dropdown='')
 								button.btn.fa.fa-info(ng-show='!rowform.$visible && expense.description != ""' type='button', dropdown-toggle='')
-								span.dropdown-menu.dropdown-menu-right(editable-text='expense.description', e-name='description' e-form='rowform' role='menu', aria-labelledby='split-button' onaftersave='expCtr.editExpenseObject($data, "description")') {{ expense.description }}
+								span.dropdown-menu.dropdown-menu-right(editable-text='expense.description', e-name='description' e-form='rowform' role='menu', aria-labelledby='split-button') {{ expense.description }}
 				tbody(ng-if="expCtr.expenses.length === expCtr.expensesQuery.limit")
 					tr
 						td(colspan='8')
