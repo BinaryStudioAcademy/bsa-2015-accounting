@@ -224,7 +224,7 @@ module.exports = function(app) {
 			});
 		};
 
-		vm.newExpense = { date: new Date()};
+		vm.newExpense = { date: new Date(), currency: "UAH"};
 		vm.updateAnnualCategories();
 
 		vm.createExpense = function() {
@@ -249,7 +249,7 @@ module.exports = function(app) {
 		};
 
 		vm.getAnnualSubcategories = function() {
-			var cat = vm.getAnnualCategory;
+			var cat = vm.getAnnualCategory();
 			return cat ? cat.subcategories : [];
 		};
 	}
