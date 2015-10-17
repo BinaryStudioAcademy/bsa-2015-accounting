@@ -52,8 +52,8 @@ function getExpenses(req, res) {
 	if (priceSorting) {
 		limit = 10000;
 	}
-	console.log("this is limit": actionUtil.parseLimit(req));
-	console.log("this is sort": actionUtil.parseSort(req));
+	console.log("this is limit", actionUtil.parseLimit(req));
+	console.log("this is sort", actionUtil.parseSort(req));
 	Expense.find()
 	.where(expenseFilter)
 	.limit(limit)
