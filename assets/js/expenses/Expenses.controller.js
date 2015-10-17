@@ -15,8 +15,6 @@ module.exports = function(app) {
 			categoryId: "",
 			subcategoryId: "",
 			creatorId: "",
-			start: "",
-			end: "",
 			limit: 10,
 			sort: "time desc"
 		};

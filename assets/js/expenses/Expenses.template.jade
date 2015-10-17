@@ -150,10 +150,10 @@
 					tr
 						td(colspan='8')
 							a(ng-click="expCtr.loadMoreExpenses(10)")
-								| load more expenses&nbsp;
+								| load 10 more expenses&nbsp;
 								i.fa.fa-plus
 					tr(ng-if="expCtr.expensesQuery.limit < 999999")
 						td(colspan='8')
 							a(ng-click="expCtr.loadMoreExpenses(999999)")
-								| load more expenses&nbsp;
+								| load all expenses&nbsp;
 								i.fa.fa-plus
