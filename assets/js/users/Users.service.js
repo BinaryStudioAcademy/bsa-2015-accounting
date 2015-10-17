@@ -29,6 +29,8 @@ module.exports = function(app) {
 					user.admin = local ? local.admin : false;
 					user.budget = local ? local.budget : {used: 0, left: 0};
 					user.categories = local ? local.categories : [];
+					user.name = user.name + " " + user.surname;
+					delete user.surname;
 				});
 				return global_users;
 			});

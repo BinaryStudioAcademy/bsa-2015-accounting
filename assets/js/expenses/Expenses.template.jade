@@ -43,12 +43,12 @@
 					option(value="") All Categories
 				select(name='subcategory', ng-model="expCtr.expensesQuery.subcategoryId", ng-options="subcategory.id as subcategory.name for subcategory in expCtr.getSubcategories(expCtr.expensesQuery.categoryId)", ng-change="expCtr.updateExpenses()")
 					option(value="") All Subcategories
-				select(name='author', ng-model="expCtr.expensesQuery.creatorId", ng-options="user.serverUserId as user.name for user in expCtr.users", ng-change="expCtr.updateExpenses()")
+				select(name='author', ng-model="expCtr.expensesQuery.creatorId", ng-change="expCtr.updateExpenses()", ng-options="user.serverUserId as user.name for user in expCtr.users")
 					option(value="") All users
 				a#excel-button.btn.btn-success(ng-click='expCtr.getExcelSheet()') Get Excel Sheet
 					i.fa.fa-file-excel-o.fa-1g
-				input(type='date', name='startDate', placeholder='Date', ng-model="expCtr.startDateFilter", ng-change="logData(expCtr.startDateFilter)")
-				input(type='date', name='endDate', placeholder='Date', ng-model="expCtr.endDateFilter", ng-change="logData(expCtr.endDateFilter)")
+				input(type='date', name='startDate', placeholder='Date', ng-model="expCtr.expensesQuery.start", ng-change="expCtr.updateExpenses()")
+				input(type='date', name='endDate', placeholder='Date', ng-model="expCtr.expensesQuery.end", ng-change="expCtr.updateExpenses()")
 
 		table.table-hover.fixed
 			colgroup

@@ -10,18 +10,17 @@ module.exports = function(app) {
 	function ExpensesController(ExpensesService, $rootScope, CategoriesService, $filter, $q, UsersService) {
 		var vm = this;
 
-		//vm.expensesQuery = {
-		//	name,
-		//	categoryId,
-		//	subcategoryId,
-		//	creatorId,
-		//	start,
-		//	end,
-		//	limit,
-		//	sort
-		//};
+		vm.expensesQuery = {
+			name: "",
+			categoryId: "",
+			subcategoryId: "",
+			creatorId: "",
+			start: "",
+			end: "",
+			limit: 10,
+			sort: "time desc"
+		};
 
-		vm.expensesQuery = {limit: 10, sort: 'time desc'};
 		vm.currencies = ['UAH', 'USD'];
 		vm.currency = 'Original';
 
@@ -60,6 +59,9 @@ module.exports = function(app) {
 						});
 					}
 				});
+				if (vm.expensesSections.length === 0) {
+					vm.expensesSections = [ { title: 'All dates', content: [] } ];
+				}
 			}
 		}
 
@@ -168,12 +170,24 @@ module.exports = function(app) {
 
 		var mystyle = {
 			sheetid: 'Expenses',
-			headers: true
+			headers: false
 		};
 
 		vm.getExcelSheet = function () {
 			alasql.fn.getDate = vm.timeToDate;
-			alasql('SELECT getDate(time), name, price, currency, category->name, subcategory->name, creator->name, description AS Date, Name, Price, Currency, Category, Subcategory, Creator, Description INTO XLSX("Expenses.xlsx", ?) FROM ?', [mystyle, vm.expenses]);
+			alasql.fn.getDisplayPrice = function(price, altPrice, currency) {
+				if (vm.currency === 'Original' || vm.currency === currency) {
+					return price;
+				}
+				return altPrice;
+			};
+				alasql.fn.getDisplayCurrency = function(currency) {
+					if (vm.currency === 'Original') {
+						return currency;
+					}
+					return vm.currency;
+				};
+			alasql('SELECT getDate(time), category->name, subcategory->name, name, getDisplayPrice(price, altPrice, currency), getDisplayCurrency(currency), creator->name, description AS Date, Category, Subcategory, Name, Price, Currency, Creator, Description INTO XLSX("Expenses.xlsx", ?) FROM ?', [mystyle, vm.expenses]);
 		};
 
 		vm.logData = function (data) {
