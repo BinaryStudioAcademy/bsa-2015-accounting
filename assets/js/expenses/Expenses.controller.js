@@ -5,7 +5,7 @@ module.exports = function(app) {
 
 	app.controller('ExpensesController', ExpensesController);
 
-	ExpensesController.$inject = ['ExpensesService', 'CategoriesService', 'UsersService', 'BudgetsService' '$q', '$rootScope'];
+	ExpensesController.$inject = ['ExpensesService', 'CategoriesService', 'UsersService', 'BudgetsService', '$q', '$rootScope'];
 
 	function ExpensesController(ExpensesService, CategoriesService, UsersService, BudgetsService, $q, $rootScope) {
 		var vm = this;
