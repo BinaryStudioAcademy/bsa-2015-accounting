@@ -1,29 +1,29 @@
 doctype html
 html(ng-app='accounting')
-  head
-    link(href="http://team.binary-studio.com/app/styles/css/style.css", rel="stylesheet")
-    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css')
-    link(rel='stylesheet', href='http://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css')
-    link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
-    link(rel='stylesheet', href='/accounting/styles/importer.css')
-    title= title
+	head
+		link(href="http://team.binary-studio.com/app/styles/css/style.css", rel="stylesheet")
+		link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css')
+		link(rel='stylesheet', href='http://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css')
+		link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css')
+		link(rel='stylesheet', href='/accounting/styles/importer.css')
+		title Accounting app
 
-    // Viewport mobile tag for sensible mobile support
-    meta(name="viewport",content="width=device-width, initial-scale=1, maximum-scale=1")
+		// Viewport mobile tag for sensible mobile support
+		meta(name="viewport",content="width=device-width, initial-scale=1, maximum-scale=1")
 
-  body
-    block body
+	body
+		block body
 
-    // The linker searches for this tag and adds js.  If there's no linker, we point to sails.io.js
-    script(src="http://team.binary-studio.com/app/javascripts/header.js")
-    script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js')
+		// The linker searches for this tag and adds js.  If there's no linker, we point to sails.io.js
+		script(src="http://team.binary-studio.com/app/javascripts/header.js")
+		script(src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js')
 
-    script(src="http://code.highcharts.com/highcharts.js")
+		script(src="http://code.highcharts.com/highcharts.js")
 
-    script(src="/accounting/js/app-libs.js")
-    script(src="/accounting/js/app.js")
+		script(src="/accounting/js/app-libs.js")
+		script(src="/accounting/js/app.js")
 
-    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
-    script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-sanitize.min.js")
-    script(src='http://alasql.org/console/alasql.min.js')
-    script(src='http://alasql.org/console/xlsx.core.min.js')
+		script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')
+		script(src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.15/angular-sanitize.min.js")
+		script(src='http://alasql.org/console/alasql.min.js')
+		script(src='http://alasql.org/console/xlsx.core.min.js')

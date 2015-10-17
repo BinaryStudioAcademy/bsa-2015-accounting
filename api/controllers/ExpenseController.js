@@ -35,16 +35,16 @@ function getExpenses(req, res) {
 	expenseFilter = queryParams.subcategoryId ? _.assign(expenseFilter, {subcategoryId: queryParams.subcategoryId}) : expenseFilter;
 	expenseFilter = queryParams.creatorId ? _.assign(expenseFilter, {creatorId: queryParams.creatorId}) : expenseFilter;
 	if (queryParams.start) {
-		var startTime = queryParams.start.getTime() / 1000;
+		var startTime = queryParams.start;
 		if (queryParams.end) {
-			expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lte: queryParams.end.getTime() / 1000 }});
+			expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lte: queryParams.end }});
 		}
 		else {
 			expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lte: (startTime + 86400) }});
 		}
 	}
 	else if (queryParams.end) {
-		var startTime = queryParams.end.getTime() / 1000;
+		var startTime = queryParams.end;
 		expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lte: (startTime + 86400) }});
 	}
 	var limit = actionUtil.parseLimit(req);
