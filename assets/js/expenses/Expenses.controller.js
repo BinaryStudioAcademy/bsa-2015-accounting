@@ -205,6 +205,25 @@ module.exports = function(app) {
 
 		//Add expense form
 
+		vm.updateAnnualCategories = function() {
+			BudgetsService.getBudgets(vm.newExpense.date.getFullYear()).then(function(data) {
+				vm.annualCategories = _.map(data, function(budget) {
+					return {
+						id: budget.category.id,
+						name: budget.category.name,
+						left: budget.category.budget - budget.category.used,
+						subcategories: _.map(budget.category.subcategories, function(subcategory) {
+							return {
+								id: subcategory.id,
+								name: subcategory.name,
+								left: subcategory.budget - subcategory.used
+							};
+						})
+					};
+				});
+			});
+		};
+
 		vm.newExpense = { date: new Date()};
 		vm.updateAnnualCategories();
 
@@ -232,25 +251,6 @@ module.exports = function(app) {
 		vm.getAnnualSubcategories = function() {
 			var cat = vm.getAnnualCategory;
 			return cat ? cat.subcategories : [];
-		};
-
-		vm.updateAnnualCategories = function() {
-			BudgetsService.getBudgets(vm.newExpense.date.getFullYear()).then(function(data) {
-				vm.annualCategories = _.map(data, function(budget) {
-					return {
-						id: budget.category.id,
-						name: budget.category.name,
-						left: budget.category.budget - budget.category.used,
-						subcategories: _.map(budget.category.subcategories, function(subcategory) {
-							return {
-								id: subcategory.id,
-								name: subcategory.name,
-								left: subcategory.budget - subcategory.used
-							};
-						})
-					};
-				});
-			});
 		};
 	}
 };
