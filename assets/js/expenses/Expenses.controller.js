@@ -125,7 +125,7 @@ module.exports = function(app) {
 		};
 
 		vm.getSubcategories = function(id) {
-			return _.find(vm.categories, function(category) {
+			vm.subcategories = _.find(vm.categories, function(category) {
 				return category.id === id;
 			}).subcategories;
 		};
