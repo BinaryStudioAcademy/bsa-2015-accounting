@@ -90,13 +90,10 @@
 						.dropdown
 							button#currencyDropdown.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="true") {{expCtr.currency}}&nbsp;
 								span.fa.fa-caret-down
-							ul.dropdown-menu(aria-labelledby="currencyDropdown")
-								li(ng-click="expCtr.currency = 'UAH'")
-									a UAH
-								li(ng-click="expCtr.currency = 'USD'")
-									a USD
-								li(ng-click="expCtr.currency = 'ANY'")
-									a Original
+							ul#currency-list.dropdown-menu(aria-labelledby="currencyDropdown")
+								li(ng-click="expCtr.currency = 'UAH'") UAH
+								li(ng-click="expCtr.currency = 'USD'") USD
+								li(ng-click="expCtr.currency = 'ANY'") Original
 					th.responsive-hide
 						span(ng-click="expCtr.toggleSorting('creatorId')") Added by&nbsp;
 							span.fa.fa-caret-down(ng-if="expCtr.getSortingStatus('creatorId') === 1")

@@ -48,7 +48,8 @@ function getExpenses(req, res) {
 		expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lte: (startTime + 86400) }});
 	}
 	var limit = actionUtil.parseLimit(req);
-	var priceSorting = actionUtil.parseSort(req).indexOf('price') > -1;
+	var sort = actionUtil.parseSort(req);
+	var priceSorting = sort && sort.indexOf('price') > -1;
 	if (priceSorting) {
 		limit = 10000;
 	}
@@ -57,7 +58,7 @@ function getExpenses(req, res) {
 	Expense.find()
 	.where(expenseFilter)
 	.limit(limit)
-	.sort(actionUtil.parseSort(req))
+	.sort(sort)
 	.then(function(expenses) {
 		var categories = Category.find().then(function(categories) {
 			return categories;
@@ -99,7 +100,7 @@ function getExpenses(req, res) {
 			expenses.sort(function(a, b) {
 				var aVal = a.currency === "UAH" ? a.price : a.altPrice;
 				var bVal = b.currency === "UAH" ? b.price : b.altPrice;
-				return (actionUtil.parseSort(req).indexOf('asc') > -1) ? aVal - bVal : bVal - aVal;
+				return (sort.indexOf('asc') > -1) ? aVal - bVal : bVal - aVal;
 			});
 			var expenses = expenses.slice(0, actionUtil.parseLimit(req));
 		}
