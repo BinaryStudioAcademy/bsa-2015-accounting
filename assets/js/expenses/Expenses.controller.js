@@ -5,9 +5,9 @@ module.exports = function(app) {
 
 	app.controller('ExpensesController', ExpensesController);
 
-	ExpensesController.$inject = ['ExpensesService', 'CategoriesService', 'UsersService', 'BudgetsService', '$q', '$rootScope'];
+	ExpensesController.$inject = ['ExpensesService', 'CategoriesService', 'UsersService', 'BudgetsService', '$q', '$rootScope', '$scope'];
 
-	function ExpensesController(ExpensesService, CategoriesService, UsersService, BudgetsService, $q, $rootScope) {
+	function ExpensesController(ExpensesService, CategoriesService, UsersService, BudgetsService, $q, $rootScope, $scope) {
 		var vm = this;
 
 		vm.expensesQuery = {
@@ -31,6 +31,12 @@ module.exports = function(app) {
 		vm.updateExpenses = function() {
 			vm.expensesQuery.start = vm.expensesQuery.startDate ? Number((vm.expensesQuery.startDate.getTime() / 1000).toFixed()) : "";
 			vm.expensesQuery.end = vm.expensesQuery.endDate ? Number((vm.expensesQuery.endDate.getTime() / 1000).toFixed()) : "";
+
+			for (var property in vm.expensesQuery) {
+				if (vm.expensesQuery.hasOwnProperty(property) && !vm.expensesQuery[property]) {
+					delete vm.expensesQuery[property];
+				}
+			}
 
 			ExpensesService.getExpenses(vm.expensesQuery).then(function(data) {
 				vm.expenses = data;
@@ -227,7 +233,7 @@ module.exports = function(app) {
 			});
 		};
 
-		vm.newExpense = { date: new Date(), currency: "UAH"};
+		vm.newExpense = { date: new Date(), currency: "UAH" };
 		vm.updateAnnualCategories();
 
 		vm.createExpense = function() {
@@ -236,7 +242,8 @@ module.exports = function(app) {
 			delete vm.newExpense.date;
 			ExpensesService.createExpense(vm.newExpense).then(function() {
 				vm.updateExpenses();
-				vm.newExpense = { date: new Date(), currency: "UAH"};
+				$scope.expenseForm.$setPristine();
+				vm.newExpense = { date: new Date(), currency: "UAH" };
 			});
 		};
 

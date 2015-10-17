@@ -23,13 +23,19 @@
 				input(type='checkbox', name='Personal', ng-model="expCtrl.newExpense.personal")
 				span#personal-label Use personal budget
 			textarea.form-control(placeholder='Description', ng-model="expCtrl.newExpense.description")
-			.money-left(ng-if="expCtrl.newExpense.categoryId")
-				#form-category-left
+			.money-left
+				div(ng-if="expCtrl.newExpense.categoryId")
 					b {{expCtrl.getAnnualCategory().name}} budget left:
+					br
 					span {{expCtrl.getAnnualCategory().left | currency:""}} USD
-				#form-subcategory-left(ng-if="expCtrl.newExpense.subcategoryId")
+				div(ng-if="expCtrl.newExpense.subcategoryId")
 					b {{expCtrl.getAnnualSubcategory().name}} budget left:
+					br
 					span {{expCtrl.getAnnualSubcategory().left | currency:""}} USD
+				div(ng-if="expCtrl.newExpense.personal")
+					b Personal budget left:
+					br
+					span {{currentUser.budget.left | currency:""}} UAH
 			button.btnAdd.btn.btn-primary(type="submit") Add expense
 	#leftBlock
 		.filters
