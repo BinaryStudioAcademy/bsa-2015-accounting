@@ -23,7 +23,7 @@ module.exports = function(app) {
 
 		vm.expensesQuery = {limit: 10, sort: 'time desc'};
 		vm.currencies = ['UAH', 'USD'];
-		vm.currency = 'UAH';
+		vm.currency = 'Original';
 
 		vm.updateExpenses = function() {
 			ExpensesService.getExpenses(vm.expensesQuery).then(function(data) {
@@ -32,12 +32,9 @@ module.exports = function(app) {
 			});
 		};
 
-		//vm.updateCurrency = function(currency) {
-		//	vm.currency = currency;
-		//};
-
 		vm.loadMoreExpenses = function(val) {
 			vm.expensesQuery.limit += val;
+			vm.expensesQuery.limit = Math.min(vm.expensesQuery.limit, 999999);
 			vm.updateExpenses();
 		};
 
@@ -67,14 +64,14 @@ module.exports = function(app) {
 		}
 
 		vm.getDisplayPrice = function(expense) {
-			if (vm.currency === 'ANY' || vm.currency === expense.currency) {
+			if (vm.currency === 'Original' || vm.currency === expense.currency) {
 				return expense.price;
 			}
 			return expense.altPrice;
 		};
 
 		vm.getDisplayCurrency = function(expense) {
-			if (vm.currency === 'ANY') {
+			if (vm.currency === 'Original') {
 				return expense.currency;
 			}
 			return vm.currency;
