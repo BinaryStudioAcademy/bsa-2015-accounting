@@ -15,8 +15,8 @@ module.exports = function(app) {
 			categoryId: "",
 			subcategoryId: "",
 			creatorId: "",
-			start: "",
-			end: "",
+			startDate: "",
+			endDate: "",
 			limit: 10,
 			sort: "time desc"
 		};
@@ -29,6 +29,9 @@ module.exports = function(app) {
 		};
 
 		vm.updateExpenses = function() {
+			vm.expensesQuery.start = vm.expensesQuery.startDate ? Number((vm.expensesQuery.startDate.getTime() / 1000).toFixed()) : "";
+			vm.expensesQuery.end = vm.expensesQuery.endDate ? Number((vm.expensesQuery.endDate.getTime() / 1000).toFixed()) : "";
+
 			ExpensesService.getExpenses(vm.expensesQuery).then(function(data) {
 				vm.expenses = data;
 				updateSections();
@@ -233,6 +236,7 @@ module.exports = function(app) {
 			delete vm.newExpense.date;
 			ExpensesService.createExpense(vm.newExpense).then(function() {
 				vm.updateExpenses();
+				vm.newExpense = { date: new Date(), currency: "UAH"};
 			});
 		};
 

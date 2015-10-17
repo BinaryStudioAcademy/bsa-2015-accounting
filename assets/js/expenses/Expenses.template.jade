@@ -43,8 +43,8 @@
 					option(value="") All users
 				a#excel-button.btn.btn-success(ng-click='expCtrl.getExcelSheet()') Get Excel Sheet
 					i.fa.fa-file-excel-o.fa-1g
-				input(type='date', name='startDate', placeholder='Date', ng-model="expCtrl.expensesQuery.start", ng-change="expCtrl.updateExpenses()")
-				input(type='date', name='endDate', placeholder='Date', ng-model="expCtrl.expensesQuery.end", ng-change="expCtrl.updateExpenses()")
+				input(type='date', name='startDate', placeholder='Date', ng-model="expCtrl.expensesQuery.startDate", ng-change="expCtrl.updateExpenses()")
+				input(type='date', name='endDate', placeholder='Date', ng-model="expCtrl.expensesQuery.endDate", ng-change="expCtrl.updateExpenses()")
 
 		table.table-hover.fixed
 			colgroup

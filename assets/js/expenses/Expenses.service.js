@@ -27,9 +27,6 @@ module.exports = function(app) {
 			if (!expensesQuery) {
 				expensesQuery = { id: "@id", sort: "time desc" };
 			}
-			
-			expensesQuery.start = expensesQuery.start ? expensesQuery.start.getTime() / 1000 : "";
-			expensesQuery.end = expensesQuery.end ? expensesQuery.end.getTime() / 1000 : "";
 
 			var usersPromise = $resource("../profile/api/users/").query().$promise;
 			var expensesPromise = $resource("expense/:id", expensesQuery).query().$promise;
