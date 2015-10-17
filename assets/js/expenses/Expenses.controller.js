@@ -25,6 +25,9 @@ module.exports = function(app) {
 		vm.currency = 'Original';
 
 		vm.updateExpenses = function() {
+			expensesQuery.start = expensesQuery.start ? expensesQuery.start.getTime() / 1000 : "";
+			expensesQuery.end = expensesQuery.end ? expensesQuery.end.getTime() / 1000 : "";
+
 			ExpensesService.getExpenses(vm.expensesQuery).then(function(data) {
 				vm.expenses = data;
 				updateSections();
@@ -170,7 +173,7 @@ module.exports = function(app) {
 
 		var mystyle = {
 			sheetid: 'Expenses',
-			headers: false
+			headers: true
 		};
 
 		vm.getExcelSheet = function () {
@@ -187,12 +190,7 @@ module.exports = function(app) {
 					}
 					return vm.currency;
 				};
-			alasql('SELECT getDate(time), category->name, subcategory->name, name, getDisplayPrice(price, altPrice, currency), getDisplayCurrency(currency), creator->name, description AS Date, Category, Subcategory, Name, Price, Currency, Creator, Description INTO XLSX("Expenses.xlsx", ?) FROM ?', [mystyle, vm.expenses]);
-		};
-
-		vm.logData = function (data) {
-			console.log("---changes---");
-			console.log(data);
+			alasql('SELECT getDate(time) AS Date, category->name AS Category, subcategory->name AS Subcategory, name AS Name, getDisplayPrice(price, altPrice, currency) AS Price, getDisplayCurrency(currency) AS Currncy, creator->name AS Creator, description AS Description INTO XLSX("Expenses.xlsx", ?) FROM ?', [mystyle, vm.expenses]);
 		};
 
 		vm.updateExpenses();
