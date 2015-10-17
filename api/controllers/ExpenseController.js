@@ -99,7 +99,7 @@ function getExpenses(req, res) {
 			expenses.sort(function(a, b) {
 				var aVal = a.currency === "UAH" ? a.price : a.altPrice;
 				var bVal = b.currency === "UAH" ? b.price : b.altPrice;
-				return actionUtil.parseSort(req).indexOf('asc') > -1) ? aVal - bVal : bVal - aVal;
+				return (actionUtil.parseSort(req).indexOf('asc') > -1) ? aVal - bVal : bVal - aVal;
 			});
 			var expenses = expenses.slice(0, actionUtil.parseLimit(req));
 		}
