@@ -15,8 +15,8 @@ module.exports = function(app) {
 			categoryId: "",
 			subcategoryId: "",
 			creatorId: "",
-			start: "",
-			end: "",
+			start: vm.dateToTime(vm.startDate),
+			end: vm.dateToTime(vm.endDate),
 			limit: 10,
 			sort: "time desc"
 		};
@@ -25,8 +25,8 @@ module.exports = function(app) {
 		vm.currency = 'Original';
 
 		vm.updateExpenses = function() {
-			expensesQuery.start = expensesQuery.start ? expensesQuery.start.getTime() / 1000 : "";
-			expensesQuery.end = expensesQuery.end ? expensesQuery.end.getTime() / 1000 : "";
+			vm.expensesQuery.start = expensesQuery.start ? expensesQuery.start.getTime() / 1000 : "";
+			vm.expensesQuery.end = expensesQuery.end ? expensesQuery.end.getTime() / 1000 : "";
 
 			ExpensesService.getExpenses(vm.expensesQuery).then(function(data) {
 				vm.expenses = data;
@@ -42,6 +42,10 @@ module.exports = function(app) {
 
 		vm.timeToDate = function(time) {
 			return new Date(time * 1000);
+		};
+
+		vm.dateToTime = function(date) {
+			return date ? date.getTime() / 1000 : "";
 		};
 
 		function updateSections() {
