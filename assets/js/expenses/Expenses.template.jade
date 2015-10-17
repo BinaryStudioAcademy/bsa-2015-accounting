@@ -41,14 +41,14 @@
 				input(type='text', name='cost-range', placeholder='Expense name', ng-model="expCtr.expensesQuery.name", ng-change="expCtr.updateExpenses()")
 				select(name='category', ng-model="expCtr.expensesQuery.categoryId", ng-change="expCtr.updateExpenses()", ng-options="category.id as category.name for category in expCtr.categories")
 					option(value="") All Categories
-				select(name='subcategory', ng-model="subcategoryModelFilter", ng-options="subcategory.id as subcategory.name for subcategory in expCtr.getSubcategories(expCtr.expensesQuery.categoryId)", ng-change="expCtr.updateExpenses()")
+				select(name='subcategory', ng-model="expCtr.expensesQuery.subcategoryId", ng-options="subcategory.id as subcategory.name for subcategory in expCtr.getSubcategories(expCtr.expensesQuery.categoryId)", ng-change="expCtr.updateExpenses()")
 					option(value="") All Subcategories
 				select(name='author', ng-model="expCtr.expensesQuery.creatorId", ng-options="user.serverUserId as user.name for user in expCtr.users", ng-change="expCtr.updateExpenses()")
 					option(value="") All users
-				a#excel-button.btn.btn-success(ng-click='expCtr.getExcelSheet()') Download Excel Sheet
+				a#excel-button.btn.btn-success(ng-click='expCtr.getExcelSheet()') Get Excel Sheet
 					i.fa.fa-file-excel-o.fa-1g
-				input(type='date', name='startDate', placeholder='Date', ng-model="startDateFilter", ng-change="console.log(startDateFilter)")
-				input(type='date', name='endDate', placeholder='Date', ng-model="endDateFilter", ng-change="console.log(endDateFilter)")
+				input(type='date', name='startDate', placeholder='Date', ng-model="expCtr.startDateFilter", ng-change="logData(expCtr.startDateFilter)")
+				input(type='date', name='endDate', placeholder='Date', ng-model="expCtr.endDateFilter", ng-change="logData(expCtr.endDateFilter)")
 
 		table.table-hover.fixed
 			colgroup
@@ -144,6 +144,8 @@
 							.btn-group(dropdown='')
 								button.btn.fa.fa-info(ng-show='!rowform.$visible && expense.description != ""' type='button', dropdown-toggle='')
 								span.dropdown-menu.dropdown-menu-right(editable-text='expense.description', e-name='description' e-form='rowform' role='menu', aria-labelledby='split-button') {{ expense.description }}
+					tr(ng-if="expCtr.expenses.length === 0")
+						td(colspan='8') No expenses found
 				tbody(ng-if="expCtr.expensesQuery.limit === expCtr.expenses.length")
 					tr
 						td(colspan='8')

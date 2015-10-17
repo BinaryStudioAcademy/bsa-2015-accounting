@@ -172,13 +172,22 @@ module.exports = function(app) {
 		};
 
 		vm.getExcelSheet = function () {
-			alasql('SELECT time, name, price, currency, category->name, subcategory->name, creator->name, description  INTO XLSX("Expenses.xlsx",?) FROM ?', [mystyle, vm.expenses]);
+			alasql.fn.getDate = vm.timeToDate;
+			alasql('SELECT getDate(time), name, price, currency, category->name, subcategory->name, creator->name, description AS Date, Name, Price, Currency, Category, Subcategory, Creator, Description INTO XLSX("Expenses.xlsx", ?) FROM ?', [mystyle, vm.expenses]);
+		};
+
+		vm.logData = function (data) {
+			console.log("---changes---");
+			console.log(data);
 		};
 
 		vm.updateExpenses();
 
 		var usersPromise = UsersService.getUsers();
 		var categoriesPromise = CategoriesService.getCategories();
+		vm.users = [];
+		vm.categories = [];
+		vm.expenses = [];
 
 		$q.all([usersPromise, categoriesPromise]).then(function(data) {
 			vm.users = data[0] || [];
