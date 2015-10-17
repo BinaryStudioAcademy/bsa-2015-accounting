@@ -22,23 +22,23 @@ module.exports = function(app) {
 		//};
 
 		vm.expensesQuery = {limit: 10, sort: 'time desc'};
-		vm.currencies = ["UAH", "USD"];
+		vm.currency = 'UAH';
 
 		vm.updateExpenses = function() {
 			ExpensesService.getExpenses(vm.expensesQuery).then(function(data) {
 				vm.expenses = data;
 				updateSections();
 			});
-		}
+		};
 
-		vm.loadMoreExpenses = function() {
-			vm.expensesQuery.limit += 10;
+		vm.loadMoreExpenses = function(val) {
+			vm.expensesQuery.limit += val;
 			vm.updateExpenses();
-		}
+		};
 
 		vm.timeToDate = function(time) {
 			return new Date(time * 1000);
-		}
+		};
 
 		function updateSections() {
 			if (vm.expensesQuery.sort.indexOf('time') < 0) {
@@ -61,12 +61,19 @@ module.exports = function(app) {
 			}
 		}
 
+		vm.getDisplayPrice = function(expense) {
+			if (vm.currency === 'ANY' || vm.currency === expense.currency) {
+				return expense.price;
+			}
+			return expense.altPrice;
+		};
+
 		vm.getSortingStatus = function(param) {
 			if (vm.expensesQuery.sort.indexOf(param) > -1) {
 				return vm.expensesQuery.sort.slice(param.length + 1) === 'desc' ? 1 : -1;
 			}
 			return 0;
-		}
+		};
 
 		vm.toggleSorting = function(param) {
 			if (vm.expensesQuery.sort.indexOf(param) > -1) {
@@ -76,7 +83,7 @@ module.exports = function(app) {
 				vm.expensesQuery.sort = param + ' desc';
 			}
 			vm.updateExpenses();
-		}
+		};
 
 		vm.updateExpense = function(expense) {
 			var newData = {
@@ -306,7 +313,7 @@ module.exports = function(app) {
 		vm.editExpenseObject = editExpenseObject;
 		vm.getField = getField;
 		vm.checkField = checkField;
-		vm.currency = ["UAH", "USD"];
+		vm.currencies = ["UAH", "USD"];
 
 		function editExpenseObject(data, field) {
 			expense[field] = data;

@@ -87,9 +87,16 @@
 							span.fa.fa-caret-up(ng-if="expCtr.getSortingStatus('price') === -1")
 							span.fa.fa-sort(ng-if="expCtr.getSortingStatus('price') === 0")
 					th
-						.currency-group.btn-group(ng-click="expCtr.changeCurrency()")
-							label.btn.btn-primary(ng-model="expCtr.currencyModel", btn-radio="'UAH'") UAH
-							label.btn.btn-primary(ng-model="expCtr.currencyModel", btn-radio="'USD'") USD
+						.dropdown
+							button#currencyDropdown.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="true") {{expCtr.currency}}&nbsp;
+								span.fa.fa-caret-down
+							ul.dropdown-menu(aria-labelledby="currencyDropdown")
+								li(ng-click="expCtr.currency = 'UAH'")
+									a(href) UAH
+								li(ng-click="expCtr.currency = 'USD'")
+									a(href) USD
+								li(ng-click="expCtr.currency = 'ANY'")
+									a(href) Original
 					th.responsive-hide
 						span(ng-click="expCtr.toggleSorting('creatorId')") Added by&nbsp;
 							span.fa.fa-caret-down(ng-if="expCtr.getSortingStatus('creatorId') === 1")
@@ -124,7 +131,7 @@
 								| {{ expense.name || 'empty' }}
 						td
 							span(editable-number='expense.price', e-name='price', e-form='rowform', onbeforesave='expCtr.checkPrice($data)')
-								| {{ expense.price || '0' | currency:''}}
+								| {{ expCtr.getDisplayPrice(expense) || '0' | currency:''}}
 						td
 							span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in expCtr.currencies')
 								| {{ expense.currency || 'empty' }}
@@ -139,9 +146,14 @@
 							.btn-group(dropdown='')
 								button.btn.fa.fa-info(ng-show='!rowform.$visible && expense.description != ""' type='button', dropdown-toggle='')
 								span.dropdown-menu.dropdown-menu-right(editable-text='expense.description', e-name='description' e-form='rowform' role='menu', aria-labelledby='split-button') {{ expense.description }}
-				tbody(ng-if="expCtr.expenses.length === expCtr.expensesQuery.limit")
+				tbody(ng-if="expCtr.expensesQuery.limit === expCtr.expenses.length")
 					tr
 						td(colspan='8')
-							a(ng-click="expCtr.loadMoreExpenses()")
+							a(ng-click="expCtr.loadMoreExpenses(10)")
+								| load more expenses&nbsp;
+								i.fa.fa-plus
+					tr(ng-if="expCtr.expensesQuery.limit < 10000")
+						td(colspan='8')
+							a(ng-click="expCtr.loadMoreExpenses(10000)")
 								| load more expenses&nbsp;
 								i.fa.fa-plus
