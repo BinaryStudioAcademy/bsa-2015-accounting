@@ -5,9 +5,9 @@ module.exports = function(app) {
 
 	app.controller('ExpensesController', ExpensesController);
 
-	ExpensesController.$inject = ['ExpensesService', '$rootScope', 'CategoriesService', '$filter', '$scope', 'CurrencyService'];
+	ExpensesController.$inject = ['ExpensesService', '$rootScope', 'CategoriesService', '$filter', '$q', 'UsersService'];
 
-	function ExpensesController(ExpensesService, $rootScope, CategoriesService, $filter, $scope, CurrencyService) {
+	function ExpensesController(ExpensesService, $rootScope, CategoriesService, $filter, $q, UsersService) {
 		var vm = this;
 
 		//vm.expensesQuery = {
@@ -142,9 +142,14 @@ module.exports = function(app) {
 		};
 
 		vm.getSubcategories = function(id) {
-			vm.subcategories = _.find(vm.categories, function(category) {
+			var cat =_.find(vm.categories, function(category) {
 				return category.id === id;
-			}).subcategories;
+			});
+			return cat ? cat.subcategories : [];
+		};
+
+		vm.updateSubcategories = function(id) {
+			vm.subcategories = vm.getSubcategories(id);
 		};
 
 		vm.checkCategory = function(id) {
@@ -161,10 +166,24 @@ module.exports = function(app) {
 			}
 		};
 
-		CategoriesService.getCategories().then(function(data) {
-			vm.categories = data;
-		});
+		var mystyle = {
+			sheetid: 'Expenses',
+			headers: true
+		};
+
+		vm.getExcelSheet = function () {
+			alasql('SELECT time, name, price, currency, category->name, subcategory->name, creator->name, description  INTO XLSX("Expenses.xlsx",?) FROM ?', [mystyle, vm.expenses]);
+		};
+
 		vm.updateExpenses();
+
+		var usersPromise = UsersService.getUsers();
+		var categoriesPromise = CategoriesService.getCategories();
+
+		$q.all([usersPromise, categoriesPromise]).then(function(data) {
+			vm.users = data[0] || [];
+			vm.categories = data[1] || [];
+		});
 
 
 		/*
@@ -188,7 +207,7 @@ module.exports = function(app) {
 		vm.check = false;
 		vm.toggleAllExpenses = toggleAllExpenses;
 
-		CurrencyService.getExchangeRates().then(function(data) {
+		UsersService.getExchangeRates().then(function(data) {
 			vm.exchangeRates = data;
 		});
 

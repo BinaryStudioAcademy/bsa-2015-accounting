@@ -38,16 +38,17 @@
 	#leftBlock
 		.filters
 			form
-				input(type='text', name='cost-range', placeholder='Expense name', ng-model="nameModelFilter")
-				select(name='category', ng-model="categoryModelFilter", ng-change="expCtr.getSubcategories(categoryModelFilter.id)", ng-options="category.name for category in expCtr.categories")
-					option(value="") Category
-				select(name='subcategory', ng-model="subcategoryModelFilter", ng-options="subcategory.name for subcategory in expCtr.subcategories")
-					option(value="") Subcategory
-				input(type="text", name='author', placeholder='Author', ng-model="authorModelFilter", typeahead="expense.creator.name for expense in expCtr.allExpenses | filter:$viewValue | limitTo:8")
-				a#excel-button.btn.btn-success(ng-click='expCtr.exportData(filteredData)') Export to Excel
+				input(type='text', name='cost-range', placeholder='Expense name', ng-model="expCtr.expensesQuery.name", ng-change="expCtr.updateExpenses()")
+				select(name='category', ng-model="expCtr.expensesQuery.categoryId", ng-change="expCtr.updateExpenses()", ng-options="category.id as category.name for category in expCtr.categories")
+					option(value="") All Categories
+				select(name='subcategory', ng-model="subcategoryModelFilter", ng-options="subcategory.id as subcategory.name for subcategory in expCtr.getSubcategories(expCtr.expensesQuery.categoryId)", ng-change="expCtr.updateExpenses()")
+					option(value="") All Subcategories
+				select(name='author', ng-model="expCtr.expensesQuery.creatorId", ng-options="user.serverUserId as user.name for user in expCtr.users", ng-change="expCtr.updateExpenses()")
+					option(value="") All users
+				a#excel-button.btn.btn-success(ng-click='expCtr.getExcelSheet()') Download Excel Sheet
 					i.fa.fa-file-excel-o.fa-1g
-				input(type='date', name='startDate', placeholder='Date', ng-model="startDateFilter")
-				input(type='date', name='endDate', placeholder='Date', ng-model="endDateFilter")
+				input(type='date', name='startDate', placeholder='Date', ng-model="startDateFilter", ng-change="console.log(startDateFilter)")
+				input(type='date', name='endDate', placeholder='Date', ng-model="endDateFilter", ng-change="console.log(endDateFilter)")
 
 		table.table-hover.fixed
 			colgroup
@@ -118,7 +119,7 @@
 					tr(ng-repeat="expense in section.content")
 						td.responsive-hide {{ expCtr.timeToDate(expense.time) | date:"dd.MM.yyyy HH:mm" }}
 						td
-							span(editable-select='expense.category.id', e-name='categoryId', e-form='rowform', e-ng-options='category.id as category.name for category in expCtr.categories', onshow='expCtr.getSubcategories($data)', e-ng-change='expCtr.getSubcategories($data)', onbeforesave='expCtr.checkCategory($data)')
+							span(editable-select='expense.category.id', e-name='categoryId', e-form='rowform', e-ng-options='category.id as category.name for category in expCtr.categories', onshow='expCtr.updateSubcategories($data)', e-ng-change='expCtr.updateSubcategories($data)', onbeforesave='expCtr.checkCategory($data)')
 								| {{ expense.category.name || 'empty' }}
 						td.responsive-hide
 							span(editable-select='expense.subcategory.id', e-name='subcategoryId', e-form='rowform', e-ng-options='subcategory.id as subcategory.name for subcategory in expCtr.subcategories', onbeforesave='expCtr.checkCategory($data)')
