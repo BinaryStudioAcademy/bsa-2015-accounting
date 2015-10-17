@@ -210,10 +210,11 @@ module.exports = function(app) {
 
 		vm.createExpense = function() {
 			vm.newExpense.creatorId = $rootScope.currentUser.global_id;
+			vm.newExpense.time = Number((vm.newExpense.date.getTime() / 1000).toFixed());
+			delete vm.newExpense.date;
 			ExpensesService.createExpense(vm.newExpense).then(function() {
 				vm.updateExpenses();
 			});
-
 		};
 
 		vm.getAnnualCategory = function() {
