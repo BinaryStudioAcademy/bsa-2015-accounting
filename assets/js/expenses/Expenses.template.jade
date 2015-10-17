@@ -92,11 +92,11 @@
 								span.fa.fa-caret-down
 							ul.dropdown-menu(aria-labelledby="currencyDropdown")
 								li(ng-click="expCtr.currency = 'UAH'")
-									a(href) UAH
+									a UAH
 								li(ng-click="expCtr.currency = 'USD'")
-									a(href) USD
+									a USD
 								li(ng-click="expCtr.currency = 'ANY'")
-									a(href) Original
+									a Original
 					th.responsive-hide
 						span(ng-click="expCtr.toggleSorting('creatorId')") Added by&nbsp;
 							span.fa.fa-caret-down(ng-if="expCtr.getSortingStatus('creatorId') === 1")
@@ -134,7 +134,7 @@
 								| {{ expCtr.getDisplayPrice(expense) || '0' | currency:''}}
 						td
 							span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in expCtr.currencies')
-								| {{ expense.currency || 'empty' }}
+								| {{ expCtr.getDisplayCurrency(expense) || 'empty' }}
 						td.responsive-hide {{ expense.creator.name }}
 						td.responsive-hide
 							form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', onbeforesave='expCtr.checkSubcategory($data)', onaftersave="expCtr.updateExpense(expense)")
