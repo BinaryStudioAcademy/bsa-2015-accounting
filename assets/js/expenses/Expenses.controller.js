@@ -10,27 +10,23 @@ module.exports = function(app) {
 	function ExpensesController(ExpensesService, $rootScope, CategoriesService, $filter, $q, UsersService) {
 		var vm = this;
 
-		vm.timeToDate = function(time) {
-			return new Date(time * 1000);
-		};
-
-		vm.dateToTime = function(date) {
-			return date ? date.getTime() / 1000 : "";
-		};
-
 		vm.expensesQuery = {
 			name: "",
 			categoryId: "",
 			subcategoryId: "",
 			creatorId: "",
-			start: vm.dateToTime(vm.startDate),
-			end: vm.dateToTime(vm.endDate),
+			start: "",
+			end: "",
 			limit: 10,
 			sort: "time desc"
 		};
 
 		vm.currencies = ['UAH', 'USD'];
 		vm.currency = 'Original';
+
+		vm.timeToDate = function(time) {
+			return new Date(time * 1000);
+		};
 
 		vm.updateExpenses = function() {
 			ExpensesService.getExpenses(vm.expensesQuery).then(function(data) {
@@ -191,7 +187,7 @@ module.exports = function(app) {
 					}
 					return vm.currency;
 				};
-			alasql('SELECT getDate(time) AS Date, category->name AS Category, subcategory->name AS Subcategory, name AS Name, getDisplayPrice(price, altPrice, currency) AS Price, getDisplayCurrency(currency) AS Currncy, creator->name AS Creator, description AS Description INTO XLSX("Expenses.xlsx", ?) FROM ?', [mystyle, vm.expenses]);
+			alasql('SELECT getDate(time) AS Date, category->name AS Category, subcategory->name AS Subcategory, name AS Name, getDisplayPrice(price, altPrice, currency) AS Price, getDisplayCurrency(currency) AS Currency, creator->name AS Creator, description AS Description INTO XLSX("Expenses.xlsx", ?) FROM ?', [mystyle, vm.expenses]);
 		};
 
 		vm.updateExpenses();

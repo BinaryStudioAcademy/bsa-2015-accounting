@@ -28,8 +28,12 @@ module.exports = function(app) {
 				expensesQuery = { id: "@id", sort: "time desc" };
 			}
 
+			var query = new Object(expensesQuery);
+			query.start = query.start ? query.start.getTime() / 1000 : "";
+			query.end = query.end ? query.end.getTime() / 1000 : "";
+
 			var usersPromise = $resource("../profile/api/users/").query().$promise;
-			var expensesPromise = $resource("expense/:id", expensesQuery).query().$promise;
+			var expensesPromise = $resource("expense/:id", query).query().$promise;
 
 			return $q.all([usersPromise, expensesPromise]).then(function(data) {
 				var users = data[0] || [];
