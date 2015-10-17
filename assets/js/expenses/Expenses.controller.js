@@ -33,9 +33,6 @@ module.exports = function(app) {
 		vm.currency = 'Original';
 
 		vm.updateExpenses = function() {
-			vm.expensesQuery.start = expensesQuery.start ? expensesQuery.start.getTime() / 1000 : "";
-			vm.expensesQuery.end = expensesQuery.end ? expensesQuery.end.getTime() / 1000 : "";
-
 			ExpensesService.getExpenses(vm.expensesQuery).then(function(data) {
 				vm.expenses = data;
 				updateSections();
