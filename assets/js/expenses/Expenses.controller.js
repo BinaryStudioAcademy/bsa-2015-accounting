@@ -10,6 +10,14 @@ module.exports = function(app) {
 	function ExpensesController(ExpensesService, $rootScope, CategoriesService, $filter, $q, UsersService) {
 		var vm = this;
 
+		vm.timeToDate = function(time) {
+			return new Date(time * 1000);
+		};
+
+		vm.dateToTime = function(date) {
+			return date ? date.getTime() / 1000 : "";
+		};
+
 		vm.expensesQuery = {
 			name: "",
 			categoryId: "",
@@ -38,14 +46,6 @@ module.exports = function(app) {
 			vm.expensesQuery.limit += val;
 			vm.expensesQuery.limit = Math.min(vm.expensesQuery.limit, 999999);
 			vm.updateExpenses();
-		};
-
-		vm.timeToDate = function(time) {
-			return new Date(time * 1000);
-		};
-
-		vm.dateToTime = function(date) {
-			return date ? date.getTime() / 1000 : "";
 		};
 
 		function updateSections() {
