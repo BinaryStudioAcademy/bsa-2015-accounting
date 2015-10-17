@@ -8,7 +8,7 @@ module.exports = function(app) {
       when('/expenses', {
         templateUrl: 'templates/Expenses.html',
         controller: 'ExpensesController',
-        controllerAs:"expCtr",
+        controllerAs:"expCtrl",
         activetab: 'expenses'
       }).
       when('/planning', {

@@ -37,15 +37,15 @@ function getExpenses(req, res) {
 	if (queryParams.start) {
 		var startTime = queryParams.start;
 		if (queryParams.end) {
-			expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lte: queryParams.end }});
+			expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lt: queryParams.end }});
 		}
 		else {
-			expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lte: (startTime + 86400) }});
+			expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lt: (startTime + 86400) }});
 		}
 	}
 	else if (queryParams.end) {
 		var startTime = queryParams.end;
-		expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lte: (startTime + 86400) }});
+		expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lt: (startTime + 86400) }});
 	}
 	var limit = actionUtil.parseLimit(req);
 	var sort = actionUtil.parseSort(req);
