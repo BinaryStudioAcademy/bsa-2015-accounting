@@ -34,19 +34,13 @@ function getExpenses(req, res) {
 	expenseFilter = queryParams.categoryId ? _.assign(expenseFilter, {categoryId: queryParams.categoryId}) : expenseFilter;
 	expenseFilter = queryParams.subcategoryId ? _.assign(expenseFilter, {subcategoryId: queryParams.subcategoryId}) : expenseFilter;
 	expenseFilter = queryParams.creatorId ? _.assign(expenseFilter, {creatorId: queryParams.creatorId}) : expenseFilter;
-	if (queryParams.start) {
-		var startTime = queryParams.start;
-		if (queryParams.end) {
-			expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lt: queryParams.end }});
-		}
-		else {
-			expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lt: (startTime + 86400) }});
-		}
+
+	if (queryParams.startDate || queryParams.endDate) {
+		var startTime = queryParams.startDate ? Number((queryParams.startDate.getTime() / 1000).toFixed()) : Number((queryParams.endDate.getTime() / 1000).toFixed());
+		var endTime = queryParams.endDate ? Number((queryParams.endDate.getTime() / 1000).toFixed()) : Number((queryParams.startDate.getTime() / 1000).toFixed());
+		expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lt: (endTime + 86400) }});
 	}
-	else if (queryParams.end) {
-		var startTime = queryParams.end;
-		expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lt: (startTime + 86400) }});
-	}
+
 	var limit = actionUtil.parseLimit(req);
 	var sort = actionUtil.parseSort(req);
 	var priceSorting = sort && sort.indexOf('price') > -1;

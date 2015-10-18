@@ -11,10 +11,6 @@ module.exports = function(app) {
 		var vm = this;
 
 		vm.expensesQuery = {
-			name: "",
-			categoryId: "",
-			subcategoryId: "",
-			creatorId: "",
 			startDate: new Date(new Date().getFullYear(), 0, 1),
 			endDate: new Date(new Date().getFullYear(), 11, 31),
 			limit: 10,
@@ -29,9 +25,6 @@ module.exports = function(app) {
 		};
 
 		vm.updateExpenses = function() {
-			vm.expensesQuery.start = vm.expensesQuery.startDate ? Number((vm.expensesQuery.startDate.getTime() / 1000).toFixed()) : "";
-			vm.expensesQuery.end = vm.expensesQuery.endDate ? Number((vm.expensesQuery.endDate.getTime() / 1000).toFixed()) : "";
-
 			for (var property in vm.expensesQuery) {
 				if (vm.expensesQuery.hasOwnProperty(property) && !vm.expensesQuery[property]) {
 					delete vm.expensesQuery[property];
