@@ -36,8 +36,8 @@ function getExpenses(req, res) {
 	expenseFilter = queryParams.creatorId ? _.assign(expenseFilter, {creatorId: queryParams.creatorId}) : expenseFilter;
 
 	if (queryParams.startDate || queryParams.endDate) {
-		var startTime = queryParams.startDate ? Number((queryParams.startDate.getTime() / 1000).toFixed()) : Number((queryParams.endDate.getTime() / 1000).toFixed());
-		var endTime = queryParams.endDate ? Number((queryParams.endDate.getTime() / 1000).toFixed()) : Number((queryParams.startDate.getTime() / 1000).toFixed());
+		var startTime = queryParams.startDate ? Number((new Date(queryParams.startDate).getTime() / 1000).toFixed()) : Number((new Date(queryParams.endDate).getTime() / 1000).toFixed());
+		var endTime = queryParams.endDate ? Number((new Date(queryParams.endDate).getTime() / 1000).toFixed()) : Number((new Date(queryParams.startDate).getTime() / 1000).toFixed());
 		expenseFilter = _.assign(expenseFilter, {time: {$gte: startTime, $lt: (endTime + 86400) }});
 	}
 
