@@ -27,15 +27,17 @@
 				div(ng-if="expCtrl.newExpense.categoryId")
 					b {{expCtrl.getAnnualCategory().name}} budget left:
 					br
-					span {{expCtrl.getAnnualCategory().left | currency:""}} USD
+					span {{expCtrl.getAnnualCategory().left | currency:""}} USD ({{expCtrl.getAnnualCategory().left * exchangeRate | currency:""}} UAH)
+					hr.h-rule(ng-if="expCtrl.newExpense.subcategoryId || expCtrl.newExpense.personal")
 				div(ng-if="expCtrl.newExpense.subcategoryId")
 					b {{expCtrl.getAnnualSubcategory().name}} budget left:
 					br
-					span {{expCtrl.getAnnualSubcategory().left | currency:""}} USD
+					hr.h-rule(ng-if="expCtrl.newExpense.personal")
+					span {{expCtrl.getAnnualSubcategory().left | currency:""}} USD ({{expCtrl.getAnnualSubcategory().left * exchangeRate | currency:""}} UAH)
 				div(ng-if="expCtrl.newExpense.personal")
 					b Personal budget left:
 					br
-					span {{currentUser.budget.left | currency:""}} UAH
+					span {{currentUser.budget.left | currency:""}} UAH ({{currentUser.budget.left / exchangeRate | currency:""}} USD)
 			button.btnAdd.btn.btn-primary(type="submit") Add expense
 	#leftBlock
 		.filters

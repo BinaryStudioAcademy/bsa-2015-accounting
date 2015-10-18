@@ -15,8 +15,8 @@ module.exports = function(app) {
 			categoryId: "",
 			subcategoryId: "",
 			creatorId: "",
-			startDate: "",
-			endDate: "",
+			startDate: new Date(new Date().getFullYear(), 0, 1),
+			endDate: new Date(new Date().getFullYear(), 11, 31),
 			limit: 10,
 			sort: "time desc"
 		};
