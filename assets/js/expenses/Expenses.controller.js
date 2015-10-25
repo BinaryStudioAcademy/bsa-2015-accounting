@@ -208,7 +208,7 @@ module.exports = function(app) {
 		//Add expense form
 
 		vm.updateAnnualCategories = function() {
-			BudgetsService.getBudgets(vm.newExpense.date.getFullYear()).then(function(data) {
+			vm.newExpense.date && BudgetsService.getBudgets(vm.newExpense.date.getFullYear()).then(function(data) {
 				vm.annualCategories = _.map(data, function(budget) {
 					return {
 						id: budget.category.id,
