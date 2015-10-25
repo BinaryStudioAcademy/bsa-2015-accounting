@@ -226,7 +226,14 @@ module.exports = function(app) {
 			});
 		};
 
-		vm.newExpense = { date: new Date(), currency: "UAH" };
+		function resetNewExpense() {
+			var date = new Date();
+			date.setSeconds(0);
+			date.setMilliseconds(0);
+			vm.newExpense = { date: date, currency: "UAH" };
+		}
+
+		resetNewExpense();
 		vm.updateAnnualCategories();
 
 		vm.createExpense = function() {
@@ -236,7 +243,7 @@ module.exports = function(app) {
 			ExpensesService.createExpense(vm.newExpense).then(function() {
 				vm.updateExpenses();
 				$scope.expenseForm.$setPristine();
-				vm.newExpense = { date: new Date(), currency: "UAH" };
+				resetNewExpense();
 			});
 		};
 

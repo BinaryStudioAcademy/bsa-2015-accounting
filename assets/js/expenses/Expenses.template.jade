@@ -10,7 +10,7 @@
 			|{{exchangeRate}} UAH for 1 USD
 		form.expense-form(name="expenseForm", ng-submit="expenseForm.$valid && expCtrl.createExpense()", novalidate)
 			input.form-control(type="text", name='Name', placeholder='Expense name', ng-model="expCtrl.newExpense.name", required)
-			input.form-control(type='date', name='Date', placeholder='Date', ng-model="expCtrl.newExpense.date", ng-change="expCtrl.updateAnnualCategories()" required)
+			input.form-control(type='datetime-local', name='Date', placeholder='Date', ng-model="expCtrl.newExpense.date", ng-change="expCtrl.updateAnnualCategories()" required)
 			select(name='Category', ng-model="expCtrl.newExpense.categoryId", ng-options="category.id as category.name for category in expCtrl.annualCategories", required)
 				option(value="") Category
 			select(name='Subcategory', ng-model="expCtrl.newExpense.subcategoryId", ng-options="subcategory.id as subcategory.name for subcategory in expCtrl.getAnnualSubcategories()", required)
@@ -72,20 +72,20 @@
 							span.fa.fa-caret-up(ng-if="expCtrl.getSortingStatus('time') === -1")
 							span.fa.fa-sort(ng-if="expCtrl.getSortingStatus('time') === 0")
 					th
-						span(ng-click="expCtrl.toggleSorting('categoryId')") Category&nbsp;
+						span(ng-click="false && expCtrl.toggleSorting('categoryId')") Category&nbsp;
 							span.fa.fa-caret-down(ng-if="expCtrl.getSortingStatus('categoryId') === 1")
 							span.fa.fa-caret-up(ng-if="expCtrl.getSortingStatus('categoryId') === -1")
-							span.fa.fa-sort(ng-if="expCtrl.getSortingStatus('categoryId') === 0")
+							span.fa.fa-sort(ng-if="false && expCtrl.getSortingStatus('categoryId') === 0")
 					th#header-sub.responsive-hide
-						span(ng-click="expCtrl.toggleSorting('subcategoryId')") Subcat.&nbsp;
+						span(ng-click="false && expCtrl.toggleSorting('subcategoryId')") Subcat.&nbsp;
 							span.fa.fa-caret-down(ng-if="expCtrl.getSortingStatus('subcategoryId') === 1")
 							span.fa.fa-caret-up(ng-if="expCtrl.getSortingStatus('subcategoryId') === -1")
-							span.fa.fa-sort(ng-if="expCtrl.getSortingStatus('subcategoryId') === 0")
+							span.fa.fa-sort(ng-if="false && expCtrl.getSortingStatus('subcategoryId') === 0")
 					th
-						span(ng-click="expCtrl.toggleSorting('name')") Name&nbsp;
+						span(ng-click="false && expCtrl.toggleSorting('name')") Name&nbsp;
 							span.fa.fa-caret-down(ng-if="expCtrl.getSortingStatus('name') === 1")
 							span.fa.fa-caret-up(ng-if="expCtrl.getSortingStatus('name') === -1")
-							span.fa.fa-sort(ng-if="expCtrl.getSortingStatus('name') === 0")
+							span.fa.fa-sort(ng-if="false && expCtrl.getSortingStatus('name') === 0")
 					th
 						span(ng-click="expCtrl.toggleSorting('price')") Price&nbsp;
 							span.fa.fa-caret-down(ng-if="expCtrl.getSortingStatus('price') === 1")
@@ -100,12 +100,12 @@
 								li(ng-click="expCtrl.currency = 'USD'") USD
 								li(ng-click="expCtrl.currency = 'Original'") Original
 					th.responsive-hide
-						span(ng-click="expCtrl.toggleSorting('creatorId')") Added by&nbsp;
+						span(ng-click="false && expCtrl.toggleSorting('creatorId')") Added by&nbsp;
 							span.fa.fa-caret-down(ng-if="expCtrl.getSortingStatus('creatorId') === 1")
 							span.fa.fa-caret-up(ng-if="expCtrl.getSortingStatus('creatorId') === -1")
-							span.fa.fa-sort(ng-if="expCtrl.getSortingStatus('creatorId') === 0")
+							span.fa.fa-sort(ng-if="false && expCtrl.getSortingStatus('creatorId') === 0")
 					th.responsive-hide
-						i.fa.fa-cog
+						span Edit & Info
 		#main
 			table.table-hover.fixed
 				colgroup
