@@ -211,8 +211,10 @@ module.exports = function(app) {
 
 		CurrencyService.getFirstRate().then(function(data) {
 			vm.minDate = new Date(data[0].time * 1000);
-			vm.minDate.setHours(23);
-			vm.minDate.setMinutes(59);
+			vm.minDate.setHours(0);
+			vm.minDate.setMinutes(0);
+			vm.minDate.setSeconds(0);
+			vm.minDate.setMilliseconds(0);
 		});
 
 		vm.maxDate = new Date();
