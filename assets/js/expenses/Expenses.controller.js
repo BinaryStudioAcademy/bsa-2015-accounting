@@ -210,7 +210,7 @@ module.exports = function(app) {
 		vm.minDate = new Date();
 
 		CurrencyService.getFirstRate().then(function(data) {
-			vm.minDate = new Date(data[0].time);
+			vm.minDate = new Date(data[0].time * 1000);
 			vm.minDate.setHours(23);
 			vm.minDate.setMinutes(59);
 		});
