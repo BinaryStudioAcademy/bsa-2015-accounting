@@ -5,9 +5,9 @@ module.exports = function(app) {
 
 	app.controller('ExpensesController', ExpensesController);
 
-	ExpensesController.$inject = ['ExpensesService', 'CategoriesService', 'UsersService', 'BudgetsService', '$q', '$rootScope', '$scope'];
+	ExpensesController.$inject = ['ExpensesService', 'CategoriesService', 'UsersService', 'BudgetsService', 'CurrencyService', '$q', '$rootScope', '$scope'];
 
-	function ExpensesController(ExpensesService, CategoriesService, UsersService, BudgetsService, $q, $rootScope, $scope) {
+	function ExpensesController(ExpensesService, CategoriesService, UsersService, BudgetsService, CurrencyService, $q, $rootScope, $scope) {
 		var vm = this;
 
 		vm.expensesQuery = {
@@ -206,6 +206,16 @@ module.exports = function(app) {
 		});
 
 		//Add expense form
+
+		vm.minDate = new Date();
+
+		CurrencyService.getFirstRate().then(function(data) {
+			vm.minDate = new Date(data[0].time);
+			vm.minDate.setHours(23);
+			vm.minDate.setMinutes(59);
+		});
+
+		vm.maxDate = new Date();
 
 		vm.updateAnnualCategories = function() {
 			vm.newExpense.date && BudgetsService.getBudgets(vm.newExpense.date.getFullYear()).then(function(data) {
