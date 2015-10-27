@@ -25,6 +25,8 @@ module.exports = function(app) {
 		};
 
 		vm.updateExpenses = function() {
+			vm.editingStatus = false;
+
 			for (var property in vm.expensesQuery) {
 				if (vm.expensesQuery.hasOwnProperty(property) && !vm.expensesQuery[property]) {
 					delete vm.expensesQuery[property];
@@ -220,6 +222,7 @@ module.exports = function(app) {
 		vm.maxDate = new Date();
 
 		vm.updateAnnualCategories = function() {
+			vm.maxDate = new Date();
 			vm.newExpense.date && BudgetsService.getBudgets(vm.newExpense.date.getFullYear()).then(function(data) {
 				vm.annualCategories = _.map(data, function(budget) {
 					return {
