@@ -21,14 +21,14 @@ module.exports = function(req, res, next){
 			}
 		});
 	} else {
-		//var current_url = req.protocol + '://' + 'team.binary-studio.com/accounting' //req.get('host')  + req.url;
-		var current_url = req.protocol + '://' + 'intranet.local/accounting' //req.get('host')  + req.url;
+		var current_url = req.protocol + '://' + 'team.binary-studio.com/accounting' //req.get('host')  + req.url;
+		//var current_url = req.protocol + '://' + 'intranet.local/accounting' //req.get('host')  + req.url;
 
 		var cookies = new Cookies(req, res);
 		cookies.set('referer', current_url);
 
-		//res.redirect('http://team.binary-studio.com/auth');
-		res.redirect('http://intranet.local/auth');
+		res.redirect('http://team.binary-studio.com/auth');
+		//res.redirect('http://intranet.local/auth');
 		// res.status(403).send({ success: false, message: "No Token Provided"});
 	}
 };
