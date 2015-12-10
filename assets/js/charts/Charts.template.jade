@@ -22,9 +22,11 @@
 					label Range of dates 
 					br
 					label from
-					input.form-control(type='date', placeholder='Date', ng-model="startDate", ng-change="chartCtrl.startDateFilter(startDate)" required)
+					//- input.form-control(type='date', placeholder='Date', ng-model="startDate", ng-change="chartCtrl.startDateFilter(startDate)" required)
+					input.form-control(type="text" placeholder='Start date' datepicker-popup="dd-MMMM-yyyy" ng-model="chartCtrl.startDate" is-open="startOpened" ng-change="chartCtrl.startDateFilter(chartCtrl.startDate)" close-text="Close" ng-click="startOpened = true" required)
 					label to
-					input.form-control(type='date', placeholder='Date', ng-model="endDate", ng-change="chartCtrl.endDateFilter(endDate)" required)
+					//- input.form-control(type='date', placeholder='Date', ng-model="endDate", ng-change="chartCtrl.endDateFilter(endDate)" required)
+					input.form-control(type="text" placeholder='End date' datepicker-popup="dd-MMMM-yyyy" ng-model="chartCtrl.endDate" is-open="endOpened" ng-change="chartCtrl.endDateFilter(chartCtrl.endDate)" close-text="Close" ng-click="endOpened = true" required)
 					label Category
 					select.form-control(name='Category', ng-model="categoryModel", ng-submit="chartCtrl.displayCategory(categoryModel)",
 					ng-options="category.name for category in chartCtrl.categories" required)

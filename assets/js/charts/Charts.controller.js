@@ -190,13 +190,14 @@ module.exports = function(app) {
 		}
 vm.selectedCategory = [];
 		function displaySubcategory(selectedCategory){
+			console.log(vm.startDate);
 			vm.selectedCategory =selectedCategory
 			var y = vm.startDate.getFullYear();
 			var m = vm.startDate.getMonth();
-			var d = vm.startDate.getDay()
+			var d = vm.startDate.getDay();
 			var ey = vm.endDate.getFullYear();
 			var em = vm.endDate.getMonth();
-			var ed = vm.endDate.getDay()
+			var ed = vm.endDate.getDay();
 			var spentByPeriod = [];
 			var titleText = 'Expenses  ' + vm.selectedCategory.name + ' by period ' + y + '.' +  m + '.' + d + ' - ' + ey + '.' +  em + '.' + ed
 			var planned =0;

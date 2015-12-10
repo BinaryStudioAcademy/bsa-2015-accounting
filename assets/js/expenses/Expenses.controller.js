@@ -10,6 +10,18 @@ module.exports = function(app) {
 	function ExpensesController(ExpensesService, CategoriesService, UsersService, BudgetsService, CurrencyService, $q, $rootScope, $scope) {
 		var vm = this;
 
+		$scope.format = 'dd-MMMM-yyyy';
+		$scope.status = {
+			opened: false
+		};
+		$scope.open = function() {
+			$scope.status.opened = true;
+		};
+		$scope.dateOptions = {
+			formatYear: 'yy',
+			startingDay: 1
+		};
+
 		vm.expensesQuery = {
 			startDate: new Date(new Date().getFullYear(), 0, 1),
 			endDate: new Date(new Date().getFullYear(), 11, 31),

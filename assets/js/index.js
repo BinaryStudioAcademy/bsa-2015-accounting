@@ -3,7 +3,6 @@ var angular = require('angular');
 require('angular-xeditable');
 require('angular-sanitize');
 require('ng-csv');
-// require('napos-angular-datepicker');
 
 var app = angular.module('accounting', [
   require('angular-resource'),
