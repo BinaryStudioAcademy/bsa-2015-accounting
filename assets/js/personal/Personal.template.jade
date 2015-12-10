@@ -22,7 +22,7 @@
 		button.btn.btn-danger(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = false', ng-show='!moneyForm.$visible')
 			| Give back money&nbsp;
 			i.fa.fa-minus
-	button.btn.btn-warning(ng-click="personalCtrl.isCollapsedMoneyTable = !personalCtrl.isCollapsedMoneyTable; personalCtrl.changeMoneyText()", ng-hide="personalCtrl.history.length == 0") {{personalCtrl.moneyButtonText}} income money&nbsp;
+	button.btn.btn-warning(ng-click="personalCtrl.isCollapsedMoneyTable = !personalCtrl.isCollapsedMoneyTable; personalCtrl.changeMoneyText()", ng-hide="personalCtrl.history.length == 0") {{personalCtrl.moneyButtonText}} income money history&nbsp;
 		i.fa.fa-money
 	#main
 		table.table-hover.fixed(ng-if="!personalCtrl.isCollapsedMoneyTable")
@@ -32,8 +32,8 @@
 				col.table-money-user
 			thead
 				tr
-					th#income-money-header(colspan="4")
-						| Income money
+					th.tbl-hdr(colspan="4")
+						| Income money history
 				tr
 					th.header-text
 						| Date - Time
@@ -58,7 +58,7 @@
 				col.col-left
 			thead
 				tr
-					th#income-header(colspan="3")
+					th.tbl-hdr(colspan="3")
 						| Personal budget
 				tr
 					th.header-text
@@ -237,7 +237,6 @@
 								i.fa.fa-plus
 		
 		
-		h2 Personal expenses
 		#personal-expenses
 			table.table-hover.fixed
 				colgroup
@@ -249,6 +248,9 @@
 					col.table-sub
 					col.table-description-header.responsive-hide
 				thead
+					tr
+						th.tbl-hdr(colspan="7")
+							| Personal expenses
 					tr
 						th.responsive-hide
 							span(ng-click="personalCtrl.toggleSorting('time')") Date&nbsp;
