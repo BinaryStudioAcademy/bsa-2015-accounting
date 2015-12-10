@@ -26,6 +26,6 @@ module.exports = function(app) {
 			var permission = $filter('filter')($rootScope.currentUser.categories, {id: categoryId});
 			if(permission[0]) return permission[0].level;
 			else return 0;
-		}
+		};
 	}
 };

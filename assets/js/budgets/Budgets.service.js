@@ -27,7 +27,7 @@ module.exports = function(app) {
 		 * @returns budgets array
 		 */
 		function getBudgets(year) {
-			var usersPromise = $resource("../profile/api/users/").query().$promise;
+			var usersPromise = $resource('../profile/api/users').query().$promise;
 			var budgetsPromise = $resource("budget", { where: {"year": year}}).query().$promise;
 
 			return $q.all([usersPromise, budgetsPromise]).then(function(data) {
@@ -89,7 +89,7 @@ module.exports = function(app) {
 		}
 
 		function getDeletedBudgets(year) {
-			var usersPromise = $resource("../profile/api/users/").query().$promise;
+			var usersPromise = $resource('../profile/api/users').query().$promise;
 			var budgetsPromise = $resource("deleted/budgets", { where: {"year": year}}).get().$promise;
 
 			return $q.all([usersPromise, budgetsPromise]).then(function(data) {

@@ -28,7 +28,7 @@ module.exports = function(app) {
 				expensesQuery = { id: "@id", sort: "time desc" };
 			}
 
-			var usersPromise = $resource("../profile/api/users/").query().$promise;
+			var usersPromise = $resource('../profile/api/users').query().$promise;
 			var expensesPromise = $resource("expense/:id", expensesQuery).query().$promise;
 
 			return $q.all([usersPromise, expensesPromise]).then(function(data) {
@@ -48,7 +48,7 @@ module.exports = function(app) {
 		}
 
 		function getAllExpenses(year) {
-			var usersPromise = $resource("../profile/api/users/").query().$promise;
+			var usersPromise = $resource('../profile/api/users').query().$promise;
 			var expensesPromise = $resource("expenses_by_year/" + year).query().$promise;
 
 			return $q.all([usersPromise, expensesPromise]).then(function(data) {
@@ -68,7 +68,7 @@ module.exports = function(app) {
 		}
 
 		function getDeletedExpenses() {
-			var usersPromise = $resource("../profile/api/users/").query().$promise;
+			var usersPromise = $resource('../profile/api/users').query().$promise;
 			var expensesPromise = $resource("deleted/expenses", { sort: "time desc" }).query().$promise;
 
 			return $q.all([usersPromise, expensesPromise]).then(function(data) {

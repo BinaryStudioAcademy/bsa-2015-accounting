@@ -63,8 +63,8 @@ module.exports.policies = {
 	},
 	'UserController': {
 	 '*': 'isAdmin',
+	 'find': true,
 	 'findOne': 'isThatUser',
-	 'update': true,
 	 'getCurrentUser': true
 	},
 	'HistoryController': {

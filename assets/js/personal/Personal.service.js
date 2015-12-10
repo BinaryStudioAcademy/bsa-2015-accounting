@@ -9,8 +9,15 @@ module.exports = function(app) {
       getPersonalHistory: getPersonalHistory
     };
 
-    function getPersonalExpenses() {
+    /*function getPersonalExpenses() {
       return $resource("expense/personal", { sort: "time desc" }).query().$promise;
+    }*/
+
+    function getPersonalExpenses(expensesQuery) {
+      if (!expensesQuery) {
+        expensesQuery = { sort: "time desc" };
+      }
+      return $resource("expense/personal", expensesQuery).query().$promise;
     }
 
     function getPersonalHistory() {

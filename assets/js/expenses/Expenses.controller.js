@@ -20,6 +20,14 @@ module.exports = function(app) {
 		vm.currencies = ['UAH', 'USD'];
 		vm.currency = 'Original';
 
+		vm.allowedToEdit = function(expense) {
+			var access = _.find($rootScope.currentUser.categories, function(cat) {
+				return cat.id === expense.category.id;
+			});
+			access = access && access.level > 1;
+			return access && $rootScope.currentUser.global_id === expense.creator.global_id;
+		};
+
 		vm.timeToDate = function(time) {
 			return new Date(time * 1000);
 		};
@@ -224,19 +232,27 @@ module.exports = function(app) {
 		vm.updateAnnualCategories = function() {
 			vm.maxDate = new Date();
 			vm.newExpense.date && BudgetsService.getBudgets(vm.newExpense.date.getFullYear()).then(function(data) {
-				vm.annualCategories = _.map(data, function(budget) {
-					return {
-						id: budget.category.id,
-						name: budget.category.name,
-						left: budget.category.budget - budget.category.used,
-						subcategories: _.map(budget.category.subcategories, function(subcategory) {
-							return {
-								id: subcategory.id,
-								name: subcategory.name,
-								left: subcategory.budget - subcategory.used
-							};
-						})
-					};
+
+				vm.annualCategories = [];
+				data.forEach(function(budget) {
+					var access = _.find($rootScope.currentUser.categories, function(cat) {
+						return cat.id === budget.category.id;
+					});
+					access = access && access.level > 1;
+					if (access || $rootScope.currentUser.admin || $rootScope.currentUser.role === 'ADMIN') {
+						vm.annualCategories.push({
+							id: budget.category.id,
+							name: budget.category.name,
+							left: budget.category.budget - budget.category.used,
+							subcategories: _.map(budget.category.subcategories, function(subcategory) {
+								return {
+									id: subcategory.id,
+									name: subcategory.name,
+									left: subcategory.budget - subcategory.used
+								};
+							})
+						});
+					}
 				});
 			});
 		};

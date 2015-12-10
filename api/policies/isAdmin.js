@@ -3,6 +3,9 @@ module.exports = function(req, res, next) {
 		var max = _.max(categories, function(pr) {
 			return pr.level;
 		});
+		if(req.param('id') === req.user.id && !req.body.editPersonalBudget) {
+			return res.forbidden('You cannot edit your own permissions');
+		}
 		if (req.user.role === "ADMIN" || req.user.admin || max.level >= 3) {
 			next();
 		} else {

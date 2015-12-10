@@ -13,6 +13,7 @@ function getBudgets(req, res) {
 	var permissions = _.pluck(_.filter(req.user.categories, function(per) {
 		return per.level >= 1;
 	}), 'id');
+
 	var filter = {deletedBy: {$exists: false}}
 	var budgetFilter = req.user.role === 'ADMIN' || req.user.admin ? filter : _.assign(filter, {'category.id': {$in: permissions}});
 
@@ -98,7 +99,7 @@ function createBudget(req, res) {
 	data.creatorId = req.user.global_id || "unknown id";
 	Budget.create(data).exec(function created (err, newInstance) {
 		if (err) return res.negotiate(err);
-		var log = {who: req.user.id, action: 'created', type: 'budget', 
+		var log = {who: req.user.global_id, action: 'created', type: 'budget', 
 			target: newInstance.id, time: Number((new Date().getTime() / 1000).toFixed())};
 
 		History.create(log).exec(function(err, log) {
@@ -164,7 +165,7 @@ function updateBudget(req, res) {
 			budget.save(function (err) {
 				if (err) return res.serverError(err);
 			});
-			var log = {who: req.user.id, action: 'edited', type: 'budget', 
+			var log = {who: req.user.global_id, action: 'edited', type: 'budget', 
 				target: budget.id, time: Number((new Date().getTime() / 1000).toFixed())};
 			History.create(log).exec(function(err, log) {
 				if (err) return res.negotiate(err);

@@ -33,7 +33,7 @@ module.exports = function(req, res, next) {
 
 			var creator = expense.creatorId === req.user.global_id;
 
-			if (req.user.role === "ADMIN" || req.user.admin || permission || creator) {
+			if (req.user.role === "ADMIN" || req.user.admin || (permission && creator)) {
 				next();
 			} else {
 				return res.forbidden("You don't have permission to do this");
