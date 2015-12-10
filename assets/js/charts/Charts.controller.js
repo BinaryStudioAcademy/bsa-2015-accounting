@@ -194,11 +194,11 @@ vm.selectedCategory = [];
 		function displaySubcategory(selectedCategory){
 			vm.selectedCategory =selectedCategory
 			var y = vm.startDate.getFullYear();
-			var m = vm.startDate.getMonth();
-			var d = vm.startDate.getDay();
+			var m = vm.startDate.getMonth() + 1;
+			var d = vm.startDate.getDate();
 			var ey = vm.endDate.getFullYear();
-			var em = vm.endDate.getMonth();
-			var ed = vm.endDate.getDay();
+			var em = vm.endDate.getMonth() + 1;
+			var ed = vm.endDate.getDate();
 			var spentByPeriod = [];
 			var titleText = 'Expenses  ' + vm.selectedCategory.name + ' by period ' + y + '.' +  m + '.' + d + ' - ' + ey + '.' +  em + '.' + ed
 			var planned =0;
