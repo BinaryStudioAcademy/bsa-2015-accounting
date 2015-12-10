@@ -17,34 +17,7 @@ module.exports = function(app) {
 		var vm = this;
 
 		vm.currentUser = $rootScope.currentUser;
-		//vm.allExpenses = [];
-		//vm.dates = [];
 		vm.history = [];
-
-		//vm.getExpensesByDate = getExpensesByDate;
-		//vm.loadExpenses = loadExpenses;
-		//vm.isLoadMore = isLoadMore;
-		//vm.deleteExpense = deleteExpense;
-		//vm.editExpense = editExpense;
-
-		//vm.hiddenList = [];
-		//vm.check = false;
-		//vm.toggleAllExpenses = toggleAllExpenses;
-		//vm.toggleCustom = toggleCustom;
-
-		//function toggleAllExpenses() {
-		//	vm.check = !vm.check;
-		//	for(var i = 0; i < vm.allExpenses.length; i++) {
-		//		vm.hiddenList[i] = vm.check;
-		//	}
-		//}
-
-		//function toggleCustom(index) {
-		//	vm.hiddenList[index] = !vm.hiddenList[index];
-		//}
-
-		//var MAX_LOAD = 10;
-		//vm.expensesLimit = MAX_LOAD;
 
 		function getHistory() {
 			vm.history = [];
@@ -56,112 +29,12 @@ module.exports = function(app) {
 			});
 		}
 
-		//getPersonalExpenses();
-
 		getHistory();
 		getUsersBudgets();
 
-		/*function getPersonalExpenses() {
-			var personalExpensesPromise = PersonalService.getPersonalExpenses();
-			var categoriesPromise = CategoriesService.getCategories();
-
-			$q.all([personalExpensesPromise, categoriesPromise]).then(function(data) {
-				vm.allExpenses = data[0];
-				vm.categories = data[1];
-
-				if(vm.allExpenses.length != 0 && vm.categories.length != 0) {
-					convertDates(vm.allExpenses);
-					loadExpenses();
-				}
-				changeExpenseCurrency();
-				getHistory();
-				getUsersBudgets();
-			});
-		}*/
-
-		/*function convertDates(array) {
-			array.forEach(function(item) {
-				item.time = new Date(item.time * 1000);
-				if(vm.dates.indexOf(item.time.toDateString()) < 0) vm.dates.push(item.time.toDateString());
-			});
-		}*/
-
-		/*function isLoadMore() {
-			if(typeof vm.dates != "undefined") {
-				if(vm.dates.length <= MAX_LOAD || vm.dates.length == 0) {
-					vm.expensesLimit = vm.dates.length;
-					return false;
-				} else return true;
-			}
-		}*/
-
-		/*function getExpensesByDate(date) {
-			var expenses = [];
-			var newDate = new Date(date).toDateString();
-			vm.allExpenses.forEach(function(expense) {
-				if(newDate == expense.time.toDateString()) {
-					expenses.push(expense);
-				}
-			});
-			return expenses;
-		}*/
-
-		/*function loadExpenses() {
-			// Check for length
-			isLoadMore();
-			vm.expensesLimit += MAX_LOAD;
-		}*/
-
-		/*function deleteExpense(id, name) {
-			swal({
-					title: "Are you sure?",
-					text: "Are you sure want do delete expense '" + name + "'?",
-					type: "warning",
-					showCancelButton: true,
-					confirmButtonColor: "#DD6B55",
-					confirmButtonText: "Yes, delete it!",
-					closeOnConfirm: false
-				},
-				function() {
-					ExpensesService.deleteExpense(id).then(function() {
-						for(var i = 0; i < vm.allExpenses.length; i++) {
-							if(vm.allExpenses[i].id === id) {
-								vm.allExpenses.splice(i, 1);
-								break;
-							}
-						}
-					});
-					swal("Deleted!", "Expense has been deleted.", "success");
-				});
-		}*/
-
-		// Edit properties
-		//var expense = {};
-		//vm.editExpenseObject = editExpenseObject;
-		//vm.getField = getField;
 		vm.checkField = checkField;
 		vm.currency = ["UAH", "USD"];
-		/*
-		function editExpenseObject(data, field) {
-			expense[field] = data;
-		}
 
-		function editExpense(id) {
-			ExpensesService.editExpense(id, expense).then(function() {
-				getUsersBudgets();
-			});
-		}
-
-		function getField(fieldId, fieldName) {
-			var selected;
-			if(fieldName == "category") {
-				selected = $filter('filter')(vm.categories, {id: fieldId});
-				return selected[0].name;
-			} else if(fieldName == "subcategory") {
-				selected = $filter('filter')(vm.subcategories, {id: fieldId});
-				return selected.length ? selected[0].name : selected.length;
-			}
-		}*/
 
 		function checkField(field) {
 			if(typeof field == "undefined") return "Fill in that field";
@@ -169,25 +42,6 @@ module.exports = function(app) {
 				if(field < 1) return "Amount should be more than zero";
 			}
 		}
-
-		// Filter combo boxes
-		/*vm.categories = [];
-		vm.subcategories = [];
-		vm.getSubcategories = getSubcategories;
-
-		function getSubcategories(categoryModel) {
-			if(categoryModel != null) {
-				for(var category in vm.categories) {
-					if(vm.categories[category].id == categoryModel) {
-						vm.subcategories = [];
-						vm.categories[category].subcategories.forEach(function(subcategory) {
-							vm.subcategories.push(subcategory);
-						});
-						break;
-					}
-				}
-			}
-		}*/
 
 		// Income data
 		vm.budget = {};
@@ -202,27 +56,33 @@ module.exports = function(app) {
 		vm.changeCurrency = changeCurrency;
 		vm.currencyLeftModel = "UAH";
 		vm.currencySpentModel = "UAH";
-		var currencyExchangeLeftFlag = true;
-		var currencyExchangeSpentFlag = true;
+
+		vm.rateLeft = 1;
+		vm.rateUsed = 1;
 
 		function changeCurrency(moneyType) {
 			if(moneyType == "left") {
-				if(vm.currencyLeftModel == "USD" && currencyExchangeLeftFlag) {
-					vm.budget.left /= vm.exchangeRate;
+				if(vm.currencyLeftModel == "USD") {
+					vm.rateLeft = vm.exchangeRate;
 					currencyExchangeLeftFlag = false;
-				} else if(vm.currencyLeftModel == "UAH" && !currencyExchangeLeftFlag) {
-					vm.budget.left *= vm.exchangeRate;
-					currencyExchangeLeftFlag = true;
+				} else if(vm.currencyLeftModel == "UAH") {
+					vm.rateLeft = 1;
 				}
 			} else {
-				if(vm.currencySpentModel == "USD" && currencyExchangeSpentFlag) {
-					vm.budget.used /= vm.exchangeRate;
-					currencyExchangeSpentFlag = false;
-				} else if(vm.currencySpentModel == "UAH" && !currencyExchangeSpentFlag) {
-					vm.budget.used *= vm.exchangeRate;
-					currencyExchangeSpentFlag = true;
+				if(vm.currencySpentModel == "USD") {
+					vm.rateUsed = vm.exchangeRate;
+				} else if(vm.currencySpentModel == "UAH") {
+					vm.rateUsed = 1;
 				}
 			}
+		}
+
+		vm.getLeft = function() {
+			return vm.budget.left / vm.rateLeft;
+		}
+
+		vm.getUsed = function() {
+			return vm.budget.used / vm.rateUsed;
 		}
 
 		// Money form
@@ -287,15 +147,6 @@ module.exports = function(app) {
 							});
 						}
 
-						//vm.changeCurrency('left');
-						//vm.changeCurrency('spent');
-
-						//UsersService.editUser($rootScope.currentUser.id,
-						//	{editPersonalBudget: newBudget}).then(function() {
-						//		getUsersBudgets();
-						//		getHistory();
-						//	});
-
 						swal("Ok!", "You " + addedTookWord + " " + vm.newMoney.money + " "
 							+ vm.newMoney.currency + " " + toFromWord + " your personal budget", "success");
 					});
@@ -356,7 +207,7 @@ module.exports = function(app) {
 			}
 		}
 
-		//---------------------------- mine
+		//----------expenses
 		vm.expensesQuery = {
 			limit: 10,
 			sort: "time desc"

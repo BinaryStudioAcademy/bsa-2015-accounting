@@ -74,10 +74,10 @@
 			tbody
 				tr
 					td
-						span.budget-amount(ng-class="{bad: personalCtrl.budget.left < 0}") {{personalCtrl.budget.left | currency:""}}
-						span.bad(ng-show='personalCtrl.budget.left < 0') &nbsp;overuse!
+						span.budget-amount(ng-class="{bad: personalCtrl.getLeft() < 0}") {{personalCtrl.getLeft() | currency:""}}
+						span.bad(ng-show='personalCtrl.getLeft() < 0') &nbsp;overuse!
 					td
-						span.budget-amount {{personalCtrl.budget.used | currency:""}}
+						span.budget-amount {{personalCtrl.getUsed() | currency:""}}
 		
 		//-table.table-hover.fixed.expenses-table(ng-if="personalCtrl.allExpenses.length != 0")
 			colgroup
