@@ -56,9 +56,9 @@ module.exports = function(app) {
 		function dateRange(items, startDate, endDate) {
 			var filteredResult = [];
 
-			function parseDateFromFilter(strDate) {
+			/*function parseDateFromFilter(strDate) {
 				return new Date(strDate);
-			}
+			}*/
 
 			// Parse the UTC time data from JSON source
 			function parseDateFromUtc(utcStr) {
@@ -66,8 +66,10 @@ module.exports = function(app) {
 			}
 
 			// Defaults
-			var parsedStartDate = startDate ? parseDateFromFilter(startDate) : new Date(1900, 1, 1);
-			var parsedEndDate = endDate ? parseDateFromFilter(endDate) : new Date();
+			//var parsedStartDate = startDate ? parseDateFromFilter(startDate) : new Date(1900, 1, 1);
+			var parsedStartDate = startDate || new Date(1900, 1, 1);
+			//var parsedEndDate = endDate ? parseDateFromFilter(endDate) : new Date();
+			var parsedEndDate = endDate || new Date();
 
 			// Take action if the filter elements are filled
 			if (startDate || endDate) {
@@ -190,7 +192,6 @@ module.exports = function(app) {
 		}
 vm.selectedCategory = [];
 		function displaySubcategory(selectedCategory){
-			console.log(vm.startDate);
 			vm.selectedCategory =selectedCategory
 			var y = vm.startDate.getFullYear();
 			var m = vm.startDate.getMonth();

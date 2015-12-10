@@ -4,7 +4,7 @@
 		h2 &nbsp;You don't have administration rights
 	div(ng-hide="currentUser.max_level < 3")
 		div.controls
-			input.form-control(type='text' placeholder='search users' ng-model='admCtrl.filter.$')
+			input.form-control(type='text' placeholder='search users' ng-model='admCtrl.filter.name')
 			b.responsive-hide Currency: 
 			select.form-control(ng-model='admCtrl.currency' ng-change='admCtrl.updateCurrency()')
 				option(value='UAH') UAH
@@ -33,7 +33,7 @@
 						b Used
 			tbody
 				tr(ng-repeat='user in admCtrl.users | filter:admCtrl.filter' ng-class="{'this-is-me': currentUser.global_id == user.serverUserId}")
-					td {{user.name}} {{user.surname}}
+					td {{user.name}}
 						span(ng-if="currentUser.global_id == user.serverUserId")  (you)
 					td
 						a(href="#" editable-checkbox="user.admin" e-title="Accounting admin?" ng-show="(currentUser.admin || currentUser.role == 'ADMIN') && currentUser.global_id != user.serverUserId" onaftersave="admCtrl.updateRole(user)") {{user.admin && "YES" || "NO" }}

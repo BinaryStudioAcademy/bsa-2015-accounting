@@ -12,12 +12,12 @@
 			input.form-control(type="text", name='Name', placeholder='Expense name', ng-model="expCtrl.newExpense.name", required)
 			//- input.form-control(type='datetime-local', name='Date', placeholder='Date', ng-model="expCtrl.newExpense.date", ng-change="expCtrl.updateAnnualCategories()" min="{{expCtrl.minDate | date:'yyyy-MM-ddTHH:mm:ss'}}" max="{{expCtrl.maxDate | date:'yyyy-MM-ddTHH:mm:ss'}}" required)
 
-			input.form-control(type="text" name='Date' datepicker-popup="{{format}}" ng-model="expCtrl.newExpense.date" is-open="opened" datepicker-options="dateOptions" ng-change="expCtrl.updateAnnualCategories()" close-text="Close" min-date="expCtrl.minDate" max-date="expCtrl.maxDate" ng-click="opened = true")
+			input.form-control(type="text" name='Date' datepicker-popup="{{format}}" ng-model="expCtrl.newExpense.date" is-open="opened" datepicker-options="dateOptions" ng-change="expCtrl.updateAnnualCategories()" close-text="Close" min-date="expCtrl.minDate" max-date="expCtrl.maxDate" ng-click="opened = true" required)
 			//- span(class="input-group-btn")
 			//- 	button#pick-btn(type="button" class="btn btn-default" ng-click="opened = true")
 			//- 		i(class="glyphicon glyphicon-calendar")
 
-			timepicker(ng-model="expCtrl.newExpense.date" ng-change="expCtrl.updateAnnualCategories()" show-meridian="false" show-spinners="false" min="expCtrl.minDate" max="expCtrl.maxDate")
+			timepicker(ng-model="expCtrl.newExpense.date" ng-change="expCtrl.updateAnnualCategories()" show-meridian="false" show-spinners="false" min="expCtrl.minDate" max="expCtrl.maxDate" required)
 
 			select(name='Category', ng-model="expCtrl.newExpense.categoryId", ng-options="category.id as category.name for category in expCtrl.annualCategories", required)
 				option(value="") Category

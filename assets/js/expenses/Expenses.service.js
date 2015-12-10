@@ -69,7 +69,7 @@ module.exports = function(app) {
 
 		function getDeletedExpenses() {
 			var usersPromise = $resource('../profile/api/users').query().$promise;
-			var expensesPromise = $resource("deleted/expenses", { sort: "time desc" }).query().$promise;
+			var expensesPromise = $resource("deleted/expenses", { sort: "updatedAt desc" }).query().$promise;
 
 			return $q.all([usersPromise, expensesPromise]).then(function(data) {
 				var users = data[0] || [];
