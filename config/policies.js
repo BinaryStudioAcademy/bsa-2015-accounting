@@ -73,6 +73,9 @@ module.exports.policies = {
 	'PersonalController': {
 		'*': true,
 		'find': true
+	},
+	'DatabaseController': {
+		'*': true
 	}
 
 	/***************************************************************************
