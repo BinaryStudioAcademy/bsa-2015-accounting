@@ -161,4 +161,5 @@ module.exports = function(app) {
 		}
 
 		vm.updateExpenses();
-}
+	}
+};
