@@ -31,7 +31,10 @@ function getCurrentUser(req, res) {
 						var rate = _.find(currencies, function(currency) {
 							var currDate = new Date(currency.time * 1000);
 							return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
-						}).rate;
+						});
+						//console.log('first', currencies[0]);
+						//console.log('last', currencies[currencies.length - 1]);
+						rate = rate ? rate.rate : currencies[currencies.length - 1].rate;
 						req.user.budget.used += (expense.price * rate);
 					}
 					else {
