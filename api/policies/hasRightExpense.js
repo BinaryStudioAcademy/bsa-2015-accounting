@@ -25,11 +25,13 @@ module.exports = function(req, res, next) {
 
 			var id = expense.categoryId;
 			var permissions = req.user.categories.filter(function(per) {
-				return per.id === id &&  per.level >= 0;
+				return per.id === id && per.level >= 0;
 			})[0];
+			console.log('permissions', permissions);
 			if (permissions) {
-				var permission = permissions >= 2;
+				var permission = permissions.level >= 2;
 			}
+			console.log('permission', permission);
 
 			var creator = expense.creatorId === req.user.global_id;
 
