@@ -176,41 +176,7 @@ function findPersonalExpenses(req, res) {
 		return res.send(err);
 	});
 }
-/*
-function findPersonalExpenses(req, res) {
-	var permissions = _.pluck(_.filter(req.user.categories, function(per) {
-		return per.level >= 1;
-	}), 'id');
-	var filter = {deletedBy: {$exists: false}, personal: true, creatorId: req.user.global_id};
-	var expenseFilter = req.user.role === 'ADMIN' || req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}});
 
-	Expense.find(expenseFilter)
-		.sort(actionUtil.parseSort(req))
-		.then(function(expenses) {
-			var categories = Category.find().then(function(categories) {
-				return categories;
-			});
-			return [expenses, categories];
-		}).spread(function(expenses, categories) {
-			expenses.forEach(function(expense) {
-				var category = _.find(categories, {id: expense.categoryId});
-				expense.category = {
-					id: expense.categoryId,
-					name: category.name
-				};
-				expense.subcategory = {
-					id: expense.subcategoryId,
-					name: _.find(category.subcategories, {id: expense.subcategoryId}).name
-				};
-				delete expense.categoryId;
-				delete expense.subcategoryId;
-			});
-			return res.send(expenses);
-		}).fail(function(err) {
-			return res.send(err);
-		});
-}
-*/
 function createExpense(req, res) {
 	var data = actionUtil.parseValues(req);
 	data.creatorId = req.user.global_id || "unknown id";
@@ -232,15 +198,38 @@ function findDeleted(req, res) {
 	var filter = {deletedBy: {$exists: true}};
 	var expenseFilter = req.user.role === 'ADMIN' || req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}, 'creatorId': req.user.global_id});
 
+	var limit = actionUtil.parseLimit(req);
+	var sort = actionUtil.parseSort(req);
+	var priceSorting = sort && sort.indexOf('price') > -1;
+	if (priceSorting) {
+		limit = 10000;
+	}
+
 	Expense.find(expenseFilter)
 		.where(actionUtil.parseCriteria(req))
+		.limit(limit)
+		.sort(sort)
 		.sort(actionUtil.parseSort(req))
 		.then(function(expenses) {
 			var categories = Category.find().then(function(categories) {
 				return categories;
 			});
-			return [expenses, categories];
-		}).spread(function(expenses, categories) {
+			var exchangeRates = Currency.find().then(function(exchangeRates) {
+				return exchangeRates;
+			});
+			return [expenses, categories, exchangeRates];
+		}).spread(function(expenses, categories, exchangeRates) {
+			var compareDays = function(time1, time2) {
+				var date1 = new Date(time1 * 1000);
+				var date2 = new Date(time2 * 1000);
+				return (date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate());
+			};
+			var getExchangeRate = function(time) {
+				var rate = _.find(exchangeRates, function(exchangeRate) {
+					return compareDays(time, exchangeRate.time);
+				});
+				return rate ? rate.rate : exchangeRates[0].rate;
+			}
 			expenses.forEach(function(expense) {
 				var category = _.find(categories, {id: expense.categoryId});
 				expense.category = {
@@ -251,9 +240,21 @@ function findDeleted(req, res) {
 					id: expense.subcategoryId,
 					name: _.find(category.subcategories, {id: expense.subcategoryId}).name
 				};
+				if (expense.currency === "UAH") {
+					expense.altPrice = expense.price / getExchangeRate(expense.time);
+				}
+				else expense.altPrice = expense.price * getExchangeRate(expense.time);
 				delete expense.categoryId;
 				delete expense.subcategoryId;
 			});
+			if (priceSorting) {
+				expenses.sort(function(a, b) {
+					var aVal = a.currency === "UAH" ? a.price : a.altPrice;
+					var bVal = b.currency === "UAH" ? b.price : b.altPrice;
+					return (sort.indexOf('asc') > -1) ? aVal - bVal : bVal - aVal;
+				});
+				var expenses = expenses.slice(0, actionUtil.parseLimit(req));
+			}
 			return res.send(expenses);
 		}).fail(function(err) {
 			return res.send(err);

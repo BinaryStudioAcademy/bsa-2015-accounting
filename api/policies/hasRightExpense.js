@@ -27,7 +27,6 @@ module.exports = function(req, res, next) {
 			var permissions = req.user.categories.filter(function(per) {
 				return per.id === id && per.level >= 0;
 			})[0];
-			console.log('permissions', permissions);
 			if (permissions) {
 				var permission = permissions.level >= 2;
 			}
