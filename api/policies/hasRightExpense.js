@@ -31,7 +31,6 @@ module.exports = function(req, res, next) {
 			if (permissions) {
 				var permission = permissions.level >= 2;
 			}
-			console.log('permission', permission);
 
 			var creator = expense.creatorId === req.user.global_id;
 

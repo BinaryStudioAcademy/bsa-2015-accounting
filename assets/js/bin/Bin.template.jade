@@ -3,7 +3,7 @@
 		i.fa.fa-exclamation-triangle.fa-2x
 		h2 &nbsp;This section available only for users with administration rights
 	#expenses-section(ng-hide="currentUser.max_level < 2")
-		table.table-hover.fixed
+		//- table.table-hover.fixed
 			colgroup
 				col.table-toggle.responsive-hide
 				col.table-date-header.responsive-hide
@@ -40,7 +40,7 @@
 						| Deleted by
 					th
 						i.fa.fa-cog
-		#main
+		//- #main
 			table.table-hover.fixed(ng-hide="sortType")
 				colgroup
 					col.table-date.responsive-hide
@@ -95,6 +95,98 @@
 					tr
 						td(colspan='8')
 							| no deleted expenses
+		table.table-hover.fixed
+			colgroup
+				col.table-date-header.responsive-hide
+				col.table-date-header.responsive-hide
+				col.table-category
+				col.table-expense.responsive-hide
+				col.table-cost
+				col.table-carrency
+				col.table-sub
+				col.table-description-header.responsive-hide
+			thead
+				tr
+					th.tbl-hdr(colspan="8")
+						| Personal expenses
+				tr
+					th.responsive-hide
+						span(ng-click="binCtrl.toggleSorting('time')") Created&nbsp;
+							span.fa.fa-caret-down(ng-if="binCtrl.getSortingStatus('time') === 1")
+							span.fa.fa-caret-up(ng-if="binCtrl.getSortingStatus('time') === -1")
+							span.fa.fa-sort(ng-if="binCtrl.getSortingStatus('time') === 0")
+					th.responsive-hide
+						span(ng-click="binCtrl.toggleSorting('updatedAt')") Deleted&nbsp;
+							span.fa.fa-caret-down(ng-if="binCtrl.getSortingStatus('updatedAt') === 1")
+							span.fa.fa-caret-up(ng-if="binCtrl.getSortingStatus('updatedAt') === -1")
+							span.fa.fa-sort(ng-if="binCtrl.getSortingStatus('updatedAt') === 0")
+					th
+						span(ng-click="false && binCtrl.toggleSorting('categoryId')") Category&nbsp;
+							span.fa.fa-caret-down(ng-if="binCtrl.getSortingStatus('categoryId') === 1")
+							span.fa.fa-caret-up(ng-if="binCtrl.getSortingStatus('categoryId') === -1")
+							span.fa.fa-sort(ng-if="false && binCtrl.getSortingStatus('categoryId') === 0")
+					th#header-sub.responsive-hide
+						span(ng-click="false && binCtrl.toggleSorting('subcategoryId')") Subcat.&nbsp;
+							span.fa.fa-caret-down(ng-if="binCtrl.getSortingStatus('subcategoryId') === 1")
+							span.fa.fa-caret-up(ng-if="binCtrl.getSortingStatus('subcategoryId') === -1")
+							span.fa.fa-sort(ng-if="false && binCtrl.getSortingStatus('subcategoryId') === 0")
+					th
+						span(ng-click="false && binCtrl.toggleSorting('name')") Name&nbsp;
+							span.fa.fa-caret-down(ng-if="binCtrl.getSortingStatus('name') === 1")
+							span.fa.fa-caret-up(ng-if="binCtrl.getSortingStatus('name') === -1")
+							span.fa.fa-sort(ng-if="false && binCtrl.getSortingStatus('name') === 0")
+					th
+						span(ng-click="binCtrl.toggleSorting('price')") Price&nbsp;
+							span.fa.fa-caret-down(ng-if="binCtrl.getSortingStatus('price') === 1")
+							span.fa.fa-caret-up(ng-if="binCtrl.getSortingStatus('price') === -1")
+							span.fa.fa-sort(ng-if="binCtrl.getSortingStatus('price') === 0")
+					th Currency
+					th.responsive-hide
+						span Restore
+
+
+		table.table-hover.fixed
+			colgroup
+				col.table-date.responsive-hide
+				col.table-date.responsive-hide
+				col.table-category
+				col.table-expense.responsive-hide
+				col.table-cost
+				col.table-carrency
+				col.table-sub
+				col.table-description.responsive-hide
+			tbody(ng-repeat="section in binCtrl.expensesSections")
+				tr.section-header
+					td(colspan='8') {{ section.title }}
+				tr(ng-repeat="expense in section.content")
+					td.responsive-hide {{ binCtrl.timeToDate(expense.time) | date:"dd.MM.yyyy HH:mm" }}
+					td.responsive-hide {{ expense.updatedAt | date:"dd.MM.yyyy HH:mm" }}
+					td
+						span {{ expense.category.name }}
+					td.responsive-hide
+						span {{ expense.subcategory.name }}
+					td
+						span {{ expense.name }}
+					td
+						span {{ expense.price | currency:''}}
+					td
+						span {{ expense.currency }}
+					td.responsive-hide
+						button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreExpense(expense.id, expense.name)') restore
+				tr(ng-if="binCtrl.expenses.length === 0")
+					td(colspan='8') No expenses found
+			tbody(ng-if="binCtrl.expensesQuery.limit === binCtrl.expenses.length")
+				tr
+					td(colspan='8')
+						a(ng-click="binCtrl.loadMoreExpenses(10)")
+							| load 10 more&nbsp;
+							i.fa.fa-plus
+				tr(ng-if="binCtrl.expensesQuery.limit < 999999")
+					td(colspan='8')
+						a(ng-click="binCtrl.loadMoreExpenses(999999)")
+							| load all&nbsp;
+							i.fa.fa-plus
+
 	#budgets-section(ng-hide="currentUser.max_level < 3")
 		b.responsive-hide Year: 
 		select.form-control(ng-model='binCtrl.year' ng-change='binCtrl.updateYear()')

@@ -72,93 +72,92 @@ module.exports = function(app) {
 			});
 		};
 
-    // Expenses section
-    vm.loadAllExpenses = loadAllExpenses;
-    vm.loadExpenses = loadExpenses;
-    vm.isLoadMore = isLoadMore;
-    vm.getExpensesByDate = getExpensesByDate;
-    vm.toggleCustom = toggleCustom;
+		//expenses
+		vm.expensesQuery = {
+			limit: 10,
+			sort: "updatedAt desc"
+		};
 
-    var MAX_LOAD = 10;
-    vm.expensesLimit = MAX_LOAD;
+		vm.timeToDate = function(time) {
+			return new Date(time * 1000);
+		};
 
-    vm.deletedExpenses = [];
-    vm.dates = [];
+		vm.updateExpenses = function() {
+			vm.editingStatus = false;
 
-    loadAllExpenses();
+			for (var property in vm.expensesQuery) {
+				if (vm.expensesQuery.hasOwnProperty(property) && !vm.expensesQuery[property]) {
+					delete vm.expensesQuery[property];
+				}
+			}
 
-    vm.hiddenList = [];
-    vm.check = false;
-    vm.toggleAllExpenses = toggleAllExpenses;
+			ExpensesService.getDeletedExpenses(vm.expensesQuery).then(function(data) {
+				vm.expenses = data;
+				updateSections();
+			});
+		};
 
-    function toggleAllExpenses() {
-      vm.check = !vm.check;
+		vm.loadMoreExpenses = function(val) {
+			vm.expensesQuery.limit += val;
+			vm.expensesQuery.limit = Math.min(vm.expensesQuery.limit, 999999);
+			vm.updateExpenses();
+		};
 
-      for(var i = 0; i < vm.deletedExpenses.length; i++) {
-        vm.hiddenList[i] = vm.check;
-      }
-    }
+		function updateSections() {
+			if (vm.expensesQuery.sort.indexOf('time') < 0) {
+				vm.expensesSections = [ { title: 'All creation dates', content: vm.expenses } ];
+			}
+			else {
+				vm.expensesSections = [];
+				vm.expenses.forEach(function(expense) {
+					var date = vm.timeToDate(expense.time).toDateString();
+					if (!_.find(vm.expensesSections, { 'title': date })) {
+						vm.expensesSections.push({
+							title: date,
+							content: _.filter(vm.expenses, function(expense) {
+								var expenseDate = vm.timeToDate(expense.time).toDateString();
+								return expenseDate === date;
+							})
+						});
+					}
+				});
+				if (vm.expensesSections.length === 0) {
+					vm.expensesSections = [ { title: 'All creation dates', content: [] } ];
+				}
+			}
+		}
 
-    function toggleCustom(index) {
-      vm.hiddenList[index] = !vm.hiddenList[index];
-    }
+		vm.getSortingStatus = function(param) {
+			if (vm.expensesQuery.sort.indexOf(param) > -1) {
+				return vm.expensesQuery.sort.slice(param.length + 1) === 'desc' ? 1 : -1;
+			}
+			return 0;
+		};
 
-    function loadAllExpenses() {
-      ExpensesService.getDeletedExpenses().then(function(data) {
-        vm.deletedExpenses = data;
-        convertDates(vm.deletedExpenses);
-        loadExpenses();
-      });
-    }
+		vm.toggleSorting = function(param) {
+			if (vm.expensesQuery.sort.indexOf(param) > -1) {
+				vm.expensesQuery.sort = param + (vm.expensesQuery.sort.slice(param.length + 1) === 'desc' ? ' asc' : ' desc');
+			}
+			else {
+				vm.expensesQuery.sort = param + ' desc';
+			}
+			vm.updateExpenses();
+		};
 
-    function convertDates(array) {
-      array.forEach(function(item) {
-        item.time = new Date(item.time * 1000);
-        if(vm.dates.indexOf(item.time.toDateString()) < 0) vm.dates.push(item.time.toDateString());
-      });
-    }
+		vm.restoreExpense = function(expenseId, expenseName) {
+			swal({
+				title: "Are you sure?",
+				text: "Are you sure want to restore '" + expenseName + "'?",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Yes, pretty sure!",
+				closeOnConfirm: true
+			}, function() {
+				ExpensesService.restoreExpense(expenseId).then(function() {
+					vm.updateExpenses();
+				});
+			});
+		}
 
-    function isLoadMore() {
-      if(typeof vm.dates != "undefined") {
-        if(vm.dates.length <= MAX_LOAD || vm.dates.length == 0) {
-          vm.expensesLimit = vm.dates.length;
-          return false;
-        } else return true;
-      }
-    }
-
-    function loadExpenses() {
-      // Check for length
-      isLoadMore();
-      vm.expensesLimit += MAX_LOAD;
-    }
-
-    function getExpensesByDate(date) {
-      var expenses = [];
-      var newDate = new Date(date).toDateString();
-      vm.deletedExpenses.forEach(function(expense) {
-        if(newDate == expense.time.toDateString()) {
-          expenses.push(expense);
-        }
-      });
-      return expenses;
-    }
-
-    vm.restoreExpense = restoreExpense;
-    function restoreExpense(expenseId, expenseName) {
-      swal({
-        title: "Are you sure?",
-        text: "Are you sure want to restore '" + expenseName + "'?",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Yes, pretty sure!",
-        closeOnConfirm: true
-      }, function() {
-        ExpensesService.restoreExpense(expenseId).then(function() {
-          loadAllExpenses();
-        });
-      });
-    }
-	}
-};
+		vm.updateExpenses();
