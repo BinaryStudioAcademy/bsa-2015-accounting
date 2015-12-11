@@ -38,10 +38,11 @@
 					td
 						a(href="#" editable-checkbox="user.admin" e-title="Accounting admin?" ng-show="(currentUser.admin || currentUser.role == 'ADMIN') && currentUser.global_id != user.serverUserId" onaftersave="admCtrl.updateRole(user)") {{user.admin && "YES" || "NO" }}
 						span(ng-hide="(currentUser.admin || currentUser.role == 'ADMIN') && currentUser.global_id != user.serverUserId") {{user.admin && "YES" || "NO" }}
-					td
+					td(ng-if='admCtrl.category')
 						a(href="#" editable-select="admCtrl.getUserCategory(user).level" ng-class="{bad: admCtrl.getUserCategory(user).level == 0}" ng-hide="user.admin || currentUser.global_id == user.serverUserId" onaftersave="admCtrl.updateRights(user)" e-ng-options="permit.level as permit.text for permit in admCtrl.permits") {{admCtrl.permits[admCtrl.getUserCategory(user).level].text}}
 						span(ng-show="user.admin") Accounting admin
 						span(ng-show="!user.admin && currentUser.global_id == user.serverUserId") {{admCtrl.permits[admCtrl.getUserCategory(user).level].text}}
+					td(ng-if='!admCtrl.category') No categories created yet
 					td.responsive-hide
 						button.btn.btn-xs.btn-primary(ng-click='admCtrl.editPersonalBudget(user, true)') add
 						button.btn.btn-xs.btn-danger(ng-click='admCtrl.editPersonalBudget(user, false)') take
