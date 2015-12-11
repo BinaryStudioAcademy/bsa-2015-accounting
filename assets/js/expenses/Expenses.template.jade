@@ -61,18 +61,18 @@
 					i.fa.fa-file-excel-o.fa-1g
 				//- input(type='date', name='startDate', placeholder='Date', ng-model="expCtrl.expensesQuery.startDate", ng-change="expCtrl.updateExpenses()")
 
-				input(type="text" name='startDate' datepicker-popup="{{format}}" ng-model="expCtrl.expensesQuery.startDate" is-open="startOpened" datepicker-options="dateOptions" ng-change="expCtrl.updateExpenses()" close-text="Close")
-				span(class="input-group-btn")
-					button(type="button" class="btn btn-default" ng-click="startOpened = true")
-						i(class="glyphicon glyphicon-calendar")
+				input(type="text" name='startDate' datepicker-popup="{{format}}" ng-model="expCtrl.expensesQuery.startDate" is-open="startOpened" datepicker-options="dateOptions" ng-change="expCtrl.updateExpenses()" close-text="Close" ng-click="startOpened = true")
+				//- span(class="input-group-btn")
+				//- 	button(type="button" class="btn btn-default" ng-click="startOpened = true")
+				//- 		i(class="glyphicon glyphicon-calendar")
 
 
 				//- input(type='date', name='endDate', placeholder='Date', ng-model="expCtrl.expensesQuery.endDate", ng-change="expCtrl.updateExpenses()")
 
-				input(type="text" name='endDate' datepicker-popup="{{format}}" ng-model="expCtrl.expensesQuery.endDate" is-open="endOpened" datepicker-options="dateOptions" ng-change="expCtrl.updateExpenses()" close-text="Close")
-				span(class="input-group-btn")
-					button(type="button" class="btn btn-default" ng-click="endOpened = true")
-						i(class="glyphicon glyphicon-calendar")
+				input(type="text" name='endDate' datepicker-popup="{{format}}" ng-model="expCtrl.expensesQuery.endDate" is-open="endOpened" datepicker-options="dateOptions" ng-change="expCtrl.updateExpenses()" close-text="Close" ng-click="endOpened = true")
+				//- span(class="input-group-btn")
+				//- 	button(type="button" class="btn btn-default" ng-click="endOpened = true")
+				//- 		i(class="glyphicon glyphicon-calendar")
 
 				
 
