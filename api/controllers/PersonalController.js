@@ -16,19 +16,7 @@ function getPersonalHistory(req, res) {
   History.find({type: "user", target: req.user.global_id})
     .sort(actionUtil.parseSort(req))
     .then(function(events) {
-    var users = User.find().then(function(users) {
-      return users;
-    });
-    return [events, users];
-  }).spread(function(events, users) {
-    var userWithName;
-    events.forEach(function(event) {
-      userWithName = _.find(users, {id: event.who});
-      event.who = userWithName ? userWithName.name : 'no name';
-    });
-    res.send(events);
-  }).fail(function(err) {
-    return res.send(err);
+      return res.send(events);
   });
 }
 

@@ -1,9 +1,9 @@
 module.exports = function(app) {
   app.factory('PersonalService', PersonalService);
 
-  PersonalService.$inject = ["$resource"];
+  PersonalService.$inject = ["$resource", "$q"];
 
-  function PersonalService($resource) {
+  function PersonalService($resource, $q) {
     return {
       getPersonalExpenses: getPersonalExpenses,
       getPersonalHistory: getPersonalHistory
@@ -21,7 +21,21 @@ module.exports = function(app) {
     }
 
     function getPersonalHistory() {
-      return $resource("personal/:id", { id: "@id", sort: "time desc" }).query().$promise;
+      var usersPromise = $resource('../profile/api/users').query().$promise;
+      var eventsPromise = $resource("personal/:id", { id: "@id", sort: "time desc" }).query().$promise;
+
+      return $q.all([usersPromise, eventsPromise]).then(function(data) {
+        var users = data[0] || [];
+        var events = data[1] || [];
+
+        events.forEach(function(event) {
+          var user = _.find(users, {serverUserId: event.who}) || {serverUserId: "unknown id", name: "someone", surname: "unknown"};
+          event.who = user.name + " " + user.surname;
+          var user = _.find(users, {serverUserId: event.target}) || {serverUserId: "unknown id", name: "someone", surname: "unknown"};
+          event.target = user.name + " " + user.surname;
+        });
+        return events;
+      });
     }
   }
 };
