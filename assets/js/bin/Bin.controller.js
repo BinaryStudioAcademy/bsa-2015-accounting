@@ -78,6 +78,8 @@ module.exports = function(app) {
 			sort: "updatedAt desc"
 		};
 
+		vm.currency = 'Original';
+
 		vm.timeToDate = function(time) {
 			return new Date(time * 1000);
 		};
@@ -142,6 +144,20 @@ module.exports = function(app) {
 				vm.expensesQuery.sort = param + ' desc';
 			}
 			vm.updateExpenses();
+		};
+
+		vm.getDisplayPrice = function(expense) {
+			if (vm.currency === 'Original' || vm.currency === expense.currency) {
+				return expense.price;
+			}
+			return expense.altPrice;
+		};
+
+		vm.getDisplayCurrency = function(expense) {
+			if (vm.currency === 'Original') {
+				return expense.currency;
+			}
+			return vm.currency;
 		};
 
 		vm.restoreExpense = function(expenseId, expenseName) {

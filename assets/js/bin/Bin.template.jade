@@ -3,98 +3,6 @@
 		i.fa.fa-exclamation-triangle.fa-2x
 		h2 &nbsp;This section available only for users with administration rights
 	#expenses-section(ng-hide="currentUser.max_level < 2")
-		//- table.table-hover.fixed
-			colgroup
-				col.table-toggle.responsive-hide
-				col.table-date-header.responsive-hide
-				col.table-category
-				col.table-expense
-				col.table-cost
-				col.table-carrency
-				col.table-sub.responsive-hide
-				col.table-addBy
-				col.table-deletedBy.responsive-hide
-				col.table-description-header
-			thead
-				tr
-					th(colspan="10") Deleted expenses
-				tr
-					th.responsive-hide
-						button.fa.fa-list(ng-click='binCtrl.toggleAllExpenses()' ng-show='binCtrl.check')
-						button.fa.fa-th(ng-click='binCtrl.toggleAllExpenses()' ng-hide='binCtrl.check')
-					th.responsive-hide
-						| Time
-					th
-						| Category
-					th#header-sub.responsive-hide
-						| Subcategory
-					th
-						| Name
-					th
-						| Amount
-					th
-						| $ / &#8372;
-					th
-						| Added by
-					th.responsive-hide
-						| Deleted by
-					th
-						i.fa.fa-cog
-		//- #main
-			table.table-hover.fixed(ng-hide="sortType")
-				colgroup
-					col.table-date.responsive-hide
-					col.table-category
-					col.table-expense
-					col.table-cost
-					col.table-carrency
-					col.table-sub.responsive-hide
-					col.table-addBy
-					col.table-deletedBy.responsive-hide
-					col.table-description
-				tbody(ng-repeat="date in binCtrl.dates | limitTo: binCtrl.expensesLimit", ng-hide="!(filteredData = (binCtrl.getExpensesByDate(date) " +
-				"| filter: {name: nameModelFilter, category: {name: categoryModelFilter.name}, " +
-				"subcategory: {name: subcategoryModelFilter.name}, creator: {name: authorModelFilter}} " +
-				"| dateRange:startDateFilter:endDateFilter)).length")
-					tr.date-hilight
-						td
-							i.fa.fa-chevron-right(ng-click="binCtrl.toggleCustom($index)" ng-hide="!binCtrl.hiddenList[$index]" )
-							i.fa.fa-chevron-down(ng-click="binCtrl.toggleCustom($index)" ng-show="!binCtrl.hiddenList[$index]")
-						td(colspan='8')
-
-							| {{ date | date: 'fullDate' }}
-					tr(ng-repeat="expense in filteredData", ng-init='binCtrl.pageTitleEquals(filteredData)', ng-hide="binCtrl.hiddenList[$parent.$index]" )
-						td.responsive-hide
-							| {{ expense.time | date:'HH:mm' }}
-						td
-							| {{ expense.category.name }}
-						td.responsive-hide
-							| {{ expense.subcategory.name }}
-						td
-							| {{ expense.name  || 'empty' }}
-						td
-							| {{ expense.price  || 'empty' }}
-						td
-							| {{ expense.currency }}
-						td
-							| {{ expense.creator.name }}
-						td.responsive-hide
-							| {{ expense.deletedBy.name }}
-						td
-							button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreExpense(expense.id, expense.name)') restore
-							.btn-group(dropdown='')
-								span.dropdown-menu.dropdown-menu-right(aria-labelledby='split-button') {{ expense.description }}
-				tbody(ng-show="binCtrl.isLoadMore()")
-					tr
-						td
-						td(colspan='8')
-							a(ng-click="binCtrl.loadExpenses()")
-								| load more expenses&nbsp;
-								i.fa.fa-plus
-				tbody(ng-if="binCtrl.deletedExpenses == 0")
-					tr
-						td(colspan='8')
-							| no deleted expenses
 		table.table-hover.fixed
 			colgroup
 				col.table-date-header.responsive-hide
@@ -140,7 +48,14 @@
 							span.fa.fa-caret-down(ng-if="binCtrl.getSortingStatus('price') === 1")
 							span.fa.fa-caret-up(ng-if="binCtrl.getSortingStatus('price') === -1")
 							span.fa.fa-sort(ng-if="binCtrl.getSortingStatus('price') === 0")
-					th Currency
+					th
+						.dropdown
+							button#currencyDropdown.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="true") {{binCtrl.currency}}&nbsp;
+								span.fa.fa-caret-down
+							ul#currency-list.dropdown-menu(aria-labelledby="currencyDropdown")
+								li(ng-click="binCtrl.currency = 'UAH'") UAH
+								li(ng-click="binCtrl.currency = 'USD'") USD
+								li(ng-click="binCtrl.currency = 'Original'") Original
 					th.responsive-hide
 						span Restore
 
@@ -168,9 +83,9 @@
 					td
 						span {{ expense.name }}
 					td
-						span {{ expense.price | currency:''}}
+						span {{ binCtrl.getDisplayPrice(expense) | currency:''}}
 					td
-						span {{ expense.currency }}
+						span {{ binCtrl.getDisplayCurrency(expense) }}
 					td.responsive-hide
 						button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreExpense(expense.id, expense.name)') restore
 				tr(ng-if="binCtrl.expenses.length === 0")
