@@ -251,7 +251,7 @@ module.exports = function(app) {
 
 		function updateSections() {
 			if (vm.expensesQuery.sort.indexOf('time') < 0) {
-				vm.expensesSections = [ { title: 'All dates', content: vm.expenses } ];
+				vm.expensesSections = [ { title: 'All dates', content: vm.expenses, opened: true } ];
 			}
 			else {
 				vm.expensesSections = [];
@@ -263,12 +263,13 @@ module.exports = function(app) {
 							content: _.filter(vm.expenses, function(expense) {
 								var expenseDate = vm.timeToDate(expense.time).toDateString();
 								return expenseDate === date;
-							})
+							}),
+							opened: true
 						});
 					}
 				});
 				if (vm.expensesSections.length === 0) {
-					vm.expensesSections = [ { title: 'All dates', content: [] } ];
+					vm.expensesSections = [ { title: 'All dates', content: [], opened: true } ];
 				}
 			}
 		}

@@ -72,8 +72,13 @@
 				col.table-description.responsive-hide
 			tbody(ng-repeat="section in binCtrl.expensesSections")
 				tr.section-header
-					td(colspan='8') {{ section.title }}
-				tr(ng-repeat="expense in section.content")
+					td(colspan='8' ng-click='section.opened = !section.opened')
+						span(ng-if='section.opened')
+							i.fa.fa-chevron-down
+						span(ng-if='!section.opened')
+							i.fa.fa-chevron-right
+						span  {{ section.title }}
+				tr(ng-repeat="expense in section.content" ng-show='section.opened')
 					td.responsive-hide {{ binCtrl.timeToDate(expense.time) | date:"dd.MM.yyyy HH:mm" }}
 					td.responsive-hide {{ expense.updatedAt | date:"dd.MM.yyyy HH:mm" }}
 					td

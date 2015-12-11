@@ -300,8 +300,13 @@
 					col.table-description.responsive-hide
 				tbody(ng-repeat="section in personalCtrl.expensesSections")
 					tr.section-header
-						td(colspan='7') {{ section.title }}
-					tr(ng-repeat="expense in section.content")
+						td(colspan='7' ng-click='section.opened = !section.opened')
+							span(ng-if='section.opened')
+								i.fa.fa-chevron-down
+							span(ng-if='!section.opened')
+								i.fa.fa-chevron-right
+							span  {{ section.title }}
+					tr(ng-repeat="expense in section.content"  ng-show='section.opened')
 						td.responsive-hide {{ personalCtrl.timeToDate(expense.time) | date:"dd.MM.yyyy HH:mm" }}
 						td
 							span(editable-select='expense.category.id', e-name='categoryId', e-form='rowform', e-ng-options='category.id as category.name for category in personalCtrl.categories', onshow='personalCtrl.updateSubcategories($data)', e-ng-change='personalCtrl.updateSubcategories($data)', onbeforesave='personalCtrl.checkCategory($data)')
