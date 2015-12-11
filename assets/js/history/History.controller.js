@@ -25,25 +25,8 @@ module.exports = function(app) {
 				type = '';
 			}
 
-			$q.all([HistoryService.getEvents(type), UsersService.getUsers()]).then(function(data) {
-				var events = data[0] || [];
-				var users = data[1] || [];
-				console.log('events', events);
-				console.log('globalUsers', users);
-
-				var eventsPlus = events.map(function(event) {
-					var user =  _.find(users, {id: event.who});
-					event.who = user ? user.name + ' ' + user.surname : 'NO NAME';
-
-					if (event.type === 'user') {
-						var targetUser = _.find(users, {id: event.target});
-						event.target = targetUser ? targetUser.name + ' ' + targetUser.surname : 'NO NAME';
-					}
-
-					return event;
-				});
-				console.log('eventsPlus', eventsPlus);
-				vm.events = eventsPlus;
+			HistoryService.getEvents(type).then(function(data) {
+				vm.events = data;
 			});
 		}
 

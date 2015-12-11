@@ -32,10 +32,10 @@ module.exports = function(app) {
 		});
 
 		vm.editPersonalBudget = function(user, add) {
-			var title = "Add personal money for " + user.name + " " + user.surname;
+			var title = "Add personal money for " + user.name;
 			var action = " added";
 			if (!add) {
-				title = "Take back personal money from " + user.name + " " + user.surname;
+				title = "Take back personal money from " + user.name;
 				action = " taken";
 			}
 			swal({

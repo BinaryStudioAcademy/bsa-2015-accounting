@@ -15,7 +15,6 @@ module.exports = {
 };
 
 function getCurrentUser(req, res) {
-	//Expense.find({deletedBy: {$exists: false}, personal: true, creatorId: req.user.global_id})
 	Expense.find({deletedBy: {$exists: false}, creatorId: req.user.global_id})
 		.then(function(expenses) {
 			var currencies = Currency.find().then(function(currencies) {

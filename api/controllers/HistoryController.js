@@ -6,11 +6,7 @@ module.exports = {
 
 function find(req, res) {
 	var filter = req.query.type ? {type: req.query.type} : {};
-	console.log('filter', filter);
 	History.find(filter).then(function(events) {
-		var users = User.find().then(function(users) {
-			return users;
-		});
 		var expenses = Expense.find().then(function(expenses) {
 			return expenses;
 		});
@@ -20,10 +16,9 @@ function find(req, res) {
 		var categories = Category.find().then(function(categories) {
 			return categories;
 		});
-		return [events, users, expenses, budgets, categories];
-	}).spread(function(events, users, expenses, budgets, categories) {
+		return [events, expenses, budgets, categories];
+	}).spread(function(events, expenses, budgets, categories) {
 		events.forEach(function(event) {
-			var user = _.find(users, {id: event.who});
 			var time = event.time * 1000;
 			var target = 'no name';
 			switch (event.type) {
@@ -38,10 +33,8 @@ function find(req, res) {
 					target = event.target;
 					break;
 			}
-			event.who = user && user.hasOwnProperty('global_id') ? user.global_id : 'unknown user';
 			event.target = target;
 			event.time = time;
-			console.log('events#', event);
 		});
 		res.send(events);
 	}).fail(function(err) {
