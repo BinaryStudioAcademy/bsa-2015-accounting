@@ -1,5 +1,6 @@
 module.exports = {
-	dropAll: dropAll
+	dropAll: dropAll,
+	updateCurrencies: updateCurrencies
 };
 
 function dropAll(req, res) {
@@ -9,8 +10,8 @@ function dropAll(req, res) {
 		result.budgets = data.length;
 		Category.destroy({}).exec(function deleteCB(err, data){
 			result.categories = data.length;
-			//Currency.destroy({}).exec(function deleteCB(err, data){
-				//result.currencies = data.length;
+			Currency.destroy({}).exec(function deleteCB(err, data){
+				result.currencies = data.length;
 				Expense.destroy({}).exec(function deleteCB(err, data){
 					result.expenses = data.length;
 					History.destroy({}).exec(function deleteCB(err, data){
@@ -21,7 +22,12 @@ function dropAll(req, res) {
 						});
 					});
 				});
-			//});
+			});
 		});
 	});
+}
+
+function updateCurrencies(req, res) {
+	var script = require('../../scripts/getCurrencyPB.js');
+	script(res);
 }
