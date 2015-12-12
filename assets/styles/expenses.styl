@@ -13,6 +13,11 @@
 		right: 320px;
 		bottom 0
 
+	#expenses
+	
+	input.invalid-input, .invalid-input input
+		border 1px solid #f44336 !important
+
 	.btnAdd
 		color white
 		font-size 1.2em
@@ -45,6 +50,9 @@
 		float left
 		height: 40px;
 	.expense-form
+		td.has-error
+			input
+				border 1px solid #f44336
 		#pick-btn
 			padding 9px 12px
 			margin-left 6px
@@ -53,8 +61,9 @@
 			padding-left 10px
 			.ng-invalid.ng-dirty
 				border-color #FA787E
-			.ng-valid.ng-dirty
-				border-color #78FA89
+			.ng-valid
+				.ng-dirty, .ng-touched
+					border-color #78FA89
 
 		input[name="Name"]
 			width 100%
@@ -87,6 +96,7 @@
 
 	.expense-form input[name='Date']
 		width 60%
+		margin-right 7px
 		
 	.expense-form #personal-container
 		height 40px

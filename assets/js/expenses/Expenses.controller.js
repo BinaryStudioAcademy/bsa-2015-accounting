@@ -199,7 +199,11 @@ module.exports = function(app) {
 		};
 
 		vm.getExcelSheet = function () {
-			alasql.fn.getDate = vm.timeToDate;
+			//alasql.fn.getDate = vm.timeToDate;
+			alasql.fn.getDate = function(time) {
+				var utc = time * 1000 - (new Date().getTimezoneOffset() * 60000);
+				return new Date(utc);
+			};
 			alasql.fn.getDisplayPrice = function(price, altPrice, currency) {
 				if (vm.currency === 'Original' || vm.currency === currency) {
 					return price;
