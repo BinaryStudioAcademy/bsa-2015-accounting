@@ -10,9 +10,9 @@
 				col.table-category
 				col.table-expense.responsive-hide
 				col.table-cost
-				col.table-carrency
+				col.table-currency
 				col.table-sub
-				col.table-description-header.responsive-hide
+				col.table-description-header.mobile-hide
 			thead
 				tr
 					th.tbl-hdr(colspan="8")
@@ -56,7 +56,7 @@
 								li(ng-click="binCtrl.currency = 'UAH'") UAH
 								li(ng-click="binCtrl.currency = 'USD'") USD
 								li(ng-click="binCtrl.currency = 'Original'") Original
-					th.responsive-hide
+					th.mobile-hide
 						span Restore
 
 
@@ -67,7 +67,7 @@
 				col.table-category
 				col.table-expense.responsive-hide
 				col.table-cost
-				col.table-carrency
+				col.table-currency
 				col.table-sub
 				col.table-description.responsive-hide
 			tbody(ng-repeat="section in binCtrl.expensesSections")
@@ -91,7 +91,7 @@
 						span {{ binCtrl.getDisplayPrice(expense) | currency:''}}
 					td
 						span {{ binCtrl.getDisplayCurrency(expense) }}
-					td.responsive-hide
+					td.mobile-hide
 						button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreExpense(expense.id, expense.name)') restore
 				tr(ng-if="binCtrl.expenses.length === 0")
 					td(colspan='8') No expenses found

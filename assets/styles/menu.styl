@@ -1,3 +1,5 @@
+#gen-view
+	margin-left 203px
 #menu-view
 	body
 		min-width 320px
@@ -19,20 +21,23 @@
 	header#header
 		position fixed
 		width 100%
+		z-index 200
 
 	nav
+		background white
+		z-index 100
 		margin-top 70px
 		width 200px
 		float left
 		position fixed
 		top 0
-		bottom 0
+		//bottom 0
 		ul
 			height 100%
 
 	main
 		max-width 1920px
-		margin-left 200px
+		//margin-left 200px
 		padding 5px
 
 	#page-name
@@ -81,7 +86,33 @@
 		background -webkit-linear-gradient(left, #e2e2e2 0%,#fefefe 100%);
 	.showMenu
 		display initial !important
-		
+	
+
+	@media screen and (max-width: 1235px)
+		#gen-view
+			margin-left 3px
+			margin-top 115px
+		nav
+			margin-top 70px
+			width 100%
+			ul
+				text-align center
+			.active-tab
+				background -webkit-linear-gradient(top, #e2e2e2 0%,#fefefe 100%)
+			li
+				display inline-block
+
+			.nav>li>a:focus, .nav>li>a:hover
+				background -webkit-linear-gradient(top, #e2e2e2 0%,#fefefe 100%)
+
+	@media screen and (max-width: 666px)
+		.filters, nav
+			display none
+		/*nav
+			a
+				padding 5px 5px*/
+				
+	/*
 	@media screen and (max-width: 1235px)
 		main
 			margin-left 0
@@ -93,11 +124,11 @@
 			margin-top 0
 			float none
 			top 0
-			border-bottom 1px solid #ddd
+			//border-bottom 1px solid #ddd
 			position relative
 			top 33px
 		ul
-			display inline-flex
+			text-align center
 		.active-tab
 			background -webkit-linear-gradient(top, #e2e2e2 0%,#fefefe 100%)
 
@@ -133,3 +164,4 @@
 			display block
 		h2
 			display none
+				*/

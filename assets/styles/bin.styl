@@ -1,6 +1,7 @@
 #bin-view
 	margin-top 5px
 	#expenses-section
+		margin-bottom 10px
 		#currency-list
 			li
 				padding 3px
@@ -29,7 +30,7 @@
 		.table-date,
 		.table-expense,
 		.table-cost,
-		.table-carrency,
+		.table-currency,
 		.table-category,
 		.table-sub,
 		.table-addBy,
@@ -95,3 +96,6 @@
 				display none
 			select
 				width 100% !important
+	@media screen and (max-width: 380px)
+			.mobile-hide
+				display none

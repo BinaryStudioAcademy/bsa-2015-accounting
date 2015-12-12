@@ -16,8 +16,8 @@
 			//- span(class="input-group-btn")
 			//- 	button#pick-btn(type="button" class="btn btn-default" ng-click="opened = true")
 			//- 		i(class="glyphicon glyphicon-calendar")
-
-			timepicker(ng-model="expCtrl.newExpense.date" ng-change="expCtrl.updateAnnualCategories()" show-meridian="false" show-spinners="false" min="expCtrl.minDate" max="expCtrl.maxDate" ng-class="{'invalid-input': (expCtrl.newExpense.date > expCtrl.maxDate || expCtrl.newExpense.date < expCtrl.minDate)}" required)
+			div#time-wrapper
+				timepicker(ng-model="expCtrl.newExpense.date" ng-change="expCtrl.updateAnnualCategories()" show-meridian="false" show-spinners="false" min="expCtrl.minDate" max="expCtrl.maxDate" ng-class="{'invalid-input': (expCtrl.newExpense.date > expCtrl.maxDate || expCtrl.newExpense.date < expCtrl.minDate)}" required)
 
 			select(name='Category', ng-model="expCtrl.newExpense.categoryId", ng-options="category.id as category.name for category in expCtrl.annualCategories", required)
 				option(value="") Category
@@ -90,7 +90,7 @@
 		#main
 			table#expenses.table-hover.fixed
 				colgroup
-					col.table-date.responsive-hide
+					col.table-date.mobile-hide
 					col.table-category
 					col.table-expense.responsive-hide
 					col.table-cost
@@ -100,7 +100,7 @@
 					col.table-description.responsive-hide
 				thead
 					tr
-						th.responsive-hide
+						th.mobile-hide
 							span(ng-click="expCtrl.toggleSorting('time')") Date&nbsp;
 								span.fa.fa-caret-down(ng-if="expCtrl.getSortingStatus('time') === 1")
 								span.fa.fa-caret-up(ng-if="expCtrl.getSortingStatus('time') === -1")
@@ -149,7 +149,7 @@
 								i.fa.fa-chevron-right
 							span  {{ section.title }}
 					tr(ng-repeat="expense in section.content" ng-show='section.opened')
-						td.responsive-hide {{ expCtrl.timeToDate(expense.time) | date:"dd.MM.yyyy HH:mm" }}
+						td.mobile-hide {{ expCtrl.timeToDate(expense.time) | date:"dd.MM.yyyy HH:mm" }}
 						td
 							span(editable-select='expense.category.id', e-name='categoryId', e-form='rowform', e-ng-options='category.id as category.name for category in expCtrl.categories', onshow='expCtrl.updateSubcategories($data)', e-ng-change='expCtrl.updateSubcategories($data)', onbeforesave='expCtrl.checkCategory($data)')
 								| {{ expense.category.name || 'empty' }}
