@@ -148,18 +148,26 @@
 	.table-money-amount
 		width 280px
 
-@media screen and (max-width: 700px)
+	@media screen and (max-width: 700px)
 		.expenses-table
 			.responsive-hide
 				display none
-@media screen and (max-width: 500px)
+	@media screen and (max-width: 510px)
+		#add-button, #give-button, #history-button, #button-group button
+			width 100%
+		#money-form
+			display block
+			margin 0
+			#add-button, #give-button
+				margin-right 0
+				margin-bottom 5px
 		.expenses-table
 			th, td
 				font-size 13px
 				padding 0px
 		.currency-group
 				.btn
-					padding 0px 2px 0px 2px !important
-@media screen and (max-width: 380px)
+						padding 0px 2px 0px 2px !important
+	@media screen and (max-width: 420px)
 		.mobile-hide
 			display none

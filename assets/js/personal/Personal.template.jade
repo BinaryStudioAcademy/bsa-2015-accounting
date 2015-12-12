@@ -19,34 +19,45 @@
 		button#add-button.btn.btn-primary(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = true', ng-show='!moneyForm.$visible')
 			| Add money&nbsp;
 			i.fa.fa-plus
-		button.btn.btn-danger(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = false', ng-show='!moneyForm.$visible')
+		button#give-button.btn.btn-danger(type='button', ng-click='moneyForm.$show(); personalCtrl.showTitle(true); showAddButton = false', ng-show='!moneyForm.$visible')
 			| Give back money&nbsp;
 			i.fa.fa-minus
-	button.btn.btn-warning(ng-click="personalCtrl.isCollapsedMoneyTable = !personalCtrl.isCollapsedMoneyTable; personalCtrl.changeMoneyText()", ng-hide="personalCtrl.history.length == 0") {{personalCtrl.moneyButtonText}} income money history&nbsp;
+	button#history-button.btn.btn-warning(ng-click="personalCtrl.isCollapsedMoneyTable = !personalCtrl.isCollapsedMoneyTable; personalCtrl.changeMoneyText()", ng-hide="personalCtrl.history.length == 0") {{personalCtrl.moneyButtonText}} income money history&nbsp;
 		i.fa.fa-money
 	#main
-		table.table-hover.fixed(ng-if="!personalCtrl.isCollapsedMoneyTable")
-			colgroup
-				col.table-money-date
-				col.table-money-amount
-				col.table-money-user
-			thead
-				tr
-					th.tbl-hdr(colspan="4")
-						| Income money history
-				tr
-					th.header-text
-						| Date - Time
-					th.header-text
-						| Amount
-					th.header-text
-						| User
+		//- table.table-hover.fixed(ng-if="!personalCtrl.isCollapsedMoneyTable")
+		//- 	colgroup
+		//- 		col.table-money-date
+		//- 		col.table-money-amount
+		//- 		col.table-money-user
+		//- 	thead
+		//- 		tr
+		//- 			th.tbl-hdr(colspan="4")
+		//- 				| Income money history
+		//- 		tr
+		//- 			th.header-text
+		//- 				| Date - Time
+		//- 			th.header-text
+		//- 				| Amount
+		//- 			th.header-text
+		//- 				| User
 		.table-container(ng-if="!personalCtrl.isCollapsedMoneyTable")
 			table#income-money-table.table-hover.fixed
 				colgroup
 					col.table-money-date
 					col.table-money-amount
 					col.table-money-user
+				thead
+					tr
+						th.tbl-hdr(colspan="4")
+							| Income money history
+					tr
+						th.header-text
+							| Date - Time
+						th.header-text
+							| Amount
+						th.header-text
+							| User
 				tbody
 					tr(ng-repeat="event in personalCtrl.history")
 						td {{event.time | date:'dd.MM.yyyy - HH:mm'}}
@@ -78,163 +89,6 @@
 						span.bad(ng-show='personalCtrl.getLeft() < 0') &nbsp;overuse!
 					td
 						span.budget-amount {{personalCtrl.getUsed() | currency:""}}
-		
-		//-table.table-hover.fixed.expenses-table(ng-if="personalCtrl.allExpenses.length != 0")
-			colgroup
-				col.table-toggle.responsive-hide
-				col.table-date-header.responsive-hide
-				col.table-category
-				col.table-expense.responsive-hide
-				col.table-cost
-				col.table-carrency
-				col.table-sub
-				col.table-addBy
-				col.table-description-header.responsive-hide
-			thead
-				tr
-					th#outcome-header.responsive-hide(colspan="8")
-						| Personal expenses
-				tr
-					th.responsive-hide
-						button.fa.fa-list(ng-click='personalCtrl.toggleAllExpenses()' ng-show='personalCtrl.check')
-						button.fa.fa-th(ng-click='personalCtrl.toggleAllExpenses()' ng-hide='personalCtrl.check')
-					th.responsive-hide
-						span(ng-click="personalCtrl.sortType = 'time'; sortReverse = !sortReverse; personalCtrl.sort(personalCtrl.sortType, sortReverse)") Time&nbsp;
-							span.fa.fa-caret-down(ng-show="personalCtrl.sortType == 'time' && !sortReverse")
-							span.fa.fa-caret-up(ng-show="personalCtrl.sortType == 'time' && sortReverse")
-							span.fa.fa-sort(ng-hide="personalCtrl.sortType == 'time'")
-					th
-						span(ng-click="personalCtrl.sortType = 'category.name'; sortReverse = !sortReverse; personalCtrl.sort(personalCtrl.sortType, sortReverse)") Category&nbsp;
-							span.fa.fa-caret-down(ng-show="personalCtrl.sortType == 'category.name' && !sortReverse")
-							span.fa.fa-caret-up(ng-show="personalCtrl.sortType == 'category.name' && sortReverse")
-							span.fa.fa-sort(ng-hide="personalCtrl.sortType == 'category.name'")
-					th.responsive-hide
-						span(ng-click="personalCtrl.sortType = 'subcategory.name'; sortReverse = !sortReverse; personalCtrl.sort(personalCtrl.sortType, sortReverse)") Subcategory&nbsp;
-							span.fa.fa-caret-down(ng-show="personalCtrl.sortType == 'subcategory.name' && !sortReverse")
-							span.fa.fa-caret-up(ng-show="personalCtrl.sortType == 'subcategory.name' && sortReverse")
-							span.fa.fa-sort(ng-hide="personalCtrl.sortType == 'subcategory.name'")
-					th
-						span(ng-click="personalCtrl.sortType = 'name'; sortReverse = !sortReverse; personalCtrl.sort(personalCtrl.sortType, sortReverse)") Name&nbsp;
-							span.fa.fa-caret-down(ng-show="personalCtrl.sortType == 'name' && !sortReverse")
-							span.fa.fa-caret-up(ng-show="personalCtrl.sortType == 'name' && sortReverse")
-							span.fa.fa-sort(ng-hide="personalCtrl.sortType == 'name'")
-					th
-						span(ng-click="personalCtrl.sortType = 'currencySort'; sortReverse = !sortReverse; personalCtrl.sort(personalCtrl.sortType, sortReverse)") Amount&nbsp;
-							span.fa.fa-caret-down(ng-show="personalCtrl.sortType == 'currencySort' && !sortReverse")
-							span.fa.fa-caret-up(ng-show="personalCtrl.sortType == 'currencySort' && sortReverse")
-							span.fa.fa-sort(ng-hide="personalCtrl.sortType == 'currencySort'")
-					th
-						.currency-group.btn-group(ng-click="personalCtrl.changeExpenseCurrency()")
-							label.btn.btn-primary(ng-model="personalCtrl.currencyModel", btn-radio="'UAH'") UAH
-							label.btn.btn-primary(ng-model="personalCtrl.currencyModel", btn-radio="'USD'") USD
-					th.responsive-hide
-						i.fa.fa-cog
-		//-.table-container(ng-if="personalCtrl.allExpenses.length != 0")
-			table.table-hover.fixed.expenses-table(ng-if="!personalCtrl.sortType")
-					colgroup
-						col.table-date.responsive-hide
-						col.table-category
-						col.table-expense.responsive-hide
-						col.table-cost
-						col.table-carrency
-						col.table-sub
-						col.table-description.responsive-hide
-					tbody(ng-repeat="date in personalCtrl.dates | limitTo: personalCtrl.expensesLimit", ng-hide="!(filteredData = (personalCtrl.getExpensesByDate(date) " +
-					"| filter: {name: nameModelFilter, category: {name: categoryModelFilter.name}, " +
-					"subcategory: {name: subcategoryModelFilter.name}, creator: {name: authorModelFilter}} " +
-					"| dateRange:startDateFilter:endDateFilter)).length")
-						tr.date-hilight
-							td
-								i.fa.fa-chevron-right(ng-click="personalCtrl.toggleCustom($index)" ng-hide="!personalCtrl.hiddenList[$index]" )
-								i.fa.fa-chevron-down(ng-click="personalCtrl.toggleCustom($index)" ng-show="!personalCtrl.hiddenList[$index]")
-							td(colspan='7')
-
-								| {{ date | date: 'fullDate' }}
-						tr(ng-repeat="expense in filteredData", ng-init='personalCtrl.pageTitleEquals(filteredData)', ng-hide="personalCtrl.hiddenList[$parent.$index]" )
-							td.responsive-hide
-								| {{ expense.time | date:'HH:mm' }}
-							td
-								span(editable-select='expense.category.id', e-name='category.name', onshow="personalCtrl.getSubcategories($data)", e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "categoryId")', e-ng-options='category.id as category.name for category in personalCtrl.categories' e-ng-change="personalCtrl.getSubcategories($data)", e-required="")
-									| {{ personalCtrl.getField(expense.category.id, "category") || 'empty' }}
-							td.responsive-hide
-								span(editable-select='expense.subcategory.id', e-name='subcategory.name', e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "subcategoryId")', onbeforesave="personalCtrl.checkField($data)", e-ng-options='subcategory.id as subcategory.name for subcategory in personalCtrl.subcategories', e-required="")
-									| {{ personalCtrl.getField(expense.subcategory.id, "subcategory") || expense.subcategory.name }}
-							td
-								span(editable-text='expense.name', e-name='name', e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "name")', onbeforesave="personalCtrl.checkField($data)", e-required="")
-									| {{ expense.name  || 'empty' }}
-							td
-								span(editable-number='expense.price', e-name='price', e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "price")', onbeforesave="personalCtrl.checkField($data)", e-required="")
-									| {{ expense.newPrice | currency:'' }}
-							td
-								span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in personalCtrl.currency', onaftersave='personalCtrl.editExpenseObject($data, "currency")' e-required="")
-									| {{ personalCtrl.currencyModel }}
-							td.responsive-hide
-								form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', onaftersave="personalCtrl.editExpense(expense.id)", shown='inserted == expense')
-
-									button.btn-xs.btn.btn-success.fa.fa-check(type='submit', ng-disabled='rowform.$waiting')
-									button#delete-button.btn-xs.btn.btn-warning.fa.fa-ban(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
-								.buttons(ng-show='!rowform.$visible')
-									button.btn-xs.btn.btn-primary.edit-button.fa.fa-pencil(ng-click='rowform.$show()')
-									button.btn-xs.btn.btn-danger.fa.fa-trash-o(ng-click="personalCtrl.deleteExpense(expense.id, expense.name)")
-								.btn-group(dropdown='')
-									button.btn.fa.fa-info(ng-show='!rowform.$visible' type='button', dropdown-toggle='')
-									span.dropdown-menu.dropdown-menu-right(editable-text='expense.description', e-name='description' onbeforesave="personalCtrl.checkField($data)" e-form='rowform' role='menu', aria-labelledby='split-button' onaftersave='personalCtrl.editExpenseObject($data, "description")') {{ expense.description }}
-							td.scroll-col.responsive-hide(ng-if="!personalCtrl.isLoadMore()")
-					tbody(ng-show="personalCtrl.isLoadMore()")
-						tr
-							td
-							td(colspan='6')
-								a(ng-click="personalCtrl.loadExpenses(); personalCtrl.pushList(true)")
-									| load more expenses&nbsp;
-									i.fa.fa-plus
-			// filter table
-			table.table-hover.fixed.expenses-table(ng-if="personalCtrl.sortType")
-				colgroup
-					col.table-date.responsive-hide
-					col.table-category
-					col.table-expense.responsive-hide
-					col.table-cost
-					col.table-carrency
-					col.table-sub
-					col.table-description.responsive-hide
-				tbody
-					tr(ng-repeat="expense in personalCtrl.sortedExpenses | limitTo: personalCtrl.expensesLimit")
-						td.responsive-hide
-							| {{ expense.time | date:'dd.MM.yyyy' }}
-						td
-							span(editable-select='expense.category.id', e-name='category.name', onshow="personalCtrl.getSubcategories($data)", e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "categoryId")', e-ng-options='category.id as category.name for category in personalCtrl.categories' e-ng-change="personalCtrl.getSubcategories($data)", e-required="")
-								| {{ personalCtrl.getField(expense.category.id, "category") || 'empty' }}
-						td.responsive-hide
-							span(editable-select='expense.subcategory.id', e-name='subcategory.name', e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "subcategoryId")', onbeforesave="personalCtrl.checkField($data)", e-ng-options='subcategory.id as subcategory.name for subcategory in personalCtrl.subcategories', e-required="")
-								| {{ personalCtrl.getField(expense.subcategory.id, "subcategory") || expense.subcategory.name }}
-						td
-							span(editable-text='expense.name', e-name='name', e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "name")', onbeforesave="personalCtrl.checkField($data)", e-required="")
-								| {{ expense.name  || 'empty' }}
-						td
-							span(editable-number='expense.price', e-name='price', e-form='rowform', onaftersave='personalCtrl.editExpenseObject($data, "price")', onbeforesave="personalCtrl.checkField($data)", e-required="")
-								| {{ expense.newPrice | currency:'' }}
-						td
-							span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in personalCtrl.currency', onaftersave='personalCtrl.editExpenseObject($data, "currency")' e-required="")
-								| {{ personalCtrl.currencyModel }}
-						td.responsive-hide
-							form.form-buttons.form-inline(editable-form='', name='rowform', ng-show='rowform.$visible', onaftersave="personalCtrl.editExpense(expense.id)", shown='inserted == expense')
-
-								button.btn-xs.btn.btn-success.fa.fa-check(type='submit', ng-disabled='rowform.$waiting')
-								button#delete-button.btn-xs.btn.btn-warning.fa.fa-ban(type='button', ng-disabled='rowform.$waiting', ng-click='rowform.$cancel()')
-							.buttons(ng-show='!rowform.$visible')
-								button.btn-xs.btn.btn-primary.edit-button.fa.fa-pencil(ng-click='rowform.$show()')
-								button.btn-xs.btn.btn-danger.fa.fa-trash-o(ng-click="personalCtrl.deleteExpense(expense.id, expense.name)")
-							.btn-group(dropdown='')
-								button.btn.fa.fa-info(ng-show='!rowform.$visible' type='button', dropdown-toggle='')
-								span.dropdown-menu.dropdown-menu-right(editable-text='expense.description', e-name='description' e-form='rowform' role='menu', aria-labelledby='split-button' onaftersave='personalCtrl.editExpenseObject($data, "description")') {{ expense.description }}
-						td.scroll-col.responsive-hide(ng-if="!personalCtrl.isLoadMore()")
-				tbody(ng-show="personalCtrl.isLoadMore()")
-					tr
-						td
-						td(colspan='7')
-							a(ng-click="personalCtrl.loadExpenses(); personalCtrl.pushList(true)")
-								| load more expenses&nbsp;
-								i.fa.fa-plus
 		
 		
 		#personal-expenses
