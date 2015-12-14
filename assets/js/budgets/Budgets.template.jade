@@ -1,6 +1,6 @@
 #budgets-view
 	button.btn.btn-primary#new-budget(type='button' ng-click="budCtrl.createNewBudget()" ng-show="currentUser.admin || currentUser.role == 'ADMIN'") create new budget {{budCtrl.years[0] + 1}}
-	table.table-hover
+	table#budgets-table.table-hover
 		col(width='150')
 		col(width='250')
 		thead
