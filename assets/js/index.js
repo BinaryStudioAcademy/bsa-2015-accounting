@@ -53,3 +53,11 @@ var headerHtml = '<div class="hdr-header"><img id="BSheaderLogo" src="http://aca
 var headerContainer = document.getElementById('header');
 headerContainer.innerHTML = headerHtml;
 headerFunction();
+
+//Mobile menu button -------------------
+var menuButton = document.createElement('div');
+menuButton.id = 'menu-btn-wrapper';
+menuButton.setAttribute("ng-click", "homeCtrl.toggleMenu()");
+menuButton.innerHTML = '<i class="fa fa-bars"></i>';
+var binaryLogo = document.getElementById('BSheaderLogo');
+binaryLogo.parentNode.insertBefore(menuButton, binaryLogo.nextSibling);

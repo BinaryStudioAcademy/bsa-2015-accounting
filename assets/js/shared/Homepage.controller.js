@@ -4,7 +4,7 @@ module.exports = function(app) {
 	HomepageController.$inject = ['$rootScope', 'UsersService', 'CurrencyService', '$route', '$filter'];
 
 	function HomepageController($rootScope, UsersService, CurrencyService, $route, $filter) {
-		
+		var vm = this;
 		//menu
 		$rootScope.menuTabs = true;
 		$rootScope.toggleMenu = function(){
@@ -26,6 +26,15 @@ module.exports = function(app) {
 			var permission = $filter('filter')($rootScope.currentUser.categories, {id: categoryId});
 			if(permission[0]) return permission[0].level;
 			else return 0;
+		};
+
+		var nav = document.getElementsByTagName('nav')[0];
+
+		vm.toggleMenu = function() {
+			var display = nav.style.display;
+			if (display === 'block') display = 'none';
+			else display = 'block';
+			nav.style.display = display;
 		};
 	}
 };

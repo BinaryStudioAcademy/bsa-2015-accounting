@@ -86,6 +86,22 @@
 		background -webkit-linear-gradient(left, #e2e2e2 0%,#fefefe 100%);
 	.showMenu
 		display initial !important
+		
+	#menu-btn-wrapper
+		background #ffa800
+		height 30px
+		width 30px
+		border-radius 5px
+		text-align center
+		margin-top 20px
+		position absolute
+		left 20px
+		cursor pointer
+		display none
+		i
+			color white
+			font-size 24px
+			line-height 30px
 	
 
 	@media screen and (max-width: 1235px)
@@ -104,6 +120,24 @@
 
 			.nav>li>a:focus, .nav>li>a:hover
 				background -webkit-linear-gradient(top, #e2e2e2 0%,#fefefe 100%)
+
+	@media screen and (max-width: 666px)
+		#gen-view
+			margin-top 0
+		#menu-btn-wrapper
+			display block
+		nav
+			display none
+			li
+				display block
+				border-bottom 1px solid #e2e2e2
+		#BSheaderLogo
+			visibility hidden
+
+	/*@media screen and (max-width: 500px)
+		#menu-btn-wrapper
+			display block*/
+
 
 	/*@media screen and (max-width: 666px)
 		.filters, nav
