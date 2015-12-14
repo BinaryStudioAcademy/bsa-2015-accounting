@@ -7,19 +7,19 @@ block body
 
 		nav
 			ul.nav.nav-tabs.tabs-left
-				li
+				li(ng-click='homeCtrl.toggleMenu()')
 					a(href='#/expenses', ng-class="{'active-tab':$route.current.activetab == 'expenses'}", data-toggle='tab') Expenses
-				li
+				li(ng-click='homeCtrl.toggleMenu()')
 					a(href='#/planning', ng-class="{'active-tab':$route.current.activetab == 'planning'}", data-toggle='tab') Planning
-				li
+				li(ng-click='homeCtrl.toggleMenu()')
 					a(href='#/charts', ng-class="{'active-tab':$route.current.activetab == 'charts'}", data-toggle='tab') Charts
-				li
+				li(ng-click='homeCtrl.toggleMenu()')
 					a(href='#/personal', ng-class="{'active-tab':$route.current.activetab == 'personal'}", data-toggle='tab') Personal
-				li
+				li(ng-click='homeCtrl.toggleMenu()')
 					a(href='#/administration', ng-class="{'active-tab':$route.current.activetab == 'administration'}", data-toggle='tab') Administration
-				li
+				li(ng-click='homeCtrl.toggleMenu()')
 					a(href='#/history', ng-class="{'active-tab':$route.current.activetab == 'history'}", data-toggle='tab') History
-				li
+				li(ng-click='homeCtrl.toggleMenu()')
 					a(href='#/bin', ng-class="{'active-tab':$route.current.activetab == 'bin'}", data-toggle='tab') Recovery bin
 		main
 			.tab-content

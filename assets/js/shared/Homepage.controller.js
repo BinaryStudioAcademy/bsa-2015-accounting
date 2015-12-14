@@ -31,10 +31,12 @@ module.exports = function(app) {
 		var nav = document.getElementsByTagName('nav')[0];
 
 		vm.toggleMenu = function() {
-			var display = nav.style.display;
-			if (display === 'block') display = 'none';
-			else display = 'block';
-			nav.style.display = display;
+			if(window.innerWidth < 667) {
+				var display = nav.style.display;
+				if (display === 'block') display = 'none';
+				else display = 'block';
+				nav.style.display = display;
+			}
 		};
 	}
 };

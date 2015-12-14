@@ -193,12 +193,15 @@ module.exports = function(app) {
 			}
 		};
 
-		var mystyle = {
-			sheetid: 'Expenses',
-			headers: true
-		};
-
 		vm.getExcelSheet = function () {
+			var mystyle = {
+				sheetid: 'Expenses',
+				headers: true,
+				caption: {
+					title: 'Export options: '
+				}
+			};
+			var fileName = 'Expenses';
 			//alasql.fn.getDate = vm.timeToDate;
 			alasql.fn.getDate = function(time) {
 				var utc = time * 1000 - (new Date().getTimezoneOffset() * 60000);
@@ -210,13 +213,46 @@ module.exports = function(app) {
 				}
 				return altPrice;
 			};
-				alasql.fn.getDisplayCurrency = function(currency) {
-					if (vm.currency === 'Original') {
-						return currency;
-					}
-					return vm.currency;
-				};
-			alasql('SELECT getDate(time) AS Date, category->name AS Category, subcategory->name AS Subcategory, name AS Name, getDisplayPrice(price, altPrice, currency) AS Price, getDisplayCurrency(currency) AS Currency, creator->name AS Creator, description AS Description INTO XLSX("Expenses.xlsx", ?) FROM ?', [mystyle, vm.expenses]);
+			alasql.fn.getDisplayCurrency = function(currency) {
+				if (vm.currency === 'Original') {
+					return currency;
+				}
+				return vm.currency;
+			};
+			mystyle.caption.title += 'sorting: ' + vm.expensesQuery.sort;
+			if (vm.expensesQuery.limit !== 999999) {
+				mystyle.caption.title += ', limit: ' + vm.expensesQuery.limit;
+			}
+			if (vm.expensesQuery.name) {
+				mystyle.caption.title += (', expense name includes: ' + vm.expensesQuery.name);
+			}
+			if (vm.expensesQuery.categoryId) {
+				var filterCat = _.find(vm.categories, {id: vm.expensesQuery.categoryId});
+				mystyle.caption.title += (', category: ' + filterCat.name);
+				fileName += ('.category=' + filterCat.name);
+			}
+			if (vm.expensesQuery.subcategoryId) {
+				var filterSubCat = _.find(vm.categories, {id: vm.expensesQuery.categoryId});
+				mystyle.caption.title += (', subcategory: ' + filterSubCat.name);
+				fileName += ('.subcategory=' + filterSubCat.name);
+			}
+			if (vm.expensesQuery.creatorId) {
+				mystyle.caption.title += (', author: ' + _.find(vm.users, {serverUserId: vm.expensesQuery.creatorId}).name);
+			}
+			if (vm.expensesQuery.startDate) {
+				mystyle.caption.title += (', from: ' + vm.expensesQuery.startDate.toDateString());
+				fileName += ('.from=' + vm.expensesQuery.startDate.toDateString());
+			}
+			if (vm.expensesQuery.endDate) {
+				mystyle.caption.title += (', till: ' + vm.expensesQuery.endDate.toDateString());
+				fileName += ('.till=' + vm.expensesQuery.endDate.toDateString());
+			}
+			if (vm.currency !== 'Original') {
+				mystyle.caption.title += (', converted to : ' + vm.currency);
+			}
+			//mystyle.caption.title = 
+			console.log(vm.expensesQuery);
+			alasql('SELECT getDate(time) AS Date, category->name AS Category, subcategory->name AS Subcategory, name AS Name, getDisplayPrice(price, altPrice, currency) AS Price, getDisplayCurrency(currency) AS Currency, creator->name AS Creator, description AS Description INTO XLS("' + fileName + '.xlsx", ?) FROM ?', [mystyle, vm.expenses]);
 		};
 
 		vm.updateExpenses();

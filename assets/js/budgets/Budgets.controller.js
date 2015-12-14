@@ -153,7 +153,7 @@ module.exports = function(app) {
 			});
 		};
 
-		vm.deleteSubcategory = function(budget, subcategory) {
+		/*vm.deleteSubcategory = function(budget, subcategory) {
 			swal({
 				title: "Are you sure?",
 				text: "You're about to delete " + subcategory.name,
@@ -164,6 +164,31 @@ module.exports = function(app) {
 				closeOnConfirm: true
 			}, function() {
 				if (subcategory.id) {
+					BudgetsService.editBudget(budget.id, {delSubcategory: {id: subcategory.id}}).then(function () {
+						vm.updateYear();
+						swal("Deleted!", subcategory.name + " has been moved to the recovery bin.", "success");
+					});
+				}
+				else {
+					budget.category.subcategories.splice(budget.category.subcategories.indexOf(subcategory), 1);
+				}
+			});
+		};*/
+
+		vm.deleteSubcategory = function(budget, subcategory) {
+			console.log(vm.budgets);
+			swal({
+				title: "Are you sure?",
+				text: "You're about to delete " + subcategory.name + '<br><select ng-model="budCtrl.test"><option ng-repeat="year in budCtrl.years" value="{{year}}"> {{year}}</option></select>',
+				html: true,
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Yes, delete it!",
+				closeOnConfirm: true
+			}, function() {
+				if (subcategory.id) {
+					console.log(vm.test);
 					BudgetsService.editBudget(budget.id, {delSubcategory: {id: subcategory.id}}).then(function () {
 						vm.updateYear();
 						swal("Deleted!", subcategory.name + " has been moved to the recovery bin.", "success");
