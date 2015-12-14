@@ -7,36 +7,36 @@ module.exports = function(app) {
 
 	function ChartsController(BudgetsService, YearsService, ExpensesService, $q, $rootScope) {
 		var vm = this;
-		vm.kurs = $rootScope.exchangeRate;
+		vm.rate = $rootScope.exchangeRate;
 		vm.currencyChangeModel = 'UAH';
 		loadAllExpenses();
 
 		vm.categories = [];
 		vm.year = 0;
-		vm.budgetVisible=false;
-		vm.toggleBoolean =true
+		vm.budgetVisible= false;
+		vm.toggleBoolean = true;
 		vm.displaySubcategory = displaySubcategory;
 		vm.displayCategory = displayCategory;
 		vm.startDateFilter = startDateFilter;
-		vm.endDateFilter =endDateFilter;
+		vm.endDateFilter = endDateFilter;
 		vm.toggleForm = toggleForm;
 		vm.updateView = updateView
 
 //date filter 
-		function mathRound(n){
+		function mathRound(n) {
 
 			if (vm.currencyChangeModel === 'UAH') {
-				var uahValue = n * vm.kurs;
+				var uahValue = n * vm.rate;
 				return Math.round(uahValue)
 			}else
 				return Math.round(n)
 		}
 
-		function startDateFilter(startDate){
+		function startDateFilter(startDate) {
 			 vm.startDate = startDate;
 		}
 
-		function endDateFilter(endDate){
+		function endDateFilter(endDate) {
 			vm.endDate = endDate;
 		}
 
@@ -98,31 +98,39 @@ module.exports = function(app) {
 		});
 
 
-		BudgetsService.getBudgets().then(function(data){
+		BudgetsService.getBudgets().then(function(data) {
 			vm.allBudgets = data;
 			getAllBudgets();
 		});
-
-		vm.getSumBudget = function (name, year){
-		
-				var filterSum = _.filter(vm.allBudgets , function(budget) {
-					return (budget.category.name === name && budget.year === year);
-				});
-
-				if(filterSum[0] == undefined){
-					return ' - ';
-				}else{
-					return filterSum[0].category.budget;
-				}
-			}
-/*		vm.getSumExpenses = function (name, year){
-
-			var filterSum = _.filter(vm.allBudgets , function(budget) {
+		vm.getSumBudget = function(name, year) {
+			var filterSum = _.find(vm.allBudgets , function(budget) {
 				return (budget.category.name === name && budget.year === year);
 			});
+			if (vm.currencyChangeModel == 'USD') {
+				var rate = 1;
+			}else {
+				var rate = vm.rate;
+			}
+			rate = 1;/////////////////////////////////////////////////
+			return filterSum ? filterSum.category.budget * rate : '-';
+		}
 
-			return filterSum[0].category.used;
-			}*/
+		vm.getSumYear = function(year) {
+			var filterSum = _.filter(vm.allBudgets , function(budget) {
+				return (budget.year === year);
+			});
+			if (vm.currencyChangeModel == 'USD') {
+				var rate = 1;
+			}else {
+				var rate = vm.rate;
+			}
+			rate = 1;/////////////////////////////////////////////////
+			var sum = 0;
+			filterSum.forEach(function(budget){
+				sum += budget.category.budget;
+			});
+			return sum * rate;
+		}
 
 		function getAllBudgets() {
 				vm.categoryNames = _.pluck(vm.allBudgets , 'category.name');
@@ -141,30 +149,30 @@ module.exports = function(app) {
 			BudgetsService.getBudgets(vm.year).then(function(results) {
 				vm.budgets = results;
 				vm.categories = _.pluck(vm.budgets,'category');
-				 displayAllCategory ()
+				displayAllCategories();
 			});
 		}
 
-		function displayAllCategory () {
+		function displayAllCategories() {
 
 				var names = _.pluck(vm.budgets, 'category.name');
 				var planned =_.map( _.pluck(vm.budgets, 'category.budget'), mathRound);
 				var spent = _.map(_.pluck(vm.budgets, 'category.used'), mathRound);
-				var titleText = 'Categories budget in ' + vm.year ;
+				var titleText = 'Budgets ' + vm.year + ' by categories';
 				barChart(names, planned, spent, titleText, vm.budgetVisible);
 				pieChart(names, planned, titleText);
 		}
 		vm.categoryModel = [];
 		function displayCategory(categoryModel) {
-			vm.categoryModel =categoryModel
+			vm.categoryModel = categoryModel;
 
 			if(vm.categoryModel === null){
-					displayAllCategory ()
-			}else{
+					displayAllCategories ()
+			} else {
 				var names = _.pluck(vm.categoryModel.subcategories, 'name');
-				var spent =_.map(_.pluck(vm.categoryModel.subcategories, 'used'), mathRound);
-				var planned =_.map(_.pluck(vm.categoryModel.subcategories, 'budget'), mathRound);
-				var titleText = 'Subcategory '+ vm.categoryModel.name +' budget in ' + vm.year
+				var spent = _.map(_.pluck(vm.categoryModel.subcategories, 'used'), mathRound);
+				var planned = _.map(_.pluck(vm.categoryModel.subcategories, 'budget'), mathRound);
+				var titleText = vm.categoryModel.name + ' ' + vm.year +' budgets by subcategories';
 				barChart(names, planned, spent, titleText, vm.budgetVisible);
 				pieChart(names, planned, titleText);
 			}
@@ -174,25 +182,25 @@ module.exports = function(app) {
 		vm.changeSubcategoryCurrency = changeSubcategoryCurrency;
 		vm.expensesBySubcategory = [];
 
-		function changeSubcategoryCurrency (){
+		function changeSubcategoryCurrency () {
 
 			return totalSubExpenses = _.reduce(vm.expensesBySubcategory, function(totalSubExpenses, exp) {
 				if(vm.currencyChangeModel == 'UAH'){
 					if(exp.currency =='USD'){
-						return totalSubExpenses + exp.price * vm.kurs;
+						return totalSubExpenses + exp.price * vm.rate;
 					}
 					return totalSubExpenses + exp.price;
 				}else{
 					if(exp.currency =='USD'){
 												return totalSubExpenses + exp.price
 					}
-					return (totalSubExpenses + exp.price)/vm.kurs;
+					return (totalSubExpenses + exp.price)/vm.rate;
 				}
 
 			}, 0);
 		}
 vm.selectedCategory = [];
-		function displaySubcategory(selectedCategory){
+		function displaySubcategory(selectedCategory) {
 			vm.selectedCategory =selectedCategory
 			var y = vm.startDate.getFullYear();
 			var m = vm.startDate.getMonth() + 1;
@@ -227,6 +235,7 @@ vm.selectedCategory = [];
 			}
 
 		function barChart(names, planned, spent, titleTxt, budgetVisible) {
+			console.log(arguments);
 			$('#barChart').highcharts({
 				colors: ["#7cb5ec", "#f7a35c", "#90ee7e", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
 				chart: {
