@@ -229,30 +229,39 @@ module.exports = function(app) {
 			if (vm.expensesQuery.categoryId) {
 				var filterCat = _.find(vm.categories, {id: vm.expensesQuery.categoryId});
 				mystyle.caption.title += (', category: ' + filterCat.name);
-				fileName += ('.category=' + filterCat.name);
+				fileName += ('.cat.' + filterCat.name);
 			}
 			if (vm.expensesQuery.subcategoryId) {
 				var filterSubCat = _.find(vm.categories, {id: vm.expensesQuery.categoryId});
 				mystyle.caption.title += (', subcategory: ' + filterSubCat.name);
-				fileName += ('.subcategory=' + filterSubCat.name);
+				fileName += ('.sub.' + filterSubCat.name);
 			}
 			if (vm.expensesQuery.creatorId) {
 				mystyle.caption.title += (', author: ' + _.find(vm.users, {serverUserId: vm.expensesQuery.creatorId}).name);
 			}
 			if (vm.expensesQuery.startDate) {
 				mystyle.caption.title += (', from: ' + vm.expensesQuery.startDate.toDateString());
-				fileName += ('.from=' + vm.expensesQuery.startDate.toDateString());
+				var day = vm.expensesQuery.startDate.getDate();
+				var month = vm.expensesQuery.startDate.getMonth() + 1;
+				var year = vm.expensesQuery.startDate.getFullYear();
+				fileName += (day + '.' + month + '.' + year);
 			}
 			if (vm.expensesQuery.endDate) {
 				mystyle.caption.title += (', till: ' + vm.expensesQuery.endDate.toDateString());
-				fileName += ('.till=' + vm.expensesQuery.endDate.toDateString());
+				var day = vm.expensesQuery.endDate.getDate();
+				var month = vm.expensesQuery.endDate.getMonth() + 1;
+				var year = vm.expensesQuery.endDate.getFullYear();
+				if (vm.expensesQuery.startDate) {
+					fileName += '-';
+				}
+				fileName += (day + '.' + month + '.' + year);
 			}
 			if (vm.currency !== 'Original') {
 				mystyle.caption.title += (', converted to : ' + vm.currency);
 			}
 			//mystyle.caption.title = 
 			console.log(vm.expensesQuery);
-			alasql('SELECT getDate(time) AS Date, category->name AS Category, subcategory->name AS Subcategory, name AS Name, getDisplayPrice(price, altPrice, currency) AS Price, getDisplayCurrency(currency) AS Currency, creator->name AS Creator, description AS Description INTO XLS("' + fileName + '.xlsx", ?) FROM ?', [mystyle, vm.expenses]);
+			alasql('SELECT getDate(time) AS Date, category->name AS Category, subcategory->name AS Subcategory, name AS Name, getDisplayPrice(price, altPrice, currency) AS Price, getDisplayCurrency(currency) AS Currency, creator->name AS Creator, description AS Description INTO XLS("' + fileName + '.xls", ?) FROM ?', [mystyle, vm.expenses]);
 		};
 
 		vm.updateExpenses();
