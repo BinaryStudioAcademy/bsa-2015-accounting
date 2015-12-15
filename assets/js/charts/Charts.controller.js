@@ -287,18 +287,18 @@ vm.selectedCategory = [];
 				series: [ {
 					name: 'Expenses',
 					data: spent,
-					visible: budgetVisible,
+					visible: !budgetVisible,
 					colorByPoint: budgetVisible
 				},
 				{
-					name: 'Budget',
+					name: 'Budgets',
 					data: planned,
 					visible: !budgetVisible,
-					colorByPoint: !budgetVisible
+					colorByPoint: budgetVisible
 				} ]
 			});
 
-			var chart = $('#barChart').highcharts();
+			/*var chart = $('#barChart').highcharts();
 			$('#barChart g.highcharts-legend').click(function(e){
 				if (e.target.localName === "text") {
 					chart.series[1].update({
@@ -308,7 +308,7 @@ vm.selectedCategory = [];
 						colorByPoint: !(chart.series[0].visible && chart.series[1].visible)
 					});
 				}
-			});
+			});*/
 		}
 
 		function pieChart(names, planned, titleTxt) {
