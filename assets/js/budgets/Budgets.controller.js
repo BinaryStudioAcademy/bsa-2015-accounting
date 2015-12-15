@@ -132,50 +132,50 @@ module.exports = function(app) {
 		};
 
 		vm.deleteBudget = function(budget) {
-			swal({
-				title: "Are you sure?",
-				text: "You're about to delete " + budget.category.name,
-				type: "warning",
-				showCancelButton: true,
-				confirmButtonColor: "#DD6B55",
-				confirmButtonText: "Yes, delete it!",
-				closeOnConfirm: true
-			}, function() {
-				if (budget.id) {
+			if (budget.id) {
+				swal({
+					title: "Are you sure?",
+					text: "You're about to delete " + budget.category.name,
+					type: "warning",
+					showCancelButton: true,
+					confirmButtonColor: "#DD6B55",
+					confirmButtonText: "Yes, delete it!",
+					closeOnConfirm: true
+				}, function() {
 					BudgetsService.deleteBudget(budget.id).then(function () {
 						vm.updateYear();
 						swal("Deleted!", budget.category.name + " has been moved to the recovery bin.", "success");
 					});
-				}
-				else {
-					vm.budgets.splice(vm.budgets.indexOf(budget), 1);
-				}
-			});
+				});
+			}
+			else {
+				vm.budgets.splice(vm.budgets.indexOf(budget), 1);
+			}
 		};
 
-		/*vm.deleteSubcategory = function(budget, subcategory) {
-			swal({
-				title: "Are you sure?",
-				text: "You're about to delete " + subcategory.name,
-				type: "warning",
-				showCancelButton: true,
-				confirmButtonColor: "#DD6B55",
-				confirmButtonText: "Yes, delete it!",
-				closeOnConfirm: true
-			}, function() {
-				if (subcategory.id) {
+		vm.deleteSubcategory = function(budget, subcategory) {
+			if (subcategory.id) {
+				swal({
+					title: "Are you sure?",
+					text: "You're about to delete " + subcategory.name,
+					type: "warning",
+					showCancelButton: true,
+					confirmButtonColor: "#DD6B55",
+					confirmButtonText: "Yes, delete it!",
+					closeOnConfirm: true
+				}, function() {
 					BudgetsService.editBudget(budget.id, {delSubcategory: {id: subcategory.id}}).then(function () {
 						vm.updateYear();
 						swal("Deleted!", subcategory.name + " has been moved to the recovery bin.", "success");
 					});
-				}
-				else {
-					budget.category.subcategories.splice(budget.category.subcategories.indexOf(subcategory), 1);
-				}
-			});
-		};*/
+				});
+			}
+			else {
+				budget.category.subcategories.splice(budget.category.subcategories.indexOf(subcategory), 1);
+			}
+		};
 
-		vm.deleteSubcategory = function(budget, subcategory) {
+		/*vm.deleteSubcategory = function(budget, subcategory) {
 			console.log(vm.budgets);
 			swal({
 				title: "Are you sure?",
@@ -198,7 +198,7 @@ module.exports = function(app) {
 					budget.category.subcategories.splice(budget.category.subcategories.indexOf(subcategory), 1);
 				}
 			});
-		};
+		};*/
 
 		vm.getUserCategory = function(user, category) {
 			var result = _.find(user.categories, {id: category.id});

@@ -10,14 +10,14 @@
 			|{{exchangeRate}} UAH for 1 USD
 		form.expense-form(name="expenseForm", ng-submit="expenseForm.$valid && expCtrl.createExpense()", novalidate)
 			input.form-control(type="text", name='Name', placeholder='Expense name', ng-model="expCtrl.newExpense.name", required)
-			//- input.form-control(type='datetime-local', name='Date', placeholder='Date', ng-model="expCtrl.newExpense.date", ng-change="expCtrl.updateAnnualCategories()" min="{{expCtrl.minDate | date:'yyyy-MM-ddTHH:mm:ss'}}" max="{{expCtrl.maxDate | date:'yyyy-MM-ddTHH:mm:ss'}}" required)
+			//- input.form-control(type='datetime-local', name='Date', placeholder='Date', ng-model="expCtrl.newExpense.date", ng-change="expCtrl.updateAnnualCategories()" min="{{expCtrl.minDate | date:'yyyy-MM-ddTHH:mm:ss'}}" max="{{expCtrl.maxDate | date:'yyyy-MM-ddTHH:mm:ss'}}" ng-required)
 
 			input.form-control(type="text" name='Date' datepicker-popup="{{format}}" ng-model="expCtrl.newExpense.date" is-open="opened" datepicker-options="dateOptions" ng-change="expCtrl.updateAnnualCategories()" close-text="Close" min-date="expCtrl.minDate" max-date="expCtrl.maxDate" ng-click="opened = true" required ng-class="{'invalid-input': (expCtrl.newExpense.date > expCtrl.maxDate || expCtrl.newExpense.date < expCtrl.minDate)}")
 			//- span(class="input-group-btn")
 			//- 	button#pick-btn(type="button" class="btn btn-default" ng-click="opened = true")
 			//- 		i(class="glyphicon glyphicon-calendar")
 			div#time-wrapper
-				timepicker(ng-model="expCtrl.newExpense.date" ng-change="expCtrl.updateAnnualCategories()" show-meridian="false" show-spinners="false" min="expCtrl.minDate" max="expCtrl.maxDate" ng-class="{'invalid-input': (expCtrl.newExpense.date > expCtrl.maxDate || expCtrl.newExpense.date < expCtrl.minDate)}" required)
+				timepicker(ng-model="expCtrl.newExpense.date" ng-change="expCtrl.updateAnnualCategories()" show-meridian="false" show-spinners="false" min="expCtrl.minDate" max="expCtrl.maxDate" ng-class="{'invalid-input': (expCtrl.newExpense.date > expCtrl.maxDate || expCtrl.newExpense.date < expCtrl.minDate)}" ng-required)
 
 			select(name='Category', ng-model="expCtrl.newExpense.categoryId", ng-options="category.id as category.name for category in expCtrl.annualCategories", required)
 				option(value="") Category
@@ -61,7 +61,7 @@
 					i.fa.fa-file-excel-o.fa-1g
 				//- input(type='date', name='startDate', placeholder='Date', ng-model="expCtrl.expensesQuery.startDate", ng-change="expCtrl.updateExpenses()")
 
-				input(type="text" name='startDate' datepicker-popup="{{format}}" ng-model="expCtrl.expensesQuery.startDate" is-open="startOpened" datepicker-options="dateOptions" ng-change="expCtrl.updateExpenses()" close-text="Close" ng-click="startOpened = true")
+				input(type="text" name='startDate' datepicker-popup="{{format}}" ng-model="expCtrl.expensesQuery.startDate" is-open="startOpened" datepicker-options="dateOptions" ng-change="expCtrl.updateExpenses()" close-text="Close" ng-click="startOpened = true" max-date="expCtrl.expensesQuery.endDate")
 				//- span(class="input-group-btn")
 				//- 	button(type="button" class="btn btn-default" ng-click="startOpened = true")
 				//- 		i(class="glyphicon glyphicon-calendar")
@@ -69,7 +69,7 @@
 
 				//- input(type='date', name='endDate', placeholder='Date', ng-model="expCtrl.expensesQuery.endDate", ng-change="expCtrl.updateExpenses()")
 
-				input(type="text" name='endDate' datepicker-popup="{{format}}" ng-model="expCtrl.expensesQuery.endDate" is-open="endOpened" datepicker-options="dateOptions" ng-change="expCtrl.updateExpenses()" close-text="Close" ng-click="endOpened = true")
+				input(type="text" name='endDate' datepicker-popup="{{format}}" ng-model="expCtrl.expensesQuery.endDate" is-open="endOpened" datepicker-options="dateOptions" ng-change="expCtrl.updateExpenses()" close-text="Close" ng-click="endOpened = true" min-date="expCtrl.expensesQuery.startDate")
 				//- span(class="input-group-btn")
 				//- 	button(type="button" class="btn btn-default" ng-click="endOpened = true")
 				//- 		i(class="glyphicon glyphicon-calendar")
