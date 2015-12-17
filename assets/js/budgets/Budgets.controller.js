@@ -20,7 +20,8 @@ module.exports = function(app) {
 		};
 
 		YearsService.getYears().then(function(years) {
-			vm.years = years.sort(function(a, b){return b - a});
+			//vm.years = years.sort(function(a, b){return b - a});
+			vm.years = years;
 			if (!vm.years.length) vm.years = [(new Date().getFullYear())];
 			//vm.year = String(vm.years[0]);
 			vm.year = String(new Date().getFullYear());

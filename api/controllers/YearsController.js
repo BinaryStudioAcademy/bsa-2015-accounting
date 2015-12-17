@@ -16,13 +16,13 @@ function getAllYears(req, res) {
 		collection.aggregate([
 			{$group: {
 					_id: 0,
-					years: {$addToSet:  '$year'}
+					years: {$addToSet: '$year'}
 				}
 			}
 		]).toArray(function(err, results) {
 			if (err) return res.serverError(err);
 			if (results && results.length !== 0) {
-				res.ok(results[0].years);
+				res.ok(results[0].years.sort().reverse());
 			}
 			else res.ok([]);
 		});

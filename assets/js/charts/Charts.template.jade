@@ -1,112 +1,54 @@
 #chart-view
-	//- .chart-Topcontainer
-	//- 	#currency-group.btn-group(ng-click="chartCtrl.changeCurrency(); chartCtrl.updateView()")
-	//- 		label.btn.btn-xs.btn-primary(ng-model="chartCtrl.currencyChangeModel", btn-radio="'UAH'") UAH
-	//- 		label.btn.btn-xs.btn-primary(ng-model="chartCtrl.currencyChangeModel", btn-radio="'USD'") USD
-		
-	//- 	form.chart-leftBlock(ng-submit="chartCtrl.handleForm();")
-
-	//- 			.chart-filterList
-	//- 				label Year
-	//- 				select.form-control(ng-model="chartCtrl.year" ng-change ='chartCtrl.getBudgets()')
-	//- 					option(ng-repeat="year in chartCtrl.years") {{year}}
-
-	//- 				label Category
-	//- 				select.form-control(name='Category', ng-model="categoryModel1", ng-options="category.name for category in chartCtrl.categories")
-	//- 					option(value="") All categories
-	//- 			button.chart-butSum.btn.btn-info(ng-click='chartCtrl.toggleForm(true); chartCtrl.displayCategory(categoryModel1)') Dispay by year
-	
-	//- 	form.bottomForm
-	//- 		.chart-rightBlock
-	//- 			.chart-filterList
-	//- 				label Range of dates 
-	//- 				br
-	//- 				label from
-	//- 				//- input.form-control(type='date', placeholder='Date', ng-model="startDate", ng-change="chartCtrl.startDateFilter(startDate)" required)
-	//- 				input.form-control(type="text" placeholder='Start date' datepicker-popup="dd-MMMM-yyyy" ng-model="chartCtrl.startDate" is-open="startOpened" ng-change="chartCtrl.startDateFilter(chartCtrl.startDate)" close-text="Close" ng-click="startOpened = true" required)
-	//- 				label to
-	//- 				//- input.form-control(type='date', placeholder='Date', ng-model="endDate", ng-change="chartCtrl.endDateFilter(endDate)" required)
-	//- 				input.form-control(type="text" placeholder='End date' datepicker-popup="dd-MMMM-yyyy" ng-model="chartCtrl.endDate" is-open="endOpened" ng-change="chartCtrl.endDateFilter(chartCtrl.endDate)" close-text="Close" ng-click="endOpened = true" required)
-	//- 				label Category
-	//- 				select.form-control(name='Category', ng-model="categoryModel", ng-submit="chartCtrl.displayCategory(categoryModel)",
-	//- 				ng-options="category.name for category in chartCtrl.categories" required)
-	//- 					option(value="") Select Category
-	//- 			button.chart-butSum.btn.btn-info(ng-click=' chartCtrl.toggleForm(false); chartCtrl.displaySubcategory(categoryModel)') Dispay by period
-	
-	//- .chartsBlock
-	//- 	#barChart
-	//- 	br
-	//- 	#pieChart
-	//- 	h3 Budgets (USD)
-	//- 	table#table(ng-hide='chartCtrl.viewTable') 
-	//- 		thead
-	//- 			tr
-	//- 				th 
-	//- 				th(ng-repeat='year in chartCtrl.years')
-	//- 					b {{year}}
-	//- 		tbody
-	//- 			tr(ng-repeat='name in chartCtrl.uniqueName')
-	//- 				th
-	//- 					b {{ name }}
-	//- 				td(ng-repeat='year in chartCtrl.years')
-	//- 					| {{chartCtrl.getSumBudget(name, year) | number:0}}
-
-
 	button#toggle-filters.btn.btn-primary(ng-click="showFilters = !showFilters")
 		| Toggle filters&nbsp;
 		i.fa.fa-chevron-right(ng-show="!showFilters")
 		i.fa.fa-chevron-down(ng-show="showFilters")
 	#filters(ng-class="{showFilters: showFilters}")
-		#currency-group.btn-group(ng-click="chartCtrl.changeCurrency(); chartCtrl.updateView()")
-			label.btn.btn-xs.btn-primary(ng-model="chartCtrl.currencyChangeModel", btn-radio="'UAH'") UAH
-			label.btn.btn-xs.btn-primary(ng-model="chartCtrl.currencyChangeModel", btn-radio="'USD'") USD
-		
-		form.chart-leftBlock(ng-submit="chartCtrl.handleForm();")
+		#range-group.btn-group(ng-click="")
+			label Range picker: 
+				label.btn.btn-xs.btn-primary(ng-model="chartCtrl.rangeType", btn-radio="'year'" ng-change="chartCtrl.updateRangeType()") By year
+				label.btn.btn-xs.btn-primary(ng-model="chartCtrl.rangeType", btn-radio="'dates'" ng-change="chartCtrl.updateRangeType()") By dates
 
-				.chart-filterList
-					label Year
-					select.form-control(ng-model="chartCtrl.year" ng-change ='chartCtrl.getBudgets()')
-						option(ng-repeat="year in chartCtrl.years") {{year}}
+		div(ng-if='chartCtrl.rangeType === "year"')
+			label Year
+			select.form-control(ng-model="chartCtrl.year" ng-change ='chartCtrl.drawCharts()')
+				option(ng-repeat="year in chartCtrl.years") {{year}}
+		div(ng-if='chartCtrl.rangeType === "dates"')
+			label From
+			input.form-control(type="text" placeholder='Start date' datepicker-popup="dd-MMMM-yyyy" ng-model="chartCtrl.startDate" is-open="startOpened" ng-change="chartCtrl.drawCharts()" close-text="Close" ng-click="startOpened = true" max-date="chartCtrl.endDate" required)
+			label Till
+			input.form-control(type="text" placeholder='End date' datepicker-popup="dd-MMMM-yyyy" ng-model="chartCtrl.endDate" is-open="endOpened" ng-change="chartCtrl.drawCharts()" close-text="Close" ng-click="endOpened = true" min-date="chartCtrl.startDate" required)
 
-					label Category
-					select.form-control(name='Category', ng-model="categoryModel1", ng-options="category.name for category in chartCtrl.categories" ng-change ="chartCtrl.toggleForm(true); chartCtrl.displayCategory(categoryModel1)")
-						option(value="") All categories
-	
-		//- form.bottomForm
-		//- 	.chart-rightBlock
-		//- 		.chart-filterList
-		//- 			label Range of dates 
-		//- 			br
-		//- 			label from
-		//- 			//- input.form-control(type='date', placeholder='Date', ng-model="startDate", ng-change="chartCtrl.startDateFilter(startDate)" required)
-		//- 			input.form-control(type="text" placeholder='Start date' datepicker-popup="dd-MMMM-yyyy" ng-model="chartCtrl.startDate" is-open="startOpened" ng-change="chartCtrl.startDateFilter(chartCtrl.startDate)" close-text="Close" ng-click="startOpened = true" required)
-		//- 			label to
-		//- 			//- input.form-control(type='date', placeholder='Date', ng-model="endDate", ng-change="chartCtrl.endDateFilter(endDate)" required)
-		//- 			input.form-control(type="text" placeholder='End date' datepicker-popup="dd-MMMM-yyyy" ng-model="chartCtrl.endDate" is-open="endOpened" ng-change="chartCtrl.endDateFilter(chartCtrl.endDate)" close-text="Close" ng-click="endOpened = true" required)
-		//- 			label Category
-		//- 			select.form-control(name='Category', ng-model="categoryModel", ng-submit="chartCtrl.displayCategory(categoryModel)",
-		//- 			ng-options="category.name for category in chartCtrl.categories" required)
-		//- 				option(value="") Select Category
-		//- 		button.chart-butSum.btn.btn-info(ng-click=' chartCtrl.toggleForm(false); chartCtrl.displaySubcategory(categoryModel)') Dislpay by period
+		div(ng-if='chartCtrl.rangeType === "year"')
+			label Category
+			select.form-control(name='Category', ng-model="chartCtrl.category", ng-options="category.name for category in chartCtrl.categories" ng-change ="chartCtrl.drawCharts()")
+				option(value="") All categories
+
+		label Currency
+		select.form-control(ng-model="chartCtrl.currency" ng-change ='chartCtrl.drawCharts()')
+			option UAH
+			option USD
+	br
 	#charts
-		#barChart
+		#barChart(ng-init='chartCtrl.bars = true' ng-show='chartCtrl.bars')
 		br
-		#pieChart
+		#pieChart(ng-init='chartCtrl.pie = true' ng-show='chartCtrl.pie')
 		h3 Categories budgets comparation by years (USD)
-		table#table(ng-hide='chartCtrl.viewTable') 
+		table#table(ng-if='chartCtrl.years.length')
 			thead
 				tr
 					th 
-					th(ng-repeat='year in chartCtrl.years')
+					th(ng-repeat='year in chartCtrl.years' ng-class='{current: (year == chartCtrl.currentYear)}')
 						b {{year}}
 			tbody
-				tr(ng-repeat='name in chartCtrl.uniqueName')
+				tr(ng-repeat='name in chartCtrl.allCategories')
 					th
 						b {{ name }}
-					td(ng-repeat='year in chartCtrl.years')
+					td(ng-repeat='year in chartCtrl.years' ng-class='{current: (year == chartCtrl.currentYear)}')
 						| {{chartCtrl.getSumBudget(name, year)}}
 				tr
 					th
 						b Total
-					td(ng-repeat='year in chartCtrl.years')
+					td(ng-repeat='year in chartCtrl.years' ng-class='{current: (year == chartCtrl.currentYear)}')
 						| {{chartCtrl.getSumYear(year)}}
+		h3(ng-if='!chartCtrl.years.length') No budgets or expenses to show
