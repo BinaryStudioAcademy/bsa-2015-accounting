@@ -1,3 +1,4 @@
+var _ = require('lodash');
 module.exports = function(app) {
 	app.factory('UsersService', UsersService);
 
@@ -32,7 +33,9 @@ module.exports = function(app) {
 					user.name = user.name + " " + user.surname;
 					delete user.surname;
 				});
-				return global_users;
+				return _.filter(global_users, function(user) {
+					return user.serverUserId;
+				});
 			});
 		}
 
