@@ -31,8 +31,10 @@
 	br
 	#charts
 		#barChart(ng-init='chartCtrl.bars = true' ng-show='chartCtrl.bars')
+		h3(ng-show='!chartCtrl.bars') No data for bars chart
 		br
 		#pieChart(ng-init='chartCtrl.pie = true' ng-show='chartCtrl.pie')
+		h3(ng-show='!chartCtrl.bars') No data for pie chart
 		h3 Categories budgets comparation by years (USD)
 		table#table(ng-if='chartCtrl.years.length')
 			thead
@@ -51,4 +53,3 @@
 						b Total
 					td(ng-repeat='year in chartCtrl.years' ng-class='{current: (year == chartCtrl.currentYear)}')
 						| {{chartCtrl.getSumYear(year)}}
-		h3(ng-if='!chartCtrl.years.length') No budgets or expenses to show

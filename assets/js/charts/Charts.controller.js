@@ -459,7 +459,7 @@ vm.selectedCategory = [];
 				var query = {};
 				if (vm.startDate) {query.startDate = vm.startDate}
 				if (vm.endDate) {query.endDate = vm.endDate}
-				if (vm.category) {query.categoryId = vm.category.id}
+				//if (vm.category) {query.categoryId = vm.category.id}
 				ExpensesService.getExpenses(query).then(function(data) {
 					vm.expenses = data;
 					////////////////////////////////
@@ -480,12 +480,12 @@ vm.selectedCategory = [];
 						});
 						spent.push(Number(sum.toFixed(2)));
 					});
-					var text = 'since dinosaurs dies till today';
+					var text = 'period since dinosaurs died till today';
 					if (vm.startDate) {
 						var y = vm.startDate.getFullYear();
 						var m = vm.startDate.getMonth() + 1;
 						var d = vm.startDate.getDate();
-						text = 'for ' + d + '.' +  m + '.' + y;
+						text = d + '.' +  m + '.' + y;
 					}
 					if (vm.endDate) {
 						var ey = vm.endDate.getFullYear();
@@ -495,10 +495,10 @@ vm.selectedCategory = [];
 							text += (' - ' + ed + '.' +  em + '.' + ey);
 						}
 						else {
-							text = 'for ' + ed + '.' +  em + '.' + ey;
+							text = ed + '.' +  em + '.' + ey;
 						}
 					}
-					var title = 'Expenses ' + text + ' by categories';
+					var title = 'Expenses for ' + text + ' by categories';
 
 					vm.pie = vm.bars = names.length > 0;
 					vm.pie && barChart(names, undefined, spent, title);
