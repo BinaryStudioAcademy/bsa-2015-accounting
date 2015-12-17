@@ -266,6 +266,11 @@ module.exports = function(app) {
 
 		vm.updateExpenses();
 
+		vm.checkDate = function() {
+			var res = (vm.newExpense.date > vm.maxDate || vm.newExpense.date < vm.minDate);
+			return res;
+		};
+
 		var usersPromise = UsersService.getUsers();
 		//var categoriesPromise = CategoriesService.getCategories();
 		var categoriesPromise = CategoriesService.getActiveCategories();
@@ -280,7 +285,7 @@ module.exports = function(app) {
 
 		//Add expense form
 
-		vm.minDate = new Date();
+		vm.minDate = new Date(0);
 
 		CurrencyService.getFirstRate().then(function(data) {
 			vm.minDate = new Date(data[0].time * 1000);
@@ -290,7 +295,6 @@ module.exports = function(app) {
 			vm.minDate.setMilliseconds(0);
 		});
 
-		vm.maxDate = new Date();
 
 		vm.updateAnnualCategories = function() {
 			vm.maxDate = new Date();
@@ -325,9 +329,12 @@ module.exports = function(app) {
 			date.setSeconds(0);
 			date.setMilliseconds(0);
 			vm.newExpense = { date: date, currency: "UAH" };
+
+			vm.maxDate = new Date();
 		}
 
 		resetNewExpense();
+		vm.maxDate = new Date();
 		vm.updateAnnualCategories();
 
 		vm.createExpense = function() {
