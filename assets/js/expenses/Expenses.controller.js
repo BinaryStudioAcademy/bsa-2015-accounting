@@ -267,7 +267,8 @@ module.exports = function(app) {
 		vm.updateExpenses();
 
 		var usersPromise = UsersService.getUsers();
-		var categoriesPromise = CategoriesService.getCategories();
+		//var categoriesPromise = CategoriesService.getCategories();
+		var categoriesPromise = CategoriesService.getActiveCategories();
 		vm.users = [];
 		vm.categories = [];
 		vm.expenses = [];
