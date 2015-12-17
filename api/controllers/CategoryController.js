@@ -7,6 +7,7 @@ module.exports = {
 };
 
 function find(req, res) {
+	var queryParams = actionUtil.parseCriteria(req);
 	var permissions = _.pluck(_.filter(req.user.categories, function(per) {
 		return per.level >= 1;
 	}), 'id');
@@ -14,9 +15,25 @@ function find(req, res) {
 	Category.find(filter).exec(function(err, categories) {
 		if (err) return res.serverError(err);
 
-		res.ok(categories);
+		if (queryParams.active) {
+			filter.deletedBy = {$exists: false};
+			Budget.find(filter).exec(function(err, budgets) {
+				if (err) return res.serverError(err);
+
+				res.ok(_.filter(categories, function(category) {
+					return _.find(budgets, function(budget) {
+						return budget.category.id === category.id;
+					});
+				}));
+			});
+		}
+		else {
+			res.ok(categories);
+		}
 	});
 }
+
+
 
 function updateCategory(req, res) {
 	var pk = actionUtil.requirePk(req);

@@ -6,6 +6,7 @@ module.exports = function(app) {
   function CategoriesService($resource) {
     return {
       getCategories: getCategories,
+      getActiveCategories: getActiveCategories,
       getCategory: getCategory,
       createCategory: createCategory,
       editCategory: editCategory,
@@ -22,6 +23,10 @@ module.exports = function(app) {
      */
     function getCategories() {
       return getRequest().query().$promise;
+    }
+
+    function getActiveCategories() {
+      return getRequest().query({active: true}).$promise;
     }
 
     /**

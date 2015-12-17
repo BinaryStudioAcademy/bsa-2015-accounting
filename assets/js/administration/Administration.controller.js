@@ -23,7 +23,8 @@ module.exports = function(app) {
 		vm.rate = 1;
 
 		var usersPromise = UsersService.getUsers();
-		var categoriesPromise = CategoriesService.getCategories();
+		//var categoriesPromise = CategoriesService.getCategories();
+		var categoriesPromise = CategoriesService.getActiveCategories();
 
 		$q.all([usersPromise, categoriesPromise]).then(function(data) {
 			vm.users = data[0] || [];
