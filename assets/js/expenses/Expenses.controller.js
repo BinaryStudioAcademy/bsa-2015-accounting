@@ -324,10 +324,6 @@ module.exports = function(app) {
 			});
 		};
 
-		vm.log = function() {
-			console.log(vm.newExpense.date);
-		}
-
 		function resetNewExpense() {
 			var date = new Date();
 			date.setHours(0);//
