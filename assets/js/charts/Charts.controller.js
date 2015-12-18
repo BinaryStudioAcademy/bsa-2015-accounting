@@ -250,14 +250,14 @@ vm.selectedCategory = [];
 			else {
 				var series = [
 					{
-						name: 'Budgets',
-						data: planned,
+						name: 'Expenses',
+						data: spent,
 						visible: true,
 						colorByPoint: false
 					},
 					{
-						name: 'Expenses',
-						data: spent,
+						name: 'Budgets',
+						data: planned,
 						visible: true,
 						colorByPoint: false
 					}
@@ -507,6 +507,8 @@ vm.selectedCategory = [];
 				});
 			}
 			else {
+				vm.budgets = _.filter(vm.allBudgets, {year: Number(vm.year)});
+				vm.categories = _.pluck(vm.budgets, 'category');
 				if (vm.category) {
 					var names = _.pluck(vm.category.subcategories, 'name');
 					var spent = _.map(_.pluck(vm.category.subcategories, 'used'), mathRound);

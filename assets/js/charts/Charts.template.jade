@@ -4,11 +4,15 @@
 		i.fa.fa-chevron-right(ng-show="!showFilters")
 		i.fa.fa-chevron-down(ng-show="showFilters")
 	#filters(ng-class="{showFilters: showFilters}")
-		#range-group.btn-group(ng-click="")
-			label Range picker: 
-				label.btn.btn-xs.btn-primary(ng-model="chartCtrl.rangeType", btn-radio="'year'" ng-change="chartCtrl.updateRangeType()") By year
-				label.btn.btn-xs.btn-primary(ng-model="chartCtrl.rangeType", btn-radio="'dates'" ng-change="chartCtrl.updateRangeType()") By dates
-
+		//- #range-group.btn-group(ng-click="")
+		//- 	label Range picker: 
+		//- 		label.btn.btn-xs.btn-primary(ng-model="chartCtrl.rangeType", btn-radio="'year'" ng-change="chartCtrl.updateRangeType()") By year
+		//- 		label.btn.btn-xs.btn-default(ng-model="chartCtrl.rangeType", btn-radio="'dates'" ng-change="chartCtrl.updateRangeType()") By dates
+		div
+			label Range picker
+			select.form-control(ng-model="chartCtrl.rangeType" ng-change ='chartCtrl.updateRangeType()')
+				option(value="year") By year
+				option(value="dates") By dates
 		div(ng-if='chartCtrl.rangeType === "year"')
 			label Year
 			select.form-control(ng-model="chartCtrl.year" ng-change ='chartCtrl.drawCharts()')
