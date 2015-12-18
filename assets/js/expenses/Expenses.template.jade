@@ -17,7 +17,7 @@
 			//- 	button#pick-btn(type="button" class="btn btn-default" ng-click="opened = true")
 			//- 		i(class="glyphicon glyphicon-calendar")
 			div#time-wrapper
-				timepicker(ng-model="expCtrl.newExpense.date" ng-change="expCtrl.updateAnnualCategories()" show-meridian="false" show-spinners="false" min="expCtrl.minDate" max="expCtrl.maxDate" ng-class="{'invalid-input': expCtrl.checkDate()}" ng-required)
+				timepicker(ng-model="expCtrl.newExpense.date" ng-change="expCtrl.updateAnnualCategories();expCtrl.log()" show-meridian="false" show-spinners="false" min="expCtrl.minDate" max="expCtrl.maxDate" ng-class="{'invalid-input': expCtrl.checkDate()}" ng-required)
 
 			select(name='Category', ng-model="expCtrl.newExpense.categoryId", ng-options="category.id as category.name for category in expCtrl.annualCategories", required)
 				option(value="") Category

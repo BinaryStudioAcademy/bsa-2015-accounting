@@ -324,17 +324,21 @@ module.exports = function(app) {
 			});
 		};
 
+		vm.log = function() {
+			console.log(vm.newExpense.date);
+		}
+
 		function resetNewExpense() {
 			var date = new Date();
+			date.setHours(0);//
+			date.setMinutes(0);//
 			date.setSeconds(0);
 			date.setMilliseconds(0);
-			vm.newExpense = { date: date, currency: "UAH" };
-
 			vm.maxDate = new Date();
+			vm.newExpense = { date: date, currency: "UAH" };
 		}
 
 		resetNewExpense();
-		vm.maxDate = new Date();
 		vm.updateAnnualCategories();
 
 		vm.createExpense = function() {
@@ -343,8 +347,8 @@ module.exports = function(app) {
 			delete vm.newExpense.date;
 			ExpensesService.createExpense(vm.newExpense).then(function() {
 				vm.updateExpenses();
-				$scope.expenseForm.$setPristine();
 				resetNewExpense();
+				$scope.expenseForm.$setPristine();
 			});
 		};
 
