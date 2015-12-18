@@ -44,6 +44,14 @@ request.open('GET', 'http://team.binary-studio.com/app/header', true);
            var headerContainer = document.getElementById('header');
            headerContainer.innerHTML =headerHtml;
            headerFunction();
+
+           //Mobile menu button -------------------
+           var menuButton = document.createElement('div');
+           menuButton.id = 'menu-btn-wrapper';
+           menuButton.setAttribute("ng-click", "homeCtrl.toggleMenu()");
+           menuButton.innerHTML = '<i class="fa fa-bars"></i>';
+           var binaryLogo = document.getElementById('BSheaderLogo');
+           binaryLogo.parentNode.insertBefore(menuButton, binaryLogo.nextSibling);
         }
     };
 };
@@ -54,10 +62,10 @@ var headerContainer = document.getElementById('header');
 headerContainer.innerHTML = headerHtml;
 headerFunction();*/
 
-//Mobile menu button -------------------
+/*//Mobile menu button -------------------
 var menuButton = document.createElement('div');
 menuButton.id = 'menu-btn-wrapper';
 menuButton.setAttribute("ng-click", "homeCtrl.toggleMenu()");
 menuButton.innerHTML = '<i class="fa fa-bars"></i>';
 var binaryLogo = document.getElementById('BSheaderLogo');
-binaryLogo.parentNode.insertBefore(menuButton, binaryLogo.nextSibling);
+binaryLogo.parentNode.insertBefore(menuButton, binaryLogo.nextSibling);*/
