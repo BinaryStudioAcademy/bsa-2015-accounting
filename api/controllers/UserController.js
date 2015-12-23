@@ -118,9 +118,9 @@ function updateUser(req, res) {
 
 		if (values.editPersonalBudget) {
 			if (values.editPersonalBudget > 0) {
-				action = 'income: ' + values.editPersonalBudget + ' UAH';
+				action = '+ ' + values.editPersonalBudget + ' UAH';
 			} else {
-				action = 'outcome: ' + (-values.editPersonalBudget) + ' UAH';
+				action = '- ' + (-values.editPersonalBudget) + ' UAH';
 			}
 			if (user.budget) {user.budget += values.editPersonalBudget;}
 			else user.budget = values.editPersonalBudget;

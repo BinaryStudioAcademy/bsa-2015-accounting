@@ -391,7 +391,7 @@ module.exports = function(app) {
 		});
 
 		vm.isIncome = function(text) {
-			return text.indexOf('income') > -1 ? true : false;
+			return text.indexOf('+') > -1 ? true : false;
 		};
 	}
 };
