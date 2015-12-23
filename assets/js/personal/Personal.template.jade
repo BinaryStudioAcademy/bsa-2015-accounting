@@ -61,7 +61,7 @@
 				tbody
 					tr(ng-repeat="event in personalCtrl.history")
 						td {{event.time | date:'dd.MM.yyyy - HH:mm'}}
-						td {{event.action}}
+						td(ng-class='[{green: personalCtrl.isIncome(event.action)}, {red: !personalCtrl.isIncome(event.action)}]') {{event.action}}
 						td {{event.who}}
 		table#income-table.table-hover.fixed
 			colgroup

@@ -389,5 +389,9 @@ module.exports = function(app) {
 			vm.users = data[0] || [];
 			vm.categories = data[1] || [];
 		});
+
+		vm.isIncome = function(text) {
+			return text.indexOf('income') > -1 ? true : false;
+		};
 	}
 };
