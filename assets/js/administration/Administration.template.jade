@@ -36,10 +36,10 @@
 					td {{user.name}}
 						span(ng-if="currentUser.global_id == user.serverUserId")  (you)
 					td
-						a(href="#" editable-checkbox="user.admin" e-title="Accounting admin?" ng-show="(currentUser.admin || currentUser.role == 'ADMIN') && currentUser.global_id != user.serverUserId" onaftersave="admCtrl.updateRole(user)") {{user.admin && "YES" || "NO" }}
+						a(href="#" editable-checkbox="user.admin" buttons="no" e-title="Accounting admin?" ng-show="(currentUser.admin || currentUser.role == 'ADMIN') && currentUser.global_id != user.serverUserId" onaftersave="admCtrl.updateRole(user)") {{user.admin && "YES" || "NO" }}
 						span(ng-hide="(currentUser.admin || currentUser.role == 'ADMIN') && currentUser.global_id != user.serverUserId") {{user.admin && "YES" || "NO" }}
 					td(ng-if='admCtrl.category')
-						a(href="#" editable-select="admCtrl.getUserCategory(user).level" ng-class="{bad: admCtrl.getUserCategory(user).level == 0}" ng-hide="user.admin || currentUser.global_id == user.serverUserId" onaftersave="admCtrl.updateRights(user)" e-ng-options="permit.level as permit.text for permit in admCtrl.permits") {{admCtrl.permits[admCtrl.getUserCategory(user).level].text}}
+						a(href="#" editable-select="admCtrl.getUserCategory(user).level" buttons="no" ng-class="{bad: admCtrl.getUserCategory(user).level == 0}" ng-hide="user.admin || currentUser.global_id == user.serverUserId" onaftersave="admCtrl.updateRights(user)" e-ng-options="permit.level as permit.text for permit in admCtrl.permits") {{admCtrl.permits[admCtrl.getUserCategory(user).level].text}}
 						span(ng-show="user.admin") Accounting admin
 						span(ng-show="!user.admin && currentUser.global_id == user.serverUserId") {{admCtrl.permits[admCtrl.getUserCategory(user).level].text}}
 					td(ng-if='!admCtrl.category') No categories created yet
