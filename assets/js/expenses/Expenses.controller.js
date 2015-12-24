@@ -29,6 +29,7 @@ module.exports = function(app) {
 			sort: "time desc"
 		};
 
+		vm.displayCurrencies = ['Original', 'UAH', 'USD'];
 		vm.currencies = ['UAH', 'USD'];
 		vm.currency = 'Original';
 

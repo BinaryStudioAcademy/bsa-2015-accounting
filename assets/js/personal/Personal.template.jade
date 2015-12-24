@@ -132,13 +132,14 @@
 								span.fa.fa-caret-up(ng-if="personalCtrl.getSortingStatus('price') === -1")
 								span.fa.fa-sort(ng-if="personalCtrl.getSortingStatus('price') === 0")
 						th
-							.dropdown
-								button#currencyDropdown.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="true") {{personalCtrl.currencyE}}&nbsp;
-									span.fa.fa-caret-down
-								ul#currency-list.dropdown-menu(aria-labelledby="currencyDropdown")
-									li(ng-click="personalCtrl.currencyE = 'UAH'") UAH
-									li(ng-click="personalCtrl.currencyE = 'USD'") USD
-									li(ng-click="personalCtrl.currencyE = 'Original'") Original
+							a(href="#" editable-select="personalCtrl.currencyE" buttons="no" e-ng-options="curr for curr in personalCtrl.displayCurrencies") {{personalCtrl.currencyE}}
+							//- .dropdown
+							//- 	button#currencyDropdown.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="true") {{personalCtrl.currencyE}}&nbsp;
+							//- 		span.fa.fa-caret-down
+							//- 	ul#currency-list.dropdown-menu(aria-labelledby="currencyDropdown")
+							//- 		li(ng-click="personalCtrl.currencyE = 'UAH'") UAH
+							//- 		li(ng-click="personalCtrl.currencyE = 'USD'") USD
+							//- 		li(ng-click="personalCtrl.currencyE = 'Original'") Original
 						th.responsive-hide
 							span Edit & Info
 

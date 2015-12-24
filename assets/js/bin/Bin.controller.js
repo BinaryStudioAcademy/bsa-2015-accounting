@@ -79,6 +79,7 @@ module.exports = function(app) {
 		};
 
 		vm.currency = 'Original';
+		vm.displayCurrencies = ['Original', 'UAH', 'USD'];
 
 		vm.timeToDate = function(time) {
 			return new Date(time * 1000);

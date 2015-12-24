@@ -33,6 +33,7 @@ module.exports = function(app) {
 		getUsersBudgets();
 
 		vm.checkField = checkField;
+		vm.displayCurrencies = ['Original', 'UAH', 'USD'];
 		vm.currency = ["UAH", "USD"];
 
 
