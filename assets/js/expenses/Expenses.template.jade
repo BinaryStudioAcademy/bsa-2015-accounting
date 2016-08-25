@@ -164,7 +164,7 @@
 							span(editable-text='expense.name', e-name='name', e-form='rowform', onbeforesave='expCtrl.checkName($data)')
 								| {{ expense.name || 'empty' }}
 						td
-							span(class='status-good' ng-class="{'status-good': expense.income, 'status-bad': expense.income == false}" editable-number='expense.price', e-name='price', e-form='rowform', onbeforesave='expCtrl.checkPrice($data)')
+							span(ng-class="{'status-good': expense.income, 'status-bad': expense.income == false}" editable-number='expense.price', e-name='price', e-form='rowform', onbeforesave='expCtrl.checkPrice($data)')
 								| {{ expCtrl.getDisplayPrice(expense) || '0' | currency:''}}
 						td
 							span(editable-select='expense.currency', e-name='currency', e-form='rowform', e-ng-options='currency for currency in expCtrl.currencies')

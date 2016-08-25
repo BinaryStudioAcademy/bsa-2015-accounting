@@ -89,7 +89,7 @@
 					td
 						span {{ expense.name }}
 					td
-						span {{ binCtrl.getDisplayPrice(expense) | currency:''}}
+						span(ng-class="{'status-good': expense.income, 'status-bad': expense.income == false}") {{ binCtrl.getDisplayPrice(expense) | currency:''}}
 					td
 						span {{ binCtrl.getDisplayCurrency(expense) }}
 					td.mobile-hide
