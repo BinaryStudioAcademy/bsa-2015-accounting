@@ -32,7 +32,8 @@ module.exports = {
 			required: true
 		},
 		personal: {
-			type: 'boolean'
+			type: 'boolean',
+			defaultsTo: false
 		},
 		name: {
 			type: 'string',
@@ -42,7 +43,7 @@ module.exports = {
 			type: 'string',
 			defaultsTo: ""
 		},
-		personal: {
+		income: {
 			type: 'boolean',
 			defaultsTo: false
 		}

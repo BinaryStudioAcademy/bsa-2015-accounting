@@ -74,7 +74,18 @@ function getBudgets(req, res) {
 					return (expense.subcategoryId == subcategory.id && expDate.getFullYear() == budget.year);
 				});
 				subcategory.used = 0;
+				subcategory.income = 0;
 				subExpenses.forEach(function(subExpense) {
+					if (subExpense.income) {
+							if (subExpense.currency !== "USD") {
+							var rate = getRate(subExpense.time);
+							subcategory.income += Number((subExpense.price / rate.rate).toFixed(2));
+						}
+						else {
+							subcategory.income += subExpense.price;
+						}
+						return;
+					}
 					if (subExpense.currency !== "USD") {
 						var rate = getRate(subExpense.time);
 						subcategory.used += Number((subExpense.price / rate.rate).toFixed(2));
@@ -84,6 +95,7 @@ function getBudgets(req, res) {
 					}
 				});
 				budget.category.used += subcategory.used;
+				budget.category.budget += subcategory.income;
 				distributed += subcategory.budget;
 			});
 			budget.category.undistributed = budget.category.budget - distributed;
