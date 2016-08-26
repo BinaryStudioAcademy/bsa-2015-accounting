@@ -11,7 +11,9 @@ var _ = require('lodash');
 module.exports = {
 	find: getUsers,
 	update: updateUser,
-	getCurrentUser: getCurrentUser
+	getCurrentUser: getCurrentUser,
+	getProfileUsers: getProfileUsers,
+	resetBudget: resetBudget
 };
 
 function getCurrentUser(req, res) {
@@ -24,8 +26,25 @@ function getCurrentUser(req, res) {
 		}).spread(function(expenses, currencies) {
 				var budget = req.user.budget || 0;
 				req.user.budget = {};
+				req.user.budget.left = budget;
 				req.user.budget.used = 0;
 				expenses.forEach(function(expense) {
+					if(!expense.personal) return;
+					if(expense.income) {
+						if (expense.currency !== "UAH") {
+							var expDate = new Date(expense.time * 1000);
+							var rate = _.find(currencies, function(currency) {
+								var currDate = new Date(currency.time * 1000);
+								return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
+							});
+							rate = rate ? rate.rate : currencies[currencies.length - 1].rate;
+							req.user.budget.left += (expense.price * rate);
+						}
+						else {
+							req.user.budget.left += expense.price;
+						}
+						return; 
+					}
 					if (expense.currency !== "UAH") {
 						var expDate = new Date(expense.time * 1000);
 						var rate = _.find(currencies, function(currency) {
@@ -42,11 +61,60 @@ function getCurrentUser(req, res) {
 					}
 				});
 				req.user.budget.used = Number(req.user.budget.used.toFixed(2));
-				req.user.budget.left = budget - req.user.budget.used;
+				req.user.budget.left -= req.user.budget.used;
 			return res.send(req.user);
 		}).fail(function(err) {
 			return res.send(err);
 		});
+}
+
+function resetBudget(req, res){
+	var pk = actionUtil.requirePk(req);
+	User.findOne(pk).exec(function (err, user) {	
+		if (err) return res.serverError(err);
+
+		user.budget = 0;
+		var action = 'Reset personal budget.';
+		var log = {who: req.user.global_id, action: action, type: 'user',
+			target: user.global_id, time: Number((new Date().getTime() / 1000).toFixed())};		
+		user.save(function (err) {
+			if (err) return res.serverError(err);			
+			Expense.update({ creatorId : user.global_id }, { personal : false, })
+				.exec(function(errr, expenses) {
+					if (errr) return res.negotiate(errr);
+				});
+
+			History.create(log).exec(function(errr, log) {
+				if (errr) return res.negotiate(errr);
+				return res.ok(user);
+			});
+		});
+	});
+}
+
+function getProfileUsers(req, res){
+	var global_user =  JSON.parse(`[{ "email": "admin@example.com",
+    "serverUserId": "567abd6670a3a2541ae74c9a",
+    "password": "123456789",
+    "name": "Admin",
+    "surname": "Adminovich",
+    "country": "Ukraine",
+    "city": "Lviv",
+    "gender": "male",
+    "birthday": "2015-12-01T15:26:15.654Z",
+    "avatar": {
+      "urlAva": "/profile/api/files/get/Unknown.png",
+      "thumbnailUrlAva": ""
+    },
+    "workDate": "2015-12-01T15:26:15.654Z",
+    "isDeleted": false,
+    "changeAccept": true,
+	"position": "567803f0ea7a3b6262821036",
+    "direction": "56780443ea7a3b6262821037",
+    "createdAt": "2015-12-23T15:28:02.869Z",
+    "updatedAt": "2015-12-23T15:28:02.869Z",
+    "id": "567abd826f41190f1ac0af29"}]`);
+	return res.send(global_user);
 }
 
 function getUsers(req, res) {
@@ -67,13 +135,30 @@ function getUsers(req, res) {
 				var budget = user.budget || 0;
 				user.budget = {};
 				user.budget.used = 0;
+				user.budget.left = 0;
 				personalExpenses.forEach(function(expense) {
+					console.log('expenses',expense);
+					if(expense.income) {
+						if (expense.currency !== "UAH") {
+							var expDate = new Date(expense.time * 1000);
+							var rate = _.find(currencies, function(currency) {
+								var currDate = new Date(currency.time * 1000);
+								return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
+							});
+							rate = rate ? rate.rate : currencies[currencies.length - 1].rate;
+							user.budget.left += (expense.price * rate);
+						}
+						else {
+							user.budget.left += expense.price;
+						}
+						return; 
+					}
 					if (expense.currency !== "UAH") {
 						var expDate = new Date(expense.time * 1000);
 						var rate = _.find(currencies, function(currency) {
 							var currDate = new Date(currency.time * 1000);
 							return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
-						}).rate;
+						});
 						user.budget.used += (expense.price * rate);
 					}
 					else {
@@ -81,7 +166,7 @@ function getUsers(req, res) {
 					}
 				});
 				user.budget.used = Number(user.budget.used.toFixed(2));
-				user.budget.left = budget - user.budget.used;
+				user.budget.left -= user.budget.used;
 			});
 			return res.send(users);
 		}).fail(function(err) {
@@ -91,6 +176,7 @@ function getUsers(req, res) {
 
 function updateUser(req, res) {
 	var pk = actionUtil.requirePk(req);
+	console.log(pk);
 	var values = actionUtil.parseValues(req);
 
 	var idParamExplicitlyIncluded = ((req.body && req.body.id) || req.query.id);

@@ -170,6 +170,29 @@ module.exports = function(app) {
 			vm.moneyButtonText = vm.moneyButtonText == "Show" ? "Hide" : "Show";
 		}
 
+		// Reset budget
+		vm.resetBudget = resetBudget;
+		function resetBudget(){
+			swal({
+				title: "Are you sure?",
+				text: "You're about to reset budget ",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Yes, reset it!",
+				closeOnConfirm: false
+			},
+			function() {
+				UsersService.resetUserBudget($rootScope.currentUser.id).then(function(){
+					swal("Reset!", "Budget has been reseted.", "success");
+					getUsersBudgets();
+				 	vm.updateExpenses();
+					getHistory();
+				});	
+			});
+			
+		}
+
 		// Sort
 		vm.sort = sort;
 		var orderBy = $filter('orderBy');

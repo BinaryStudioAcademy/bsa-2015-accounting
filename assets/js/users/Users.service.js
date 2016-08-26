@@ -9,7 +9,8 @@ module.exports = function(app) {
 			getUsers: getUsers,
 			getCurrentUser: getCurrentUser,
 			createUser: createUser,
-			editUser: editUser
+			editUser: editUser,
+			resetUserBudget: resetUserBudget
 		};
 
 		function getRequest() {
@@ -61,6 +62,15 @@ module.exports = function(app) {
 				}
 			});
 			return data.update({ id: userId }, userData).$promise;
+		}
+
+		function resetUserBudget(userId) {
+			var data = $resource("user/resetBudget/:id", { id: "@id" }, {
+				update: {
+					method: "PUT"
+				}
+			});
+			return data.update({ id: userId }).$promise;
 		}
 	}
 };
