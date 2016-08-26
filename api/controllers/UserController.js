@@ -12,7 +12,6 @@ module.exports = {
 	find: getUsers,
 	update: updateUser,
 	getCurrentUser: getCurrentUser,
-	getProfileUsers: getProfileUsers,
 	resetBudget: resetBudget
 };
 
@@ -90,31 +89,6 @@ function resetBudget(req, res){
 			});
 		});
 	});
-}
-
-function getProfileUsers(req, res){
-	var global_user =  JSON.parse(`[{ "email": "admin@example.com",
-    "serverUserId": "567abd6670a3a2541ae74c9a",
-    "password": "123456789",
-    "name": "Admin",
-    "surname": "Adminovich",
-    "country": "Ukraine",
-    "city": "Lviv",
-    "gender": "male",
-    "birthday": "2015-12-01T15:26:15.654Z",
-    "avatar": {
-      "urlAva": "/profile/api/files/get/Unknown.png",
-      "thumbnailUrlAva": ""
-    },
-    "workDate": "2015-12-01T15:26:15.654Z",
-    "isDeleted": false,
-    "changeAccept": true,
-	"position": "567803f0ea7a3b6262821036",
-    "direction": "56780443ea7a3b6262821037",
-    "createdAt": "2015-12-23T15:28:02.869Z",
-    "updatedAt": "2015-12-23T15:28:02.869Z",
-    "id": "567abd826f41190f1ac0af29"}]`);
-	return res.send(global_user);
 }
 
 function getUsers(req, res) {
