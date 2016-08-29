@@ -16,6 +16,8 @@ module.exports = function(app) {
 	function PersonalController(PersonalService, CategoriesService, ExpensesService, UsersService, $filter, $rootScope, $q) {
 		var vm = this;
 
+		vm.updateExpenses = updateExpenses;
+
 		vm.currentUser = $rootScope.currentUser;
 		vm.history = [];
 
@@ -31,6 +33,7 @@ module.exports = function(app) {
 
 		getHistory();
 		getUsersBudgets();
+		updateExpenses();
 
 		vm.checkField = checkField;
 		vm.displayCurrencies = ['Original', 'UAH', 'USD'];
@@ -136,7 +139,7 @@ module.exports = function(app) {
 						if(!add) newBudget = -newBudget;
 
 						if ($rootScope.currentUser.id) {
-							UsersService.editUser($rootScope.currentUser.id, {editPersonalBudget: newBudget}).then(function() {
+							UsersService.editUser($rootScope.currentUser.id, {editPersonalBudget: newBudget, fromUser: vm.newMoney.user}).then(function() {
 								getUsersBudgets();
 								getHistory();
 							});
@@ -252,7 +255,7 @@ module.exports = function(app) {
 			return new Date(time * 1000);
 		};
 
-		vm.updateExpenses = function() {
+		function updateExpenses() {
 			vm.editingStatus = false;
 
 			for (var property in vm.expensesQuery) {
@@ -401,8 +404,6 @@ module.exports = function(app) {
 			}
 		};
 
-		vm.updateExpenses();
-
 		var usersPromise = UsersService.getUsers();
 		var categoriesPromise = CategoriesService.getCategories();
 		vm.users = [];
@@ -412,6 +413,9 @@ module.exports = function(app) {
 		$q.all([usersPromise, categoriesPromise]).then(function(data) {
 			vm.users = data[0] || [];
 			vm.categories = data[1] || [];
+			vm.newMoney.user = _.find(vm.users, function(user) {
+				return user.serverUserId === $rootScope.currentUser.global_id;
+			}).name
 		});
 
 		vm.isIncome = function(text) {

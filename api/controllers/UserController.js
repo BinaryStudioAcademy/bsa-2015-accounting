@@ -111,7 +111,6 @@ function getUsers(req, res) {
 				user.budget.used = 0;
 				user.budget.left = 0;
 				personalExpenses.forEach(function(expense) {
-					console.log('expenses',expense);
 					if(expense.income) {
 						if (expense.currency !== "UAH") {
 							var expDate = new Date(expense.time * 1000);
@@ -150,7 +149,6 @@ function getUsers(req, res) {
 
 function updateUser(req, res) {
 	var pk = actionUtil.requirePk(req);
-	console.log(pk);
 	var values = actionUtil.parseValues(req);
 
 	var idParamExplicitlyIncluded = ((req.body && req.body.id) || req.query.id);
@@ -159,7 +157,6 @@ function updateUser(req, res) {
 	User.findOne(pk).exec(function (err, user) {
 		if (err) return res.serverError(err);
 		if (!user) return res.notFound();
-
 		var action = 'edited';
 		if ((values.setAdminStatus === true || values.setAdminStatus === false) && (req.user.role === 'ADMIN' || req.user.admin)) {
 			user.admin = values.setAdminStatus;
@@ -176,6 +173,9 @@ function updateUser(req, res) {
 			}
 		}
 
+		var log = {who: req.user.global_id, action: action, type: 'user',
+			target: user.global_id, time: Number((new Date().getTime() / 1000).toFixed())};
+
 		if (values.editPersonalBudget) {
 			if (values.editPersonalBudget > 0) {
 				action = '+ ' + values.editPersonalBudget + ' UAH';
@@ -184,10 +184,9 @@ function updateUser(req, res) {
 			}
 			if (user.budget) {user.budget += values.editPersonalBudget;}
 			else user.budget = values.editPersonalBudget;
+			log.fromWho = values.fromUser;
+			log.action = action;
 		}
-
-		var log = {who: req.user.global_id, action: action, type: 'user',
-			target: user.global_id, time: Number((new Date().getTime() / 1000).toFixed())};
 
 		user.save(function (err) {
 			if (err) return res.serverError(err);

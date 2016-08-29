@@ -8,6 +8,10 @@
 				span.title Currency:
 				span(editable-select='personalCtrl.newMoney.currency', e-name='currency', e-form='moneyForm', e-ng-options='currency for currency in personalCtrl.currency', onbeforesave="personalCtrl.checkField($data)", onaftersave='personalCtrl.editNewMoneyObject($data, "currency")', e-required='')
 					| {{ personalCtrl.newMoney.currency }}
+			div
+				span.title From:
+				span(editable-text="personalCtrl.newMoney.user", e-name='user', e-form='moneyForm', e-typeahead="user.name for user in personalCtrl.users | filter:$viewValue | limitTo:8", onaftersave='personalCtrl.editNewMoneyObject($data, "user")')
+					| {{ personalCtrl.newMoney.user }}
 			#button-group
 				span(ng-show='moneyForm.$visible')
 					button.action-button.btn.btn-primary(type='submit', ng-disabled='moneyForm.$waiting', ng-show="showAddButton")
@@ -61,11 +65,14 @@
 							| Amount
 						th.header-text
 							| User
+						th.header-text
+							| From
 				tbody
 					tr(ng-repeat="event in personalCtrl.history")
 						td {{event.time | date:'dd.MM.yyyy - HH:mm'}}
 						td(ng-class='[{green: personalCtrl.isIncome(event.action)}, {red: !personalCtrl.isIncome(event.action)}]') {{event.action}}
 						td {{event.who}}
+						td {{event.fromWho}}
 		table#income-table.table-hover.fixed
 			colgroup
 				col.col-personal
