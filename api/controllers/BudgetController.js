@@ -23,7 +23,7 @@ function getBudgets(req, res) {
 		var categories = Category.find().then(function(categories) {
 			return categories;
 		});
-		var year = actionUtil.parseCriteria(req).year
+		var year = actionUtil.parseCriteria(req).year;
 		if (year) {
 			var start = Date.parse('01/01/' + year + ' 00:00:00') / 1000;
 			var end = Date.parse('12/31/' + year + ' 23:59:59') / 1000;

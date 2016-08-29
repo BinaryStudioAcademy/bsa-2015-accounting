@@ -93,7 +93,7 @@
 					td
 						span {{ binCtrl.getDisplayCurrency(expense) }}
 					td.mobile-hide
-						button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreExpense(expense.id, expense.name)') restore
+						button.btn.btn-xs.btn-success(ng-click='binCtrl.restoreExpense(expense.id, expense.name)', ng-disabled='!expense.editable') restore
 				tr(ng-if="binCtrl.expenses.length === 0")
 					td(colspan='8') No expenses found
 			tbody(ng-if="binCtrl.expensesQuery.limit === binCtrl.expenses.length")

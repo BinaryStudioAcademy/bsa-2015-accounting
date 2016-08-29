@@ -346,6 +346,9 @@ module.exports = function(app) {
 				vm.updateExpenses();
 				resetNewExpense();
 				$scope.expenseForm.$setPristine();
+			}, function(error){
+				vm.newExpense.date = new Date(vm.newExpense.time * 1000);
+				swal("Error!", error.data, "error");
 			});
 		};
 

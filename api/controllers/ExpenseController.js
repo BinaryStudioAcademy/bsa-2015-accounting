@@ -60,17 +60,6 @@ function getExpenses(req, res) {
 		});
 		return [expenses, categories, exchangeRates];
 	}).spread(function(expenses, categories, exchangeRates) {
-		var compareDays = function(time1, time2) {
-			var date1 = new Date(time1 * 1000);
-			var date2 = new Date(time2 * 1000);
-			return (date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate());
-		};
-		var getExchangeRate = function(time) {
-			var rate = _.find(exchangeRates, function(exchangeRate) {
-				return compareDays(time, exchangeRate.time);
-			});
-			return rate ? rate.rate : exchangeRates[0].rate;
-		}
 		expenses.forEach(function(expense) {
 			var category = _.find(categories, {id: expense.categoryId});
 			expense.category = {
@@ -82,9 +71,11 @@ function getExpenses(req, res) {
 				name: _.find(category.subcategories, {id: expense.subcategoryId}).name
 			};
 			if (expense.currency === "UAH") {
-				expense.altPrice = expense.price / getExchangeRate(expense.time);
+				expense.altPrice = expense.price / _getExchangeRate(expense.time, exchangeRates);
 			}
-			else expense.altPrice = expense.price * getExchangeRate(expense.time);
+			else expense.altPrice = expense.price * _getExchangeRate(expense.time, exchangeRates);
+			if(req.user.role === 'ADMIN' || req.user.admin) expense.editable = true;
+			else expense.editable = _checkForEdit(expense.time);
 			delete expense.categoryId;
 			delete expense.subcategoryId;
 		});
@@ -135,17 +126,6 @@ function findPersonalExpenses(req, res) {
 		});
 		return [expenses, categories, exchangeRates];
 	}).spread(function(expenses, categories, exchangeRates) {
-		var compareDays = function(time1, time2) {
-			var date1 = new Date(time1 * 1000);
-			var date2 = new Date(time2 * 1000);
-			return (date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate());
-		};
-		var getExchangeRate = function(time) {
-			var rate = _.find(exchangeRates, function(exchangeRate) {
-				return compareDays(time, exchangeRate.time);
-			});
-			return rate ? rate.rate : exchangeRates[0].rate;
-		}
 		expenses.forEach(function(expense) {
 			var category = _.find(categories, {id: expense.categoryId});
 			expense.category = {
@@ -157,11 +137,13 @@ function findPersonalExpenses(req, res) {
 				name: _.find(category.subcategories, {id: expense.subcategoryId}).name
 			};
 			if (expense.currency === "UAH") {
-				expense.altPrice = expense.price / getExchangeRate(expense.time);
+				expense.altPrice = expense.price / _getExchangeRate(expense.time, exchangeRates);
 			}
-			else expense.altPrice = expense.price * getExchangeRate(expense.time);
+			else expense.altPrice = expense.price * _getExchangeRate(expense.time, exchangeRates);
 			delete expense.categoryId;
 			delete expense.subcategoryId;
+			if(req.user.role === 'ADMIN' || req.user.admin) expense.editable = true;
+			else expense.editable = _checkForEdit(expense.time);
 		});
 		if (priceSorting) {
 			expenses.sort(function(a, b) {
@@ -180,6 +162,8 @@ function findPersonalExpenses(req, res) {
 function createExpense(req, res) {
 	var data = actionUtil.parseValues(req);
 	data.creatorId = req.user.global_id || "unknown id";
+	if(!(req.user.role === 'ADMIN' || req.user.admin)) 
+		if(!_checkForEdit(data.time)) return res.negotiate("This period is closed to edit");
 	Expense.create(data).exec(function created (err, newInstance) {
 		if (err) return res.negotiate(err);
 		var log = {who: req.user.global_id, action: 'created', type: 'expense', target: newInstance.id, time: Number((new Date().getTime() / 1000).toFixed())};
@@ -219,17 +203,6 @@ function findDeleted(req, res) {
 			});
 			return [expenses, categories, exchangeRates];
 		}).spread(function(expenses, categories, exchangeRates) {
-			var compareDays = function(time1, time2) {
-				var date1 = new Date(time1 * 1000);
-				var date2 = new Date(time2 * 1000);
-				return (date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate());
-			};
-			var getExchangeRate = function(time) {
-				var rate = _.find(exchangeRates, function(exchangeRate) {
-					return compareDays(time, exchangeRate.time);
-				});
-				return rate ? rate.rate : exchangeRates[0].rate;
-			}
 			expenses.forEach(function(expense) {
 				var category = _.find(categories, {id: expense.categoryId});
 				expense.category = {
@@ -241,9 +214,11 @@ function findDeleted(req, res) {
 					name: _.find(category.subcategories, {id: expense.subcategoryId}).name
 				};
 				if (expense.currency === "UAH") {
-					expense.altPrice = expense.price / getExchangeRate(expense.time);
+					expense.altPrice = expense.price / _getExchangeRate(expense.time, exchangeRates);
 				}
-				else expense.altPrice = expense.price * getExchangeRate(expense.time);
+				else expense.altPrice = expense.price * _getExchangeRate(expense.time, exchangeRates);
+				if(req.user.role === 'ADMIN' || req.user.admin) expense.editable = true;
+				else expense.editable = _checkForEdit(expense.time);
 				delete expense.categoryId;
 				delete expense.subcategoryId;
 			});
@@ -278,4 +253,27 @@ function restoreDeleted(req, res) {
 				return res.ok(results);
 			});
 	});
+}
+
+//privat
+function _compareDays(time1, time2) {
+	var date1 = new Date(time1 * 1000);
+	var date2 = new Date(time2 * 1000);
+	return (date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate());
+}
+
+function _getExchangeRate(time, exchangeRates) {
+	var rate = _.find(exchangeRates, function(exchangeRate) {
+		return _compareDays(time, exchangeRate.time);
+	});
+	return rate ? rate.rate : exchangeRates[0].rate;
+}
+//false if date before 15 date of month 
+function _checkForEdit(time) {	
+	var now = new Date();
+	var date = new Date(time * 1000);
+	if(date.getFullYear() < now.getFullYear()) return false;
+	if((now.getMonth() - date.getMonth()) >= 2) return false;
+	if(((now.getMonth() - date.getMonth()) === 1) && now.getDate() > 15) return false;
+	return true;
 }
