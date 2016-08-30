@@ -33,6 +33,14 @@ module.exports = function(app) {
 		vm.currencies = ['UAH', 'USD'];
 		vm.currency = 'Original';
 
+		vm.updateCurrentUser = updateCurrentUser;
+
+		function updateCurrentUser(){
+			UsersService.getCurrentUser().then(function(user) {
+				$rootScope.currentUser = user;
+			});
+		};
+
 		vm.allowedToEdit = function(expense) {
 			var access = _.find($rootScope.currentUser.categories, function(cat) {
 				return cat.id === expense.category.id;
@@ -149,6 +157,7 @@ module.exports = function(app) {
 				function() {
 					ExpensesService.deleteExpense(expense.id).then(function() {
 						vm.updateExpenses();
+						updateCurrentUser();
 						swal("Deleted!", expense.name + " has been moved to the recovery bin.", "success");
 					});
 				});
@@ -266,6 +275,7 @@ module.exports = function(app) {
 		};
 
 		vm.updateExpenses();
+		vm.updateCurrentUser();
 
 		vm.checkDate = function() {
 			var res = (vm.newExpense.date > vm.maxDate || vm.newExpense.date < vm.minDate);
@@ -347,6 +357,7 @@ module.exports = function(app) {
 			ExpensesService.createExpense(vm.newExpense).then(function() {
 				vm.updateExpenses();
 				resetNewExpense();
+				updateCurrentUser();
 				$scope.expenseForm.$setPristine();
 			}, function(error){
 				vm.newExpense.date = new Date(vm.newExpense.time * 1000);

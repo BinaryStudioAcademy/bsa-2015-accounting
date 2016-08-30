@@ -11,7 +11,7 @@
 					button#delete-button.btn-xs.btn.btn-warning.fa.fa-ban(type='button', ng-disabled='rateform.$waiting', ng-click='rateform.$cancel();')
 				.buttons(ng-show='!rateform.$visible')
 					button.btn-xs.btn.btn-primary.edit-button.fa.fa-pencil(ng-click='rateform.$show()')
-			span(editable-number='expCtrl.exchangeRate', e-name='rate', e-form='rateform', onbeforesave='expCtrl.checkPrice($data)')
+			span(e-class='exchangeRate', editable-number='expCtrl.exchangeRate', e-name='rate', e-form='rateform', onbeforesave='expCtrl.checkPrice($data)')
 				| {{ expCtrl.exchangeRate || '0' }} UAH for 1 USD
 		form.expense-form(name="expenseForm", ng-submit="expenseForm.$valid && expCtrl.createExpense()", novalidate)
 			input.form-control(type="text", name='Name', placeholder='Expense name', ng-model="expCtrl.newExpense.name", required)
