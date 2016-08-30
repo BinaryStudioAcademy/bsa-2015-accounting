@@ -59,36 +59,23 @@ module.exports = function(app) {
 			});
 		}
 
-		vm.changeCurrency = changeCurrency;
 		vm.currencyLeftModel = "UAH";
 		vm.currencySpentModel = "UAH";
 
-		vm.rateLeft = 1;
-		vm.rateUsed = 1;
-
-		function changeCurrency(moneyType) {
-			if(moneyType == "left") {
-				if(vm.currencyLeftModel == "USD") {
-					vm.rateLeft = vm.exchangeRate;
-					currencyExchangeLeftFlag = false;
-				} else if(vm.currencyLeftModel == "UAH") {
-					vm.rateLeft = 1;
-				}
-			} else {
-				if(vm.currencySpentModel == "USD") {
-					vm.rateUsed = vm.exchangeRate;
-				} else if(vm.currencySpentModel == "UAH") {
-					vm.rateUsed = 1;
-				}
+		vm.getLeft = function() {
+			if(vm.currencyLeftModel === "USD"){
+				return vm.budget.leftUSD;
+			} else{
+				return vm.budget.left;
 			}
 		}
 
-		vm.getLeft = function() {
-			return vm.budget.left / vm.rateLeft;
-		}
-
 		vm.getUsed = function() {
-			return vm.budget.used / vm.rateUsed;
+			if(vm.currencySpentModel === "USD"){
+				return vm.budget.usedUSD;
+			} else{
+				return vm.budget.used;
+			}
 		}
 
 		// Money form
@@ -361,6 +348,7 @@ module.exports = function(app) {
 				function() {
 					ExpensesService.deleteExpense(expense.id).then(function() {
 						vm.updateExpenses();
+						getUsersBudgets();
 						swal("Deleted!", expense.name + " has been moved to the recovery bin.", "success");
 					});
 				});

@@ -84,12 +84,12 @@
 				tr
 					th.header-text
 						| Left&nbsp;
-						.currency-group.btn-group(ng-click="personalCtrl.changeCurrency('left')")
+						.currency-group.btn-group
 							label.btn.btn-primary(ng-model="personalCtrl.currencyLeftModel", btn-radio="'UAH'") UAH
 							label.btn.btn-primary(ng-model="personalCtrl.currencyLeftModel", btn-radio="'USD'") USD
 					th.header-text
 						| Spent&nbsp;
-						.currency-group.btn-group(ng-click="personalCtrl.changeCurrency('spent')")
+						.currency-group.btn-group
 							label.btn.btn-primary(ng-model="personalCtrl.currencySpentModel", btn-radio="'UAH'") UAH
 							label.btn.btn-primary(ng-model="personalCtrl.currencySpentModel", btn-radio="'USD'") USD
 			tbody

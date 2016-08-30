@@ -78,7 +78,7 @@ function getBudgets(req, res) {
 				subExpenses.forEach(function(subExpense) {
 					if (subExpense.income) {
 						if (subExpense.currency !== "USD") {
-							if(subExpense.rate) var rate = subExpense.rate;
+							if(subExpense.exchangeRate) var rate = subExpense.exchangeRate;
 							else var rate = getRate(subExpense.time).rate;
 							subcategory.income += Number((subExpense.price / rate).toFixed(2));
 						}
@@ -88,7 +88,7 @@ function getBudgets(req, res) {
 						return;
 					}
 					if (subExpense.currency !== "USD") {
-						if(subExpense.rate) var rate = subExpense.rate;
+						if(subExpense.exchangeRate) var rate = subExpense.exchangeRate;
 						else var rate = getRate(subExpense.time).rate;
 						subcategory.used += Number((subExpense.price / rate).toFixed(2));
 					}

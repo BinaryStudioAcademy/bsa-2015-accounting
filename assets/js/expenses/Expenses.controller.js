@@ -352,7 +352,7 @@ module.exports = function(app) {
 		vm.createExpense = function() {
 			vm.newExpense.creatorId = $rootScope.currentUser.global_id;
 			vm.newExpense.time = Number((vm.newExpense.date.getTime() / 1000).toFixed());
-			if(vm.exchangeRate !== $rootScope.exchangeRate) vm.newExpense.rate = vm.exchangeRate;
+			if(vm.exchangeRate !== $rootScope.exchangeRate) vm.newExpense.exchangeRate = vm.exchangeRate;
 			delete vm.newExpense.date;
 			ExpensesService.createExpense(vm.newExpense).then(function() {
 				vm.updateExpenses();

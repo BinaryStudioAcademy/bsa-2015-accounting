@@ -46,6 +46,10 @@ module.exports = {
 		income: {
 			type: 'boolean',
 			defaultsTo: false
+		},
+		exchangeRate: {
+			type: 'float',
+			required: false
 		}
 	}
 };

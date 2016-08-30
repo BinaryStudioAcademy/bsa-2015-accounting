@@ -16,47 +16,15 @@ module.exports = {
 };
 
 function getCurrentUser(req, res) {
-	Expense.find({deletedBy: {$exists: false}, creatorId: req.user.global_id})
+	Expense.find({deletedBy: {$exists: false}, creatorId: req.user.global_id, personal: true})
 		.then(function(expenses) {
 			var currencies = Currency.find().then(function(currencies) {
 				return currencies;
 			});
 			return [expenses, currencies];
 		}).spread(function(expenses, currencies) {
-				var budget = req.user.budget || 0;
-				req.user.budget = {};
-				req.user.budget.left = budget;
-				req.user.budget.used = 0;
-				expenses.forEach(function(expense) {
-					if(!expense.personal) return;
-					if(expense.rate) var rate = expense.rate;
-					else{
-						var expDate = new Date(expense.time * 1000);
-						var rate = _.find(currencies, function(currency) {
-							var currDate = new Date(currency.time * 1000);
-							return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
-						});
-						rate = rate ? rate.rate : currencies[currencies.length - 1].rate;
-					}
-					if(expense.income) {
-						if (expense.currency !== "UAH") {
-							req.user.budget.left += (expense.price * rate);
-						}
-						else {
-							req.user.budget.left += expense.price;
-						}
-						return; 
-					}
-					if (expense.currency !== "UAH") {
-						req.user.budget.used += (expense.price * rate);
-					}
-					else {
-						req.user.budget.used += expense.price;
-					}
-				});
-				req.user.budget.used = Number(req.user.budget.used.toFixed(2));
-				req.user.budget.left -= req.user.budget.used;
-			return res.send(req.user);
+				var user = _countUserBudget(req.user, expenses, currencies);
+			return res.send(user);
 		}).fail(function(err) {
 			return res.send(err);
 		});
@@ -101,38 +69,7 @@ function getUsers(req, res) {
 				var personalExpenses = _.filter(expenses, function(expense) {
 					return (expense.creatorId == user.global_id);
 				});
-				var budget = user.budget || 0;
-				user.budget = {};
-				user.budget.used = 0;
-				user.budget.left = 0;
-				personalExpenses.forEach(function(expense) {
-					if(expense.rate) var rate = expense.rate;
-					else{
-						var expDate = new Date(expense.time * 1000);
-						var rate = _.find(currencies, function(currency) {
-							var currDate = new Date(currency.time * 1000);
-							return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
-						});
-						rate = rate ? rate.rate : currencies[currencies.length - 1].rate;
-					}
-					if(expense.income) {
-						if (expense.currency !== "UAH") {
-							user.budget.left += (expense.price * rate);
-						}
-						else {
-							user.budget.left += expense.price;
-						}
-						return; 
-					}
-					if (expense.currency !== "UAH") {
-						user.budget.used += (expense.price * rate);
-					}
-					else {
-						user.budget.used += expense.price;
-					}
-				});
-				user.budget.used = Number(user.budget.used.toFixed(2));
-				user.budget.left -= user.budget.used;
+				user = _countUserBudget(user, personalExpenses, currencies);
 			});
 			return res.send(users);
 		}).fail(function(err) {
@@ -190,4 +127,63 @@ function updateUser(req, res) {
 			});
 		});
 	});
+}
+
+function _countUserBudget(user, expenses, currencies){
+	var budget = user.budget || 0;	
+	user.budget = {};
+	user.budget.left = budget;
+	user.budget.leftUSD = budget / _getExchangeRate(Number((new Date().getTime() / 1000).toFixed()), currencies);
+	user.budget.used = 0;
+	user.budget.usedUSD = 0;	
+	expenses.forEach(function(expense) {
+		if(expense.exchangeRate) var rate = expense.exchangeRate;
+		else{
+			var rate = _getExchangeRate(expense.time, currencies)
+			// var expDate = new Date(expense.time * 1000);
+			// var rate = _.find(currencies, function(currency) {
+			// 	var currDate = new Date(currency.time * 1000);
+			// 	return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
+			// });
+			// rate = rate ? rate.rate : currencies[currencies.length - 1].rate;
+		}
+		if(expense.income) {
+			if (expense.currency !== "UAH") {
+				user.budget.left += (expense.price * rate);
+				user.budget.leftUSD += expense.price;
+			}
+			else {
+				user.budget.left += expense.price;
+				user.budget.leftUSD += (expense.price / rate);
+			}
+			return; 
+		}
+		if (expense.currency !== "UAH") {
+			user.budget.used += (expense.price * rate);
+			user.budget.usedUSD += expense.price;
+		}
+		else {
+			user.budget.used += expense.price;
+			user.budget.usedUSD += (expense.price / rate);
+		}
+	});
+	user.budget.used = Number(user.budget.used.toFixed(2));
+	user.budget.usedUSD = Number(user.budget.usedUSD.toFixed(2));
+	user.budget.left -= user.budget.used;
+	user.budget.leftUSD -= user.budget.usedUSD;
+	return user;
+}
+
+
+function _compareDays(time1, time2) {
+	var date1 = new Date(time1 * 1000);
+	var date2 = new Date(time2 * 1000);
+	return (date1.getFullYear() === date2.getFullYear() && date1.getMonth() === date2.getMonth() && date1.getDate() === date2.getDate());
+}
+
+function _getExchangeRate(time, exchangeRates) {
+	var rate = _.find(exchangeRates, function(exchangeRate) {
+		return _compareDays(time, exchangeRate.time);
+	});
+	return rate ? rate.rate : exchangeRates[exchangeRates.length - 1].rate;
 }

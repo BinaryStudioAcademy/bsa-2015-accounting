@@ -70,7 +70,7 @@ function getExpenses(req, res) {
 				id: expense.subcategoryId,
 				name: _.find(category.subcategories, {id: expense.subcategoryId}).name
 			};
-			if(expense.rate) var rate = expense.rate;
+			if(expense.exchangeRate) var rate = expense.exchangeRate;
 			else var rate=_getExchangeRate(expense.time, exchangeRates);
 			if (expense.currency === "UAH") {
 				expense.altPrice = expense.price / rate;
@@ -138,7 +138,7 @@ function findPersonalExpenses(req, res) {
 				id: expense.subcategoryId,
 				name: _.find(category.subcategories, {id: expense.subcategoryId}).name
 			};
-			if(expense.rate) var rate = expense.rate;
+			if(expense.exchangeRate) var rate = expense.exchangeRate;
 			else var rate=_getExchangeRate(expense.time, exchangeRates);
 			if (expense.currency === "UAH") {
 				expense.altPrice = expense.price / rate;
@@ -217,7 +217,7 @@ function findDeleted(req, res) {
 					id: expense.subcategoryId,
 					name: _.find(category.subcategories, {id: expense.subcategoryId}).name
 				};				
-				if(expense.rate) var rate = expense.rate;
+				if(expense.exchangeRate) var rate = expense.exchangeRate;
 				else var rate = _getExchangeRate(expense.time, exchangeRates);
 				if (expense.currency === "UAH") {
 					expense.altPrice = expense.price / rate;
@@ -272,7 +272,7 @@ function _getExchangeRate(time, exchangeRates) {
 	var rate = _.find(exchangeRates, function(exchangeRate) {
 		return _compareDays(time, exchangeRate.time);
 	});
-	return rate ? rate.rate : exchangeRates[0].rate;
+	return rate ? rate.rate : exchangeRates[exchangeRates.length - 1].rate;
 }
 //false if date before 15 date of month 
 function _checkForEdit(time) {	
