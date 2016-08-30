@@ -334,7 +334,6 @@ module.exports = function(app) {
 			vm.maxDate = new Date();
 			vm.newExpense = { date: date, currency: "UAH" };
 			vm.exchangeRate = $rootScope.exchangeRate;
-			vm.exchangeRateChanged = false;
 		}
 
 		resetNewExpense();
@@ -343,7 +342,7 @@ module.exports = function(app) {
 		vm.createExpense = function() {
 			vm.newExpense.creatorId = $rootScope.currentUser.global_id;
 			vm.newExpense.time = Number((vm.newExpense.date.getTime() / 1000).toFixed());
-			if(vm.exchangeRateChanged) vm.newExpense.rate = vm.exchangeRate;
+			if(vm.exchangeRate !== $rootScope.exchangeRate) vm.newExpense.rate = vm.exchangeRate;
 			delete vm.newExpense.date;
 			ExpensesService.createExpense(vm.newExpense).then(function() {
 				vm.updateExpenses();
