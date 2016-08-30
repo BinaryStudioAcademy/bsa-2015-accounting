@@ -70,10 +70,12 @@ function getExpenses(req, res) {
 				id: expense.subcategoryId,
 				name: _.find(category.subcategories, {id: expense.subcategoryId}).name
 			};
+			if(expense.rate) var rate = expense.rate;
+			else var rate=_getExchangeRate(expense.time, exchangeRates);
 			if (expense.currency === "UAH") {
-				expense.altPrice = expense.price / _getExchangeRate(expense.time, exchangeRates);
+				expense.altPrice = expense.price / rate;
 			}
-			else expense.altPrice = expense.price * _getExchangeRate(expense.time, exchangeRates);
+			else expense.altPrice = expense.price * rate;
 			if(req.user.role === 'ADMIN' || req.user.admin) expense.editable = true;
 			else expense.editable = _checkForEdit(expense.time);
 			delete expense.categoryId;
@@ -136,10 +138,12 @@ function findPersonalExpenses(req, res) {
 				id: expense.subcategoryId,
 				name: _.find(category.subcategories, {id: expense.subcategoryId}).name
 			};
+			if(expense.rate) var rate = expense.rate;
+			else var rate=_getExchangeRate(expense.time, exchangeRates);
 			if (expense.currency === "UAH") {
-				expense.altPrice = expense.price / _getExchangeRate(expense.time, exchangeRates);
+				expense.altPrice = expense.price / rate;
 			}
-			else expense.altPrice = expense.price * _getExchangeRate(expense.time, exchangeRates);
+			else expense.altPrice = expense.price * rate;
 			delete expense.categoryId;
 			delete expense.subcategoryId;
 			if(req.user.role === 'ADMIN' || req.user.admin) expense.editable = true;
@@ -212,11 +216,13 @@ function findDeleted(req, res) {
 				expense.subcategory = {
 					id: expense.subcategoryId,
 					name: _.find(category.subcategories, {id: expense.subcategoryId}).name
-				};
+				};				
+				if(expense.rate) var rate = expense.rate;
+				else var rate = _getExchangeRate(expense.time, exchangeRates);
 				if (expense.currency === "UAH") {
-					expense.altPrice = expense.price / _getExchangeRate(expense.time, exchangeRates);
+					expense.altPrice = expense.price / rate;
 				}
-				else expense.altPrice = expense.price * _getExchangeRate(expense.time, exchangeRates);
+				else expense.altPrice = expense.price * rate;
 				if(req.user.role === 'ADMIN' || req.user.admin) expense.editable = true;
 				else expense.editable = _checkForEdit(expense.time);
 				delete expense.categoryId;

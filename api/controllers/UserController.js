@@ -29,14 +29,17 @@ function getCurrentUser(req, res) {
 				req.user.budget.used = 0;
 				expenses.forEach(function(expense) {
 					if(!expense.personal) return;
+					if(expense.rate) var rate = expense.rate;
+					else{
+						var expDate = new Date(expense.time * 1000);
+						var rate = _.find(currencies, function(currency) {
+							var currDate = new Date(currency.time * 1000);
+							return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
+						});
+						rate = rate ? rate.rate : currencies[currencies.length - 1].rate;
+					}
 					if(expense.income) {
 						if (expense.currency !== "UAH") {
-							var expDate = new Date(expense.time * 1000);
-							var rate = _.find(currencies, function(currency) {
-								var currDate = new Date(currency.time * 1000);
-								return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
-							});
-							rate = rate ? rate.rate : currencies[currencies.length - 1].rate;
 							req.user.budget.left += (expense.price * rate);
 						}
 						else {
@@ -45,14 +48,6 @@ function getCurrentUser(req, res) {
 						return; 
 					}
 					if (expense.currency !== "UAH") {
-						var expDate = new Date(expense.time * 1000);
-						var rate = _.find(currencies, function(currency) {
-							var currDate = new Date(currency.time * 1000);
-							return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
-						});
-						//console.log('first', currencies[0]);
-						//console.log('last', currencies[currencies.length - 1]);
-						rate = rate ? rate.rate : currencies[currencies.length - 1].rate;
 						req.user.budget.used += (expense.price * rate);
 					}
 					else {
@@ -111,14 +106,17 @@ function getUsers(req, res) {
 				user.budget.used = 0;
 				user.budget.left = 0;
 				personalExpenses.forEach(function(expense) {
+					if(expense.rate) var rate = expense.rate;
+					else{
+						var expDate = new Date(expense.time * 1000);
+						var rate = _.find(currencies, function(currency) {
+							var currDate = new Date(currency.time * 1000);
+							return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
+						});
+						rate = rate ? rate.rate : currencies[currencies.length - 1].rate;
+					}
 					if(expense.income) {
 						if (expense.currency !== "UAH") {
-							var expDate = new Date(expense.time * 1000);
-							var rate = _.find(currencies, function(currency) {
-								var currDate = new Date(currency.time * 1000);
-								return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
-							});
-							rate = rate ? rate.rate : currencies[currencies.length - 1].rate;
 							user.budget.left += (expense.price * rate);
 						}
 						else {
@@ -127,11 +125,6 @@ function getUsers(req, res) {
 						return; 
 					}
 					if (expense.currency !== "UAH") {
-						var expDate = new Date(expense.time * 1000);
-						var rate = _.find(currencies, function(currency) {
-							var currDate = new Date(currency.time * 1000);
-							return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
-						});
 						user.budget.used += (expense.price * rate);
 					}
 					else {

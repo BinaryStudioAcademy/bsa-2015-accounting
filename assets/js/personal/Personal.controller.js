@@ -53,6 +53,8 @@ module.exports = function(app) {
 
 		function getUsersBudgets() {
 			UsersService.getCurrentUser().then(function(user) {
+				$rootScope.currentUser = user;
+				vm.currentUser = $rootScope.currentUser;
 				vm.budget = user.budget;
 			});
 		}
