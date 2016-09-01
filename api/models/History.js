@@ -20,6 +20,10 @@ module.exports = {
 		time: {
 			type: 'integer',
 			required: true
+		},
+		income: {
+			type: 'json',
+			required: false
 		}
 	}
 };

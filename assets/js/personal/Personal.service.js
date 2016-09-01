@@ -6,7 +6,8 @@ module.exports = function(app) {
   function PersonalService($resource, $q) {
     return {
       getPersonalExpenses: getPersonalExpenses,
-      getPersonalHistory: getPersonalHistory
+      getPersonalHistory: getPersonalHistory,
+      changeHistory: changeHistory
     };
 
     /*function getPersonalExpenses() {
@@ -36,6 +37,15 @@ module.exports = function(app) {
         });
         return events;
       });
+    }
+
+    function changeHistory(userId, data) {
+			var request = $resource("changeUserBudgetHistory/:id", { id: "@id" }, {
+				update: {
+					method: "PUT"
+				}
+			});
+			return request.update({ id: userId }, data).$promise;
     }
   }
 };

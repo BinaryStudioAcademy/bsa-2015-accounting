@@ -17,6 +17,7 @@ module.exports = function(app) {
 		var vm = this;
 
 		vm.updateExpenses = updateExpenses;
+		vm.changeHistory = changeHistory;
 
 		vm.currentUser = $rootScope.currentUser;
 		vm.history = [];
@@ -27,6 +28,7 @@ module.exports = function(app) {
 				vm.history = data;
 				vm.history.forEach(function(item) {
 					item.time = new Date(item.time * 1000);
+					item.income.newValue = item.income.value;
 				});
 			});
 		}
@@ -381,5 +383,18 @@ module.exports = function(app) {
 		vm.isIncome = function(text) {
 			return text.indexOf('+') > -1 ? true : false;
 		};
+		
+		function changeHistory(event){
+			PersonalService.changeHistory($rootScope.currentUser.id, {historyId: event.id, fromWho: event.income.fromWho, oldValue: event.income.value, newValue: event.income.newValue}).then(function() {
+								getUsersBudgets();
+								getHistory();
+								swal("Ok!", "You !!!!!! personal budget", "success");
+							}, function(error){
+								swal("Error", error.data , "error");
+							});
+			// income:Object
+			// 	fromWho:"hhjk"
+			// 	value:-10
+		}
 	}
 };

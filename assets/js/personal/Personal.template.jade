@@ -53,7 +53,7 @@
 					col.table-money-user
 				thead
 					tr
-						th.tbl-hdr(colspan="4")
+						th.tbl-hdr(colspan="5")
 							| Income money history
 					tr
 						th.header-text
@@ -64,12 +64,25 @@
 							| User
 						th.header-text
 							| From
+						th.header-text
+							| Edit
 				tbody
 					tr(ng-repeat="event in personalCtrl.history")
-						td {{event.time | date:'dd.MM.yyyy - HH:mm'}}
-						td(ng-class='[{green: personalCtrl.isIncome(event.action)}, {red: !personalCtrl.isIncome(event.action)}]') {{event.action}}
-						td {{event.who}}
-						td {{event.fromWho}}
+						td.responsive-hide {{event.time | date:'dd.MM.yyyy - HH:mm'}}
+						td.responsive-hide
+							span(ng-class="{'status-good': personalCtrl.isIncome(event.action), 'status-bad': personalCtrl.isIncome(event.action) == false}", editable-number='event.income.newValue', e-name='price', e-form='historyForm')
+								| {{ event.action || '0' }}
+						td.responsive-hide 
+							span {{event.who}}
+						td.responsive-hide
+							span(editable-text='event.income.fromWho', e-name='name', e-form='historyForm', onbeforesave='personalCtrl.checkName($data)', e-typeahead="user.name for user in personalCtrl.users | filter:$viewValue | limitTo:8")
+								| {{ event.income.fromWho }}
+						td.responsive-hide
+							form.form-buttons.form-inline(editable-form='', name='historyForm', ng-show='historyForm.$visible', onaftersave="personalCtrl.changeHistory(event);personalCtrl.editingHistotyStatus = false")
+								button.btn-xs.btn.btn-success.fa.fa-check(type='submit', ng-disabled='historyForm.$waiting')
+								button#delete-button.btn-xs.btn.btn-warning.fa.fa-ban(type='button', ng-disabled='historyForm.$waiting', ng-click='historyForm.$cancel();personalCtrl.editingHistotyStatus = false')
+							.buttons(ng-show='!historyForm.$visible')
+								button.btn-xs.btn.btn-primary.edit-button.fa.fa-pencil(ng-click='historyForm.$show();personalCtrl.editingHistotyStatus = true', ng-disabled='personalCtrl.editingHistotyStatus')
 		table#income-table.table-hover.fixed
 			colgroup
 				col.col-personal

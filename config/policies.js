@@ -73,7 +73,8 @@ module.exports.policies = {
 	},
 	'PersonalController': {
 		'*': true,
-		'find': true
+		'find': true,
+		'changeUserBudgetHistory': 'isThatUser'
 	},
 	'DatabaseController': {
 		'*': true

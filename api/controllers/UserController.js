@@ -115,7 +115,7 @@ function updateUser(req, res) {
 			}
 			if (user.budget) {user.budget += values.editPersonalBudget;}
 			else user.budget = values.editPersonalBudget;
-			log.fromWho = values.fromUser;
+			log.income ={fromWho: values.fromUser, value: values.editPersonalBudget};
 			log.action = action;
 		}
 
@@ -148,7 +148,7 @@ function addMoneyToBudget(req, res) {
 		}
 		if (user.budget) {user.budget += values.editPersonalBudget;}
 		else user.budget = values.editPersonalBudget;
-		var log = {who: req.user.global_id, action: action, type: 'user', fromWho: values.fromUser,
+		var log = {who: req.user.global_id, action: action, type: 'user',income: {fromWho: values.fromUser, value: values.editPersonalBudget},
 			target: user.global_id, time: Number((new Date().getTime() / 1000).toFixed())};
 		user.save(function (err) {
 			if (err) return res.serverError(err);
