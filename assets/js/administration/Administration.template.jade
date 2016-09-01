@@ -46,6 +46,7 @@
 					td.responsive-hide
 						button.btn.btn-xs.btn-primary(ng-click='admCtrl.editPersonalBudget(user, true)') add
 						button.btn.btn-xs.btn-danger(ng-click='admCtrl.editPersonalBudget(user, false)') take
+						button.btn.btn-xs.btn-danger(ng-click='admCtrl.resetBudget(user)') reset
 					td.responsive-hide(ng-class="{bad: user.budget.left < 0}") {{user.budget.left/admCtrl.rate || 0 | currency:(admCtrl.currency + " ")}}
 						span(ng-show='user.budget.left < 0')  overuse!
 					td.responsive-hide {{user.budget.used/admCtrl.rate || 0 | currency:(admCtrl.currency + " ")}}

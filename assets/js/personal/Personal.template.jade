@@ -28,9 +28,6 @@
 			i.fa.fa-minus
 		button#history-button.btn.btn-warning(ng-click="personalCtrl.isCollapsedMoneyTable = !personalCtrl.isCollapsedMoneyTable; personalCtrl.changeMoneyText()", ng-hide="personalCtrl.history.length == 0") {{personalCtrl.moneyButtonText}} income money history&nbsp;
 			i.fa.fa-money
-		button#give-button.btn.btn-danger(type='button', ng-click='personalCtrl.resetBudget();')
-			| Reset budget&nbsp;
-			i.fa.fa-undo
 	#main
 		//- table.table-hover.fixed(ng-if="!personalCtrl.isCollapsedMoneyTable")
 		//- 	colgroup

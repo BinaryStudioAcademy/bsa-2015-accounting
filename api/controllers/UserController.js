@@ -33,7 +33,7 @@ function getCurrentUser(req, res) {
 
 function resetBudget(req, res){
 	var pk = actionUtil.requirePk(req);
-	User.findOne(pk).exec(function (err, user) {	
+	User.findOne({global_id: pk}).exec(function (err, user) {
 		if (err) return res.serverError(err);
 
 		user.budget = 0;

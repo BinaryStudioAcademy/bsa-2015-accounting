@@ -21,9 +21,10 @@ module.exports = function(app) {
 
 		vm.currency = 'UAH';
 		vm.rate = 1;
+		
+		vm.resetBudget = resetBudget;
 
 		var usersPromise = UsersService.getUsers();
-		//var categoriesPromise = CategoriesService.getCategories();
 		var categoriesPromise = CategoriesService.getActiveCategories();
 
 		$q.all([usersPromise, categoriesPromise]).then(function(data) {
@@ -125,5 +126,26 @@ module.exports = function(app) {
 			}
 			return result;
 		};
+
+		// Reset budget
+		function resetBudget(user){
+			swal({
+				title: "Are you sure?",
+				text: "You're about to reset "+ user.name +" budget ",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Yes, reset it!",
+				closeOnConfirm: false
+			},
+			function() {
+				UsersService.resetUserBudget(user.serverUserId).then(function(){
+					swal("Reset!", "Budget of " + user.name + " has been reseted.", "success");
+					vm.updateUsers();
+				}, function(error){
+					swal("Error!", error.data ,"error")
+				});	
+			});			
+		}
 	}
 };
