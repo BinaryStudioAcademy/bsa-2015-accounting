@@ -34,6 +34,7 @@ module.exports = function(app) {
 		vm.currency = 'Original';
 
 		vm.updateCurrentUser = updateCurrentUser;
+		vm.checkIfAdmin = checkIfAdmin;
 
 		function updateCurrentUser(){
 			UsersService.getCurrentUser().then(function(user) {
@@ -46,9 +47,12 @@ module.exports = function(app) {
 				return cat.id === expense.category.id;
 			});
 			access = access && access.level > 1;
-			return (access && $rootScope.currentUser.global_id === expense.creator.global_id && expense.editable) 
-				|| $rootScope.currentUser.admin || $rootScope.currentUser.role === "ADMIN";
+			return (access && $rootScope.currentUser.global_id === expense.creator.global_id && expense.editable) || vm.checkIfAdmin();
 		};
+		
+		function checkIfAdmin(){
+			return $rootScope.currentUser.admin || $rootScope.currentUser.role === "ADMIN";
+		}
 
 		vm.timeToDate = function(time) {
 			return new Date(time * 1000);
@@ -343,7 +347,7 @@ module.exports = function(app) {
 			date.setSeconds(0);
 			date.setMilliseconds(0);
 			vm.maxDate = new Date();
-			vm.newExpense = { date: date, currency: "UAH" };
+			vm.newExpense = { date: date, currency: "UAH", personal: true };
 			vm.exchangeRate = $rootScope.exchangeRate;
 		}
 

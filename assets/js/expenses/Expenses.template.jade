@@ -33,7 +33,7 @@
 				option UAH
 				option USD
 			.expense-checkbox-container#personal-container
-				input(type='checkbox', name='Personal', ng-model="expCtrl.newExpense.personal")
+				input(type='checkbox', name='Personal', ng-model="expCtrl.newExpense.personal" ng-disabled="!expCtrl.checkIfAdmin()")
 				span#personal-label Use personal budget
 			.expense-checkbox-container
 				input(type='checkbox', name='Personal', ng-model="expCtrl.newExpense.income")

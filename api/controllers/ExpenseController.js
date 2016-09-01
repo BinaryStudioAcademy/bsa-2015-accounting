@@ -166,8 +166,10 @@ function findPersonalExpenses(req, res) {
 function createExpense(req, res) {
 	var data = actionUtil.parseValues(req);
 	data.creatorId = req.user.global_id || "unknown id";
-	if(!(req.user.role === 'ADMIN' || req.user.admin)) 
-		if(!_checkForEdit(data.time)) return res.negotiate("This period is closed to edit");
+	if(!(req.user.role === 'ADMIN' || req.user.admin)) {
+		if(!data.personal) return res.negotiate("You don't have rights to add not personal expense.")
+		if(!_checkForEdit(data.time)) return res.negotiate("This period is closed to edit.");
+	}
 	Expense.create(data).exec(function created (err, newInstance) {
 		if (err) return res.negotiate(err);
 		var log = {who: req.user.global_id, action: 'created', type: 'expense', target: newInstance.id, time: Number((new Date().getTime() / 1000).toFixed())};
