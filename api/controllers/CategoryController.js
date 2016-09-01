@@ -16,8 +16,8 @@ function find(req, res) {
 		if (err) return res.serverError(err);
 
 		if (queryParams.active) {
-			filter.deletedBy = {$exists: false};
-			Budget.find(filter).exec(function(err, budgets) {
+			var budgetFilter = {deletedBy: {$exists: false}};
+			Budget.find(budgetFilter).exec(function(err, budgets) {
 				if (err) return res.serverError(err);
 
 				res.ok(_.filter(categories, function(category) {

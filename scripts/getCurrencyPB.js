@@ -35,8 +35,8 @@ module.exports = function(res) {
 			var time = Date.parse(formatDate(ratesData.date)) / 1000;
 			var rates = _.find(ratesData.exchangeRate, function(obj) {
 				return obj.currency == "USD";
-			}) || {purchaseRate: 0};
-			var rate = rates.purchaseRate || 0;
+			}) || {saleRate: 0};
+			var rate = rates.saleRate || 0;
 			if (rate === 0) {
 				approximatedArr.push({date: ratesData.date, time: time});
 			}

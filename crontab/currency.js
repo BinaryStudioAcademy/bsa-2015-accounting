@@ -3,7 +3,10 @@ module.exports = {
     var https = require('https');
     var options = {
       host: "api.privatbank.ua",
+      //Наличный курс Приватбанка (в отделениях):
       path: "/p24api/pubinfo?json&exchange&coursid=5"
+      //Безналичный курс Приватбанка (конвертация по картам, Приват24, пополнение вкладов):
+      //path: "p24api/pubinfo?exchange&json&coursid=11"
     };
 
     var callback = function(response) {
@@ -18,7 +21,7 @@ module.exports = {
         var rate = rates.filter(function(obj) {
           return obj.ccy == "USD";
         });
-        addToCollection(rate[0].buy);
+        addToCollection(rate[0].sale);
       });
     };
 
