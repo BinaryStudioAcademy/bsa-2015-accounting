@@ -128,20 +128,15 @@ module.exports = function(app) {
 						if(!add) newBudget = -newBudget;
 
 						if ($rootScope.currentUser.id) {
-							UsersService.editUser($rootScope.currentUser.id, {editPersonalBudget: newBudget, fromUser: vm.newMoney.user}).then(function() {
+							UsersService.addMoneyToBudget($rootScope.currentUser.id, {editPersonalBudget: newBudget, fromUser: vm.newMoney.user}).then(function() {
 								getUsersBudgets();
 								getHistory();
+								swal("Ok!", "You " + addedTookWord + " " + vm.newMoney.money + " "
+									+ vm.newMoney.currency + " " + toFromWord + " your personal budget", "success");
+							}, function(error){
+								swal("Error", error.data , "error");
 							});
 						}
-						else {
-							UsersService.createUser({global_id: $rootScope.currentUser.global_id, budget: newBudget}).then(function() {
-								getUsersBudgets();
-								getHistory();
-							});
-						}
-
-						swal("Ok!", "You " + addedTookWord + " " + vm.newMoney.money + " "
-							+ vm.newMoney.currency + " " + toFromWord + " your personal budget", "success");
 					});
 			} else {
 				// No permissions
@@ -237,7 +232,8 @@ module.exports = function(app) {
 				return cat.id === expense.category.id;
 			});
 			access = access && access.level > 1;
-			return access && $rootScope.currentUser.global_id === expense.creator.global_id;
+			return (access && $rootScope.currentUser.global_id === expense.creatorId && expense.editable)
+				|| $rootScope.currentUser.admin || $rootScope.currentUser.role === "ADMIN";
 		};
 
 		vm.timeToDate = function(time) {
@@ -403,9 +399,6 @@ module.exports = function(app) {
 		$q.all([usersPromise, categoriesPromise]).then(function(data) {
 			vm.users = data[0] || [];
 			vm.categories = data[1] || [];
-			vm.newMoney.user = _.find(vm.users, function(user) {
-				return user.serverUserId === $rootScope.currentUser.global_id;
-			}).name
 		});
 
 		vm.isIncome = function(text) {

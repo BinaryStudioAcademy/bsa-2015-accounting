@@ -12,7 +12,8 @@ module.exports = {
 	find: getUsers,
 	update: updateUser,
 	getCurrentUser: getCurrentUser,
-	resetBudget: resetBudget
+	resetBudget: resetBudget,
+	addMoneyToBudget : addMoneyToBudget
 };
 
 function getCurrentUser(req, res) {
@@ -118,6 +119,37 @@ function updateUser(req, res) {
 			log.action = action;
 		}
 
+		user.save(function (err) {
+			if (err) return res.serverError(err);
+
+			History.create(log).exec(function(errr, log) {
+				if (errr) return res.negotiate(err);
+				res.ok(user);
+			});
+		});
+	});
+}
+
+function addMoneyToBudget(req, res) {
+	var pk = actionUtil.requirePk(req);
+	var values = actionUtil.parseValues(req);
+
+	var idParamExplicitlyIncluded = ((req.body && req.body.id) || req.query.id);
+	if (!idParamExplicitlyIncluded) delete values.id;
+
+	User.findOne(pk).exec(function (err, user) {
+		if (err) return res.serverError(err);
+		if (!user) return res.notFound();
+		var action = 'edited';
+		if (values.editPersonalBudget > 0) {
+			action = '+ ' + values.editPersonalBudget + ' UAH';
+		} else {
+			action = '- ' + (-values.editPersonalBudget) + ' UAH';
+		}
+		if (user.budget) {user.budget += values.editPersonalBudget;}
+		else user.budget = values.editPersonalBudget;
+		var log = {who: req.user.global_id, action: action, type: 'user', fromWho: values.fromUser,
+			target: user.global_id, time: Number((new Date().getTime() / 1000).toFixed())};
 		user.save(function (err) {
 			if (err) return res.serverError(err);
 

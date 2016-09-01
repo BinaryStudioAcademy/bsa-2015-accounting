@@ -52,6 +52,7 @@ module.exports.routes = {
   'get /currency_by_year/:year': 'CurrencyController.find',
 
   'get /user/current': 'UserController.getCurrentUser',
+  'put /user/addToBudget/:id': 'UserController.addMoneyToBudget',
   'put /user/resetBudget/:id': 'UserController.resetBudget',
 
   'get /personal': 'PersonalController.getPersonalHistory',

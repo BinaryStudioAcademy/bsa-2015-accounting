@@ -3,10 +3,12 @@ var _ = require('lodash');
 module.exports = function(app) {
 	app.controller('BinController', BinController);
 
-	BinController.$inject = ['BudgetsService', 'YearsService', 'ExpensesService', '$q'];
+	BinController.$inject = ['BudgetsService', 'YearsService', 'ExpensesService', '$q', '$rootScope'];
 
-	function BinController(BudgetsService, YearsService, ExpensesService, $q) {
+	function BinController(BudgetsService, YearsService, ExpensesService, $q, $rootScope) {
 		var vm = this;
+
+		vm.allowedToEdit = allowedToEdit;
 
 		YearsService.getYears().then(function(years) {
 			vm.years = years.sort(function(a, b){return b - a});
@@ -177,6 +179,15 @@ module.exports = function(app) {
 				});
 			});
 		}
+
+		function allowedToEdit(expense) {
+			var access = _.find($rootScope.currentUser.categories, function(cat) {
+				return cat.id === expense.category.id;
+			});
+			access = access && access.level > 1;
+			return (access && $rootScope.currentUser.global_id === expense.creator.global_id && expense.editable) 
+				|| $rootScope.currentUser.admin || $rootScope.currentUser.role === "ADMIN";
+		};
 
 		vm.updateExpenses();
 	}

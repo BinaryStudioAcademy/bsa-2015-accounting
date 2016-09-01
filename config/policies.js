@@ -65,7 +65,8 @@ module.exports.policies = {
 	 '*': 'isAdmin',
 	 'find': true,
 	 'findOne': 'isThatUser',
-	 'getCurrentUser': true
+	 'getCurrentUser': true,
+	 'addMoneyToBudget': 'isThatUser'
 	},
 	'HistoryController': {
 		'*': 'isGlobalAdmin'

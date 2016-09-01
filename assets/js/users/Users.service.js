@@ -10,7 +10,8 @@ module.exports = function(app) {
 			getCurrentUser: getCurrentUser,
 			createUser: createUser,
 			editUser: editUser,
-			resetUserBudget: resetUserBudget
+			resetUserBudget: resetUserBudget,
+			addMoneyToBudget: addMoneyToBudget
 		};
 
 		function getRequest() {
@@ -57,6 +58,15 @@ module.exports = function(app) {
 
 		function editUser(userId, userData) {
 			var data = $resource("user/:id", { id: "@id" }, {
+				update: {
+					method: "PUT"
+				}
+			});
+			return data.update({ id: userId }, userData).$promise;
+		}
+
+		function addMoneyToBudget(userId, userData) {
+			var data = $resource("user/addToBudget/:id", { id: "@id" }, {
 				update: {
 					method: "PUT"
 				}

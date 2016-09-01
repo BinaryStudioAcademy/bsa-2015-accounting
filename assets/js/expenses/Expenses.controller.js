@@ -46,7 +46,8 @@ module.exports = function(app) {
 				return cat.id === expense.category.id;
 			});
 			access = access && access.level > 1;
-			return access && $rootScope.currentUser.global_id === expense.creator.global_id;
+			return (access && $rootScope.currentUser.global_id === expense.creator.global_id && expense.editable) 
+				|| $rootScope.currentUser.admin || $rootScope.currentUser.role === "ADMIN";
 		};
 
 		vm.timeToDate = function(time) {
