@@ -19,8 +19,10 @@
 					b {{budCtrl.annualBudget | currency}}
 					br
 					span(ng-class="{'status-good': budCtrl.annualUndistributed > 0, 'status-bad': budCtrl.annualUndistributed < 0}") {{budCtrl.annualUndistributed | currency}} 
-					spam(ng-show="budCtrl.annualUndistributed >= 0") undistributed
-					spam(ng-show="budCtrl.annualUndistributed < 0") over distributed
+					spam(ng-show="budCtrl.annualUndistributed >= 0") undistributed 
+					spam(ng-show="budCtrl.annualUndistributed < 0") over distributed 
+					span.status-good(ng-show='budCtrl.annualIncome > 0') / {{budCtrl.annualIncome | currency}}
+					span(ng-show='budCtrl.annualIncome > 0') income
 				td.responsive-hide
 					b {{budCtrl.annualUsed | currency}}
 					br
@@ -49,8 +51,10 @@
 					b(editable-number='budget.category.budget' name='budget' e-form='rowform' onbeforesave='budCtrl.checkBudget($data)') {{budget.category.budget || '0' | currency}}
 					br
 					span(ng-class="{'status-good': (budget.category.undistributed > 0), 'status-bad': (budget.category.undistributed < 0)}") {{budget.category.undistributed | currency}} 
-					spam(ng-show="budget.category.undistributed >= 0") undistributed
-					spam(ng-show="budget.category.undistributed < 0") over distributed
+					spam(ng-show="budget.category.undistributed >= 0") undistributed 
+					spam(ng-show="budget.category.undistributed < 0") over distributed 
+					span.status-good(ng-show='budget.category.income > 0') / {{budget.category.income | currency}} 
+					span(ng-show='budget.category.income > 0')  income
 				th.responsive-hide
 					b {{budget.category.used | currency}}
 					br
@@ -76,6 +80,9 @@
 				td
 					span(editable-number='subcategory.budget', e-name='subcategory.budget', e-form='rowform' onbeforesave='budCtrl.checkBudget($data)')
 						b {{ subcategory.budget || '0' | currency }}
+						br
+						span.status-good(ng-show='subcategory.income > 0') {{subcategory.income | currency}}
+						span(ng-show='subcategory.income > 0') income
 				td.responsive-hide
 					b {{subcategory.used | currency}} 
 					br

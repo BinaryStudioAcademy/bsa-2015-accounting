@@ -171,13 +171,7 @@ function _countUserBudget(user, expenses, currencies){
 	expenses.forEach(function(expense) {
 		if(expense.exchangeRate) var rate = expense.exchangeRate;
 		else{
-			var rate = _getExchangeRate(expense.time, currencies)
-			// var expDate = new Date(expense.time * 1000);
-			// var rate = _.find(currencies, function(currency) {
-			// 	var currDate = new Date(currency.time * 1000);
-			// 	return ((currDate.getFullYear() === expDate.getFullYear()) && (currDate.getMonth() === expDate.getMonth()) && (currDate.getDate() === expDate.getDate()));
-			// });
-			// rate = rate ? rate.rate : currencies[currencies.length - 1].rate;
+			var rate = _getExchangeRate(expense.time, currencies);
 		}
 		if(expense.income) {
 			if (expense.currency !== "UAH") {

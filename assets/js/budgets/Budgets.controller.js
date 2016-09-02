@@ -39,11 +39,13 @@ module.exports = function(app) {
 				vm.annualBudget = 0;
 				vm.annualUsed = 0;
 				vm.annualUndistributed = 0;
+				vm.annualIncome = 0;
 
 				vm.budgets.forEach(function(budget) {
 					vm.annualBudget += budget.category.budget;
 					vm.annualUsed += budget.category.used;
 					vm.annualUndistributed += budget.category.undistributed;
+					vm.annualIncome += budget.category.income;
 				});
 			});
 		};

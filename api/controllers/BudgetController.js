@@ -67,6 +67,7 @@ function getBudgets(req, res) {
 			delete budget.subcategories;
 
 			budget.category.used = 0;
+			budget.category.income = 0;
 			var distributed = 0;
 			budget.category.subcategories.forEach(function(subcategory) {
 				var subExpenses = _.filter(expenses, function(expense) {
@@ -85,19 +86,19 @@ function getBudgets(req, res) {
 						else {
 							subcategory.income += subExpense.price;
 						}
-						return;
-					}
-					if (subExpense.currency !== "USD") {
-						if(subExpense.exchangeRate) var rate = subExpense.exchangeRate;
-						else var rate = getRate(subExpense.time).rate;
-						subcategory.used += Number((subExpense.price / rate).toFixed(2));
-					}
-					else {
-						subcategory.used += subExpense.price;
+					} else {
+						if (subExpense.currency !== "USD") {
+							if(subExpense.exchangeRate) var rate = subExpense.exchangeRate;
+							else var rate = getRate(subExpense.time).rate;
+							subcategory.used += Number((subExpense.price / rate).toFixed(2));
+						}
+						else {
+							subcategory.used += subExpense.price;
+						}
 					}
 				});
 				budget.category.used += subcategory.used;
-				budget.category.budget += subcategory.income;
+				budget.category.income += subcategory.income;
 				distributed += subcategory.budget;
 			});
 			budget.category.undistributed = budget.category.budget - distributed;

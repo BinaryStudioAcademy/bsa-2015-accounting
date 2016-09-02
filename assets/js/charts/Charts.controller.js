@@ -236,7 +236,7 @@ vm.selectedCategory = [];
 				pieChart(uniqueSubcategoryNames, spentByPeriod, titleText);
 			}*/
 
-		function barChart(names, planned, spent, titleTxt) {
+		function barChart(names, planned, spent, income, titleTxt) {
 			if (!planned) {
 				var series = [
 					{
@@ -258,6 +258,12 @@ vm.selectedCategory = [];
 					{
 						name: 'Budgets',
 						data: planned,
+						visible: true,
+						colorByPoint: false
+					},
+					{
+						name: 'Income',
+						data: income,
 						visible: true,
 						colorByPoint: false
 					}
@@ -512,6 +518,7 @@ vm.selectedCategory = [];
 				if (vm.category) {
 					var names = _.pluck(vm.category.subcategories, 'name');
 					var spent = _.map(_.pluck(vm.category.subcategories, 'used'), mathRound);
+					var income = _.map(_.pluck(vm.category.subcategories, 'income'), mathRound);
 					var planned = _.map(_.pluck(vm.category.subcategories, 'budget'), mathRound);
 					var barsTitle = 'Budgets and expenses for ' + vm.category.name + ' ' + vm.year + ' by subcategories';
 					var pieTitle = 'Budgets for ' + vm.category.name + ' ' + vm.year + ' by subcategories';
@@ -519,12 +526,13 @@ vm.selectedCategory = [];
 					var names = _.pluck(vm.budgets, 'category.name');
 					var planned =_.map(_.pluck(vm.budgets, 'category.budget'), mathRound);
 					var spent = _.map(_.pluck(vm.budgets, 'category.used'), mathRound);
+					var income = _.map(_.pluck(vm.budgets, 'category.income'), mathRound);
 					var barsTitle = 'Budgets and expenses ' + vm.year + ' by categories';
 					var pieTitle = 'Budgets ' + vm.year + ' by categories';
 				}
 				vm.pie = Boolean(_.find(planned, function(val) {return val > 0;}));
 				vm.bars = vm.pie || Boolean(_.find(spent, function(val) {return val > 0;}));
-				vm.pie && barChart(names, planned, spent, barsTitle);
+				vm.pie && barChart(names, planned, spent, income, barsTitle);
 				vm.bars && pieChart(names, planned, pieTitle);
 			}
 		};
