@@ -388,13 +388,10 @@ module.exports = function(app) {
 			PersonalService.changeHistory($rootScope.currentUser.id, {historyId: event.id, fromWho: event.income.fromWho, oldValue: event.income.value, newValue: event.income.newValue}).then(function() {
 								getUsersBudgets();
 								getHistory();
-								swal("Ok!", "You !!!!!! personal budget", "success");
+								swal("Ok!", "You change personal budget history.", "success");
 							}, function(error){
 								swal("Error", error.data , "error");
 							});
-			// income:Object
-			// 	fromWho:"hhjk"
-			// 	value:-10
 		}
 	}
 };
