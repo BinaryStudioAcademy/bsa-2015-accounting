@@ -46,7 +46,12 @@ module.exports = function(app) {
 					vm.annualUsed += budget.category.used;
 					vm.annualUndistributed += budget.category.undistributed;
 					vm.annualIncome += budget.category.income;
+					budget.category.left = budget.category.budget - budget.category.used + budget.category.income;
+					budget.category.subcategories.forEach(function(subcategory){
+						subcategory.left = subcategory.budget - subcategory.used + subcategory.income;
+					});
 				});
+				vm.annualLeft = vm.annualBudget - vm.annualUsed + vm.annualIncome;
 			});
 		};
 
