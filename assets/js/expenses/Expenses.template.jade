@@ -63,7 +63,7 @@
 					option(value="") All Categories
 				select(name='subcategory', ng-model="expCtrl.expensesQuery.subcategoryId", ng-options="subcategory.id as subcategory.name for subcategory in expCtrl.getSubcategories(expCtrl.expensesQuery.categoryId)", ng-change="expCtrl.updateExpenses()")
 					option(value="") All Subcategories
-				select(name='author', ng-model="expCtrl.expensesQuery.creatorId", ng-change="expCtrl.updateExpenses()", ng-options="user.serverUserId as user.name for user in expCtrl.users")
+				select(name='author', ng-model="expCtrl.expensesQuery.creatorId", ng-change="expCtrl.updateExpenses()", ng-options="user.serverUserId as user.name for user in expCtrl.users", ng-disabled="!expCtrl.checkIfAdmin()")
 					option(value="") All users
 				a#excel-button.btn.btn-success(ng-click='expCtrl.getExcelSheet()') Get Excel Sheet
 					i.fa.fa-file-excel-o.fa-1g

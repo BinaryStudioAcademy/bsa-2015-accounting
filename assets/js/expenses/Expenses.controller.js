@@ -33,12 +33,35 @@ module.exports = function(app) {
 		vm.currencies = ['UAH', 'USD'];
 		vm.currency = 'Original';
 
-		vm.updateCurrentUser = updateCurrentUser;
+		vm.users = [];
+		vm.categories = [];
+		vm.expenses = [];
+
+		vm.updateExpenses = updateExpenses;
+		//vm.updateCurrentUser = updateCurrentUser;
+		vm.updateAnnualCategories =updateAnnualCategories;
 		vm.checkIfAdmin = checkIfAdmin;
+		vm.timeToDate = timeToDate;
+
+		(function(){
+			vm.updateExpenses();
+			updateCurrentUser();		
+			resetNewExpense();
+			vm.updateAnnualCategories();
+
+			var usersPromise = UsersService.getUsers();
+			var categoriesPromise = CategoriesService.getActiveCategories();
+			
+			$q.all([usersPromise, categoriesPromise]).then(function(data) {
+				vm.users = data[0] || [];
+				vm.categories = data[1] || [];				
+			});
+		}());
 
 		function updateCurrentUser(){
 			UsersService.getCurrentUser().then(function(user) {
 				$rootScope.currentUser = user;
+				if(!checkIfAdmin()) _.assign(vm.expensesQuery, {creatorId: $rootScope.currentUser.global_id});
 			});
 		};
 
@@ -54,11 +77,11 @@ module.exports = function(app) {
 			return $rootScope.currentUser.admin || $rootScope.currentUser.role === "ADMIN";
 		}
 
-		vm.timeToDate = function(time) {
+		function timeToDate(time) {
 			return new Date(time * 1000);
 		};
 
-		vm.updateExpenses = function() {
+		function updateExpenses() {
 			vm.editingStatus = false;
 
 			for (var property in vm.expensesQuery) {
@@ -277,27 +300,12 @@ module.exports = function(app) {
 			}
 			//alasql('SELECT getDate(time) AS Date, category->name AS Category, subcategory->name AS Subcategory, name AS Name, getDisplayPrice(price, altPrice, currency) AS Price, getDisplayCurrency(currency) AS Currency, creator->name AS Creator, description AS Description INTO XLS("' + fileName + '.xls", ?) FROM ?', [mystyle, vm.expenses]);
 			alasql('SELECT getDate(time) AS Date, category->name AS Category, subcategory->name AS Subcategory, name AS Name, getDisplayPrice(price, altPrice, currency) AS Price, getDisplayCurrency(currency) AS Currency, creator->name AS Creator, description AS Description INTO XLSX("' + fileName + '.xlsx", ?) FROM ?', [mystyle, vm.expenses]);
-		};
-
-		vm.updateExpenses();
-		vm.updateCurrentUser();
+		};		
 
 		vm.checkDate = function() {
 			var res = (vm.newExpense.date > vm.maxDate || vm.newExpense.date < vm.minDate);
 			return res;
 		};
-
-		var usersPromise = UsersService.getUsers();
-		//var categoriesPromise = CategoriesService.getCategories();
-		var categoriesPromise = CategoriesService.getActiveCategories();
-		vm.users = [];
-		vm.categories = [];
-		vm.expenses = [];
-
-		$q.all([usersPromise, categoriesPromise]).then(function(data) {
-			vm.users = data[0] || [];
-			vm.categories = data[1] || [];
-		});
 
 		//Add expense form
 
@@ -312,7 +320,7 @@ module.exports = function(app) {
 		});
 
 
-		vm.updateAnnualCategories = function() {
+		function updateAnnualCategories() {
 			vm.maxDate = new Date();
 			vm.newExpense.date && BudgetsService.getBudgets(vm.newExpense.date.getFullYear()).then(function(data) {
 
@@ -350,9 +358,6 @@ module.exports = function(app) {
 			vm.newExpense = { date: date, currency: "UAH", personal: true };
 			vm.exchangeRate = $rootScope.exchangeRate;
 		}
-
-		resetNewExpense();
-		vm.updateAnnualCategories();
 
 		vm.createExpense = function() {
 			vm.newExpense.creatorId = $rootScope.currentUser.global_id;

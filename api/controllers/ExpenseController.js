@@ -28,7 +28,7 @@ function getExpenses(req, res) {
 		var end = Date.parse('12/31/' + year + ' 23:59:59') / 1000;
 		filter = {deletedBy: {$exists: false}, time: {$gte: start, $lte: end }};
 	}
-	var expenseFilter = req.user.role === 'ADMIN' || req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}});
+	var expenseFilter = req.user.role === 'ADMIN' || req.user.admin ? filter : _.assign(filter, {'categoryId': {$in: permissions}},{'personal': true});	
 	var queryParams = actionUtil.parseCriteria(req);
 	expenseFilter = queryParams.name ? _.assign(expenseFilter, {name: {'contains': queryParams.name}}) : expenseFilter;
 	expenseFilter = queryParams.categoryId ? _.assign(expenseFilter, {categoryId: queryParams.categoryId}) : expenseFilter;
