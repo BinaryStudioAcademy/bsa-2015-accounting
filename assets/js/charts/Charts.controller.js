@@ -244,6 +244,12 @@ vm.selectedCategory = [];
 						data: spent,
 						visible: true,
 						colorByPoint: false
+					 },
+					{
+						name: 'Income',
+						data: income,
+						visible: true,
+						colorByPoint: false
 					}
 					];
 			}
@@ -256,14 +262,14 @@ vm.selectedCategory = [];
 						colorByPoint: false
 					},
 					{
-						name: 'Budgets',
-						data: planned,
+						name: 'Income',
+						data: income,
 						visible: true,
 						colorByPoint: false
 					},
 					{
-						name: 'Income',
-						data: income,
+						name: 'Budgets',
+						data: planned,
 						visible: true,
 						colorByPoint: false
 					}
@@ -271,7 +277,7 @@ vm.selectedCategory = [];
 			}
 			
 			$('#barChart').highcharts({
-				colors: ["#7cb5ec", "#f7a35c", "#90ee7e", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
+				colors: ["#f7a35c", "#90ee7e", "#7cb5ec", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
 				chart: {
 					type: 'bar'
 				},
@@ -431,33 +437,24 @@ vm.selectedCategory = [];
 
 		YearsService.getYears().then(function(data) {
 			vm.years = data;
-			/*if (vm.years.length === 0) {
-				vm.years = [vm.year];
-			}*/
 		});
-
-		
-
-		
-
 
 
 		vm.getData = function() {
-			BudgetsService.getBudgets().then(function(data) {
-				vm.allBudgets = data;
-				vm.budgets = _.filter(vm.allBudgets, {year: Number(vm.year)});
+			if($rootScope.isAdmin()){
+				BudgetsService.getBudgets().then(function(data) {
+					vm.allBudgets = data;
+					vm.budgets = _.filter(vm.allBudgets, {year: Number(vm.year)});
 
-				vm.allCategories = _.uniq(_.pluck(vm.allBudgets, 'category.name'));
-				vm.categories = _.pluck(vm.budgets, 'category');
+					vm.allCategories = _.uniq(_.pluck(vm.allBudgets, 'category.name'));
+					vm.categories = _.pluck(vm.budgets, 'category');
 
-				vm.drawCharts();
-			});
-			/*BudgetsService.getBudgets(vm.year).then(function(data) {
-				vm.budgets = data;
-				vm.categories = _.pluck(vm.budgets, 'category');
-
-				vm.drawCharts();
-			});*/
+					vm.drawCharts();
+				});
+			} else	{
+				vm.rangeType = 'dates';
+				vm.updateRangeType();
+			}
 		};
 
 		vm.drawCharts = function() {
@@ -465,26 +462,38 @@ vm.selectedCategory = [];
 				var query = {};
 				if (vm.startDate) {query.startDate = vm.startDate}
 				if (vm.endDate) {query.endDate = vm.endDate}
-				//if (vm.category) {query.categoryId = vm.category.id}
+
 				ExpensesService.getExpenses(query).then(function(data) {
 					vm.expenses = data;
 					////////////////////////////////
 					var names = _.uniq(_.pluck(vm.expenses, 'category.name'));
 					var spent = [];
+					var income = [];
 					names.forEach(function(name) {
 						var expenses = _.filter(vm.expenses, function(expense) {
 							return expense.category.name === name;
 						});
-						var sum = 0;
+						var sumSpent = 0;
+						var sumIncome = 0;
 						expenses.forEach(function(expense) {
-							if (expense.currency === vm.currency) {
-								sum += expense.price;
-							}
-							else {
-								sum += expense.altPrice;
+							if(expense.income) {
+								if (expense.currency === vm.currency) {
+									sumIncome += expense.price;
+								}
+								else {
+									sumIncome += expense.altPrice;
+								}
+							} else {
+								if (expense.currency === vm.currency) {
+									sumSpent += expense.price;
+								}
+								else {
+									sumSpent += expense.altPrice;
+								}
 							}
 						});
-						spent.push(Number(sum.toFixed(2)));
+						spent.push(Number(sumSpent.toFixed(2)));
+						income.push(Number(sumIncome.toFixed(2)));
 					});
 					var text = 'period since dinosaurs died till today';
 					if (vm.startDate) {
@@ -507,8 +516,10 @@ vm.selectedCategory = [];
 					var title = 'Expenses for ' + text + ' by categories';
 
 					vm.pie = vm.bars = names.length > 0;
-					vm.pie && barChart(names, undefined, spent, title);
-					vm.bars && pieChart(names, spent, title);
+					vm.pie && barChart(names, undefined, spent, income, title);
+					if($rootScope.isAdmin()) {
+						vm.bars && pieChart(names, spent, title);
+					}
 					//////////////////////////////
 				});
 			}

@@ -14,8 +14,12 @@ function getBudgets(req, res) {
 		return per.level >= 1;
 	}), 'id');
 
-	var filter = {deletedBy: {$exists: false}}
-	var budgetFilter = req.user.role === 'ADMIN' || req.user.admin ? filter : _.assign(filter, {'category.id': {$in: permissions}});
+	var budgetFilter = {deletedBy: {$exists: false}};
+	var filter = {deletedBy: {$exists: false}};
+	if(!(req.user.role === 'ADMIN' || req.user.admin)){
+		_.assign(filter, {'categoryId': {$in: permissions}});
+		_.assign(budgetFilter, {'category.id': {$in: permissions}});
+	};
 
 	Budget.find(budgetFilter)
 	.where( actionUtil.parseCriteria(req) )
@@ -24,15 +28,17 @@ function getBudgets(req, res) {
 			return categories;
 		});
 		var year = actionUtil.parseCriteria(req).year;
+		var timeFilter = {};
 		if (year) {
 			var start = Date.parse('01/01/' + year + ' 00:00:00') / 1000;
 			var end = Date.parse('12/31/' + year + ' 23:59:59') / 1000;
-			filter = {deletedBy: {$exists: false}, time: {$gte: start, $lte: end }};
+			timeFilter = {'time': {$gte: start, $lte: end }};
+			_.assign(filter, timeFilter);
 		}
-		var expenses = Expense.find(filter).then(function(categories) {
-			return categories;
+		var expenses = Expense.find(filter).then(function(expenses) {
+			return expenses;
 		});
-		var currencies = Currency.find(filter).then(function(currencies) {
+		var currencies = Currency.find(timeFilter).then(function(currencies) {
 			return currencies;
 		});
 		return [budgets, categories, expenses, currencies];

@@ -14,7 +14,7 @@ module.exports = function(app) {
 			vm.years = years.sort(function(a, b){return b - a});
 			if (!vm.years.length) vm.years = [(new Date().getFullYear())];
 			vm.year = String(vm.years[0]);
-			vm.updateYear();
+			if($rootScope.isAdmin()) vm.updateYear();
 		});
 
 		vm.updateYear = function() {
@@ -24,54 +24,56 @@ module.exports = function(app) {
 		};
 
 		vm.restoreMe = function(id, categoryId, subcategoryId, budget) {
-			BudgetsService.getBudgets(vm.year).then(function(budgets) {
-				var existing = _.find(budgets, {category: {id: categoryId}});
-				var restorePromise = function() {
-					return BudgetsService.editBudget(id, {restore: true});
-				};
-				var deletePromise = function() {
-					return BudgetsService.deleteBudget(existing.id);
-				};
-
-				if (subcategoryId) {
-					existing = _.find(existing.category.subcategories, {id: subcategoryId});
-					restorePromise = function() {
-						return BudgetsService.editBudget(id, {restoreSubcategory: {id: subcategoryId, budget: budget}});
+			if($rootScope.isAdmin()){
+				BudgetsService.getBudgets(vm.year).then(function(budgets) {
+					var existing = _.find(budgets, {category: {id: categoryId}});
+					var restorePromise = function() {
+						return BudgetsService.editBudget(id, {restore: true});
 					};
-					deletePromise = function() {
-						return BudgetsService.editBudget(id, {delSubcategory: {id: existing.id}});
+					var deletePromise = function() {
+						return BudgetsService.deleteBudget(existing.id);
 					};
-				}
 
-				if (existing) {
 					if (subcategoryId) {
-						var mess = "There already is " + existing.name + " subcategory";
+						existing = _.find(existing.category.subcategories, {id: subcategoryId});
+						restorePromise = function() {
+							return BudgetsService.editBudget(id, {restoreSubcategory: {id: subcategoryId, budget: budget}});
+						};
+						deletePromise = function() {
+							return BudgetsService.editBudget(id, {delSubcategory: {id: existing.id}});
+						};
 					}
-					else {
-						var mess = "This will replace existing " + existing.category.name + " budget and all of it's subcategories";
-					}
-					swal({
-						title: "Are you sure?",
-						text: mess,
-						type: "warning",
-						showCancelButton: true,
-						confirmButtonColor: "#DD6B55",
-						confirmButtonText: "Yes, pretty sure!",
-						closeOnConfirm: true
-					}, function() {
-						deletePromise().then(function() {
-							return restorePromise().then(function() {
-								return vm.updateYear();
+
+					if (existing) {
+						if (subcategoryId) {
+							var mess = "There already is " + existing.name + " subcategory";
+						}
+						else {
+							var mess = "This will replace existing " + existing.category.name + " budget and all of it's subcategories";
+						}
+						swal({
+							title: "Are you sure?",
+							text: mess,
+							type: "warning",
+							showCancelButton: true,
+							confirmButtonColor: "#DD6B55",
+							confirmButtonText: "Yes, pretty sure!",
+							closeOnConfirm: true
+						}, function() {
+							deletePromise().then(function() {
+								return restorePromise().then(function() {
+									return vm.updateYear();
+								});
 							});
 						});
-					});
-				}
-				else {
-					restorePromise().then(function(data) {
-						return vm.updateYear();
-					});
-				}
-			});
+					}
+					else {
+						restorePromise().then(function(data) {
+							return vm.updateYear();
+						});
+					}
+				});
+			}
 		};
 
 		//expenses

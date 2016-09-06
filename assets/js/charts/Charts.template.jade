@@ -8,16 +8,16 @@
 		//- 	label Range picker: 
 		//- 		label.btn.btn-xs.btn-primary(ng-model="chartCtrl.rangeType", btn-radio="'year'" ng-change="chartCtrl.updateRangeType()") By year
 		//- 		label.btn.btn-xs.btn-default(ng-model="chartCtrl.rangeType", btn-radio="'dates'" ng-change="chartCtrl.updateRangeType()") By dates
-		div
+		div(ng-if='isAdmin()')
 			label Range picker
 			select.form-control(ng-model="chartCtrl.rangeType" ng-change ='chartCtrl.updateRangeType()')
 				option(value="year") By year
 				option(value="dates") By dates
-		div(ng-if='chartCtrl.rangeType === "year"')
+		div(ng-show='chartCtrl.rangeType === "year"')
 			label Year
 			select.form-control(ng-model="chartCtrl.year" ng-change ='chartCtrl.drawCharts()')
 				option(ng-repeat="year in chartCtrl.years") {{year}}
-		div(ng-if='chartCtrl.rangeType === "dates"')
+		div(ng-show='chartCtrl.rangeType === "dates"')
 			label From
 			input.form-control(type="text" placeholder='Start date' datepicker-popup="dd-MMMM-yyyy" ng-model="chartCtrl.startDate" is-open="startOpened" ng-change="chartCtrl.drawCharts()" close-text="Close" ng-click="startOpened = true" max-date="chartCtrl.endDate" required)
 			label Till
