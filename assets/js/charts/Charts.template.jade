@@ -37,23 +37,24 @@
 		#barChart(ng-init='chartCtrl.bars = true' ng-show='chartCtrl.bars')
 		h3(ng-show='!chartCtrl.bars') No data for bars chart
 		br
-		#pieChart(ng-init='chartCtrl.pie = true' ng-show='chartCtrl.pie')
+		#pieChart(ng-init='chartCtrl.pie = true' ng-show='chartCtrl.pie && isAdmin()')
 		h3(ng-show='!chartCtrl.bars') No data for pie chart
-		h3 Categories budgets comparation by years (USD)
-		table#table(ng-if='chartCtrl.years.length')
-			thead
-				tr
-					th 
-					th(ng-repeat='year in chartCtrl.years' ng-class='{current: (year == chartCtrl.currentYear)}')
-						b {{year}}
-			tbody
-				tr(ng-repeat='name in chartCtrl.allCategories')
-					th
-						b {{ name }}
-					td(ng-repeat='year in chartCtrl.years' ng-class='{current: (year == chartCtrl.currentYear)}')
-						| {{chartCtrl.getSumBudget(name, year)}}
-				tr
-					th
-						b Total
-					td(ng-repeat='year in chartCtrl.years' ng-class='{current: (year == chartCtrl.currentYear)}')
-						| {{chartCtrl.getSumYear(year)}}
+		div(ng-show='isAdmin()')
+			h3 Categories budgets comparation by years (USD)
+			table#table(ng-if='chartCtrl.years.length')
+				thead
+					tr
+						th 
+						th(ng-repeat='year in chartCtrl.years' ng-class='{current: (year == chartCtrl.currentYear)}')
+							b {{year}}
+				tbody
+					tr(ng-repeat='name in chartCtrl.allCategories')
+						th
+							b {{ name }}
+						td(ng-repeat='year in chartCtrl.years' ng-class='{current: (year == chartCtrl.currentYear)}')
+							| {{chartCtrl.getSumBudget(name, year)}}
+					tr
+						th
+							b Total
+						td(ng-repeat='year in chartCtrl.years' ng-class='{current: (year == chartCtrl.currentYear)}')
+							| {{chartCtrl.getSumYear(year)}}

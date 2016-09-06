@@ -81,7 +81,7 @@
 							form.form-buttons.form-inline(editable-form='', name='historyForm', ng-show='historyForm.$visible', onaftersave="personalCtrl.changeHistory(event);personalCtrl.editingHistotyStatus = false")
 								button.btn-xs.btn.btn-success.fa.fa-check(type='submit', ng-disabled='historyForm.$waiting')
 								button#delete-button.btn-xs.btn.btn-warning.fa.fa-ban(type='button', ng-disabled='historyForm.$waiting', ng-click='historyForm.$cancel();personalCtrl.editingHistotyStatus = false')
-							.buttons(ng-show='!historyForm.$visible')
+							.buttons(ng-show='!historyForm.$visible && event.editable')
 								button.btn-xs.btn.btn-primary.edit-button.fa.fa-pencil(ng-click='historyForm.$show();personalCtrl.editingHistotyStatus = true', ng-disabled='personalCtrl.editingHistotyStatus')
 		table#income-table.table-hover.fixed
 			colgroup

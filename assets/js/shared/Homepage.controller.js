@@ -16,7 +16,7 @@ module.exports = function(app) {
 		UsersService.getCurrentUser().then(function(user) {
 			$rootScope.currentUser = user;
 		});
-
+		
 		$rootScope.exchangeRate = 0;
 		CurrencyService.getExchangeRate().then(function(rate) {
 			$rootScope.exchangeRate = rate[0].rate;
@@ -27,6 +27,7 @@ module.exports = function(app) {
 			if(permission[0]) return permission[0].level;
 			else return 0;
 		};
+		$rootScope.isAdmin = isAdmin;
 
 		var nav = document.getElementsByTagName('nav')[0];
 
@@ -39,5 +40,9 @@ module.exports = function(app) {
 				nav.className = nav.className ? '' : 'hide-me';
 			}
 		};
+
+		function isAdmin(){
+			return $rootScope.currentUser.admin || $rootScope.currentUser.role === "ADMIN";
+		}
 	}
 };

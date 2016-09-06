@@ -9,15 +9,15 @@ block body
 			ul.nav.nav-tabs.tabs-left
 				li(ng-click='homeCtrl.toggleMenu()')
 					a(href='#/expenses', ng-class="{'active-tab':$route.current.activetab == 'expenses'}", data-toggle='tab') Expenses
-				li(ng-click='homeCtrl.toggleMenu()')
+				li(ng-click='homeCtrl.toggleMenu()', ng-if='isAdmin()')
 					a(href='#/planning', ng-class="{'active-tab':$route.current.activetab == 'planning'}", data-toggle='tab') Planning
 				li(ng-click='homeCtrl.toggleMenu()')
 					a(href='#/charts', ng-class="{'active-tab':$route.current.activetab == 'charts'}", data-toggle='tab') Charts
 				li(ng-click='homeCtrl.toggleMenu()')
 					a(href='#/personal', ng-class="{'active-tab':$route.current.activetab == 'personal'}", data-toggle='tab') Personal
-				li(ng-click='homeCtrl.toggleMenu()')
+				li(ng-click='homeCtrl.toggleMenu()', ng-if='isAdmin()')
 					a(href='#/administration', ng-class="{'active-tab':$route.current.activetab == 'administration'}", data-toggle='tab') Administration
-				li(ng-click='homeCtrl.toggleMenu()')
+				li(ng-click='homeCtrl.toggleMenu()', ng-if='isAdmin()')
 					a(href='#/history', ng-class="{'active-tab':$route.current.activetab == 'history'}", data-toggle='tab') History
 				li(ng-click='homeCtrl.toggleMenu()')
 					a(href='#/bin', ng-class="{'active-tab':$route.current.activetab == 'bin'}", data-toggle='tab') Recovery bin

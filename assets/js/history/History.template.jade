@@ -1,8 +1,8 @@
 #history-view
-	.alert.alert-warning(ng-hide="currentUser.max_level === 10")
+	.alert.alert-warning(ng-if="!isAdmin()")
 		i.fa.fa-exclamation-triangle.fa-2x
 		h2 &nbsp;You don't have administration rights
-	div(ng-show="currentUser.max_level === 10")
+	div(ng-if="isAdmin()")
 		lablel Section:&nbsp;
 		select.select-type(name='Type', ng-model="hstCtrl.type", ng-change='hstCtrl.getEvents(hstCtrl.type, hstCtrl.limit)')
 			option(ng-repeat='type in hstCtrl.types', value='{{type}}') {{type}}
