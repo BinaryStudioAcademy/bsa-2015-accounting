@@ -167,14 +167,14 @@ function createExpense(req, res) {
 	var data = actionUtil.parseValues(req);
 	data.creatorId = req.user.global_id || "unknown id";
 	if(!(req.user.role === 'ADMIN' || req.user.admin)) {
-		if(!data.personal) return res.negotiate("You don't have rights to add not personal expense.")
-		if(!_checkForEdit(data.time)) return res.negotiate("This period is closed to edit.");
+		if(!data.personal) return res.serverError("You don't have rights to add not personal expense.")
+		if(!_checkForEdit(data.time)) return res.serverError("This period is closed to edit.");
 	}
 	Expense.create(data).exec(function created (err, newInstance) {
-		if (err) return res.negotiate(err);
+		if (err) return res.serverError(err);
 		var log = {who: req.user.global_id, action: 'created', type: 'expense', target: newInstance.id, time: Number((new Date().getTime() / 1000).toFixed())};
 		History.create(log).exec(function(err, log) {
-			if (err) return res.negotiate(err);
+			if (err) return res.serverError(err);
 
 			res.created(newInstance);
 		});
@@ -258,7 +258,12 @@ function restoreDeleted(req, res) {
 			},
 			function (err, results) {
 				if (err) return res.serverError(err);
-				return res.ok(results);
+				var log = {who: req.user.global_id, action: 'restore', type: 'expense', target: pk, time: Number((new Date().getTime() / 1000).toFixed())};
+				History.create(log).exec(function(err, log) {
+					if (err) return res.serverError(err);
+
+					return res.ok(results);
+				});
 			});
 	});
 }
