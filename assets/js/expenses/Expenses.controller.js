@@ -322,7 +322,7 @@ module.exports = function(app) {
 
 		function updateAnnualCategories() {
 			vm.maxDate = new Date();
-			if($rootScope.isAdmin) {
+			if($rootScope.isAdmin()) {
 				vm.newExpense.date && BudgetsService.getBudgets(vm.newExpense.date.getFullYear()).then(function(data) {
 
 					vm.annualCategories = [];
@@ -341,6 +341,29 @@ module.exports = function(app) {
 										id: subcategory.id,
 										name: subcategory.name,
 										left: subcategory.budget - subcategory.used
+									};
+								})
+							});
+						}
+					});
+				});
+			} else {
+				vm.newExpense.date && BudgetsService.getBudgetCategories(vm.newExpense.date.getFullYear()).then(function(data) {
+
+					vm.annualCategories = [];
+					data.forEach(function(budget) {
+						var access = _.find($rootScope.currentUser.categories, function(cat) {
+							return cat.id === budget.category.id;
+						});
+						access = access && access.level > 1;
+						if (access) {
+							vm.annualCategories.push({
+								id: budget.category.id,
+								name: budget.category.name,
+								subcategories: _.map(budget.category.subcategories, function(subcategory) {
+									return {
+										id: subcategory.id,
+										name: subcategory.name
 									};
 								})
 							});

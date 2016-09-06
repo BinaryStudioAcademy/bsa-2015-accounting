@@ -40,12 +40,12 @@
 				span#personal-label Income
 			textarea.form-control(placeholder='Description', ng-model="expCtrl.newExpense.description")
 			.money-left
-				div(ng-if="expCtrl.newExpense.categoryId")
+				div(ng-if="expCtrl.newExpense.categoryId && isAdmin()")
 					b {{expCtrl.getAnnualCategory().name}} budget left:
 					br
 					span {{expCtrl.getAnnualCategory().left | currency:""}} USD ({{expCtrl.getAnnualCategory().left * exchangeRate | currency:""}} UAH)
 					hr.h-rule(ng-if="expCtrl.newExpense.subcategoryId || expCtrl.newExpense.personal")
-				div(ng-if="expCtrl.newExpense.subcategoryId")
+				div(ng-if="expCtrl.newExpense.subcategoryId && isAdmin()")
 					b {{expCtrl.getAnnualSubcategory().name}} budget left:
 					br
 					span {{expCtrl.getAnnualSubcategory().left | currency:""}} USD ({{expCtrl.getAnnualSubcategory().left * exchangeRate | currency:""}} UAH)

@@ -6,7 +6,8 @@ module.exports = {
 	find: getBudgets,
 	create: createBudget,
 	update: updateBudget,
-	findDeleted: getDeleted
+	findDeleted: getDeleted,
+	getBudgetCategories: getBudgetCategories
 };
 
 function getBudgets(req, res) {
@@ -247,4 +248,49 @@ function getDeleted(req, res) {
 	}).fail(function(err) {
 		return res.send(err);
 	});
+}
+
+function getBudgetCategories(req, res) {
+	var permissions = _.pluck(_.filter(req.user.categories, function(per) {
+		return per.level >= 1;
+	}), 'id');
+
+	var budgetFilter = {deletedBy: {$exists: false}};
+	if(!(req.user.role === 'ADMIN' || req.user.admin)){
+		_.assign(budgetFilter, {'category.id': {$in: permissions}});
+	};
+
+	Budget.find(budgetFilter)
+	.where( actionUtil.parseCriteria(req) )
+	.then(function(budgets) {
+		var categories = Category.find().then(function(categories) {
+			return categories;
+		});
+		var year = actionUtil.parseCriteria(req).year;
+		if (year) {
+			var start = Date.parse('01/01/' + year + ' 00:00:00') / 1000;
+			var end = Date.parse('12/31/' + year + ' 23:59:59') / 1000;
+		}		
+		return [budgets, categories];
+	}).spread(function(budgets, categories) {
+		budgets.forEach(function(budget) {
+			var category = _.find(categories, {id: budget.category.id});
+			budget.category.name = category.name;
+			var subcategories = [];
+			budget.subcategories.forEach(function(subcategory) {
+				if (!subcategory.deletedBy) {
+					subcategories.push({
+						id: subcategory.id,
+						name: _.find(category.subcategories, {id: subcategory.id}).name
+					});
+				}
+			});
+			budget.category.subcategories = subcategories;
+			delete budget.subcategories;
+			delete budget.category.budget;
+		});
+		return res.send(budgets);
+	}).fail(function(err) {
+		return res.send(err);
+	}) 
 }

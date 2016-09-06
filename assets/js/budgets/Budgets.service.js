@@ -7,6 +7,7 @@ module.exports = function(app) {
 		return {
 			getBudgets: getBudgets,
 			getBudget: getBudget,
+			getBudgetCategories: getBudgetCategories,
 			createBudget: createBudget,
 			editBudget: editBudget,
 			deleteBudget: deleteBudget,
@@ -20,6 +21,14 @@ module.exports = function(app) {
 
 		function getBudget(budgetId) {
 			return getRequest().get({ id: budgetId }).$promise;
+		}
+
+		/**
+		 * Gets budgets array
+		 * @returns budgets array
+		 */
+		function getBudgetCategories(year) {
+			return $resource("budget/categories", { where: {"year": year}}).query().$promise;
 		}
 
 		/**

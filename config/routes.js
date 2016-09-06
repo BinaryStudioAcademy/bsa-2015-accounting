@@ -64,6 +64,8 @@ module.exports.routes = {
 
   'get /expense/personal': 'ExpenseController.findPersonalExpenses',
 
+  'get /budget/categories': 'BudgetController.getBudgetCategories',
+
   'get /drop': 'DatabaseController.dropAll',
   'get /privat': 'DatabaseController.updateCurrencies'
 

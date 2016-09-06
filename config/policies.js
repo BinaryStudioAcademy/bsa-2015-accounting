@@ -40,12 +40,8 @@ module.exports.policies = {
 		'*': true
 	},
 	'BudgetController': {
-		'findOne': 'hasRightBudget',
-		'destroy': 'hasRightBudget',
-		'update': 'hasRightBudget',
-		'create': 'hasRightBudget',
-		'find': true,
-		'findDeleted': true
+		'*': 'isAdmin',
+		'getBudgetCategories': true
 	},
 	'CategoryController': {
 		'findOne': 'hasRightCategory',
@@ -77,7 +73,7 @@ module.exports.policies = {
 		'changeUserBudgetHistory': 'isThatUser'
 	},
 	'DatabaseController': {
-		'*': true
+		'*': 'isAdmin'
 	}
 
 	/***************************************************************************
