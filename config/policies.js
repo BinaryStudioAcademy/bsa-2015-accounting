@@ -40,7 +40,7 @@ module.exports.policies = {
 		'*': true
 	},
 	'BudgetController': {
-		'*': 'isAdmin',
+		'*': 'isGlobalAdmin',
 		'getBudgetCategories': true
 	},
 	'CategoryController': {
@@ -58,7 +58,7 @@ module.exports.policies = {
 		'restoreDeleted': true
 	},
 	'UserController': {
-	 '*': 'isAdmin',
+	 '*': 'isGlobalAdmin',
 	 'find': true,
 	 'findOne': 'isThatUser',
 	 'getCurrentUser': true,
@@ -73,7 +73,10 @@ module.exports.policies = {
 		'changeUserBudgetHistory': 'isThatUser'
 	},
 	'DatabaseController': {
-		'*': 'isAdmin'
+		'*': 'isGlobalAdmin'
+	},
+	'SettingsController': {
+		'*': true
 	}
 
 	/***************************************************************************
