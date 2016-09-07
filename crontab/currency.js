@@ -4,9 +4,9 @@ module.exports = {
     var options = {
       host: "api.privatbank.ua",
       //Наличный курс Приватбанка (в отделениях):
-      path: "/p24api/pubinfo?json&exchange&coursid=5"
+      //path: "/p24api/pubinfo?json&exchange&coursid=5"
       //Безналичный курс Приватбанка (конвертация по картам, Приват24, пополнение вкладов):
-      //path: "p24api/pubinfo?exchange&json&coursid=11"
+      path: "p24api/pubinfo?exchange&json&coursid=11"
     };
 
     var callback = function(response) {
