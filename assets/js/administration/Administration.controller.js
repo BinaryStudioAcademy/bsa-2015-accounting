@@ -7,10 +7,22 @@ module.exports = function(app) {
 		editableOptions.theme = 'bs3';
 	});
 
-	AdministrationController.$inject = ['UsersService', 'CategoriesService', 'CurrencyService', '$q', '$rootScope'];
+	AdministrationController.$inject = ['UsersService', 'CategoriesService', 'CurrencyService', 'AdministrationService','$q', '$rootScope', '$scope'];
 
-	function AdministrationController(UsersService, CategoriesService, CurrencyService, $q, $rootScope) {
+	function AdministrationController(UsersService, CategoriesService, CurrencyService, AdministrationService, $q, $rootScope, $scope) {
 		var vm = this;
+
+		$scope.format = 'dd-MMMM-yyyy';
+		$scope.status = {
+			opened: false
+		};
+		$scope.open = function() {
+			$scope.status.opened = true;
+		};
+		$scope.dateOptions = {
+			formatYear: 'yy',
+			startingDay: 1
+		};
 
 		vm.permits = [
 			{level: 0, text: "no rights"},
@@ -21,16 +33,22 @@ module.exports = function(app) {
 
 		vm.currency = 'UAH';
 		vm.rate = 1;
+		var date = new Date();
+		vm.minDate = new Date(date.getFullYear(), date.getMonth(), 1);
+		vm.maxDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
 		
 		vm.resetBudget = resetBudget;
+		vm.updateClosingDate = updateClosingDate;
 
 		var usersPromise = UsersService.getUsers();
 		var categoriesPromise = CategoriesService.getActiveCategories();
+		var closingDatePromise = AdministrationService.getClosingDate();
 
-		$q.all([usersPromise, categoriesPromise]).then(function(data) {
+		$q.all([usersPromise, categoriesPromise, closingDatePromise]).then(function(data) {
 			vm.users = data[0] || [];
 			vm.categories = data[1] || [];
 			vm.category = vm.categories[0];
+			vm.closingDate = new Date(data[2].date * 1000);
 		});
 
 		vm.editPersonalBudget = function(user, add) {
@@ -146,6 +164,14 @@ module.exports = function(app) {
 					swal("Error!", error.data ,"error")
 				});	
 			});			
+		}
+
+		function updateClosingDate(){
+			AdministrationService.setClosingDate(Number((vm.closingDate / 1000).toFixed())).then(function(){
+				swal("Changed!", "Closing session date has been successfully changed.", "success");
+			}, function(error){
+				swal("Error!", error.data, "error");
+			});
 		}
 	}
 };

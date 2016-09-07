@@ -8,6 +8,7 @@
 var actionUtil = require('sails/lib/hooks/blueprints/actionUtil'),
 		_ = require('lodash');
 var ObjectId = require('mongodb').ObjectID;
+var fs = require('fs');
 
 module.exports = {
 	find: getExpenses,
@@ -47,6 +48,7 @@ function getExpenses(req, res) {
 	if (priceSorting) {
 		limit = 10000;
 	}
+	var closingSessionDate = JSON.parse(fs.readFileSync('././config/closingSessionDate.json', 'utf8'));
 	Expense.find()
 	.where(expenseFilter)
 	.limit(limit)
@@ -77,7 +79,7 @@ function getExpenses(req, res) {
 			}
 			else expense.altPrice = expense.price * rate;
 			if(req.user.role === 'ADMIN' || req.user.admin) expense.editable = true;
-			else expense.editable = _checkForEdit(expense.time);
+			else expense.editable = _checkForEdit(expense.time, closingSessionDate.custom);
 			delete expense.categoryId;
 			delete expense.subcategoryId;
 		});
@@ -115,6 +117,7 @@ function findPersonalExpenses(req, res) {
 	if (priceSorting) {
 		limit = 10000;
 	}
+	var closingSessionDate = JSON.parse(fs.readFileSync('././config/closingSessionDate.json', 'utf8'));
 	Expense.find()
 	.where(expenseFilter)
 	.limit(limit)
@@ -147,7 +150,7 @@ function findPersonalExpenses(req, res) {
 			delete expense.categoryId;
 			delete expense.subcategoryId;
 			if(req.user.role === 'ADMIN' || req.user.admin) expense.editable = true;
-			else expense.editable = _checkForEdit(expense.time);
+			else expense.editable = _checkForEdit(expense.time, closingSessionDate.custom);
 		});
 		if (priceSorting) {
 			expenses.sort(function(a, b) {
@@ -166,9 +169,10 @@ function findPersonalExpenses(req, res) {
 function createExpense(req, res) {
 	var data = actionUtil.parseValues(req);
 	data.creatorId = req.user.global_id || "unknown id";
+	var closingSessionDate = JSON.parse(fs.readFileSync('././config/closingSessionDate.json', 'utf8'));
 	if(!(req.user.role === 'ADMIN' || req.user.admin)) {
 		if(!data.personal) return res.serverError("You don't have rights to add not personal expense.")
-		if(!_checkForEdit(data.time)) return res.serverError("This period is closed to edit.");
+		if(!_checkForEdit(data.time, closingSessionDate.custom)) return res.serverError("This period is closed to edit.");
 	}
 	Expense.create(data).exec(function created (err, newInstance) {
 		if (err) return res.serverError(err);
@@ -194,7 +198,7 @@ function findDeleted(req, res) {
 	if (priceSorting) {
 		limit = 10000;
 	}
-
+	var closingSessionDate = JSON.parse(fs.readFileSync('././config/closingSessionDate.json', 'utf8'));
 	Expense.find(expenseFilter)
 		.where(actionUtil.parseCriteria(req))
 		.limit(limit)
@@ -226,7 +230,7 @@ function findDeleted(req, res) {
 				}
 				else expense.altPrice = expense.price * rate;
 				if(req.user.role === 'ADMIN' || req.user.admin) expense.editable = true;
-				else expense.editable = _checkForEdit(expense.time);
+				else expense.editable = _checkForEdit(expense.time, closingSessionDate.custom);
 				delete expense.categoryId;
 				delete expense.subcategoryId;
 			});
@@ -282,11 +286,11 @@ function _getExchangeRate(time, exchangeRates) {
 	return rate ? rate.rate : exchangeRates[exchangeRates.length - 1].rate;
 }
 //false if date before 15 date of month 
-function _checkForEdit(time) {	
+function _checkForEdit(time, closingDate) {	
 	var now = new Date();
 	var date = new Date(time * 1000);
 	if(date.getFullYear() < now.getFullYear()) return false;
 	if((now.getMonth() - date.getMonth()) >= 2) return false;
-	if(((now.getMonth() - date.getMonth()) === 1) && now.getDate() > 15) return false;
+	if(((now.getMonth() - date.getMonth()) === 1) && now.getDate() > closingDate) return false;
 	return true;
 }

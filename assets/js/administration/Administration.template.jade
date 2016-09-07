@@ -9,6 +9,8 @@
 			select.form-control(ng-model='admCtrl.currency' ng-change='admCtrl.updateCurrency()')
 				option(value='UAH') UAH
 				option(value='USD') USD
+			b Closing session date: 
+			input.form-control(type="text", datepicker-popup="{{format}}", ng-model="admCtrl.closingDate", is-open="opened", datepicker-options="dateOptions", ng-change="admCtrl.updateClosingDate()", close-text="Close", min-date="admCtrl.minDate", max-date="admCtrl.maxDate", ng-click="opened = true")
 		table.table-hover
 			thead
 				tr

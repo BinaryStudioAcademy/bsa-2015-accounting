@@ -1,6 +1,3 @@
-var actionUtil = require('sails/lib/hooks/blueprints/actionUtil'),
-  _ = require('lodash');
-
 /**
  * PersonalController
  *
@@ -8,17 +5,22 @@ var actionUtil = require('sails/lib/hooks/blueprints/actionUtil'),
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
+var actionUtil = require('sails/lib/hooks/blueprints/actionUtil'),
+  _ = require('lodash');
+var fs = require('fs');
+
 module.exports = {
   getPersonalHistory: getPersonalHistory,
   changeUserBudgetHistory: changeUserBudgetHistory
 };
 
 function getPersonalHistory(req, res) {
+  var closingSessionDate = JSON.parse(fs.readFileSync('././config/closingSessionDate.json', 'utf8'));
   History.find({type: "user", target: req.user.global_id})
     .sort(actionUtil.parseSort(req))
     .then(function(events) {
       events.forEach(function(event){
-        event.editable = _checkForEdit(event.time);
+        event.editable = _checkForEdit(event.time, closingSessionDate.custom);
       });
       return res.send(events);
   });
@@ -27,11 +29,10 @@ function getPersonalHistory(req, res) {
 function changeUserBudgetHistory(req, res) {
   var pk = actionUtil.requirePk(req);
   var values = actionUtil.parseValues(req);
-  console.log('pk', pk);
-  console.log('data', values);
+  var closingSessionDate = JSON.parse(fs.readFileSync('././config/closingSessionDate.json', 'utf8'));
   if(!(req.user.role === 'ADMIN' || req.user.admin)) {
 		if(!data.personal) return res.negotiate("You don't have rights to change history.")
-		if(!_checkForEdit(data.time)) return res.negotiate("This period is closed to edit.");
+		if(!_checkForEdit(data.time, closingSessionDate.custom)) return res.negotiate("This period is closed to edit.");
 	}
   User.findOne(pk).exec(function (err, user) {
 
@@ -61,12 +62,12 @@ function changeUserBudgetHistory(req, res) {
 }
 
 //false if date before 15 date of month 
-function _checkForEdit(time) {	
+function _checkForEdit(time, closingDate) {	
 	var now = new Date();
 	var date = new Date(time * 1000);
 	if(date.getFullYear() < now.getFullYear()) return false;
 	if((now.getMonth() - date.getMonth()) >= 2) return false;
-	if(((now.getMonth() - date.getMonth()) === 1) && now.getDate() > 15) return false;
+	if(((now.getMonth() - date.getMonth()) === 1) && now.getDate() > closingDate) return false;
 	return true;
 }
 
